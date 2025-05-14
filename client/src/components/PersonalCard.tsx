@@ -1,11 +1,11 @@
 // client/src/components/PersonalCard.tsx
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react'; // Thêm useRef
+import { motion, AnimatePresence, useAnimation } from 'framer-motion'; // Thêm useAnimation
 import './styles/PersonalCard.css';
 import { 
     aboutNavIconLeft, 
     aboutNavIconRight,
-    githubSectionTranslations // This now includes discordPresenceTitle
+    githubSectionTranslations 
 } from './languageSelector/languageSelector.constants';
 
 interface PersonalCardProps {
@@ -13,41 +13,43 @@ interface PersonalCardProps {
   name: string;
   section: 'about' | 'all';
   githubUsername?: string;
-  // We can add discordUserId directly here if it's static or pass it down like githubUsername
-  // For now, the Lanyard URL uses a static ID from your example.
 }
 
-type AboutSubSection = 'intro' | 'github' | 'github-stats-ii' | 'github-stats-iii' | 'discord-presence'; // Added discord-presence
+type AboutSubSection = 'intro' | 'github' | 'github-stats-ii' | 'github-stats-iii' | 'discord-presence';
 const aboutSubSectionsOrder: AboutSubSection[] = [
     'intro', 
     'github', 
     'github-stats-ii', 
     'github-stats-iii',
-    'discord-presence' // Added discord-presence
+    'discord-presence'
 ];
 
 const aboutSectionVariants: { [key: string]: any } = {
   enter: (direction: number) => ({
-    x: direction > 0 ? "100%" : "-100%",
+    rotateY: direction > 0 ? 70 : -70,
     opacity: 0,
-    scale: 0.9,
+    scale: 0.92,
+    originX: direction > 0 ? 0 : 1,
+    filter: "blur(5px) brightness(0.7)",
   }),
   center: {
     zIndex: 1,
-    x: 0,
+    rotateY: 0,
     opacity: 1,
     scale: 1,
-    transition: { type: "spring", stiffness: 280, damping: 30, mass: 0.9 }
+    filter: "blur(0px) brightness(1)",
+    transition: { type: "spring", stiffness: 220, damping: 28, mass: 0.9, duration: 0.6 }
   },
   exit: (direction: number) => ({
     zIndex: 0,
-    x: direction < 0 ? "100%" : "-100%",
+    rotateY: direction < 0 ? -70 : 70,
     opacity: 0,
-    scale: 0.9,
-    transition: { type: "tween", ease: "anticipate", duration: 0.35 }
+    scale: 0.92,
+    originX: direction < 0 ? 1 : 0,
+    filter: "blur(5px) brightness(0.7)",
+    transition: { type: "tween", ease: [0.76, 0, 0.24, 1], duration: 0.4 }
   })
 };
-
 
 const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githubUsername }) => {
   const containerClassName = section === 'about' ? 'personal-card-about-view' : 'personal-card-container';
@@ -58,8 +60,23 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const [githubLoading, setGithubLoading] = useState<boolean>(false);
   const [githubError, setGithubError] = useState<string | null>(null);
   
-  // Static Discord User ID from your Lanyard URL
   const discordUserId = "873576591693873252";
+
+  // Ref cho content wrapper để điều khiển animation chiều cao
+  const contentWrapperControls = useAnimation();
+  // Ref cho content hiện tại để đo chiều cao
+  const currentContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (currentContentRef.current) {
+      const currentContentHeight = currentContentRef.current.offsetHeight;
+      // Animate chiều cao của wrapper
+      contentWrapperControls.start({
+        height: currentContentHeight,
+        transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1] } // easeOutQuint
+      });
+    }
+  }, [currentAboutSubSection, contentWrapperControls]); // Chạy khi section thay đổi
 
 
   useEffect(() => {
@@ -99,9 +116,8 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     }
   };
 
-
   if (section === 'about') {
-    const lang = 'vi'; // Hardcoded for simplicity
+    const lang = 'vi';
     const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);
     const isFirstSection = currentIndex === 0;
     const isLastSection = currentIndex === aboutSubSectionsOrder.length - 1;
@@ -112,7 +128,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             case 'github': return githubSectionTranslations.title[lang];
             case 'github-stats-ii': return githubSectionTranslations.titlePart2[lang];
             case 'github-stats-iii': return githubSectionTranslations.titlePart3[lang];
-            case 'discord-presence': return githubSectionTranslations.discordPresenceTitle[lang]; // Added title
+            case 'discord-presence': return githubSectionTranslations.discordPresenceTitle[lang];
             default: return "Thông tin";
         }
     };
@@ -153,17 +169,29 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             </motion.button>
         </div>
 
-        <div className="about-sub-section-content-wrapper">
-          <AnimatePresence initial={false} custom={slideDirection} mode="wait">
+        <motion.div
+            className="about-sub-section-content-wrapper"
+            initial={{ height: 'auto' }} // Bắt đầu với height tự động
+            animate={contentWrapperControls} // Sử dụng controls để animate chiều cao
+        >
+          <AnimatePresence 
+            initial={false} 
+            custom={slideDirection} 
+            mode="wait"
+            // Không cần onExitComplete ở đây nếu useEffect đã xử lý chiều cao
+          >
             <motion.div
               key={currentAboutSubSection}
+              ref={currentContentRef} // Gán ref cho content hiện tại để đo
               className="about-sub-section-content"
               custom={slideDirection}
               variants={aboutSectionVariants}
               initial="enter"
               animate="center"
               exit="exit"
+              style={{ position: 'absolute', width: '100%' }} // Giúp AnimatePresence xử lý tốt hơn với mode="wait"
             >
+              {/* Nội dung các section, ví dụ: */}
               {currentAboutSubSection === 'intro' && (
                 <p className="bio-text">
                   Chào bạn! Mình là {name}, một người đam mê công nghệ với nhiều năm kinh nghiệm trong việc phát triển các giải pháp phần mềm sáng tạo và quản trị hạ tầng hệ thống vững chắc.
@@ -242,23 +270,22 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                     />
                 </div>
               )}
-              {currentAboutSubSection === 'discord-presence' && ( // Added Discord Presence Section
+              {currentAboutSubSection === 'discord-presence' && (
                 <div className="discord-presence-container">
                     <img
                         src={`https://lanyard-profile-readme.vercel.app/api/${discordUserId}?theme=dark&bg=1A1B26&animated=true&borderRadius=10px&titleColor=BB9AF7&statusColor=79E6F3&hideDiscrim=false&idleMessage=%C4%90ang%20chill...`}
                         alt="Discord Presence"
-                        className="discord-presence-image" // Use a specific class or reuse .github-stat-image
+                        className="discord-presence-image"
                     />
                 </div>
               )}
             </motion.div>
           </AnimatePresence>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
-  // Fallback for section === 'all' or other future sections
   return (
     <div className={containerClassName} style={style}>
       <div className="card-section">
@@ -269,7 +296,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
           Mình tin vào sức mạnh của mã nguồn mở và cộng đồng.
         </p>
       </div>
-
       <div className="card-section">
         <h3 className="section-heading">Kỹ Năng</h3>
         <ul className="skills-list">
@@ -284,7 +310,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
           <li className="skill-tag">Cloud (AWS/GCP cơ bản)</li>
         </ul>
       </div>
-
       <div className="card-section">
         <h3 className="section-heading">Liên Hệ</h3>
         <div className="contact-links">

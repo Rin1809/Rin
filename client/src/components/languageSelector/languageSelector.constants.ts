@@ -118,13 +118,13 @@ export const translations = {
   },
   subtitle: {
     vi: "Chọn một dòng chảy cho riêng bạn",
-    en: "Choose your own flow",
+    en: "Choose your own flow", 
     ja: "自分だけの流れを選んでください"
   },
   note: {
-    vi: "(Nội dung thẻ hiện tại chỉ hỗ trợ tiếng Việt)",
-    en: "(Card content currently only supports Vietnamese)",
-    ja: "(現在、カードの内容はベトナム語のみ対応しています)"
+    vi: "(Mặc định sẽ là tiếng việt)",
+    en: "(Vietnamese is default language)",
+    ja: "(ベトナム語はデフォルト語だ)"
   },
 };
 
