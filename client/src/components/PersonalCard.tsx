@@ -5,7 +5,7 @@ import './styles/PersonalCard.css';
 import { 
     aboutNavIconLeft, 
     aboutNavIconRight,
-    githubSectionTranslations
+    githubSectionTranslations // This now includes discordPresenceTitle
 } from './languageSelector/languageSelector.constants';
 
 interface PersonalCardProps {
@@ -13,10 +13,18 @@ interface PersonalCardProps {
   name: string;
   section: 'about' | 'all';
   githubUsername?: string;
+  // We can add discordUserId directly here if it's static or pass it down like githubUsername
+  // For now, the Lanyard URL uses a static ID from your example.
 }
 
-type AboutSubSection = 'intro' | 'github' | 'github-stats-ii' | 'github-stats-iii';
-const aboutSubSectionsOrder: AboutSubSection[] = ['intro', 'github', 'github-stats-ii', 'github-stats-iii'];
+type AboutSubSection = 'intro' | 'github' | 'github-stats-ii' | 'github-stats-iii' | 'discord-presence'; // Added discord-presence
+const aboutSubSectionsOrder: AboutSubSection[] = [
+    'intro', 
+    'github', 
+    'github-stats-ii', 
+    'github-stats-iii',
+    'discord-presence' // Added discord-presence
+];
 
 const aboutSectionVariants: { [key: string]: any } = {
   enter: (direction: number) => ({
@@ -49,6 +57,10 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const [githubData, setGithubData] = useState<any>(null);
   const [githubLoading, setGithubLoading] = useState<boolean>(false);
   const [githubError, setGithubError] = useState<string | null>(null);
+  
+  // Static Discord User ID from your Lanyard URL
+  const discordUserId = "873576591693873252";
+
 
   useEffect(() => {
     if (section === 'about' && currentAboutSubSection === 'github' && !githubData && githubUsername) {
@@ -100,6 +112,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             case 'github': return githubSectionTranslations.title[lang];
             case 'github-stats-ii': return githubSectionTranslations.titlePart2[lang];
             case 'github-stats-iii': return githubSectionTranslations.titlePart3[lang];
+            case 'discord-presence': return githubSectionTranslations.discordPresenceTitle[lang]; // Added title
             default: return "Thông tin";
         }
     };
@@ -206,7 +219,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                 </div>
               )}
               {currentAboutSubSection === 'github-stats-iii' && githubUsername && (
-                <div className="github-stats-image-container grid-2x2"> {/* <-- ADDED grid-2x2 class */}
+                <div className="github-stats-image-container grid-2x2">
                     <img 
                         src={`https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${githubUsername}&theme=tokyonight&utcOffset=7`} 
                         alt="GitHub Productive Time" 
@@ -226,6 +239,15 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                         src={`https://streak-stats.demolab.com/?user=${githubUsername}&theme=tokyonight&date_format=M%20j%5B%2C%20Y%5D`} 
                         alt="GitHub Streak Stats" 
                         className="github-stat-image"
+                    />
+                </div>
+              )}
+              {currentAboutSubSection === 'discord-presence' && ( // Added Discord Presence Section
+                <div className="discord-presence-container">
+                    <img
+                        src={`https://lanyard-profile-readme.vercel.app/api/${discordUserId}?theme=dark&bg=1A1B26&animated=true&borderRadius=10px&titleColor=BB9AF7&statusColor=79E6F3&hideDiscrim=false&idleMessage=%C4%90ang%20chill...`}
+                        alt="Discord Presence"
+                        className="discord-presence-image" // Use a specific class or reuse .github-stat-image
                     />
                 </div>
               )}

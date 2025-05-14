@@ -124,7 +124,7 @@
     position: relative;
     width: 100%;
     max-width: 720px; 
-    min-height: 320px; /* Increased min-height to accommodate image grid */
+    min-height: 320px; 
     overflow: hidden; 
 }
 
@@ -145,7 +145,7 @@
 }
 
 /* --- GitHub Stats Styles (API and Images) --- */
-.github-stats-container, .github-stats-image-container {
+.github-stats-container, .github-stats-image-container, .discord-presence-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -165,14 +165,14 @@
 .github-stats-image-container.grid-2x2 { /* Specific for GitHub Stats III */
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem; /* Adjust gap as needed for the grid */
-    align-items: start; /* Align items to the start of their grid cell */
+    gap: 1rem; 
+    align-items: start; 
 }
 
 .github-stats-image-container.grid-2x2 .github-stat-image {
-    width: 100%; /* Make images fill their grid cell width */
-    height: auto; /* Maintain aspect ratio */
-    object-fit: contain; /* Ensure whole image is visible */
+    width: 100%; 
+    height: auto; 
+    object-fit: contain; 
 }
 
 
@@ -184,6 +184,17 @@
     padding: 0.5rem; 
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
+
+/* Discord Presence Image */
+.discord-presence-image {
+    max-width: 100%; /* Or a fixed max-width like 450px */
+    width: auto; /* Allow it to shrink if max-width is less than container */
+    height: auto;
+    border-radius: 10px; /* Match its own borderRadius if specified in URL */
+    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    /* Lanyard image already has theme & bg, so additional styling might not be needed much */
+}
+
 
 .github-user-header {
     display: flex;
@@ -439,7 +450,7 @@
     .about-nav-arrow svg { width: 22px; height: 22px; }
     .about-section-title { font-size: 1.4em; margin: 0 0.3rem; max-width: 60%; }
     .personal-card-about-view .bio-text { font-size: 1em; line-height: 1.8; padding: 0 0.5rem; max-width: 100%;}
-    .about-sub-section-content-wrapper { min-height: 300px; }
+    .about-sub-section-content-wrapper { min-height: 300px; } /* Adjusted height to better fit content */
     
     .github-user-header { flex-direction: column; align-items: center; text-align: center; gap: 0.8rem;}
     .github-avatar { width: 65px; height: 65px; }
@@ -449,16 +460,19 @@
     .stat-label { font-size: 0.8em; }
     .github-profile-link { font-size: 0.9em; padding: 0.6rem 1.2rem; }
 
-    .github-stats-image-container {
+    .github-stats-image-container, .discord-presence-container {
       gap: 0.5rem;
       padding: 0.2rem 0.5rem; 
     }
-    .github-stat-image {
+    .github-stat-image, .discord-presence-image {
       padding: 0.3rem; 
     }
     .github-stats-image-container.grid-2x2 {
         /* On very small screens, could revert to single column if 2x2 is too cramped */
         /* grid-template-columns: 1fr; */ 
         gap: 0.5rem;
+    }
+    .discord-presence-container {
+      min-height: 150px; /* Ensure enough space for the Lanyard card */
     }
 }

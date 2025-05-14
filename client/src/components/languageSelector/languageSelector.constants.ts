@@ -556,11 +556,12 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
 export const aboutNavIconLeft = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 export const aboutNavIconRight = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
-export const githubSectionTranslations = {
+export const githubSectionTranslations = { // Renamed or use a more general name like 'aboutSubSectionTitles'
   title: { vi: "Thống kê GitHub", en: "GitHub Statistics", ja: "GitHub統計" },
   followers: { vi: "Người theo dõi", en: "Followers", ja: "フォロワー" },
   publicRepos: { vi: "Kho lưu trữ", en: "Public Repos", ja: "公開リポジトリ" },
   profileLink: { vi: "Xem trên GitHub", en: "View on GitHub", ja: "GitHubで表示" },
   titlePart2: { vi: "Thống kê GitHub II", en: "GitHub Statistics II", ja: "GitHub統計 II" },
   titlePart3: { vi: "Thống kê GitHub III", en: "GitHub Statistics III", ja: "GitHub統計 III" },
+  discordPresenceTitle: { vi: "Trạng thái Discord", en: "Discord Presence", ja: "Discordステータス"},
 };
