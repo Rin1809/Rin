@@ -284,16 +284,14 @@ export const baseFlourishVisibleFilterKeyframes = [
     "drop-shadow(0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.4))"
 ];
 
-// Cập nhật flourishVariantsDefinition
 export const flourishVariantsDefinition = (initialRotate: number = 0): Variants => ({
-    hidden: { // State ban đầu khi component mount
+    hidden: {
         opacity: 0, y: 20, scale: 0.8, rotate: initialRotate, filter: "drop-shadow(0 0 0px transparent)"
     },
-    visibleBase: { // Base state tĩnh (sẽ được merge với scale động)
-        opacity: 0.85, // Opacity tĩnh
-        // scale: sẽ được set động trong component
+    visibleBase: { 
+        opacity: 0.85, 
         rotate: initialRotate,
-        y: 0, // Vị trí y tĩnh
+        y: 0, 
         filter: baseFlourishVisibleFilterKeyframes[0],
     },
     hover: (custom: { baseScale: number }) => ({
@@ -302,7 +300,6 @@ export const flourishVariantsDefinition = (initialRotate: number = 0): Variants 
         filter: "drop-shadow(0 0 30px rgba(var(--highlight-color-poetic-rgb), 0.75)) drop-shadow(0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.5))",
         transition: { type: "spring", stiffness: 300, damping: 22, mass: 0.8 }
     })
-    //visibleBase và scale động
 });
 
 
@@ -349,7 +346,6 @@ export const cardIntroTranslations = {
       en: "Let's explore a little about my whimsical world!",
       ja: "私の幻想的な世界を少し探検してみませんか！"
   },
-  githubStatsButton: { vi: "Số liệu GitHub", en: "GitHub Stats", ja: "GitHub統計"}, // New
   aboutIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   galleryIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
   backButton: { vi: "Quay Lại", en: "Back", ja: "戻る" },
@@ -524,12 +520,11 @@ export const previewIcons = {
   gallery: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
 };
 
-// --- GỢI Ý 3: GALLERY VIEW VARIANTS - Zoom & Reveal ---
 export const galleryViewVariants = (delay: number = 0.1): Variants => ({
     hidden: {
         opacity: 0,
-        scale: 0.6,       // Bắt đầu rất nhỏ
-        filter: "blur(15px) saturate(0.3)", // Mờ và nhạt màu
+        scale: 0.6, 
+        filter: "blur(15px) saturate(0.3)", 
     },
     visible: {
         opacity: 1,
@@ -548,25 +543,24 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
     },
     exit: {
         opacity: 0,
-        scale: 0.7,       // Thu nhỏ lại khi thoát, nhưng không quá nhỏ
+        scale: 0.7, 
         filter: "blur(12px) saturate(0.5)",
         transition: {
             duration: 0.35,
-            ease: "anticipate", // Tạo hiệu ứng "co lại" nhẹ trước khi biến mất
-            // Các thuộc tính sẽ theo transition chung
+            ease: "anticipate", 
             opacity: { duration: 0.3, ease: "easeIn"},
         }
     }
 });
-// --- KẾT THÚC GỢI Ý 3 ---
 
-// Icons for About Me navigation
 export const aboutNavIconLeft = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 export const aboutNavIconRight = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
 export const githubSectionTranslations = {
   title: { vi: "Thống kê GitHub", en: "GitHub Statistics", ja: "GitHub統計" },
   followers: { vi: "Người theo dõi", en: "Followers", ja: "フォロワー" },
-  publicRepos: { vi: "Kho lưu trữ công khai", en: "Public Repos", ja: "公開リポジトリ" },
-  profileLink: { vi: "Xem hồ sơ", en: "View Profile", ja: "プロフィールを見る" },
+  publicRepos: { vi: "Kho lưu trữ", en: "Public Repos", ja: "公開リポジトリ" },
+  profileLink: { vi: "Xem trên GitHub", en: "View on GitHub", ja: "GitHubで表示" },
+  titlePart2: { vi: "Thống kê GitHub II", en: "GitHub Statistics II", ja: "GitHub統計 II" },
+  titlePart3: { vi: "Thống kê GitHub III", en: "GitHub Statistics III", ja: "GitHub統計 III" },
 };

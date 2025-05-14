@@ -5,17 +5,18 @@ import './styles/PersonalCard.css';
 import { 
     aboutNavIconLeft, 
     aboutNavIconRight,
-    githubSectionTranslations // Assuming 'vi' as default for now or pass lang
-} from './languageSelector/languageSelector.constants'; // Or directly in this file if simpler
+    githubSectionTranslations
+} from './languageSelector/languageSelector.constants';
 
 interface PersonalCardProps {
   style?: React.CSSProperties;
   name: string;
   section: 'about' | 'all';
-  githubUsername?: string; // Make optional if PersonalCard can be used elsewhere without it
+  githubUsername?: string;
 }
 
-type AboutSubSection = 'intro' | 'github';
+type AboutSubSection = 'intro' | 'github' | 'github-stats-ii' | 'github-stats-iii';
+const aboutSubSectionsOrder: AboutSubSection[] = ['intro', 'github', 'github-stats-ii', 'github-stats-iii'];
 
 const aboutSectionVariants: { [key: string]: any } = {
   enter: (direction: number) => ({
@@ -58,13 +59,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
           const userRes = await fetch(`https://api.github.com/users/${githubUsername}`);
           if (!userRes.ok) throw new Error(`GitHub user API error: ${userRes.status}`);
           const userData = await userRes.json();
-          
-          // Optional: Fetch repos if needed
-          // const reposRes = await fetch(`https://api.github.com/users/${githubUsername}/repos?per_page=5&sort=updated`);
-          // if (!reposRes.ok) throw new Error(`GitHub repos API error: ${reposRes.status}`);
-          // const reposData = await reposRes.json();
-          
-          setGithubData({ user: userData /*, repos: reposData */ });
+          setGithubData({ user: userData });
         } catch (error: any) {
           console.error("Failed to fetch GitHub data:", error);
           setGithubError(error.message || "Could not load GitHub data.");
@@ -76,57 +71,69 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     }
   }, [section, currentAboutSubSection, githubData, githubUsername]);
 
-  const handleNextSubSection = () => {
-    if (currentAboutSubSection === 'intro') {
-      setSlideDirection(1);
-      setCurrentAboutSubSection('github');
-    }
-    // Add more sections if needed
-  };
+  const changeSubSection = (direction: 'next' | 'prev') => {
+    const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);
+    let nextIndex;
 
-  const handlePrevSubSection = () => {
-    if (currentAboutSubSection === 'github') {
+    if (direction === 'next') {
+      setSlideDirection(1);
+      nextIndex = (currentIndex + 1) % aboutSubSectionsOrder.length;
+    } else {
       setSlideDirection(-1);
-      setCurrentAboutSubSection('intro');
+      nextIndex = (currentIndex - 1 + aboutSubSectionsOrder.length) % aboutSubSectionsOrder.length;
     }
-    // Add more sections if needed
+    if (currentIndex !== nextIndex) { 
+        setCurrentAboutSubSection(aboutSubSectionsOrder[nextIndex]);
+    }
   };
 
 
   if (section === 'about') {
-    const lang = 'vi'; // Hardcoded for simplicity, pass down from LanguageSelector if needed
+    const lang = 'vi'; // Hardcoded for simplicity
+    const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);
+    const isFirstSection = currentIndex === 0;
+    const isLastSection = currentIndex === aboutSubSectionsOrder.length - 1;
+
+    const getSectionTitle = () => {
+        switch(currentAboutSubSection) {
+            case 'intro': return "Giới Thiệu";
+            case 'github': return githubSectionTranslations.title[lang];
+            case 'github-stats-ii': return githubSectionTranslations.titlePart2[lang];
+            case 'github-stats-iii': return githubSectionTranslations.titlePart3[lang];
+            default: return "Thông tin";
+        }
+    };
 
     return (
       <div className={containerClassName} style={style}>
         <div className="about-sub-section-navigation">
             <motion.button
                 className="about-nav-arrow prev"
-                onClick={handlePrevSubSection}
-                disabled={currentAboutSubSection === 'intro'}
+                onClick={() => changeSubSection('prev')}
+                disabled={isFirstSection}
                 aria-label="Previous section"
                 initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: currentAboutSubSection === 'intro' ? 0.3 : 1, scale: 1, pointerEvents: currentAboutSubSection === 'intro' ? 'none' : 'auto' }}
-                whileHover={{ scale: currentAboutSubSection !== 'intro' ? 1.15 : 1, x: currentAboutSubSection !== 'intro' ? -3 : 0 }}
-                whileTap={{ scale: currentAboutSubSection !== 'intro' ? 0.9 : 1 }}
+                animate={{ opacity: isFirstSection ? 0.3 : 1, scale: 1, pointerEvents: isFirstSection ? 'none' : 'auto' }}
+                whileHover={{ scale: !isFirstSection ? 1.15 : 1, x: !isFirstSection ? -3 : 0 }}
+                whileTap={{ scale: !isFirstSection ? 0.9 : 1 }}
                 transition={{type:"spring", stiffness:300, damping:15}}
             >
                 <span dangerouslySetInnerHTML={{ __html: aboutNavIconLeft }} />
             </motion.button>
             
             <h2 className="about-section-title">
-                {currentAboutSubSection === 'intro' && "Giới Thiệu"}
-                {currentAboutSubSection === 'github' && githubSectionTranslations.title[lang]}
+                {getSectionTitle()}
             </h2>
 
             <motion.button
                 className="about-nav-arrow next"
-                onClick={handleNextSubSection}
-                disabled={currentAboutSubSection === 'github'} // Assuming only two sections for now
+                onClick={() => changeSubSection('next')}
+                disabled={isLastSection}
                 aria-label="Next section"
                 initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: currentAboutSubSection === 'github' ? 0.3 : 1, scale: 1, pointerEvents: currentAboutSubSection === 'github' ? 'none' : 'auto'}}
-                whileHover={{ scale: currentAboutSubSection !== 'github' ? 1.15 : 1, x: currentAboutSubSection !== 'github' ? 3 : 0 }}
-                whileTap={{ scale: currentAboutSubSection !== 'github' ? 0.9 : 1 }}
+                animate={{ opacity: isLastSection ? 0.3 : 1, scale: 1, pointerEvents: isLastSection ? 'none' : 'auto'}}
+                whileHover={{ scale: !isLastSection ? 1.15 : 1, x: !isLastSection ? 3 : 0 }}
+                whileTap={{ scale: !isLastSection ? 0.9 : 1 }}
                 transition={{type:"spring", stiffness:300, damping:15}}
             >
                <span dangerouslySetInnerHTML={{ __html: aboutNavIconRight }} />
@@ -157,7 +164,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                   {githubLoading && <p className="loading-text">Đang tải dữ liệu GitHub...</p>}
                   {githubError && <p className="error-text">Lỗi: {githubError}</p>}
                   {githubData && githubData.user && (
-                    <div className="github-stats-container">
+                    <div className="github-stats-container api-stats">
                         <div className="github-user-header">
                             <img src={githubData.user.avatar_url} alt={`${githubData.user.login}'s avatar`} className="github-avatar" />
                             <div className="github-user-info">
@@ -174,7 +181,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                                 <span className="stat-value">{githubData.user.public_repos}</span>
                                 <span className="stat-label">{githubSectionTranslations.publicRepos[lang]}</span>
                             </div>
-                            {/* Add more stats as needed e.g. public_gists, following */}
                         </div>
                         {githubData.user.html_url && (
                             <a href={githubData.user.html_url} target="_blank" rel="noopener noreferrer" className="github-profile-link">
@@ -184,6 +190,44 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                     </div>
                   )}
                 </>
+              )}
+              {currentAboutSubSection === 'github-stats-ii' && githubUsername && (
+                <div className="github-stats-image-container">
+                    <img 
+                        src={`https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=${githubUsername}&theme=tokyonight`} 
+                        alt="GitHub Profile Details" 
+                        className="github-stat-image"
+                    />
+                    <img 
+                        src={`https://github-readme-activity-graph.vercel.app/graph?username=${githubUsername}&theme=tokyonight&hide_border=true&area=true&line=BB9AF7&point=79E6F3`} 
+                        alt="GitHub Activity Graph" 
+                        className="github-stat-image"
+                    />
+                </div>
+              )}
+              {currentAboutSubSection === 'github-stats-iii' && githubUsername && (
+                <div className="github-stats-image-container grid-2x2"> {/* <-- ADDED grid-2x2 class */}
+                    <img 
+                        src={`https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${githubUsername}&theme=tokyonight&utcOffset=7`} 
+                        alt="GitHub Productive Time" 
+                        className="github-stat-image"
+                    />
+                    <img 
+                        src={`https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=${githubUsername}&theme=tokyonight`}
+                        alt="GitHub Most Committed Language" 
+                        className="github-stat-image"
+                    />
+                    <img 
+                        src={`https://github-readme-stats.vercel.app/api/top-langs?username=${githubUsername}&show_icons=true&locale=en&layout=compact&theme=tokyonight`} 
+                        alt="GitHub Top Languages" 
+                        className="github-stat-image"
+                    />
+                    <img 
+                        src={`https://streak-stats.demolab.com/?user=${githubUsername}&theme=tokyonight&date_format=M%20j%5B%2C%20Y%5D`} 
+                        alt="GitHub Streak Stats" 
+                        className="github-stat-image"
+                    />
+                </div>
               )}
             </motion.div>
           </AnimatePresence>
@@ -195,13 +239,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   // Fallback for section === 'all' or other future sections
   return (
     <div className={containerClassName} style={style}>
-      {/* Header can be re-added here if needed for 'all' view */}
-      {/* Example:
-      <div className="card-main-header">
-         ... avatar, name, title for 'all' view
-      </div>
-      */}
-
       <div className="card-section">
         <h3 className="section-heading">Giới Thiệu</h3>
         <p className="bio-text">
@@ -229,7 +266,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
       <div className="card-section">
         <h3 className="section-heading">Liên Hệ</h3>
         <div className="contact-links">
-          {/* Dynamically update this if githubUsername is available for 'all' section too */}
           <a href={`https://github.com/${githubUsername || 'your-github-username'}`} target="_blank" rel="noopener noreferrer">GitHub</a>
           <a href="https://linkedin.com/in/your-linkedin-profile" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           <a href="mailto:your.email@example.com">Email</a>
