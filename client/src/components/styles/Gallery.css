@@ -1,0 +1,520 @@
+/* client/src/components/styles/Gallery.css */
+.gallery-main-container {
+  padding: 2rem 1.5rem; /* Adjust paddingBottom if needed, or add it to wrapper */
+  color: var(--text-color, #cdd6f4);
+  max-width: 950px; 
+  width: 90%;     
+  margin: 0 auto; 
+  font-family: var(--font-family-primary, "Playwrite DK Loopet", cursive), var(--font-family-fallback, sans-serif);
+  display: flex; 
+  flex-direction: column; 
+}
+
+
+.gallery-title {
+  font-size: 2em; 
+  font-weight: 400;
+  margin-bottom: 2rem; 
+  text-align: center;
+  position: relative;
+  background: linear-gradient(
+    120deg, 
+    var(--secondary-color, #f5c2e7) 20%, 
+    var(--primary-color, #ffaaaa) 50%, 
+    var(--info-color, #89b4fa) 80%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 250% auto;
+  animation: galleryTitleFlow 10s linear infinite alternate; /* Uses global keyframe now */
+  text-shadow: 0 2px 3px rgba(0,0,0,0.1), 
+               0 0 18px rgba(var(--primary-color-rgb), 0.35), /* Enhanced glow */
+               0 0 35px rgba(var(--secondary-color-rgb), 0.25); /* Additional wider glow */
+  flex-shrink: 0; 
+}
+/* Removed local @keyframes galleryTitleFlow */
+
+
+.gallery-placeholder {
+  font-size: 1.1em; color: var(--subtext-color, #a6adc8); line-height: 1.7; 
+  font-weight: 300; text-align: center; padding: 3.5rem 1rem; min-height: 250px; 
+  display: flex; flex-direction: column; 
+  align-items: center; justify-content: center; height: 100%;
+  flex-grow: 1; 
+  border: 2px dashed rgba(var(--border-color-rgb), 0.3);
+  border-radius: 16px;
+  background-color: rgba(var(--card-background-rgb), 0.1);
+}
+
+
+.gallery-carousel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  width: 100%;
+  min-height: 340px; /* Slightly more height for 3D */
+  position: relative; 
+}
+
+.gallery-carousel-nav {
+  background: rgba(var(--card-background-rgb, 30, 30, 46), 0.32); 
+  color: rgba(var(--text-color-rgb, 205, 214, 244), 0.7); 
+  border: 1.5px solid rgba(var(--border-color-rgb),0.28); 
+  border-radius: 50%;
+  width: 44px; /* Slightly larger nav */
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5; 
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  flex-shrink: 0;
+  margin: 0 0.7rem; /* Slightly more margin for nav */
+}
+.gallery-carousel-nav:hover {
+  box-shadow: 0 0 14px -3px rgba(var(--primary-color-rgb), 0.55);
+}
+
+.gallery-carousel-stage {
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1400px; /* Increased perspective for more depth if items have Z translate */
+  overflow: hidden; 
+  min-height: 340px;
+  max-height: 68vh; /* Increased max height for carousel */
+  /* Important for 3D transforms of children */
+  transform-style: preserve-3d;
+}
+
+.gallery-carousel-item {
+  position: absolute; 
+  width: 52%; /* Adjusted width if side items are larger */
+  max-width: 400px; 
+  aspect-ratio: 16 / 10.5; /* Slightly taller aspect ratio */
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px; /* Softer radius */
+  overflow: hidden; 
+  background-color: rgba(var(--card-background-rgb, 30,30,46), 0.35); 
+  border: 1.5px solid rgba(var(--border-color-rgb, 69, 71, 90), 0.18);  
+  will-change: transform, opacity, filter, z-index, box-shadow; 
+}
+
+.gallery-carousel-item.main-item-clickable { 
+    cursor: pointer;
+    position: relative; 
+}
+.gallery-carousel-item.main-item-clickable .main-item-inner-glow {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit; 
+  box-shadow: inset 0 0 18px 2.5px rgba(var(--primary-color-rgb), 0.15), /* Enhanced inner glow */
+              inset 0 0 6px 0px rgba(255,255,255,0.12);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.gallery-carousel-item.main-item-clickable:hover .main-item-inner-glow {
+  opacity: 1;
+}
+
+
+.gallery-carousel-item:not(.main-item-clickable) {
+    cursor: pointer; 
+}
+
+.gallery-carousel-item img {
+  display: block;
+  width: 100%; 
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  position: relative; 
+  z-index: 0; 
+}
+
+
+.gallery-carousel-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1.3rem; 
+    flex-shrink: 0;
+    min-height: 2.3em; 
+}
+.gallery-carousel-counter {
+    font-size: 1.05em; /* Slightly larger counter */
+    color: var(--subtext-color, #a6adc8);
+    font-weight: 300;
+    background-color: rgba(var(--card-background-rgb), 0.4); /* Slightly more opaque */
+    padding: 0.35rem 0.9rem; /* Adjusted padding */
+    border-radius: 24px; /* More rounded */
+    margin: 0;
+    line-height: 1.2;
+    box-shadow: 0 1.5px 4px rgba(0,0,0,0.12); /* Slightly stronger shadow */
+}
+
+/* --- LIGHTBOX STYLES --- */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0; 
+  background-color: rgba(var(--background-color-rgb, 12, 14, 26), 0.92); /* More opaque overlay */
+  backdrop-filter: blur(14px) saturate(115%); /* Enhanced blur and saturation */
+  -webkit-backdrop-filter: blur(14px) saturate(115%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000; 
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.lightbox-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 97vw; /* Slightly larger max width for lightbox content */
+  max-height: 94vh; /* Slightly larger max height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent; 
+  padding: 0; 
+  border-radius: 16px; /* Slightly larger radius for lightbox content */
+  box-shadow: 0 22px 65px rgba(0,0,0,0.6); /* Enhanced shadow */
+}
+
+.lightbox-image-wrapper {
+  position: relative;
+  width: 100%; 
+  height: calc(100% - 60px); /* Space for slightly larger controls bar */
+  max-width: 100%; 
+  max-height: calc(94vh - 70px); 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-grow: 1;
+}
+.lightbox-image-wrapper:fullscreen {
+    background-color: #040407; /* Darker fullscreen background */
+    padding: 0;
+    max-height: 100vh;
+    height: 100%;
+}
+.lightbox-image-wrapper:fullscreen .lightbox-image {
+    object-fit: contain;
+    max-width: 100vw;
+    max-height: 100vh;
+    cursor: default; 
+}
+
+
+.lightbox-image {
+  display: block;
+  max-width: 100%;
+  max-height: 100%; 
+  object-fit: contain;
+  border-radius: 12px; /* Softer radius for lightbox image */
+  user-select: none; 
+  cursor: grab; 
+  will-change: transform, opacity;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1.5px rgba(var(--border-color-rgb),0.08); /* Enhanced shadow */
+}
+.lightbox-image:active { cursor: grabbing; }
+
+.lightbox-close-button,
+.lightbox-nav-button {
+  position: absolute;
+  background: rgba(var(--card-background-rgb, 30, 30, 46), 0.6); 
+  color: rgba(var(--text-color-rgb, 205, 214, 244), 0.85);
+  border: 1px solid rgba(var(--border-color-rgb), 0.22);
+  border-radius: 50%;
+  width: 48px; /* Larger interactive buttons */
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10; 
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2.5px 6px rgba(0,0,0,0.18);
+}
+.lightbox-close-button:hover,
+.lightbox-nav-button:hover {
+  box-shadow: 0 3.5px 12px rgba(0,0,0,0.22);
+}
+.lightbox-close-button svg, .lightbox-nav-button svg {
+    transition: stroke 0.2s ease; 
+}
+
+.lightbox-close-button {
+  top: 14px; 
+  right: 14px;
+}
+.lightbox-content:not(:has(.lightbox-image-wrapper:fullscreen)) .lightbox-nav-button {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.lightbox-overlay:has(.lightbox-image-wrapper:fullscreen) .lightbox-nav-button {
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2010; /* Ensure nav buttons are above fullscreen image wrapper background */
+}
+.lightbox-nav-button.prev { left: 14px; }
+.lightbox-nav-button.next { right: 14px; }
+
+
+.lightbox-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem; /* Increased gap for controls */
+  padding: 11px 0px; /* Increased padding for controls bar */
+  width: auto; 
+  min-width: 230px;
+  max-width: 340px;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 14px; 
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  border-radius: 32px; /* More rounded controls bar */
+  background-color: rgba(var(--card-background-rgb), 0.85); 
+  backdrop-filter: blur(9px); 
+  -webkit-backdrop-filter: blur(9px);
+  border: 1px solid rgba(var(--border-color-rgb), 0.22);
+  box-shadow: 0 -3.5px 14px rgba(0,0,0,0.14), 0 0 9px rgba(var(--card-background-rgb), 0.28) inset; 
+}
+
+.lightbox-image-wrapper:fullscreen + .lightbox-controls-bar {
+  background-color: rgba(8,8,12,0.88); 
+  color: #f5f5f5;
+  border-color: rgba(255,255,255,0.12);
+}
+.lightbox-image-wrapper:fullscreen + .lightbox-controls-bar .lightbox-action-button,
+.lightbox-image-wrapper:fullscreen + .lightbox-controls-bar .lightbox-counter {
+    color: #e5e5e5;
+}
+.lightbox-image-wrapper:fullscreen + .lightbox-controls-bar .lightbox-action-button:hover {
+    color: var(--primary-color); 
+}
+
+
+.lightbox-action-button {
+  background: transparent;
+  border: none;
+  color: rgba(var(--text-color-rgb, 205, 214, 244), 0.8); 
+  padding: 0.65rem; /* Slightly more padding for action buttons */
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.2s ease; 
+}
+
+.lightbox-action-button svg {
+    display: block;
+    transition: stroke 0.2s ease;
+}
+.lightbox-counter {
+  font-size: 0.98em; /* Slightly larger counter text */
+  color: rgba(var(--text-color-rgb, 205, 214, 244), 0.9);
+  min-width: 60px; 
+  text-align: center;
+  line-height: 1.2;
+  font-weight: 300;
+}
+
+
+@media (max-width: 768px) {
+  .gallery-main-container { padding: 1.5rem 1rem; width: 95%; }
+  .gallery-title { font-size: 1.7em; margin-bottom: 1.5rem; }
+
+  .gallery-carousel-wrapper { min-height: 300px; } /* Adjusted height */
+  .gallery-carousel-stage { max-height: 60vh; min-height: 300px; }  /* Adjusted height */
+  .gallery-carousel-item { width: 58%; max-width: 340px; border-radius: 18px;} /* Adjusted width and radius */
+  .gallery-carousel-nav { width: 40px; height: 40px; margin: 0 0.5rem;}
+  .gallery-carousel-nav svg { width: 24px; height: 24px;}
+  .gallery-carousel-footer { padding-top: 1.1rem; }
+  .gallery-carousel-counter { font-size: 1em; } /* Adjusted size */
+  
+  .lightbox-close-button, .lightbox-nav-button { width: 44px; height: 44px; }
+  .lightbox-nav-button.prev { left: 12px; }
+  .lightbox-nav-button.next { right: 12px; }
+  .lightbox-close-button { top: 12px; right: 12px;}
+
+  .lightbox-image-wrapper { height: calc(100% - 55px); max-height: calc(92vh - 60px); } /* Adjusted height */
+  .lightbox-controls-bar { gap: 1.5rem; padding: 9px 0; max-width: 300px; bottom: 12px;} /* Adjusted layout */
+  .lightbox-action-button svg { width: 21px; height: 21px;} /* Adjusted size */
+  .lightbox-counter { font-size: 0.92em;} /* Adjusted size */
+}
+
+@media (max-width: 480px) {
+  .gallery-main-container { padding: 1.2rem 0.8rem; }
+  .gallery-title { font-size: 1.5em; margin-bottom: 1.2rem; }
+  .gallery-placeholder { padding: 2.5rem 0.8rem; min-height: 200px; }
+
+  .gallery-carousel-wrapper { 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    min-height: auto;
+  }
+  .gallery-carousel-stage {
+    width: 100%; 
+    max-height: 55vh; 
+    min-height: 260px; /* Adjusted */
+    order: 1; 
+    perspective: 1000px; /* Less perspective on small screens might be better */
+  }
+  .gallery-carousel-item { width: 75%; max-width: 280px; border-radius: 16px;}  /* Adjusted */
+  
+  .gallery-carousel-wrapper > .gallery-carousel-nav.prev { order: 2; margin: 0.7rem 0.3rem 0.7rem 0; }
+  .gallery-carousel-wrapper > .gallery-carousel-nav.next { order: 3; margin: 0.7rem 0 0.7rem 0.3rem; }
+  
+  .gallery-carousel-footer { width: 100%; order: 4; padding-top: 0.7rem;} /* Adjusted padding */
+
+
+  .lightbox-nav-button { 
+    bottom: 10px; top: auto; 
+    transform: none;
+    z-index: 16; /* Above controls bar potentially */
+    width: 42px; height: 42px; /* Adjusted */
+  }
+  .lightbox-nav-button.prev { left: 10px; }
+  .lightbox-nav-button.next { right: 10px; }
+
+  .lightbox-close-button { width: 40px; height: 40px; top: 10px; right: 10px;} /* Adjusted */
+  .lightbox-image-wrapper { height: calc(100% - 50px); max-height: calc(90vh - 55px); } /* Adjusted */
+  .lightbox-image { border-radius: 10px; } /* Adjusted */
+  .lightbox-controls-bar {
+    max-width: 94%;
+    bottom: 8px; 
+    justify-content: space-around;
+    padding: 7px 0;
+    gap: 1rem; /* Adjusted */
+  }
+  .lightbox-action-button svg { width: 20px; height: 20px;} /* Adjusted */
+}
+
+/* --- GALLERY DIVIDERS --- */
+.gallery-divider {
+  width: 75%; /* Reduced width slightly for more subtlety */
+  max-width: 450px; 
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 5%,
+    rgba(var(--border-color-rgb, 69, 71, 90), 0.25) 20%, /* Start a bit more visible */
+    rgba(var(--border-color-rgb, 69, 71, 90), 0.65) 50%, /* Central part clearly visible */
+    rgba(var(--border-color-rgb, 69, 71, 90), 0.25) 80%,
+    transparent 95%
+  );
+  margin-left: auto;
+  margin-right: auto;
+  transform-origin: center;
+  flex-shrink: 0; 
+}
+
+.gallery-divider.top {
+  margin-top: 0.3rem; /* Space after title */
+  margin-bottom: 1.8rem; /* Space before carousel/placeholder content */
+}
+
+.gallery-divider.bottom {
+  margin-top: 2.2rem;    /* Space after carousel/placeholder content */
+}
+
+/* Styles for the wrapper div in LanguageSelector if gallery is current view */
+.gallery-view-wrapper {
+  width: 100%; 
+  max-width: 1000px; 
+  padding-top: 1rem; 
+  padding-bottom: 1rem;
+  perspective: 1200px; 
+}
+.gallery-view-wrapper > .gallery-main-container {
+    width: 100%;
+    max-width: 100%; 
+    height: 100%; 
+    box-sizing: border-box;
+}
+
+/* New Back Button Styles */
+.gallery-back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background-color: rgba(var(--card-background-rgb), 0.45);
+  border: 1.5px solid rgba(var(--border-color-rgb), 0.25);
+  color: var(--text-color);
+  font-family: var(--font-family-primary, "Playwrite DK Loopet", cursive), var(--font-family-fallback);
+  font-size: 1.05em; 
+  font-weight: 400;
+  padding: 0.7rem 1.6rem; 
+  border-radius: 30px;   
+  cursor: pointer;
+  margin-top: 2rem; 
+  margin-bottom: 1rem; 
+  align-self: center; 
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  will-change: transform, background-color, box-shadow;
+}
+
+.gallery-back-button svg {
+  stroke-width: 2.5; 
+  width: 22px;       
+  height: 22px;
+  transition: transform 0.2s ease;
+}
+
+.gallery-back-button:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.12);
+  color: var(--primary-color);
+}
+.gallery-back-button:hover svg {
+    transform: translateX(-2px);
+}
+
+/* Responsive for back button */
+@media (max-width: 768px) {
+  .gallery-view-wrapper {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .gallery-back-button {
+    font-size: 1em;
+    padding: 0.6rem 1.4rem;
+    margin-top: 1.5rem;
+  }
+  .gallery-back-button svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-back-button {
+    font-size: 0.95em;
+    padding: 0.55rem 1.2rem;
+    gap: 0.4rem;
+    margin-top: 1.2rem;
+  }
+  .gallery-back-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}

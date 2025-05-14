@@ -1,0 +1,159 @@
+/* client/src/components/styles/PersistentUIContainer.css */
+.persistent-ui-wrapper {
+  position: fixed; 
+  inset: 0;
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 5vh, 2rem) 1rem; /* Padding linh hoạt */
+  background-color: rgba(var(--card-background-rgb, 30, 30, 46), 0.9); 
+  backdrop-filter: blur(12px) saturate(110%);
+  -webkit-backdrop-filter: blur(12px) saturate(110%);
+  z-index: 500; 
+  overflow-y: auto; /* Cho phép cuộn nếu nội dung dài */
+  overflow-x: hidden;
+  font-family: var(--font-family-poetic), var(--font-family-fallback);
+  color: var(--text-color-poetic);
+}
+
+.persistent-ui-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+        170deg,
+        rgba(var(--highlight-color-poetic-rgb), 0.03) 0%,
+        rgba(var(--primary-color-rgb), 0.02) 30%,
+        rgba(var(--secondary-color-rgb), 0.03) 70%,
+        rgba(var(--highlight-color-poetic-rgb), 0.04) 100%
+    );
+    background-size: 250% 250%;
+    z-index: -1; 
+    animation: poeticBackgroundFlowPersistent 20s linear infinite alternate; 
+    opacity: 0.6;
+}
+@keyframes poeticBackgroundFlowPersistent { 
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.flourish-image {
+  display: block;
+  width: 100%;
+  max-width: 450px; 
+  height: auto;
+  z-index: 2; 
+  filter: drop-shadow(0 0 12px rgba(var(--highlight-color-poetic-rgb), 0.35));
+  flex-shrink: 0; /* Ngăn flourish co lại khi nội dung lớn */
+}
+
+.content-area {
+  text-align: center;
+  width: 100%;
+  max-width: 520px; 
+  padding: 0.5rem 0; 
+  min-height: 180px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1; 
+  flex-grow: 0; /* Không cho content area chiếm hết không gian thừa */
+  flex-shrink: 1;
+}
+
+.language-selection-content,
+.card-intro-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem; 
+  width: 100%;
+}
+.card-display-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem; 
+    width: 100%;
+    max-width: 700px; /* Cho phép card rộng hơn một chút */
+    padding: 1rem 0; /* Thêm padding cho vùng hiển thị card */
+}
+
+
+.subtitle {
+  font-size: 1.1em;
+  font-weight: 300;
+  color: var(--subtext-color-poetic);
+  margin-bottom: 1.2rem;
+  max-width: 90%;
+}
+
+.options-group {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  flex-wrap: wrap; 
+  margin-top: 0.8rem;
+}
+
+.item-button {
+  background-color: transparent;
+  border: 1px solid rgba(var(--text-color-poetic-rgb), 0.25);
+  color: var(--text-color-poetic);
+  font-family: inherit;
+  font-size: 1em;
+  font-weight: 400;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 130px;
+  text-align: center;
+}
+.item-button.lang-button.selected {
+    border-color: var(--highlight-color-poetic);
+    background-color: rgba(var(--highlight-color-poetic-rgb), 0.1);
+    box-shadow: 0 0 8px rgba(var(--highlight-color-poetic-rgb), 0.25);
+}
+
+.intro-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--highlight-color-poetic);
+  box-shadow: 0 0 12px rgba(var(--highlight-color-poetic-rgb), 0.35);
+  margin-bottom: 0.3rem;
+}
+.intro-name {
+  font-size: 1.8em;
+  font-weight: 400;
+  color: var(--highlight-color-poetic);
+  margin: 0 0 0.1rem 0;
+}
+.intro-title {
+  font-size: 1em; /* Giảm kích thước cho phù hợp */
+  margin-bottom: 1rem; 
+}
+
+.back-button {
+    margin-top: 0.8rem; 
+    background-color: rgba(var(--text-color-poetic-rgb), 0.05);
+    font-size: 0.9em;
+    padding: 0.5rem 1.2rem;
+}
+
+@media (max-width: 600px) {
+  .persistent-ui-wrapper { padding: clamp(1rem, 3vh, 1.5rem) 0.5rem; }
+  .flourish-image { max-width: 85%; }
+  .content-area { padding: 0.3rem 0; min-height: 150px; }
+  
+  .options-group { flex-direction: column; gap: 0.6rem; align-items: center;}
+  .item-button { width: 100%; max-width: 240px; font-size: 0.95em; padding: 0.7rem 1.2rem;}
+
+  .intro-avatar { width: 70px; height: 70px; }
+  .intro-name { font-size: 1.6em; }
+  .subtitle, .intro-title { font-size: 1em; margin-bottom: 0.8rem; }
+}

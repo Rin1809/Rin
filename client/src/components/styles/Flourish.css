@@ -1,0 +1,66 @@
+/* src/components/styles/Flourish.css */
+.flourish-svg-container {
+  /* Kích thước và căn chỉnh mặc định */
+  width: 40%; /* Chiều rộng tương đối */
+  max-width: 180px; /* Giới hạn chiều rộng tối đa */
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 0; /* Tránh khoảng trống thừa */
+  opacity: 0.7; /* Hơi mờ một chút */
+  color: var(--primary-color); /* Mặc định màu primary */
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.flourish-svg-container svg {
+  display: block; /* Đảm bảo không có khoảng trắng dưới SVG */
+  width: 100%;
+  height: auto; /* Giữ tỷ lệ khung hình */
+}
+
+/* Căn chỉnh dựa trên vị trí */
+.flourish-top {
+  margin-bottom: 0.4rem; /* Khoảng cách dưới flourish trên */
+}
+
+.flourish-bottom {
+  margin-top: 0.4rem; /* Khoảng cách trên flourish dưới */
+  transform: rotate(180deg); /* Lật ngược flourish dưới nếu dùng cùng path */
+}
+
+/* Ví dụ: Làm cho flourish trong card nhỏ hơn và màu khác */
+.personal-card-container .flourish-svg-container {
+  color: rgba(var(--primary-color-rgb), 0.55); /* Màu nhạt hơn trong card */
+  width: 35%;
+  max-width: 150px;
+}
+
+.personal-card-container .flourish-top {
+   margin-bottom: 0.3rem;
+}
+.personal-card-container .flourish-bottom {
+   margin-top: 0.3rem;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .flourish-svg-container {
+    width: 50%;
+    max-width: 160px;
+  }
+   .personal-card-container .flourish-svg-container {
+    width: 45%;
+    max-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .flourish-svg-container {
+    width: 60%;
+    max-width: 140px;
+  }
+   .personal-card-container .flourish-svg-container {
+    width: 55%;
+    max-width: 120px;
+  }
+}

@@ -1,0 +1,310 @@
+/* client/src/components/styles/App.css */
+:root {
+  --glow-color: #FFE0E0;
+  --glow-color-rgb: 255, 224, 224;
+  --glow-color-rgba-strong: rgba(255, 224, 224, 0.85);
+  --glow-color-rgba-wide: rgba(255, 224, 224, 0.6);
+  --glow-blur-base: 40px;
+  --glow-blur-wide: 25px;
+  --glow-spread-base: 4px;
+  --glow-spread-wide: 6px;
+
+  --background-color: #0c0e1a;
+  --background-color-rgb: 12, 14, 26;
+  --light-source-color-1: #FFFFFF;
+  --light-source-color-2: #525252;
+  --light-source-color-3: #1C1C1C;
+
+  --text-color: #cdd6f4;
+  --text-color-rgb: 205, 214, 244;
+  --card-background: #1e1e2e;
+  --card-background-rgb: 30, 30, 46;
+  --border-color: #45475a;
+  --border-color-rgb: 69, 71, 90;
+  --primary-color: #ffaaaa;
+  --primary-color-rgb: 255, 170, 170; /* Adjusted to match #ffaaaa */
+  --secondary-color: #f5c2e7;
+  --secondary-color-rgb: 245, 194, 231;
+  --error-color: #f38ba8;
+  --error-color-rgb: 243, 139, 168;
+  --success-color: #a6e3a1;
+  --info-color: #89b4fa;
+  --info-color-rgb: 137, 180, 250;
+  --subtext-color: #a6adc8;
+  --subtext-color-rgb: 166, 173, 200;
+
+  --intro-stage-fade-duration: 0.6s;
+  --cat-pulse-duration: 1.5s;
+  --wow-total-duration: 1.0s;
+  --wow-avatar-appear-duration: 0.6s;
+  --wow-text-slide-duration: 0.7s;
+  --wow-avatar-move-delay: 0.15s;
+  --wow-text-appear-delay: 0.35s;
+  --wow-move-distance: 70px;
+  --wow-hide-duration: 0.5s;
+  --content-fade-in-duration: 0.5s;
+  --results-fade-duration: 0.6s; /* For PersonalCard animation */
+
+  /* --- START FONT CHANGES --- */
+  /* Font Variables */
+  /* New primary font */
+  --font-family-primary: "Playwrite DK Loopet", cursive;
+  /* Standard fallback */
+  --font-family-fallback: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+
+  /* Poetic Style Variables (now using new primary font) */
+  --font-family-poetic: var(--font-family-primary);
+  /* --- END FONT CHANGES --- */
+
+  --text-color-poetic: #e6e6e6;
+  --text-color-poetic-rgb: 230, 230, 230;
+  --subtext-color-poetic: #c0c0c0;
+  --highlight-color-poetic: #D8BFD8; /* Light Thistle / Soft Lavender */
+  --highlight-color-poetic-rgb: 216, 191, 216;
+  --background-overlay-poetic: rgba(30, 30, 46, 0.9);
+  --card-hover-bg-poetic: rgba(255, 255, 255, 0.04);
+}
+
+body {
+  margin: 0;
+  /* Apply new font to the entire body */
+  font-family: var(--font-family-primary), var(--font-family-fallback);
+  font-weight: 300; /* Default weight for the body text, adjust as needed */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  background-image:
+    linear-gradient(
+      204deg,
+      var(--light-source-color-1) 0%,
+      var(--light-source-color-2) 0%,
+      var(--light-source-color-3) 51%,
+      var(--background-color) 85%
+    );
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--text-color);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+#tsparticles-background-stable {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.AppWrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.App {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+.AppContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  transition: padding-top 0.4s ease-in-out, opacity 0.4s ease-in-out;
+}
+
+.AppContainer.intro-active {
+  padding-top: 0;
+}
+
+
+.intro-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+  width: auto;
+  max-width: 85%;
+  opacity: 0;
+  transition: opacity var(--intro-stage-fade-duration) ease-in-out, transform var(--intro-stage-fade-duration) ease-in-out;
+  pointer-events: none;
+  min-height: 150px;
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+.intro-stage.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+.intro-stage.hiding {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.85);
+  pointer-events: none;
+}
+
+.intro-stage.cat-stage.visible .cat-icon {
+  text-shadow: 0 0 var(--glow-blur-base) var(--glow-color-rgba-strong),
+               0 0 var(--glow-blur-wide) var(--glow-color-rgba-wide);
+  filter: drop-shadow(0 0 8px var(--glow-color-rgba-strong));
+}
+
+.intro-stage.server-stage-wow.visible .server-avatar-wow {
+  filter: drop-shadow(0 0 var(--glow-blur-base) var(--glow-color));
+}
+
+.intro-stage.server-stage-wow.visible .server-name-wow {
+  text-shadow: 0 0 var(--glow-blur-base) var(--glow-color-rgba-strong),
+               0 0 var(--glow-blur-wide) var(--glow-color-rgba-wide);
+}
+
+.cat-stage { flex-direction: column; }
+.cat-icon {
+  font-size: 4rem;
+  display: inline-block;
+  animation: catBob 1.2s ease-in-out infinite alternate;
+  margin-bottom: 0.5rem;
+  transition: text-shadow 0.3s ease-out, filter 0.3s ease-out;
+  font-family: sans-serif; /* Keep cat icon as default emoji font */
+}
+.ellipsis {
+  font-size: 2rem;
+  font-weight: bold;
+  display: inline-block;
+  animation: pulsingEllipsis var(--cat-pulse-duration) ease-in-out infinite;
+}
+@keyframes catBob { from { transform: translateY(0px) rotate(-2deg); } to { transform: translateY(-8px) rotate(2deg); } }
+@keyframes pulsingEllipsis { 0%, 100% { opacity: 0.4; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
+
+.server-stage-wow { flex-direction: row; gap: 1.5rem; align-items: center;}
+.avatar-container-wow { position: relative; }
+.text-container-wow { position: relative; background-color: transparent; border: none;}
+
+.server-avatar-wow {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border-color);
+  background-color: var(--card-background);
+  display: block;
+  opacity: 0;
+  transform: scale(0.7) rotate(-10deg);
+  transition: filter 0.3s ease-out, box-shadow 0.3s ease-out, opacity var(--wow-avatar-appear-duration) ease-out, transform var(--wow-avatar-appear-duration) ease-out;
+}
+.server-name-wow {
+  color: var(--secondary-color);
+  font-size: 2.2em;
+  font-weight: 400; /* Max weight for this font */
+  margin: 0;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-30px) scale(0.85);
+  transition: text-shadow 0.3s ease-out, opacity var(--wow-text-slide-duration) ease-out, transform var(--wow-text-slide-duration) ease-out;
+}
+
+.intro-stage.server-stage-wow.visible .server-avatar-wow {
+  animation: wowAvatarAppearBounce var(--wow-avatar-appear-duration) cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards,
+             wowAvatarSlideLeft var(--wow-total-duration) ease-in-out forwards var(--wow-avatar-move-delay);
+}
+.intro-stage.server-stage-wow.visible .server-name-wow {
+  animation: wowTextSlideOut var(--wow-text-slide-duration) ease-out forwards var(--wow-text-appear-delay);
+}
+.intro-stage.server-stage-wow.hiding .server-avatar-wow { animation: wowAvatarSlideCenter var(--wow-hide-duration) ease-in forwards; }
+.intro-stage.server-stage-wow.hiding .server-name-wow { animation: wowTextSlideIn var(--wow-hide-duration) ease-in forwards; }
+
+
+@keyframes wowAvatarAppearBounce {
+  0% { opacity: 0; transform: translate(0,0) scale(0.7) rotate(-10deg); filter: none; }
+  60% { opacity: 1; transform: translate(0,0) scale(1.1) rotate(5deg); filter: drop-shadow(0 0 var(--glow-blur-base) var(--glow-color));}
+  100% { opacity: 1; transform: translate(0,0) scale(1) rotate(0deg); filter: drop-shadow(0 0 var(--glow-blur-base) var(--glow-color));}
+}
+@keyframes wowAvatarSlideLeft {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(calc(-1 * var(--wow-move-distance) / 2), 0) scale(1); }
+}
+@keyframes wowTextSlideOut {
+  from { opacity: 0; transform: translate(-30px,0) scale(0.85); text-shadow: none; }
+  100% { opacity: 1; transform: translate(calc(var(--wow-move-distance) / 2),0) scale(1);
+         text-shadow: 0 0 var(--glow-blur-base) var(--glow-color-rgba-strong),
+                      0 0 var(--glow-blur-wide) var(--glow-color-rgba-wide);
+  }
+}
+@keyframes wowAvatarSlideCenter {
+  from { opacity: 1; transform: translate(calc(-1 * var(--wow-move-distance) / 2),0) scale(1); filter: drop-shadow(0 0 var(--glow-blur-base) var(--glow-color));}
+  to { opacity: 0; transform: translate(0,0) scale(0.8); filter: none;}
+}
+@keyframes wowTextSlideIn {
+  from { opacity: 1; transform: translate(calc(var(--wow-move-distance) / 2),0) scale(1);
+         text-shadow: 0 0 var(--glow-blur-base) var(--glow-color-rgba-strong),
+                      0 0 var(--glow-blur-wide) var(--glow-color-rgba-wide); }
+  to { opacity: 0; transform: translate(0px,0) scale(0.9); text-shadow: none; }
+}
+
+.main-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity var(--content-fade-in-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform var(--content-fade-in-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+  position: relative;
+  z-index: 2;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+
+@media (max-width: 768px) {
+  .App { padding: 0.5rem 1rem; }
+  .cat-icon { font-size: 3rem; }
+  .ellipsis { font-size: 1.5rem; }
+  :root { --wow-move-distance: 50px; }
+  .server-avatar-wow { width: 80px; height: 80px; }
+  .server-name-wow { font-size: 1.8em; font-weight: 400; }
+  .server-stage-wow { gap: 1rem; }
+}
+@media (max-width: 480px) {
+    .server-name-wow { font-size: 1.6em; font-weight: 400; } 
+    .server-avatar-wow { width: 70px; height: 70px; }
+    .cat-icon { font-size: 2.5rem; }
+    .ellipsis { font-size: 1.3rem; }
+    .intro-stage { padding: 0.5rem; max-width: 90%; }
+}
+
+/* --- GLOBAL ANIMATIONS --- */
+@keyframes galleryTitleFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
