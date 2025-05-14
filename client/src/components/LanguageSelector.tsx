@@ -46,6 +46,7 @@ interface LanguageSelectorProps {
   cardAvatarUrl: string;
   initialSelectedLanguage: 'vi' | 'en' | 'ja' | null;
   yourNameForIntro: string;
+  githubUsername: string; // New prop
 }
 
 type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery';
@@ -65,7 +66,8 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     onLanguageSelected,
     cardName, cardTitle, cardAvatarUrl,
     initialSelectedLanguage,
-    yourNameForIntro
+    yourNameForIntro,
+    githubUsername // Destructure new prop
 }) => {
   const [engineInitialized, setEngineInitialized] = useState(false);
   const [currentView, setCurrentView] = useState<SelectorView>('languageOptions');
@@ -515,7 +517,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               animate="visible"
               exit="exit"
             >
-              <PersonalCard name={cardName} section="about" />
+              <PersonalCard 
+                name={cardName} 
+                section="about" 
+                githubUsername={githubUsername} // Pass to PersonalCard
+              />
               <motion.button
                 className="card-intro-button back-button-modifier"
                 onClick={() => setCurrentView('cardIntro')}

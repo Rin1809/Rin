@@ -51,13 +51,51 @@
   align-items: center;
   font-family: var(--font-family-primary), var(--font-family-fallback);
   color: var(--text-color-poetic); /* Match text color from LanguageSelector context */
-  padding: 1rem 0; 
+  padding: 0.5rem 0;  /* Reduced top/bottom padding to allow more space for arrows */
+  position: relative; /* For positioning arrows if needed absolute, but flex is better */
 }
 
-.personal-card-about-view .about-section-title {
-  font-size: 2.2em; /* Adjusted size for prominence */
-  font-weight: 400; /* Max weight for Playwrite DK Loopet */
-  margin-bottom: 2rem; /* More space after title */
+/* --- Styles for About Sub-Section Navigation and Content --- */
+.about-sub-section-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Pushes arrows to sides, title in center */
+    width: 100%;
+    max-width: 700px; /* Match content max-width */
+    margin-bottom: 1.5rem; /* Space between nav and content */
+    padding: 0 0.5rem; /* Padding for arrows not to touch edge */
+    box-sizing: border-box;
+}
+
+.about-nav-arrow {
+    background: transparent;
+    border: none;
+    color: var(--highlight-color-poetic);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    line-height: 0;
+}
+.about-nav-arrow:disabled {
+    opacity: 0.3 !important; /* Use important if framer-motion opacity overrides */
+    cursor: not-allowed;
+}
+.about-nav-arrow:not(:disabled):hover {
+    background-color: rgba(var(--highlight-color-poetic-rgb), 0.15);
+}
+.about-nav-arrow svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 2.5;
+}
+
+.about-section-title { /* This is now the sub-section title */
+  font-size: 1.8em; /* Slightly smaller as it's a sub-title */
+  font-weight: 400;
   text-align: center;
   position: relative;
   background: linear-gradient(
@@ -70,26 +108,140 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 250% auto;
-  animation: galleryTitleFlow 10s linear infinite alternate; /* Using global animation */
-  text-shadow: 0 2px 4px rgba(0,0,0,0.12), /* Softer general shadow */
-               0 0 20px rgba(var(--primary-color-rgb), 0.4), /* Primary glow */
-               0 0 40px rgba(var(--secondary-color-rgb), 0.3); /* Secondary, wider glow */
-  max-width: 90%;
+  animation: galleryTitleFlow 10s linear infinite alternate;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1),
+               0 0 15px rgba(var(--primary-color-rgb), 0.3),
+               0 0 30px rgba(var(--secondary-color-rgb), 0.2);
+  max-width: 70%; /* To prevent title pushing arrows too far */
   line-height: 1.3;
-  letter-spacing: 0.5px; /* Slight letter spacing for title */
+  letter-spacing: 0.5px;
+  margin: 0 0.5rem; /* Margin to keep distance from arrows */
+  flex-grow: 1; /* Allow title to take space */
+  min-width: 0; /* Important for flex item to shrink */
 }
 
-.personal-card-about-view .bio-text {
-  font-size: 1.15em; /* Slightly larger for better readability */
-  font-weight: 300; /* Lighter weight for body */
-  line-height: 1.9; /* Increased line height for cursive font */
-  color: var(--subtext-color-poetic); /* Softer color for text block */
-  max-width: 720px; /* Max width for readability */
-  text-align: left; /* Left align is generally better for readability with cursive */
+.about-sub-section-content-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 720px; /* Readability for bio text etc. */
+    min-height: 200px; /* Ensure space for content swapping */
+    overflow: hidden; /* Crucial for AnimatePresence sliding */
+}
+
+.about-sub-section-content {
+    width: 100%;
+    /* padding for content inside this div will be specific, e.g., bio-text */
+}
+
+.personal-card-about-view .bio-text { /* Bio text specific to about view */
+  font-size: 1.15em; 
+  font-weight: 300; 
+  line-height: 1.9; 
+  color: var(--subtext-color-poetic); 
+  text-align: left; 
   hyphens: auto;
-  white-space: pre-line; /* Respect newlines in the string */
-  padding: 0 1rem; /* Padding for the text block */
-  text-shadow: 0 0 5px rgba(var(--background-color-rgb), 0.3); /* Subtle shadow for depth */
+  white-space: pre-line; 
+  padding: 0 1rem; 
+  text-shadow: 0 0 5px rgba(var(--background-color-rgb), 0.3); 
+}
+
+/* --- GitHub Stats Styles --- */
+.github-stats-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    color: var(--text-color-poetic);
+}
+
+.github-user-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    width: 100%;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.2);
+}
+
+.github-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--highlight-color-poetic);
+    box-shadow: 0 2px 10px rgba(var(--highlight-color-poetic-rgb), 0.3);
+}
+
+.github-user-info h3 {
+    font-size: 1.5em;
+    font-weight: 400;
+    color: var(--highlight-color-poetic);
+    margin: 0 0 0.3rem 0;
+}
+
+.github-bio {
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: var(--subtext-color-poetic);
+    margin: 0;
+    max-width: 450px;
+    text-align: left;
+}
+
+.github-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0.5rem;
+    background-color: rgba(var(--card-background-rgb), 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.15);
+}
+
+.stat-value {
+    font-size: 1.8em;
+    font-weight: 400;
+    color: var(--highlight-color-poetic);
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: var(--subtext-color-poetic);
+    margin-top: 0.2rem;
+}
+
+.github-profile-link {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    background-color: rgba(var(--highlight-color-poetic-rgb), 0.15);
+    color: var(--highlight-color-poetic);
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.3);
+}
+.github-profile-link:hover {
+    background-color: rgba(var(--highlight-color-poetic-rgb), 0.25);
+    transform: translateY(-2px);
+}
+.loading-text, .error-text {
+    padding: 2rem;
+    font-size: 1.1em;
+    color: var(--subtext-color-poetic);
+}
+.error-text {
+    color: var(--error-color);
 }
 
 
@@ -146,9 +298,6 @@
   padding-bottom: 0.6rem;
   font-weight: 400;
 }
-
-/* The section heading in section="about" is now .about-section-title */
-/* .personal-card-about-view .section-heading should not be needed */
 
 
 .personal-card-container .bio-text { /* Original bio-text style for section="all" */
@@ -212,15 +361,23 @@
   .personal-card-container .section-heading { font-size: 1.3em; }
 
   /* Responsive for "about" view */
-  .personal-card-about-view .about-section-title { font-size: 2em; margin-bottom: 1.8rem;}
+  .about-sub-section-navigation { margin-bottom: 1.2rem; }
+  .about-section-title { font-size: 1.6em; }
   .personal-card-about-view .bio-text { font-size: 1.1em; line-height: 1.85; max-width: 95%;}
+
+  .github-avatar { width: 70px; height: 70px; }
+  .github-user-info h3 { font-size: 1.3em; }
+  .github-bio { font-size: 0.9em; }
+  .stat-value { font-size: 1.6em; }
+  .stat-label { font-size: 0.85em; }
+  .github-stats-grid { gap: 1rem; }
 }
 
 @media (max-width: 480px) {
     .personal-card-container {
         padding: 1.5rem;
         border-radius: 15px;
-        width: 90%; /* Adjusted to be slightly more consistent */
+        width: 90%;
     }
     .personal-card-container .card-main-header {
         flex-direction: column;
@@ -243,6 +400,20 @@
     .personal-card-container .bio-text { font-weight: 300; }
 
     /* Responsive for "about" view on small screens */
-    .personal-card-about-view .about-section-title { font-size: 1.8em; margin-bottom: 1.5rem;}
+    .about-sub-section-navigation { 
+        margin-bottom: 1rem; 
+        padding: 0;
+    }
+    .about-nav-arrow svg { width: 22px; height: 22px; }
+    .about-section-title { font-size: 1.4em; margin: 0 0.3rem; max-width: 60%; }
     .personal-card-about-view .bio-text { font-size: 1em; line-height: 1.8; padding: 0 0.5rem; max-width: 100%;}
+    .about-sub-section-content-wrapper { min-height: 220px; /* More space for smaller content */ }
+    
+    .github-user-header { flex-direction: column; align-items: center; text-align: center; gap: 0.8rem;}
+    .github-avatar { width: 65px; height: 65px; }
+    .github-user-info h3 { font-size: 1.2em; }
+    .github-bio { font-size: 0.85em; }
+    .stat-value { font-size: 1.5em; }
+    .stat-label { font-size: 0.8em; }
+    .github-profile-link { font-size: 0.9em; padding: 0.6rem 1.2rem; }
 }

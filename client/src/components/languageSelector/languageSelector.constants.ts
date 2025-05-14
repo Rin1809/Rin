@@ -349,6 +349,7 @@ export const cardIntroTranslations = {
       en: "Let's explore a little about my whimsical world!",
       ja: "私の幻想的な世界を少し探検してみませんか！"
   },
+  githubStatsButton: { vi: "Số liệu GitHub", en: "GitHub Stats", ja: "GitHub統計"}, // New
   aboutIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   galleryIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
   backButton: { vi: "Quay Lại", en: "Back", ja: "戻る" },
@@ -558,3 +559,14 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
     }
 });
 // --- KẾT THÚC GỢI Ý 3 ---
+
+// Icons for About Me navigation
+export const aboutNavIconLeft = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+export const aboutNavIconRight = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+
+export const githubSectionTranslations = {
+  title: { vi: "Thống kê GitHub", en: "GitHub Statistics", ja: "GitHub統計" },
+  followers: { vi: "Người theo dõi", en: "Followers", ja: "フォロワー" },
+  publicRepos: { vi: "Kho lưu trữ công khai", en: "Public Repos", ja: "公開リポジトリ" },
+  profileLink: { vi: "Xem hồ sơ", en: "View Profile", ja: "プロフィールを見る" },
+};
