@@ -1,11 +1,11 @@
 // client/src/components/PersonalCard.tsx
-import React, { useState, useEffect, useRef } from 'react'; // Thêm useRef
-import { motion, AnimatePresence, useAnimation } from 'framer-motion'; // Thêm useAnimation
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion'; // Re-added useAnimation
 import './styles/PersonalCard.css';
 import { 
     aboutNavIconLeft, 
     aboutNavIconRight,
-    githubSectionTranslations 
+    githubSectionTranslations,
 } from './languageSelector/languageSelector.constants';
 
 interface PersonalCardProps {
@@ -24,13 +24,13 @@ const aboutSubSectionsOrder: AboutSubSection[] = [
     'discord-presence'
 ];
 
-const aboutSectionVariants: { [key: string]: any } = {
+const aboutSectionContentVariants: { [key: string]: any } = {
   enter: (direction: number) => ({
-    rotateY: direction > 0 ? 70 : -70,
+    rotateY: direction > 0 ? 60 : -60,
     opacity: 0,
-    scale: 0.92,
+    scale: 0.95,
     originX: direction > 0 ? 0 : 1,
-    filter: "blur(5px) brightness(0.7)",
+    filter: "blur(4px) brightness(0.8)",
   }),
   center: {
     zIndex: 1,
@@ -38,17 +38,23 @@ const aboutSectionVariants: { [key: string]: any } = {
     opacity: 1,
     scale: 1,
     filter: "blur(0px) brightness(1)",
-    transition: { type: "spring", stiffness: 220, damping: 28, mass: 0.9, duration: 0.6 }
+    transition: { type: "spring", stiffness: 200, damping: 25, mass: 0.85, duration: 0.55 }
   },
   exit: (direction: number) => ({
     zIndex: 0,
-    rotateY: direction < 0 ? -70 : 70,
+    rotateY: direction < 0 ? -60 : 60,
     opacity: 0,
-    scale: 0.92,
+    scale: 0.95,
     originX: direction < 0 ? 1 : 0,
-    filter: "blur(5px) brightness(0.7)",
-    transition: { type: "tween", ease: [0.76, 0, 0.24, 1], duration: 0.4 }
+    filter: "blur(4px) brightness(0.8)",
+    transition: { type: "tween", ease: [0.6, 0.05, 0.25, 0.95], duration: 0.35 }
   })
+};
+
+const aboutSectionTitleAnimVariants = {
+    initial: { opacity: 0, y: -20, filter: "blur(3px)" },
+    animate: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1], delay:0.05 } },
+    exit: { opacity: 0, y: 10, filter: "blur(2px)", transition: {duration: 0.2}}
 };
 
 const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githubUsername }) => {
@@ -62,21 +68,10 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   
   const discordUserId = "873576591693873252";
 
-  // Ref cho content wrapper để điều khiển animation chiều cao
-  const contentWrapperControls = useAnimation();
-  // Ref cho content hiện tại để đo chiều cao
-  const currentContentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (currentContentRef.current) {
-      const currentContentHeight = currentContentRef.current.offsetHeight;
-      // Animate chiều cao của wrapper
-      contentWrapperControls.start({
-        height: currentContentHeight,
-        transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1] } // easeOutQuint
-      });
-    }
-  }, [currentAboutSubSection, contentWrapperControls]); // Chạy khi section thay đổi
+  const contentWrapperControls = useAnimation(); // Re-added for height animation
+  const currentContentRef = useRef<HTMLDivElement>(null); // Ref for the actual content div
+  const contentWrapperOuterRef = useRef<HTMLDivElement>(null); // Ref for the scrollable outer wrapper
+  const prevHeightRef = useRef<number | null>(null); // To track height changes
 
 
   useEffect(() => {
@@ -116,15 +111,38 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     }
   };
 
+  // Effect for animating height of content wrapper
+  useEffect(() => {
+    if (section === 'about' && currentContentRef.current) {
+        // Measure the true scroll height of the content
+        const newHeight = currentContentRef.current.offsetHeight;
+
+        if (newHeight > 0 && (prevHeightRef.current === null || prevHeightRef.current !== newHeight)) {
+            contentWrapperControls.start({
+                height: newHeight, // Animate to this height
+                transition: { type: "spring", stiffness: 260, damping: 30, mass: 0.9, duration: 0.45 }
+            });
+            prevHeightRef.current = newHeight;
+        } else if (prevHeightRef.current === null && newHeight === 0) {
+            contentWrapperControls.start({ height: 'auto' }); 
+        }
+        // Scroll the outer wrapper to top
+        if (contentWrapperOuterRef.current) {
+            contentWrapperOuterRef.current.scrollTop = 0;
+        }
+    }
+  }, [currentAboutSubSection, githubLoading, githubData, githubError, section, contentWrapperControls]);
+
+
   if (section === 'about') {
-    const lang = 'vi';
+    const lang = 'vi'; 
     const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);
     const isFirstSection = currentIndex === 0;
     const isLastSection = currentIndex === aboutSubSectionsOrder.length - 1;
 
-    const getSectionTitle = () => {
+    const getSectionTitleText = () => {
         switch(currentAboutSubSection) {
-            case 'intro': return "Giới Thiệu";
+            case 'intro': return "Giới Thiệu Bản Thân";
             case 'github': return githubSectionTranslations.title[lang];
             case 'github-stats-ii': return githubSectionTranslations.titlePart2[lang];
             case 'github-stats-iii': return githubSectionTranslations.titlePart3[lang];
@@ -134,160 +152,217 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     };
 
     return (
-      <div className={containerClassName} style={style}>
+      <motion.div 
+        className={containerClassName} 
+        style={style}
+        initial={{ opacity: 0, y: 30, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: 0.1 } }}
+        exit={{ opacity: 0, y: 20, scale: 0.98, transition: { duration: 0.3 } }}
+      >
         <div className="about-sub-section-navigation">
             <motion.button
                 className="about-nav-arrow prev"
                 onClick={() => changeSubSection('prev')}
-                disabled={isFirstSection}
                 aria-label="Previous section"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: isFirstSection ? 0.3 : 1, scale: 1, pointerEvents: isFirstSection ? 'none' : 'auto' }}
-                whileHover={{ scale: !isFirstSection ? 1.15 : 1, x: !isFirstSection ? -3 : 0 }}
-                whileTap={{ scale: !isFirstSection ? 0.9 : 1 }}
-                transition={{type:"spring", stiffness:300, damping:15}}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ 
+                    opacity: isFirstSection ? 0.3 : 1, 
+                    x: 0, 
+                    pointerEvents: isFirstSection ? 'none' : 'auto' 
+                }}
+                whileHover={{ scale: !isFirstSection ? 1.15 : 1, x: !isFirstSection ? -3 : 0, 
+                              color: !isFirstSection ? "var(--primary-color)" : "var(--highlight-color-poetic)",
+                              boxShadow: !isFirstSection ? "0 0 10px rgba(var(--primary-color-rgb),0.3)" : "none"
+                            }}
+                whileTap={{ scale: !isFirstSection ? 0.92 : 1 }}
+                transition={{type:"spring", stiffness:320, damping:18}}
             >
                 <span dangerouslySetInnerHTML={{ __html: aboutNavIconLeft }} />
             </motion.button>
             
-            <h2 className="about-section-title">
-                {getSectionTitle()}
-            </h2>
+            <AnimatePresence mode="wait">
+                <motion.h2 
+                    key={currentAboutSubSection + "-title"}
+                    className="about-section-title"
+                    variants={aboutSectionTitleAnimVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                >
+                    {getSectionTitleText()}
+                </motion.h2>
+            </AnimatePresence>
 
             <motion.button
                 className="about-nav-arrow next"
                 onClick={() => changeSubSection('next')}
-                disabled={isLastSection}
                 aria-label="Next section"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: isLastSection ? 0.3 : 1, scale: 1, pointerEvents: isLastSection ? 'none' : 'auto'}}
-                whileHover={{ scale: !isLastSection ? 1.15 : 1, x: !isLastSection ? 3 : 0 }}
-                whileTap={{ scale: !isLastSection ? 0.9 : 1 }}
-                transition={{type:"spring", stiffness:300, damping:15}}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ 
+                    opacity: isLastSection ? 0.3 : 1, 
+                    x: 0, 
+                    pointerEvents: isLastSection ? 'none' : 'auto'
+                }}
+                whileHover={{ scale: !isLastSection ? 1.15 : 1, x: !isLastSection ? 3 : 0,
+                              color: !isLastSection ? "var(--primary-color)" : "var(--highlight-color-poetic)",
+                              boxShadow: !isLastSection ? "0 0 10px rgba(var(--primary-color-rgb),0.3)" : "none"
+                            }}
+                whileTap={{ scale: !isLastSection ? 0.92 : 1 }}
+                transition={{type:"spring", stiffness:320, damping:18}}
             >
                <span dangerouslySetInnerHTML={{ __html: aboutNavIconRight }} />
             </motion.button>
         </div>
 
         <motion.div
-            className="about-sub-section-content-wrapper"
-            initial={{ height: 'auto' }} // Bắt đầu với height tự động
-            animate={contentWrapperControls} // Sử dụng controls để animate chiều cao
+            ref={contentWrapperOuterRef} // Ref for scrolling the outer container
+            className="about-sub-section-content-wrapper" // This will have overflow-y and be scrollable
+            animate={contentWrapperControls} // Height animated by JS
+            initial={{ height: 'auto' }} // Start with auto height or a min-height if preferred
         >
           <AnimatePresence 
             initial={false} 
             custom={slideDirection} 
             mode="wait"
-            // Không cần onExitComplete ở đây nếu useEffect đã xử lý chiều cao
           >
             <motion.div
+              ref={currentContentRef} // Ref for measuring the height of this specific content block
               key={currentAboutSubSection}
-              ref={currentContentRef} // Gán ref cho content hiện tại để đo
-              className="about-sub-section-content"
+              className="about-sub-section-content" // This block flows normally, dictates parent height
               custom={slideDirection}
-              variants={aboutSectionVariants}
+              variants={aboutSectionContentVariants}
               initial="enter"
               animate="center"
               exit="exit"
-              style={{ position: 'absolute', width: '100%' }} // Giúp AnimatePresence xử lý tốt hơn với mode="wait"
             >
-              {/* Nội dung các section, ví dụ: */}
               {currentAboutSubSection === 'intro' && (
-                <p className="bio-text">
-                  Chào bạn! Mình là {name}, một người đam mê công nghệ với nhiều năm kinh nghiệm trong việc phát triển các giải pháp phần mềm sáng tạo và quản trị hạ tầng hệ thống vững chắc.
-                  Niềm yêu thích của mình là không ngừng khám phá những công nghệ tiên tiến, từ đó xây dựng nên các sản phẩm không chỉ giải quyết vấn đề hiệu quả mà còn mang lại trải nghiệm người dùng tối ưu.
-                  Mình tin tưởng mạnh mẽ vào tinh thần hợp tác, sức mạnh của cộng đồng mã nguồn mở, và luôn tìm kiếm cơ hội để đóng góp cũng như học hỏi từ những người cùng chí hướng.
-                </p>
+                <div className="sub-section-inner-padding">
+                  <p className="bio-text">
+                    Chào bạn! Mình là <strong>{name}</strong>, một nhà phát triển phần mềm và người quản trị hệ thống với niềm đam mê mãnh liệt dành cho công nghệ. Mình luôn tìm tòi, học hỏi những điều mới mẻ, từ đó kiến tạo nên các giải pháp không chỉ mạnh mẽ về mặt kỹ thuật mà còn mang lại trải nghiệm tinh tế cho người dùng.
+                    <br/><br/>
+                    Thế giới số với mình là một vũ trụ đầy tiềm năng, nơi mỗi dòng code là một nét vẽ, mỗi hệ thống là một kiến trúc kỳ diệu. Mình tin vào sức mạnh của sự hợp tác, tinh thần mã nguồn mở và không ngừng tìm kiếm cơ hội để cùng cộng đồng tạo ra những giá trị bền vững.
+                  </p>
+                </div>
               )}
 
               {currentAboutSubSection === 'github' && (
-                <>
-                  {githubLoading && <p className="loading-text">Đang tải dữ liệu GitHub...</p>}
+                <div className="sub-section-inner-padding">
+                  {githubLoading && <p className="loading-text">Đang dệt những vì sao từ GitHub...</p>}
                   {githubError && <p className="error-text">Lỗi: {githubError}</p>}
-                  {githubData && githubData.user && (
+                  {githubData?.user && (
                     <div className="github-stats-container api-stats">
                         <div className="github-user-header">
-                            <img src={githubData.user.avatar_url} alt={`${githubData.user.login}'s avatar`} className="github-avatar" />
+                            <motion.img 
+                                src={githubData.user.avatar_url} 
+                                alt={`${githubData.user.login}'s avatar`} 
+                                className="github-avatar" 
+                                whileHover={{ scale: 1.1, rotate: 2, y: -2, boxShadow: "0 0 25px rgba(var(--primary-color-rgb),0.6), 0 0 10px rgba(var(--primary-color-rgb),0.8)"}}
+                                transition={{type: "spring", stiffness:300, damping:10}}
+                            />
                             <div className="github-user-info">
                                 <h3>{githubData.user.name || githubData.user.login}</h3>
                                 {githubData.user.bio && <p className="github-bio">{githubData.user.bio}</p>}
                             </div>
                         </div>
                         <div className="github-stats-grid">
-                            <div className="stat-item">
+                            <motion.div className="stat-item" whileHover={{y:-4, boxShadow:"0 6px 18px rgba(var(--highlight-color-poetic-rgb),0.2)"}}>
                                 <span className="stat-value">{githubData.user.followers}</span>
                                 <span className="stat-label">{githubSectionTranslations.followers[lang]}</span>
-                            </div>
-                            <div className="stat-item">
+                            </motion.div>
+                            <motion.div className="stat-item" whileHover={{y:-4, boxShadow:"0 6px 18px rgba(var(--highlight-color-poetic-rgb),0.2)"}}>
                                 <span className="stat-value">{githubData.user.public_repos}</span>
                                 <span className="stat-label">{githubSectionTranslations.publicRepos[lang]}</span>
-                            </div>
+                            </motion.div>
                         </div>
                         {githubData.user.html_url && (
-                            <a href={githubData.user.html_url} target="_blank" rel="noopener noreferrer" className="github-profile-link">
+                            <motion.a 
+                                href={githubData.user.html_url} target="_blank" rel="noopener noreferrer" 
+                                className="github-profile-link"
+                                whileHover={{scale:1.05, y: -2, boxShadow: "0 0 15px rgba(var(--highlight-color-poetic-rgb),0.4)"}}
+                                whileTap={{scale:0.95}}
+                            >
                                 {githubSectionTranslations.profileLink[lang]}
-                            </a>
+                            </motion.a>
                         )}
                     </div>
                   )}
-                </>
+                </div>
               )}
               {currentAboutSubSection === 'github-stats-ii' && githubUsername && (
-                <div className="github-stats-image-container">
-                    <img 
+                <div className="github-stats-image-container sub-section-inner-padding">
+                    <motion.img 
                         src={`https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=${githubUsername}&theme=tokyonight`} 
                         alt="GitHub Profile Details" 
                         className="github-stat-image"
+                         whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
-                    <img 
+                    <motion.img 
                         src={`https://github-readme-activity-graph.vercel.app/graph?username=${githubUsername}&theme=tokyonight&hide_border=true&area=true&line=BB9AF7&point=79E6F3`} 
                         alt="GitHub Activity Graph" 
-                        className="github-stat-image"
+                        className="github-stat-image wide-image"
+                        whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
                 </div>
               )}
               {currentAboutSubSection === 'github-stats-iii' && githubUsername && (
-                <div className="github-stats-image-container grid-2x2">
-                    <img 
+                <div className="github-stats-image-container grid-2x2 sub-section-inner-padding">
+                    <motion.img 
                         src={`https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${githubUsername}&theme=tokyonight&utcOffset=7`} 
                         alt="GitHub Productive Time" 
                         className="github-stat-image"
+                        whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
-                    <img 
+                    <motion.img 
                         src={`https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=${githubUsername}&theme=tokyonight`}
                         alt="GitHub Most Committed Language" 
                         className="github-stat-image"
+                         whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
-                    <img 
+                    <motion.img 
                         src={`https://github-readme-stats.vercel.app/api/top-langs?username=${githubUsername}&show_icons=true&locale=en&layout=compact&theme=tokyonight`} 
                         alt="GitHub Top Languages" 
                         className="github-stat-image"
+                        whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
-                    <img 
+                    <motion.img 
                         src={`https://streak-stats.demolab.com/?user=${githubUsername}&theme=tokyonight&date_format=M%20j%5B%2C%20Y%5D`} 
                         alt="GitHub Streak Stats" 
                         className="github-stat-image"
+                        whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
                 </div>
               )}
               {currentAboutSubSection === 'discord-presence' && (
-                <div className="discord-presence-container">
-                    <img
+                <div className="discord-presence-container sub-section-inner-padding">
+                    <motion.img
                         src={`https://lanyard-profile-readme.vercel.app/api/${discordUserId}?theme=dark&bg=1A1B26&animated=true&borderRadius=10px&titleColor=BB9AF7&statusColor=79E6F3&hideDiscrim=false&idleMessage=%C4%90ang%20chill...`}
                         alt="Discord Presence"
                         className="discord-presence-image"
+                        whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
                 </div>
               )}
             </motion.div>
           </AnimatePresence>
         </motion.div>
-      </div>
+      </motion.div>
     );
   }
 
+  // Fallback for section="all"
   return (
     <div className={containerClassName} style={style}>
+      <div className="card-main-header">
+          <img 
+              src={cardData.avatarUrl}
+              alt={`${name}'s avatar`} 
+              className="my-avatar" 
+          />
+          <div className="my-name-title">
+              <h2>{name}</h2>
+              <p className="my-title">{cardData.title}</p> 
+          </div>
+      </div>
       <div className="card-section">
         <h3 className="section-heading">Giới Thiệu</h3>
         <p className="bio-text">
@@ -313,13 +388,18 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
       <div className="card-section">
         <h3 className="section-heading">Liên Hệ</h3>
         <div className="contact-links">
-          <a href={`https://github.com/${githubUsername || 'your-github-username'}`} target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a href="https://linkedin.com/in/your-linkedin-profile" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href="mailto:your.email@example.com">Email</a>
+          <a href={`https://github.com/${githubUsername || 'Rin1809'}`} target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.facebook.com/profile.php?id=100010587553539" target="_blank" rel="noopener noreferrer">Facebook</a>
+          <a href="mailto:khoavo1809@gmail.com">Email</a>
         </div>
       </div>
     </div>
   );
 };
 
-export default PersonalCard;
+const cardData = {
+    avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
+    title: "Developer | SysAdmin | Tech Enthusiast"
+};
+
+export default PersonalCard;    
