@@ -1,5 +1,5 @@
 // client/src/components/Guestbook.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './styles/Guestbook.css';
 import { guestbookViewTranslations as t } from './languageSelector/languageSelector.constants';
@@ -133,7 +133,7 @@ const bookPagesWrapperVariants = { // Variants cho wrapper 2 trang sách
 
 
 // Guestbook Component
-const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry, onBack }) => { // Thêm onBack
+const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) => { // Thêm onBack
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
