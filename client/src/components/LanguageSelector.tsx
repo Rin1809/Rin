@@ -257,22 +257,19 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const fetchGuestbookEntries = useCallback(async () => {
       if (!isMountedRef.current) return;
       setGuestbookLoading(true);
-      setGuestbookError(null);
+      setGuestbookError(null); // Reset error before fetching
       try {
           const response = await fetch(`${API_BASE_URL}/api/guestbook`);
           if (!response.ok) {
               let errorMsg = `HTTP error! status: ${response.status}`;
               try {
                   const errorData = await response.json();
-                  errorMsg = errorData.error || errorMsg;
+                  errorMsg = errorData.error || errorMsg; // Use detailed error if available
               } catch (e) { /* ignore if parsing error body fails */ }
               throw new Error(errorMsg);
           }
           const data: GuestbookEntry[] = await response.json();
           if (isMountedRef.current) {
-            // Backend sends data sorted (newest first).
-            // Guestbook.tsx's `.reverse()` makes oldest appear first and new entry added at bottom, then list reversed to show new entry at top.
-            // To align with current Guestbook.tsx logic (showing newest at top from reversed list), pass as-is.
             setGuestbookEntries(data); 
           }
       } catch (error: any) {
@@ -285,13 +282,17 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               setGuestbookLoading(false);
           }
       }
-  }, []);
+  }, []); // API_BASE_URL is constant from env
 
   useEffect(() => {
-      fetchGuestbookEntries();
-  }, [fetchGuestbookEntries]);
+      if (currentView === 'guestbook' || (currentView === 'cardIntro' && headerPreviewType === 'guestbook')) {
+         fetchGuestbookEntries();
+      }
+  }, [fetchGuestbookEntries, currentView, headerPreviewType]);
+
 
   const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi' | 'en' | 'ja'): Promise<void> => {
+      // setIsLoading or similar state could be set here for the whole selector if needed
       const newEntryPayload = { name, message, language: lang };
       try {
           const response = await fetch(`${API_BASE_URL}/api/guestbook`, {
@@ -304,16 +305,16 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               let errorMsg = `Failed to submit: ${response.status}`;
               try {
                   const errorData = await response.json();
-                  errorMsg = errorData.error || errorMsg;
+                  errorMsg = errorData.error || errorMsg; // Prioritize server's error message
               } catch (e) { /* ignore parsing error */ }
-              throw new Error(errorMsg);
+              throw new Error(errorMsg); // Throw this error to be caught by Guestbook.tsx
           }
-          
+
           await fetchGuestbookEntries(); // Refresh list after successful post
 
       } catch (error: any) {
           console.error("Error submitting entry from LanguageSelector:", error);
-          throw error;
+          throw error; // Re-throw the error to be caught by the Guestbook component's handleSubmit
       }
   };
 
@@ -692,27 +693,30 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             </motion.div>
           )}
 
-          {currentView === 'guestbook' && (
+            {currentView === 'guestbook' && (
             <motion.div
               key="guestbook-content"
               className="content-section card-content-display guestbook-view-wrapper"
-              variants={guestbookViewContainerVariants(0.05)}
+              variants={guestbookViewContainerVariants(0.05)} // Updated this variant name if you used it from constants
               initial="hidden"
               animate="visible"
               exit="exit"
             >
-                {guestbookLoading ? (
-                    <motion.p initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>Loading messages...</motion.p>
+                {guestbookLoading && !guestbookEntries.length ? ( // Show loading only if no entries yet
+                    <motion.p initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
+                        {currentLanguage === 'vi' ? 'Đang tải tin nhắn...' : currentLanguage === 'en' ? 'Loading messages...' : 'メッセージを読み込み中...'}
+                    </motion.p>
                 ) : (
                      <Guestbook
                         language={currentLanguage}
                         onBack={() => setCurrentView('cardIntro')}
-                        entries={guestbookEntries}
-                        onAddEntry={handleAddGuestbookEntry}
+                        entries={guestbookEntries} // Pass the fetched entries
+                        onAddEntry={handleAddGuestbookEntry} // Pass the submission handler
                       />
                 )}
+
                  <motion.button
-                    className="card-view-back-button"
+                    className="card-view-back-button" // This class comes from LanguageSelector.css
                     onClick={() => setCurrentView('cardIntro')}
                     initial={{ opacity: 0, y: 30, scale: 0.9 }}
                     animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] } }}
@@ -721,7 +725,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                     whileTap={{ scale: 0.96, y: -1 }}
                     transition={{type:"spring", stiffness: 300, damping: 15}}
                 >
-                   <span className="button-icon-svg" dangerouslySetInnerHTML={{__html: aboutNavIconLeft }} />
+                   <span className="button-icon-svg" dangerouslySetInnerHTML={{__html: aboutNavIconLeft }} /> {/* Ensure aboutNavIconLeft is defined/imported */}
                    <span className="button-text">{cardIntroTranslations.backButton[currentLanguage]}</span>
                 </motion.button>
             </motion.div>

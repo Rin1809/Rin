@@ -47,8 +47,15 @@ app.post('/api/guestbook', async (req, res) => {
   const { name, message, language } = req.body;
 
   if (!name || name.trim() === "" || !message || message.trim() === "" || !language) {
-    return res.status(400).json({ error: 'Name, message, and language are required and cannot be empty.' });
+    // Cung cấp thông điệp lỗi cụ thể hơn cho client
+    let missingFields = [];
+    if (!name || name.trim() === "") missingFields.push("Name");
+    if (!message || message.trim() === "") missingFields.push("Message");
+    if (!language) missingFields.push("Language");
+    const errorMsg = `${missingFields.join(', ')} are required and cannot be empty.`;
+    return res.status(400).json({ error: errorMsg });
   }
+
   const validLanguages = ['vi', 'en', 'ja'];
   if (!validLanguages.includes(language.toLowerCase())) {
       return res.status(400).json({ error: `Invalid language code. Must be one of: ${validLanguages.join(', ')}.` });
@@ -67,7 +74,8 @@ app.post('/api/guestbook', async (req, res) => {
     res.status(201).json(newEntry);
   } catch (error) {
     console.error('🔴 Error adding guestbook entry:', error);
-    res.status(500).json({ error: 'Failed to add guestbook entry. Please try again.' });
+    // Cung cấp một thông báo lỗi chung hơn, nhưng vẫn hữu ích
+    res.status(500).json({ error: 'Failed to add guestbook entry due to a server issue. Please try again.' });
   }
 });
 
