@@ -698,6 +698,7 @@ export const cardDisplayInfo = {
 //  For Guestbook view
 export const guestbookViewTranslations = {
   title: { vi: "Sổ Lưu Bút Cảm Xúc", en: "Guestbook of Thoughts", ja: "ゲストブック・思いの記録" },
+  // Form related, will be shown when form is active
   formTitle: { vi: "Để lại lời nhắn của bạn", en: "Leave Your Message", ja: "メッセージを残してください" },
   nameLabel: { vi: "Tên của bạn (Nhà lữ hành)", en: "Your Name (Fellow Traveler)", ja: "お名前（旅人さん）" },
   namePlaceholder: { vi: "vd: Lãng khách ẩn danh...", en: "e.g., A Mysterious Wanderer...", ja: "例：名無しの風来坊。。。" },
@@ -705,6 +706,16 @@ export const guestbookViewTranslations = {
   messagePlaceholder: { vi: "Nơi này thật đẹp và bình yên...", en: "This place is beautiful and peaceful...", ja: "この場所は美しくて穏やかですね。。。" },
   submitButton: { vi: "Gửi Cảm Nghĩ", en: "Post Your Thought", ja: "感想を投稿する" },
   submittingText: { vi: "Đang gửi...", en: "Submitting...", ja: "送信中。。。" },
+  
+  // New for read mode prompt and write/cancel buttons
+  promptWrite: {
+    vi: "Bạn muốn chia sẻ đôi dòng tâm tình với Rin hong? ✨",
+    en: "Want to share some thoughts with Rin? ✨",
+    ja: "リンに何か思いを伝えたいですか？ ✨"
+  },
+  writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" },
+  cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" }, // Updated for clarity
+
   noEntries: {
     vi: "Chưa có ai để lại cảm nghĩ. Hãy là người đầu tiên chia sẻ nhé!",
     en: "No thoughts have been shared yet. Be the first one!",
@@ -713,6 +724,7 @@ export const guestbookViewTranslations = {
   entryBy: { vi: "Lời nhắn từ", en: "A thought from", ja: "からのメッセージ" }, 
   entryDatePrefix: { vi: "Vào lúc", en: "On", ja: "記録日：" }
 };
+
 
 // Variant for Guestbook main container
 export const guestbookViewContainerVariants = (delay: number = 0.1): Variants => ({

@@ -1,252 +1,462 @@
 /* client/src/components/styles/Guestbook.css */
+
+/* Root variables for paper theme, if you want to make them easily configurable */
+:root {
+  --paper-bg: #fdf0e0; /* Light cream */
+  --paper-bg-rgb: 253, 240, 224;
+  --paper-border: #e0c8b0; /* Light brownish */
+  --paper-border-rgb: 224, 200, 176;
+  --paper-text-color: #6a4c3a; /* Darker brown for text */
+  --paper-text-rgb: 106, 76, 58;
+}
+
 .guestbook-container {
   width: 100%;
-  max-width: 720px;
+  max-width: 750px; 
   margin: 0 auto;
-  padding: 1.5rem 1rem;
+  padding: clamp(1.5rem, 3vw, 2rem) clamp(1rem, 4vw, 2.2rem); 
   color: var(--text-color-poetic);
   font-family: var(--font-family-poetic), var(--font-family-fallback);
-  border-radius: 18px;
-  background: rgba(var(--card-background-rgb), 0.6);
-  backdrop-filter: blur(12px) saturate(120%);
-  -webkit-backdrop-filter: blur(12px) saturate(120%);
-  box-shadow: 0 10px 35px rgba(var(--background-color-rgb), 0.4),
-              inset 0 0 20px rgba(var(--background-color-rgb), 0.25);
-  border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.2);
-  overflow-y: auto;
-  max-height: calc(85vh - 100px);
+  border-radius: 24px; 
+  background: 
+    radial-gradient(ellipse at 10% 15%, rgba(var(--primary-color-rgb), 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 90% 85%, rgba(var(--secondary-color-rgb), 0.05) 0%, transparent 55%),
+    rgba(var(--card-background-rgb), 0.72); 
+  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  box-shadow: 0 16px 55px rgba(var(--background-color-rgb), 0.45), 
+              0 0 40px rgba(var(--highlight-color-poetic-rgb), 0.15), 
+              inset 0 0 25px rgba(var(--background-color-rgb), 0.3);
+  border: 1.5px solid transparent; 
+  border-image-slice: 1;
+  border-image-source: linear-gradient(145deg,
+    rgba(var(--highlight-color-poetic-rgb), 0.28),
+    rgba(var(--primary-color-rgb), 0.15),
+    rgba(var(--secondary-color-rgb), 0.15),
+    rgba(var(--highlight-color-poetic-rgb), 0.28));
+  overflow-y: auto; 
+  max-height: calc(90vh - 100px); 
   scrollbar-width: thin;
-  scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.65) rgba(var(--card-background-rgb), 0.15);
+  scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.6) rgba(var(--card-background-rgb), 0.1);
+  padding-bottom: clamp(2rem, 4vw, 2.5rem); 
 }
 
 .guestbook-container::-webkit-scrollbar {
-    width: 9px;
+    width: 10px;
 }
 .guestbook-container::-webkit-scrollbar-track {
-    background: rgba(var(--card-background-rgb), 0.15);
+    background: rgba(var(--card-background-rgb), 0.1);
     border-radius: 10px;
+    margin: 5px 0;
 }
 .guestbook-container::-webkit-scrollbar-thumb {
-    background-color: rgba(var(--highlight-color-poetic-rgb), 0.55);
+    background-color: rgba(var(--highlight-color-poetic-rgb), 0.5);
     border-radius: 10px;
-    border: 2px solid transparent;
+    border: 2.5px solid transparent;
     background-clip: content-box;
 }
 .guestbook-container::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(var(--highlight-color-poetic-rgb), 0.75);
+    background-color: rgba(var(--highlight-color-poetic-rgb), 0.7);
 }
 
 
 .guestbook-title {
-  font-size: clamp(1.8em, 4vw, 2.2em);
+  font-size: clamp(2em, 4.5vw, 2.6em); 
   font-weight: 400;
   text-align: center;
-  margin-bottom: 1.8rem;
+  margin-bottom: 2.2rem; 
   color: var(--highlight-color-poetic);
-  text-shadow: 0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.35),
-               0 0 5px rgba(var(--highlight-color-poetic-rgb), 0.2);
-  letter-spacing: 1px;
+  text-shadow: 0 0 20px rgba(var(--highlight-color-poetic-rgb), 0.45), 
+               0 0 8px rgba(var(--highlight-color-poetic-rgb), 0.3),
+               0 2px 3px rgba(var(--background-color-rgb), 0.2); 
+  letter-spacing: 1.5px;
+  line-height: 1.3;
 }
+
+
+.guestbook-write-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border-radius: 16px;
+  background-color: rgba(var(--card-background-rgb), 0.35);
+  border: 1px dashed rgba(var(--highlight-color-poetic-rgb), 0.25);
+  min-height: 150px; 
+}
+.guestbook-write-prompt p {
+  font-size: clamp(1.05em, 2.2vw, 1.2em);
+  color: var(--subtext-color-poetic);
+  opacity: 0.9;
+  font-weight: 300;
+  margin: 0;
+  max-width: 90%;
+}
+
+.guestbook-write-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.9rem 2rem;
+  border: 1.5px solid transparent;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: 30px;
+  background: linear-gradient(135deg, 
+    rgba(var(--primary-color-rgb), 0.12), 
+    rgba(var(--secondary-color-rgb), 0.1)
+  );
+  color: var(--highlight-color-poetic);
+  font-family: inherit;
+  font-size: clamp(1.05em, 2.3vw, 1.15em);
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 5px 18px -5px rgba(var(--primary-color-rgb),0.25);
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), 
+              box-shadow 0.25s cubic-bezier(0.23, 1, 0.32, 1), 
+              filter 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.guestbook-write-button:hover {
+  filter: brightness(1.15);
+}
+.guestbook-write-button svg {
+  transition: transform 0.3s ease;
+}
+.guestbook-write-button:hover svg {
+  transform: rotate(10deg) scale(1.05);
+}
+
 
 .guestbook-form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
-  margin-bottom: 2rem;
-  padding: 1.2rem;
-  background-color: rgba(var(--card-background-rgb), 0.3);
-  border-radius: 12px;
-  border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.15);
+  gap: 1.4rem; 
+  padding: clamp(1.2rem, 3vw, 1.8rem); 
+  background-color: rgba(var(--card-background-rgb), 0.45); 
+  border-radius: 16px; 
+  border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.22);
+  box-shadow: 0 5px 15px rgba(var(--background-color-rgb),0.2),
+              inset 0 0 8px rgba(var(--background-color-rgb),0.15);
 }
 
 .guestbook-form-title {
-    font-size: 1.25em;
-    font-weight: 500;
+    font-size: clamp(1.2em, 2.5vw, 1.4em);
+    font-weight: 500; 
     color: var(--subtext-color-poetic);
-    margin: 0 0 0.5rem 0;
+    opacity: 0.9;
+    margin: 0 0 0.8rem 0;
     text-align: left;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(var(--highlight-color-poetic-rgb),0.15);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem; 
   text-align: left;
 }
 
 .form-group label {
-  font-size: 0.95em;
-  font-weight: 400;
-  color: var(--subtext-color-poetic);
+  font-size: clamp(0.9em, 2vw, 1em);
+  font-weight: 400; 
+  color: rgba(var(--subtext-color-poetic-rgb), 0.9);
+  padding-left: 0.2rem; 
 }
 
 .form-group input,
 .form-group textarea {
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
-  border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.3);
-  background-color: rgba(var(--background-color-rgb), 0.5);
+  padding: 0.9rem 1.1rem; 
+  border-radius: 10px; 
+  border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.35); 
+  background-color: rgba(var(--background-color-rgb), 0.65); 
   color: var(--text-color-poetic);
   font-family: inherit;
   font-size: 1em;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   outline: none;
-}
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: var(--highlight-color-poetic);
-  box-shadow: 0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.25);
 }
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: rgba(var(--subtext-color-poetic-rgb), 0.6);
+  color: rgba(var(--subtext-color-poetic-rgb), 0.55); 
   font-style: italic;
+  font-weight: 300;
 }
 .form-group textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 90px; 
+}
+
+
+.form-feedback-container {
+  min-height: 2.5em; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  margin-top: -0.5rem; 
 }
 
 .submit-feedback {
-    font-size: 0.9em;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
+    font-size: clamp(0.85em, 1.8vw, 0.95em);
+    padding: 0.7rem 1.1rem; 
+    border-radius: 8px;
     text-align: center;
-    margin: 0.3rem 0 0.5rem 0;
+    font-weight: 400;
+    border-width: 1.5px;
+    border-style: solid;
 }
 .submit-feedback.error {
-    background-color: rgba(var(--error-color-rgb), 0.15);
+    background-color: rgba(var(--error-color-rgb), 0.18);
     color: var(--error-color);
-    border: 1px solid rgba(var(--error-color-rgb), 0.3);
+    border-color: rgba(var(--error-color-rgb), 0.4);
+    text-shadow: 0 0 5px rgba(var(--error-color-rgb), 0.2);
 }
 .submit-feedback.success {
-    background-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.15);
+    background-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.2);
     color: var(--success-color, #a6e3a1);
-    border: 1px solid rgba(var(--success-color-rgb, 166, 227, 161), 0.3);
+    border-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.45);
+    text-shadow: 0 0 5px rgba(var(--success-color-rgb, 166, 227, 161), 0.25);
 }
 
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.8rem; 
+    justify-content: flex-start; 
+}
 
 .guestbook-submit-button {
-  padding: 0.8rem 1.5rem;
+  padding: 0.9rem 1.8rem; 
   border: none;
-  border-radius: 8px;
-  background: linear-gradient(145deg, var(--highlight-color-poetic), var(--primary-color));
+  border-radius: 10px; 
+  background: linear-gradient(140deg, var(--highlight-color-poetic) 0%, var(--primary-color) 100%);
   color: var(--card-background); 
   font-family: inherit;
-  font-size: 1.05em;
+  font-size: clamp(1em, 2.2vw, 1.1em);
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 4px 15px -3px rgba(var(--highlight-color-poetic-rgb),0.3), 
+              0 2px 6px rgba(var(--primary-color-rgb),0.2);
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), 
+              box-shadow 0.25s cubic-bezier(0.23, 1, 0.32, 1), 
+              filter 0.25s cubic-bezier(0.23, 1, 0.32, 1);
   align-self: flex-start; 
-}
-.guestbook-submit-button:hover:not(:disabled) {
-  filter: brightness(1.1);
-  box-shadow: 0 4px 12px rgba(var(--highlight-color-poetic-rgb), 0.3);
+  display: flex; 
+  align-items: center;
+  gap: 0.7em;
+  flex-grow: 1; 
+  min-width: 150px;
 }
 .guestbook-submit-button:disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: not-allowed;
+  filter: saturate(0.6);
 }
+.button-spinner {
+  width: 1.2em;
+  height: 1.2em;
+  border: 2.5px solid rgba(var(--card-background-rgb), 0.5);
+  border-top-color: var(--card-background);
+  border-radius: 50%;
+  display: inline-block;
+  animation: buttonSpin 0.8s linear infinite;
+}
+@keyframes buttonSpin { to { transform: rotate(360deg); } }
+
+.guestbook-cancel-button {
+  padding: 0.9rem 1.5rem;
+  border: 1.5px solid rgba(var(--subtext-color-poetic-rgb), 0.4);
+  border-radius: 10px;
+  background-color: transparent;
+  color: var(--subtext-color-poetic);
+  font-family: inherit;
+  font-size: clamp(0.95em, 2vw, 1.05em);
+  font-weight: 400;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(var(--background-color-rgb),0.1);
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.guestbook-cancel-button:hover:not(:disabled) {
+  background-color: rgba(var(--subtext-color-poetic-rgb), 0.1);
+  border-color: rgba(var(--subtext-color-poetic-rgb), 0.6);
+  color: var(--text-color-poetic); 
+}
+.guestbook-cancel-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 
 .guestbook-divider {
   height: 1.5px;
-  width: 80%;
-  background: linear-gradient(to right, transparent, rgba(var(--highlight-color-poetic-rgb),0.4), transparent);
-  margin: 1.5rem auto 2rem auto;
+  width: 85%; 
+  background: linear-gradient(to right, 
+    transparent 5%, 
+    rgba(var(--highlight-color-poetic-rgb),0.2) 25%,
+    rgba(var(--highlight-color-poetic-rgb),0.5) 50%, 
+    rgba(var(--highlight-color-poetic-rgb),0.2) 75%,
+    transparent 95%
+  );
+  margin: 2rem auto 2.5rem auto; 
+  border-radius: 1px;
 }
 
+.guestbook-entries-list-wrapper {
+  /* Wrapper for potential future animations or layout adjustments */
+}
 
 .guestbook-entries-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.8rem; 
 }
 
 .guestbook-entry {
-  background-color: rgba(var(--card-background-rgb), 0.35);
-  padding: 1.2rem 1.5rem;
-  border-radius: 12px;
-  border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.18);
-  box-shadow: 0 3px 8px rgba(var(--background-color-rgb), 0.25);
+  background-color: var(--paper-bg, #fdf0e0); 
+  padding: clamp(1.2rem, 3vw, 1.6rem) clamp(1.4rem, 4vw, 1.8rem);
+  border-radius: 12px; 
+  border: 1px solid var(--paper-border, #e0c8b0); 
+  box-shadow: 3px 3px 8px rgba(var(--background-color-rgb), 0.2), 
+              1px 1px 3px rgba(var(--background-color-rgb), 0.15),
+              inset 0 0 8px rgba(255,255,255,0.2); 
   text-align: left;
   overflow-wrap: break-word;
+  position: relative;
+  color: var(--paper-text-color, #5c4033); 
+}
+.guestbook-entry::after {
+  content: "";
+  position: absolute;
+  top: -1px; 
+  right: -1px;
+  width: 35px;
+  height: 35px;
+  background: linear-gradient(135deg, transparent 49.5%, rgba(var(--paper-border-rgb, 224, 200, 176), 0.5) 50%, rgba(var(--paper-border-rgb, 224, 200, 176), 0.3) 55%, var(--paper-bg, #fdf0e0) 65%);
+  border-bottom-left-radius: 8px;
+  filter: drop-shadow(-1px 1px 1px rgba(0,0,0,0.07));
+  pointer-events: none;
+}
+
+
+.entry-message-wrapper {
+  margin: 0 0 1rem 0;
+  padding: 0;
+  border: none; 
+  position: relative;
+}
+.entry-message-wrapper::before { 
+  content: '“'; 
+  font-family: 'Times New Roman', Times, serif; 
+  font-size: 2.8em;
+  color: rgba(var(--paper-text-rgb, 92, 64, 51), 0.35);
+  position: absolute;
+  left: -0.1em; 
+  top: -0.35em;
+  line-height: 1;
+  opacity: 0.9;
+  pointer-events: none;
 }
 
 .entry-message {
-  font-size: 1.05em;
-  line-height: 1.7;
-  color: var(--text-color-poetic);
-  margin: 0 0 0.8rem 0;
+  font-family: var(--font-family-primary), 'cursive'; 
+  font-size: clamp(1.05em, 2.2vw, 1.15em);
+  line-height: 1.7; 
+  color: var(--paper-text-color, #5c4033);
+  margin: 0;
+  padding-left: 0.8em; 
   white-space: pre-wrap;
+  font-style: normal; 
+  font-weight: 400; 
 }
-.entry-message::before, .entry-message::after {
-    content: '"';
-    color: rgba(var(--highlight-color-poetic-rgb), 0.6);
-    font-style: italic;
-}
-
 
 .entry-meta {
-  font-size: 0.85em;
-  color: var(--subtext-color-poetic);
+  font-size: clamp(0.8em, 1.8vw, 0.9em);
+  color: rgba(var(--paper-text-rgb, 92, 64, 51), 0.75); 
   display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  align-items: flex-start; 
-  opacity: 0.85;
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center;
+  flex-wrap: wrap; 
+  gap: 0.4rem; 
+  opacity: 0.9;
+  padding-top: 0.8rem;
+  border-top: 1px dashed rgba(var(--paper-border-rgb, 224, 200, 176), 0.7);
+  margin-top: 0.5rem;
 }
 
 .entry-author strong {
-  font-weight: 500;
-  color: var(--highlight-color-poetic);
+  font-weight: 500; 
+  color: var(--paper-text-color, #5c4033); 
+  letter-spacing: 0.3px;
 }
 
 .no-entries-message {
   text-align: center;
   font-style: italic;
   color: var(--subtext-color-poetic);
-  padding: 2rem 1rem;
-  font-size: 1.1em;
+  opacity: 0.8;
+  padding: 2.5rem 1.5rem; 
+  font-size: clamp(1.05em, 2.2vw, 1.2em);
+  border: 1.5px dashed rgba(var(--highlight-color-poetic-rgb), 0.25);
+  border-radius: 12px;
+  background-color: rgba(var(--card-background-rgb), 0.2);
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .guestbook-container {
-    padding: 1rem 0.8rem;
-    max-height: calc(88vh - 90px);
+    max-height: calc(90vh - 80px);
+    border-radius: 20px;
   }
-  .guestbook-form {
-    padding: 1rem;
+  .guestbook-title { margin-bottom: 1.8rem; }
+  .guestbook-form { padding: clamp(1rem, 2.5vw, 1.5rem); gap: 1.2rem;}
+
+  .guestbook-write-prompt p { font-size: clamp(1em, 2vw, 1.1em); }
+  .guestbook-write-button { font-size: clamp(1em, 2.1vw, 1.1em); padding: 0.8rem 1.8rem; }
+    
+  .form-actions {
+    flex-direction: column-reverse; 
+    gap: 0.8rem;
+  }
+  .form-actions > button {
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-    .guestbook-title {
-        font-size: 1.6em;
-        margin-bottom: 1.5rem;
-    }
     .guestbook-container {
-       max-height: calc(90vh - 80px);
+       max-height: calc(92vh - 70px);
+       border-radius: 18px;
     }
     .guestbook-form-title {
-        font-size: 1.1em;
+        border-bottom: none;
+        text-align: center;
+        margin-bottom: 0.5rem;
     }
     .form-group input, .form-group textarea {
-        padding: 0.7rem 0.9rem;
         font-size: 0.95em;
     }
     .guestbook-submit-button {
-        font-size: 1em;
-        padding: 0.7rem 1.2rem;
         width: 100%; 
+        padding: 0.8rem 1.3rem;
     }
-    .guestbook-entry {
-        padding: 1rem 1.2rem;
-    }
-    .entry-message {
-        font-size: 1em;
+     .guestbook-cancel-button {
+        width: 100%;
+        justify-content: center; /* Center icon and text if stacked */
     }
     .entry-meta {
-        font-size: 0.8em;
+       flex-direction: column; 
+       align-items: flex-start;
     }
+    .guestbook-entry::after { 
+        width: 30px;
+        height: 30px;
+    }
+    .entry-message-wrapper::before { font-size: 2.5em; }
 }
