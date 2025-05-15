@@ -13,7 +13,7 @@
   -webkit-backdrop-filter: blur(18px) saturate(130%);
   z-index: 1000;
   padding: 1rem;
-  overflow: hidden;
+  overflow: hidden; /* Prevent body scroll when overlay is active */
   font-family: var(--font-family-poetic), var(--font-family-fallback);
 }
 
@@ -64,7 +64,7 @@
 .language-selector-content-wrapper {
   text-align: center;
   color: var(--text-color-poetic);
-  max-width: 600px;
+  max-width: 600px; /* Default max-width for language options */
   min-height: 400px;
   width: 100%;
   position: relative;
@@ -73,14 +73,16 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
 }
+
 
 .content-section {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.2rem 0;
+  padding: 0.2rem 0; /* Minimal padding for sections */
 }
 
 /* --- LANGUAGE OPTIONS STYLES --- */
@@ -134,7 +136,7 @@
   display: block;
   margin-bottom: 0.8rem;
   line-height: 1;
-  font-family: sans-serif;
+  font-family: sans-serif; /* For flags to render correctly if not default */
 }
 
 .lang-name-poetic {
@@ -165,7 +167,11 @@
   background-color: rgba(var(--text-color-poetic-rgb), 0.2);
 }
 
-
+.poetic-divider-horizontal .divider-line { /* If you add inner line for gradient effects */
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to right, transparent, rgba(var(--text-color-poetic-rgb), 0.2), transparent);
+}
 
 .language-options-poetic .poetic-divider-horizontal {
     display: none;
@@ -193,7 +199,7 @@
 
 /* --- STYLES FOR CARD INTRO SECTION --- */
 .card-intro-section-modifier {
-  padding: 0.1rem 0;
+  padding: 5rem 0;
 }
 
 .card-intro-header {
@@ -292,13 +298,13 @@
 
 .card-intro-header-swappable-content {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  min-height: 200px; 
+  justify-content: flex-start; /* Align content to top */
+  min-height: 200px; /* Ensure consistent height */
   width: 100%;
   padding: 0.2rem 0;
-  position: relative; 
+  position: relative;
 }
 
 .header-details-block {
@@ -320,7 +326,7 @@
   will-change: transform, text-shadow, background-position;
   background: linear-gradient( 125deg, var(--card-name-gradient-start) 15%, var(--card-name-gradient-mid) 45%, var(--card-name-gradient-end) 75% );
   -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent; 
+  -webkit-text-fill-color: transparent;
   background-size: 200% 100%;
   animation: idleNameGradientFlow 8s ease-in-out infinite alternate;
 }
@@ -364,27 +370,27 @@
 
 /* --- ENHANCED PREVIEW STYLES --- */
 .header-preview-container {
-  background-color: rgba(var(--card-background-rgb), 0.55); 
+  background-color: rgba(var(--card-background-rgb), 0.55);
   backdrop-filter: blur(12px) saturate(110%);
   -webkit-backdrop-filter: blur(12px) saturate(110%);
-  
+
   border: 2px solid transparent;
   border-image-slice: 1;
-  border-image-source: linear-gradient(160deg, 
-    rgba(var(--highlight-color-poetic-rgb), 0.4), 
-    rgba(var(--primary-color-rgb), 0.25), 
+  border-image-source: linear-gradient(160deg,
+    rgba(var(--highlight-color-poetic-rgb), 0.4),
+    rgba(var(--primary-color-rgb), 0.25),
     rgba(var(--highlight-color-poetic-rgb), 0.4));
 
-  border-radius: 16px; 
-  padding: 1.1rem 1.3rem; 
+  border-radius: 16px;
+  padding: 1.1rem 1.3rem;
   width: 90%;
   max-width: 430px;
-  box-shadow: 0 6px 25px -7px rgba(var(--background-color-rgb), 0.35); 
+  box-shadow: 0 6px 25px -7px rgba(var(--background-color-rgb), 0.35);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative; 
+  position: relative;
 }
 
 .header-preview-container::before {
@@ -401,37 +407,37 @@
 
 
 .header-preview-title {
-  font-size: 1em; 
-  font-weight: 500; 
+  font-size: 1em;
+  font-weight: 500;
   color: var(--highlight-color-poetic);
-  margin: 0 0 0.9rem 0; 
+  margin: 0 0 0.9rem 0;
   letter-spacing: 0.3px;
-  
+
   border-bottom: 1px solid;
-  border-image-source: linear-gradient(to right, 
-    transparent 0%, 
-    rgba(var(--highlight-color-poetic-rgb), 0.35) 30%, 
-    rgba(var(--highlight-color-poetic-rgb), 0.35) 70%, 
+  border-image-source: linear-gradient(to right,
+    transparent 0%,
+    rgba(var(--highlight-color-poetic-rgb), 0.35) 30%,
+    rgba(var(--highlight-color-poetic-rgb), 0.35) 70%,
     transparent 100%);
   border-image-slice: 1;
-  
-  padding-bottom: 0.6rem; 
+
+  padding-bottom: 0.6rem;
   width: 100%;
   text-align: center;
 }
 
 .header-preview-block-content {
   display: flex;
-  align-items: flex-start; 
-  gap: 0.7rem; 
+  align-items: flex-start;
+  gap: 0.7rem;
   width: 100%;
 }
 
 .header-preview-icon {
   flex-shrink: 0;
-  width: 20px; 
+  width: 20px;
   height: 20px;
-  margin-top: 0.1em; 
+  margin-top: 0.1em;
   color: rgba(var(--highlight-color-poetic-rgb), 0.85);
 }
 .header-preview-icon svg {
@@ -440,9 +446,9 @@
   height: 100%;
 }
 
-.header-preview-actual-content { 
-  flex: 1; 
-  min-width: 0; 
+.header-preview-actual-content {
+  flex: 1;
+  min-width: 0;
 }
 
 
@@ -452,45 +458,45 @@
   line-height: 1.65;
   color: var(--subtext-color-poetic);
   text-align: left;
-  max-height: 70px; 
-  overflow: hidden; 
-  
+  max-height: 70px; /* Approx 3-4 lines */
+  overflow: hidden; /* Hide overflowing text */
+
   position: relative;
 }
-.header-preview-text-enhanced.has-overflow::after {
+.header-preview-text-enhanced.has-overflow::after { /* Apply class with JS if needed */
     content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 1.5em; 
-    background: linear-gradient(to bottom, transparent, rgba(var(--card-background-rgb), 0.8)); 
+    height: 1.5em; /* Height of one line to fade out */
+    background: linear-gradient(to bottom, transparent, rgba(var(--card-background-rgb), 0.8)); /* Use the bg color of parent */
     pointer-events: none;
 }
 
 
 .header-preview-images-enhanced {
   display: flex;
-  gap: 0.7rem; 
-  margin-top: 0; 
+  gap: 0.7rem;
+  margin-top: 0;
   flex-wrap: wrap;
-  justify-content: flex-start; 
+  justify-content: flex-start;
 }
 
 .header-preview-images-enhanced img {
-  width: 68px; 
+  width: 68px;
   height: 68px;
   object-fit: cover;
-  border-radius: 10px; 
+  border-radius: 10px;
   border: 2px solid rgba(var(--highlight-color-poetic-rgb), 0.25);
   box-shadow: 0 3px 10px rgba(var(--background-color-rgb), 0.2);
   transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s ease;
 }
 
 .header-preview-images-enhanced img:hover {
-  transform: scale(1.12) translateY(-3px) rotate(1.5deg); 
+  transform: scale(1.12) translateY(-3px) rotate(1.5deg);
   border-color: rgba(var(--highlight-color-poetic-rgb), 0.6);
-  box-shadow: 0 7px 20px -2px rgba(var(--highlight-color-poetic-rgb), 0.4), 
+  box-shadow: 0 7px 20px -2px rgba(var(--highlight-color-poetic-rgb), 0.4),
               0 0 5px rgba(var(--highlight-color-poetic-rgb), 0.15) inset;
 }
 
@@ -506,11 +512,17 @@
   display: flex;
   justify-content: center;
   gap: 1.5rem;
-  margin-top: 0;
+  margin-top: 0; /* Already handled by second divider's margin */
   width: 100%;
-  max-width: 500px;
+  max-width: 500px; /* Original constraint for 2 buttons */
   position: relative;
 }
+/* Adjust max-width for 3 buttons if they feel cramped */
+/* Example:
+.card-intro-actions {
+   max-width: 600px; If three buttons
+} */
+
 
 .card-intro-button {
   background: rgba(var(--card-background-rgb), 0.2);
@@ -522,7 +534,9 @@
   padding: 0.9rem 1.8rem;
   border-radius: 16px;
   cursor: pointer;
-  min-width: 180px;
+  min-width: 160px; /* Allow buttons to shrink a bit for 3-across */
+  flex: 1 1 auto;   /* Allow buttons to share space */
+  max-width: 200px; /* Prevent them from becoming too wide */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -598,6 +612,7 @@
   .card-intro-actions { margin-top: 0.8rem; }
 
 
+  /* Stack language options and card intro buttons on smaller screens */
   .language-options-poetic, .card-intro-actions {
     flex-direction: column;
     gap: 1rem;
@@ -606,6 +621,7 @@
   .card-intro-button, .lang-choice-poetic {
     width: 100%;
     max-width: 280px;
+    min-width: auto; /* Reset min-width when stacking */
   }
 
   .poetic-divider-vertical { display: none; }
@@ -655,7 +671,7 @@
 
 
   .card-intro-button {
-    padding: 0.85rem 1.5rem; font-size: 1em; min-width: auto;
+    padding: 0.85rem 1.5rem; font-size: 1em;
   }
 }
 @media (max-width: 420px) {
@@ -688,15 +704,97 @@
 }
 
 
+/* Class to style About/Gallery/Guestbook content sections */
 .card-content-display {
   width: 100%;
-  max-width: 750px;
-  padding: 1rem 0;
+  max-width: 750px; /* Adjust if guestbook/gallery need more/less */
+  padding: 0rem 0; /* Reduce top/bottom padding; child will have its own */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.5rem; /* Gap between content (PersonalCard/Gallery/Guestbook) and its back button */
 }
+
+/* Styles for specific views within .card-content-display if needed */
+.gallery-view-wrapper, .guestbook-view-wrapper {
+  width: 100%;
+  max-width: 100%; /* Allows gallery/guestbook to define their own max-width via their container */
+  display: flex; /* Needed for AnimatePresence if children are directly motion.div */
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem; /* Space between component and its common back button */
+}
+/* Specific sizing for gallery's internal container, if needed for LanguageSelector layout */
+.gallery-view-wrapper > .gallery-main-container {
+    width: 100%;
+    max-width: 1000px; /* As per Gallery.css */
+    box-sizing: border-box;
+}
+/* Specific sizing for guestbook's internal container */
+.guestbook-view-wrapper > .guestbook-container {
+    width: 100%;
+    max-width: 720px; /* As per Guestbook.css */
+    box-sizing: border-box;
+}
+
+/* --- Common Back Button Styling (for About, Gallery, Guestbook) --- */
+.card-view-back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background-color: rgba(var(--card-background-rgb), 0.45);
+  border: 1.5px solid rgba(var(--border-color-rgb), 0.25);
+  color: var(--text-color-poetic); /* Match language selector's text color */
+  font-family: var(--font-family-poetic), var(--font-family-fallback);
+  font-size: 1.05em;
+  font-weight: 400;
+  padding: 0.7rem 1.6rem;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 0.5rem; /* Space above the button after the content */
+  margin-bottom: 0.5rem; /* Space below button before bottom flourish */
+  align-self: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  will-change: transform, background-color, box-shadow;
+}
+
+.card-view-back-button .button-icon-svg { /* Use for icon if it's a span with SVG */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+}
+.card-view-back-button .button-icon-svg svg {
+  stroke-width: 2.5;
+  width: 100%; height: 100%;
+  transition: transform 0.2s ease;
+}
+
+.card-view-back-button:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.12);
+  color: var(--primary-color); /* Use primary for hover highlight */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px -3px rgba(var(--primary-color-rgb), 0.35);
+}
+.card-view-back-button:hover .button-icon-svg svg {
+    transform: translateX(-2px);
+}
+.card-view-back-button:active {
+  transform: translateY(-1px) scale(0.97);
+  box-shadow: 0 3px 10px -2px rgba(var(--primary-color-rgb), 0.3);
+}
+
+@media (max-width: 768px) {
+  .card-view-back-button { font-size: 1em; padding: 0.6rem 1.4rem; }
+  .card-view-back-button .button-icon-svg { width: 20px; height: 20px; }
+}
+@media (max-width: 480px) {
+  .card-view-back-button { font-size: 0.95em; padding: 0.55rem 1.2rem; gap: 0.4rem; }
+  .card-view-back-button .button-icon-svg { width: 18px; height: 18px; }
+}
+
 
 .language-selector-footer {
   position: absolute;

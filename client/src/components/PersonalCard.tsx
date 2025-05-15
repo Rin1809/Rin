@@ -108,9 +108,9 @@ const bioParagraphVariants = {
         rotateY: 0,
         filter: "blur(0px)",
         transition: {
-            delay: i * 0.22, // Điều chỉnh nhẹ delay
-            duration: 0.75, // Thời gian animation dài hơn một chút
-            ease: [0.16, 1, 0.3, 1] // Ease function mượt mà hơn
+            delay: i * 0.22, 
+            duration: 0.75, 
+            ease: [0.16, 1, 0.3, 1]
         }
     })
 };
@@ -297,6 +297,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
           );
           prevHeightRef.current = newHeightValue;
         } else if (prevHeightRef.current === null && newHeightValue !== 'auto' && newHeightValue > 0) {
+          // Set initial height without animation if it was null
           contentWrapperControls.set({ height: newHeightValue });
           prevHeightRef.current = newHeightValue;
         }
@@ -365,16 +366,18 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
   useEffect(() => {
     if (section === 'about' && !isSectionLoadingContent && contentWrapperOuterRef.current) {
+        // Increased delay for bio text animations to settle before measuring height
+        const delay = currentAboutSubSection === 'intro' ? 500 : 150; // Longer for intro (bio), shorter for others
         const measureTimeout = setTimeout(() => {
-            measureAndAnimateHeight(true);
-        }, 100);
+            measureAndAnimateHeight(true); 
+        }, delay);
 
         if (contentWrapperOuterRef.current) {
             contentWrapperOuterRef.current.scrollTop = 0;
         }
         return () => clearTimeout(measureTimeout);
     }
-  }, [isSectionLoadingContent, section, currentAboutSubSection, language, name, githubData, tiktokData, youtubeData]);
+  }, [isSectionLoadingContent, section, currentAboutSubSection, language, name, githubData, tiktokData, youtubeData, contentWrapperControls]);
 
   const changeSubSection = (direction: 'next' | 'prev') => {
     const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);

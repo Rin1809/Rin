@@ -5,7 +5,11 @@ import './styles/LanguageSelector.css';
 import flourishImage from '../assets/flourish.png';
 
 import PersonalCard from './PersonalCard';
-import Gallery from './Gallery'; // Gallery component
+import Gallery from './Gallery';
+import Guestbook from './Guestbook'; // NEW: Import Guestbook
+import { initialGuestbookEntries, type GuestbookEntry } from '../data/guestbook.data'; // NEW: Import guestbook data
+import { v4 as uuidv4 } from 'uuid';
+
 import { initParticlesEngine } from "@tsparticles/react";
 import type { Engine, Container } from "@tsparticles/engine";
 import { loadEmittersPlugin } from "@tsparticles/plugin-emitters";
@@ -35,28 +39,28 @@ import {
     layoutTransition,
     previewContainerVariants,
     previewIcons,
-    languageSelectorPreviewTranslations, 
-    cardDisplayInfo, 
+    languageSelectorPreviewTranslations,
+    cardDisplayInfo,
     galleryViewVariants,
-    SHARED_FLOURISH_SPRING_TRANSITION, // Import from constants
+    guestbookViewContainerVariants, // NEW
+    SHARED_FLOURISH_SPRING_TRANSITION,
+    aboutNavIconLeft, // Import for back button
 } from './languageSelector/languageSelector.constants';
 
 
 interface LanguageSelectorProps {
   onLanguageSelected: (language: 'vi' | 'en' | 'ja') => void;
-  // cardName: string; // Removed
-  // cardTitle: string; // Removed
   cardAvatarUrl: string;
   initialSelectedLanguage: 'vi' | 'en' | 'ja' | null;
   yourNameForIntro: string;
-  githubUsername: string; // New prop
+  githubUsername: string;
 }
 
-type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery';
+type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook'; // ADDED 'guestbook'
 
 const getFlourishLayoutPropsForView = (view: SelectorView) => {
     let scale = 1;
-    if (view === 'about' || view === 'gallery') {
+    if (view === 'about' || view === 'gallery' || view === 'guestbook') { // ADDED 'guestbook'
         scale = 0.85;
     }
     return { scale };
@@ -75,11 +79,10 @@ const initialMountFooterNoteDelay = initialMountButton3Delay + 0.4; // 2.2
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     onLanguageSelected,
-    // cardName, cardTitle, // Removed
     cardAvatarUrl,
     initialSelectedLanguage,
     yourNameForIntro,
-    githubUsername // Destructure new prop
+    githubUsername
 }) => {
   const [engineInitialized, setEngineInitialized] = useState(false);
   const [currentView, setCurrentView] = useState<SelectorView>('languageOptions');
@@ -90,7 +93,18 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const [isInitialMount, setIsInitialMount] = useState(true);
 
   const [isButtonHovered, setIsButtonHovered] = useState<string | null>(null);
-  const [headerPreviewType, setHeaderPreviewType] = useState<'about' | 'gallery' | null>(null);
+  const [headerPreviewType, setHeaderPreviewType] = useState<'about' | 'gallery' | 'guestbook' | null>(null); // ADDED 'guestbook'
+
+  const [guestbookEntries, setGuestbookEntries] = useState<GuestbookEntry[]>(() => {
+    // Attempt to load from localStorage, otherwise use initial
+    try {
+        const localData = localStorage.getItem('guestbookEntries');
+        return localData ? JSON.parse(localData) : initialGuestbookEntries;
+    } catch (error) {
+        console.error("Error loading guestbook from localStorage", error);
+        return initialGuestbookEntries;
+    }
+  });
 
   const topFlourishVisualControls = useAnimation();
   const bottomFlourishVisualControls = useAnimation();
@@ -132,20 +146,20 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const flourishLoopAnimTop = useMemo(() => createFlourishLoopAnimation(0), []);
   const flourishLoopAnimBottom = useMemo(() => createFlourishLoopAnimation(180), []);
 
-  useEffect(() => {
+   useEffect(() => {
     if (!isMountedRef.current) return;
 
-    const { scale: targetScale } = getFlourishLayoutPropsForView(currentView);
+    const { scale: targetScale } = getFlourishLayoutPropsForView(currentView); // Ensures currentView update is used
     const entryDelay = isInitialMount ? 0.1 : 0;
 
     const createTargetFlourishState = (baseVariantSet: Variants, scaleValue: number) => ({
         ...(baseVariantSet.visibleBase as object),
         scale: scaleValue,
         transition: {
-            opacity: { duration: isInitialMount ? 2.0 : 1.5, ease: [0.23, 1, 0.32, 1], delay: entryDelay }, // MODIFIED duration
-            filter: { type: "tween", duration: isInitialMount ? 1.2 : 0.9, ease: "easeOut", delay: entryDelay }, // MODIFIED duration
+            opacity: { duration: isInitialMount ? 2.0 : 1.5, ease: [0.23, 1, 0.32, 1], delay: entryDelay },
+            filter: { type: "tween", duration: isInitialMount ? 1.2 : 0.9, ease: "easeOut", delay: entryDelay },
             y: { ...SHARED_FLOURISH_SPRING_TRANSITION, delay: entryDelay },
-            rotate: { ...SHARED_FLOURISH_SPRING_TRANSITION, delay: entryDelay + (isInitialMount ? 0.1 : 0.05) }, // Slightly delay rotate for effect
+            rotate: { ...SHARED_FLOURISH_SPRING_TRANSITION, delay: entryDelay + (isInitialMount ? 0.1 : 0.05) },
             scale: { ...SHARED_FLOURISH_SPRING_TRANSITION, delay: entryDelay }
         }
     });
@@ -175,9 +189,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     }
   }, [currentView, isInitialMount, topFlourishVisualControls, bottomFlourishVisualControls, topFlourishVariants, bottomFlourishVariants, flourishLoopAnimTop, flourishLoopAnimBottom]); 
 
+
   const handleFlourishHoverStart = useCallback((
       controls: ReturnType<typeof useAnimation>,
-      variants: Variants 
+      variants: Variants
   ) => {
       const currentBaseScale = getFlourishLayoutPropsForView(currentView).scale;
       const hoverVariant = (variants.hover as (custom: { baseScale: number }) => any)({ baseScale: currentBaseScale });
@@ -193,7 +208,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       const targetStaticState = {
           ...(variants.visibleBase as object),
           scale: currentBaseScale,
-          transition: { type: "spring", stiffness: 280, damping: 35, mass: 1 } 
+          transition: { type: "spring", stiffness: 280, damping: 35, mass: 1 }
       };
       await controls.start(targetStaticState);
       if (isMountedRef.current) {
@@ -205,17 +220,19 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const handleParticlesLoaded = useCallback(async (_container?: Container) => { /* Placeholder */ }, []);
 
   const handleLanguageButtonClick = (lang: 'vi' | 'en' | 'ja') => {
-    onLanguageSelected(lang);    
-    setCurrentLanguage(lang);    
-    setDisplayTextLanguage(lang); 
-    setCurrentView('cardIntro'); 
+    onLanguageSelected(lang);
+    setCurrentLanguage(lang);
+    setDisplayTextLanguage(lang);
+    setCurrentView('cardIntro');
   };
 
   const handleMouseEnterLangBtn = (lang: 'vi' | 'en' | 'ja') => {
-    setDisplayTextLanguage(lang);   
+    setDisplayTextLanguage(lang);
   };
 
   const handleMouseLeaveLangBtn = () => {
+    // If you want it to revert to the selected language on mouse leave from button list
+    // setDisplayTextLanguage(currentLanguage);
   };
 
   const langForTextDisplayInOptionsView = displayTextLanguage;
@@ -226,11 +243,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     ? `ᓚᘏᗢ ${yourNameForIntro} | ${new Date().getFullYear()}`
     : `ᓚᘏᗢ ${yourNameForIntro} | ${new Date().getFullYear()}`;
 
-  const showFooter = currentView === 'cardIntro' || currentView === 'about' || currentView === 'gallery';
+  const showFooter = currentView === 'cardIntro' || currentView === 'about' || currentView === 'gallery' || currentView === 'guestbook'; // ADDED 'guestbook'
 
   const getFlourishWrapperStyle = (view: SelectorView, isTop: boolean) => {
-      let marginVertical = "1rem"; 
-      if (view === 'about' || view === 'gallery') {
+      let marginVertical = "1rem";
+      if (view === 'about' || view === 'gallery' || view === 'guestbook') { // ADDED 'guestbook'
           marginVertical = "0.5rem";
       }
       return isTop ? { marginBottom: marginVertical } : { marginTop: marginVertical };
@@ -247,6 +264,31 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const headerContentBlockDelay = 0.05;
 
 
+  // NEW: Handler for adding a guestbook entry
+  const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi' | 'en' | 'ja') => {
+    // Simulate API call delay for now
+    await new Promise(resolve => setTimeout(resolve, 700));
+
+    const newEntry: GuestbookEntry = {
+      id: uuidv4(), // Generate a unique ID
+      name,
+      message,
+      timestamp: new Date().toISOString(),
+      language: lang,
+    };
+
+    const updatedEntries = [newEntry, ...guestbookEntries].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).reverse(); // Keep sorted
+    setGuestbookEntries(updatedEntries);
+
+    // Save to localStorage (simple persistence)
+    try {
+        localStorage.setItem('guestbookEntries', JSON.stringify(updatedEntries));
+    } catch (error) {
+        console.error("Error saving guestbook to localStorage", error);
+    }
+  };
+
+
   return (
     <motion.div
       className="language-selector-poetic-overlay"
@@ -261,9 +303,9 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         />
       )}
         <motion.div
-            layout 
+            layout
             style={getFlourishWrapperStyle(currentView, true)}
-            transition={SHARED_FLOURISH_SPRING_TRANSITION} 
+            transition={SHARED_FLOURISH_SPRING_TRANSITION}
             className="flourish-wrapper"
         >
             <motion.img
@@ -305,52 +347,52 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               <motion.div
                 className="language-options-poetic"
               >
-                <LangButton 
-                    onClick={() => handleLanguageButtonClick('vi')} 
-                    ariaLabel="Chọn Tiếng Việt" 
-                    icon="🇻🇳" 
-                    name="Tiếng Việt" 
-                    animationDelay={isInitialMount ? initialMountButton1Delay : 0.15} 
-                    onMouseEnter={() => handleMouseEnterLangBtn('vi')} 
-                    onMouseLeave={handleMouseLeaveLangBtn} 
+                <LangButton
+                    onClick={() => handleLanguageButtonClick('vi')}
+                    ariaLabel="Chọn Tiếng Việt"
+                    icon="🇻🇳"
+                    name="Tiếng Việt"
+                    animationDelay={isInitialMount ? initialMountButton1Delay : 0.15}
+                    onMouseEnter={() => handleMouseEnterLangBtn('vi')}
+                    onMouseLeave={handleMouseLeaveLangBtn}
                 />
-                <motion.div 
-                    className="poetic-divider poetic-divider-vertical" 
-                    variants={dividerVerticalVariants(isInitialMount ? initialMountDivider1Delay : 0.2)} 
+                <motion.div
+                    className="poetic-divider poetic-divider-vertical"
+                    variants={dividerVerticalVariants(isInitialMount ? initialMountDivider1Delay : 0.2)}
                     initial="hidden" animate="visible" exit="exit"
                 />
-                <motion.div 
-                    className="poetic-divider poetic-divider-horizontal" 
-                    variants={dividerHorizontalVariants(isInitialMount ? initialMountDivider1Delay : 0.2)} 
+                <motion.div
+                    className="poetic-divider poetic-divider-horizontal"
+                    variants={dividerHorizontalVariants(isInitialMount ? initialMountDivider1Delay : 0.2)}
                     initial="hidden" animate="visible" exit="exit"
                 />
-                <LangButton 
-                    onClick={() => handleLanguageButtonClick('en')} 
-                    ariaLabel="Choose English" 
-                    icon="🇬🇧" 
-                    name="English" 
-                    animationDelay={isInitialMount ? initialMountButton2Delay : 0.25} 
-                    onMouseEnter={() => handleMouseEnterLangBtn('en')} 
-                    onMouseLeave={handleMouseLeaveLangBtn} 
+                <LangButton
+                    onClick={() => handleLanguageButtonClick('en')}
+                    ariaLabel="Choose English"
+                    icon="🇬🇧"
+                    name="English"
+                    animationDelay={isInitialMount ? initialMountButton2Delay : 0.25}
+                    onMouseEnter={() => handleMouseEnterLangBtn('en')}
+                    onMouseLeave={handleMouseLeaveLangBtn}
                 />
-                <motion.div 
-                    className="poetic-divider poetic-divider-vertical" 
-                    variants={dividerVerticalVariants(isInitialMount ? initialMountDivider2Delay : 0.3)} 
+                <motion.div
+                    className="poetic-divider poetic-divider-vertical"
+                    variants={dividerVerticalVariants(isInitialMount ? initialMountDivider2Delay : 0.3)}
                     initial="hidden" animate="visible" exit="exit"
                 />
-                <motion.div 
-                    className="poetic-divider poetic-divider-horizontal" 
-                    variants={dividerHorizontalVariants(isInitialMount ? initialMountDivider2Delay : 0.3)} 
+                <motion.div
+                    className="poetic-divider poetic-divider-horizontal"
+                    variants={dividerHorizontalVariants(isInitialMount ? initialMountDivider2Delay : 0.3)}
                     initial="hidden" animate="visible" exit="exit"
                 />
-                <LangButton 
-                    onClick={() => handleLanguageButtonClick('ja')} 
-                    ariaLabel="日本語を選択" 
-                    icon="🇯🇵" 
-                    name="日本語" 
-                    animationDelay={isInitialMount ? initialMountButton3Delay : 0.35} 
-                    onMouseEnter={() => handleMouseEnterLangBtn('ja')} 
-                    onMouseLeave={handleMouseLeaveLangBtn} 
+                <LangButton
+                    onClick={() => handleLanguageButtonClick('ja')}
+                    ariaLabel="日本語を選択"
+                    icon="🇯🇵"
+                    name="日本語"
+                    animationDelay={isInitialMount ? initialMountButton3Delay : 0.35}
+                    onMouseEnter={() => handleMouseEnterLangBtn('ja')}
+                    onMouseLeave={handleMouseLeaveLangBtn}
                 />
               </motion.div>
               <motion.p
@@ -368,7 +410,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
           {currentView === 'cardIntro' && (
             <motion.div key="card-intro-content" className="content-section card-intro-section-modifier"
-              initial={false} 
+              initial={false}
               animate="visible"
             >
                 <motion.div
@@ -390,7 +432,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                           initial={{scale:0.1, opacity:0, rotate: -60, y: 50, filter: "blur(10px) brightness(0.5)"}}
                           animate={{
                               scale:1, opacity:1, rotate: [-30, 15, -8, 5, 0], y: 0, filter: "blur(0px) brightness(1)",
-                              boxShadow: "0 0 45px 8px rgba(var(--highlight-color-poetic-rgb), 0.7)", 
+                              boxShadow: "0 0 45px 8px rgba(var(--highlight-color-poetic-rgb), 0.7)",
                               transition: { type: "spring", stiffness: 100, damping: 15, duration: 1, delay: cardIntroAvatarDelay }
                           }}
                           exit={{scale:0.2, opacity:0, rotate: 30, y: -30, filter: "blur(8px)", transition:{duration:0.25, ease:"anticipate"}}}
@@ -430,25 +472,28 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                             initial="initial"
                             animate="animate"
                             exit="exit"
-                            whileHover="hover" 
+                            whileHover="hover"
                           >
                             <motion.h4
                               className="header-preview-title"
-                              variants={contentItemVariants(0)} 
+                              variants={contentItemVariants(0)}
                             >
-                              {headerPreviewType === 'about' ? languageSelectorPreviewTranslations.aboutSnippetTitle[currentLanguage] 
-                                                            : languageSelectorPreviewTranslations.gallerySneakPeekTitle[currentLanguage]}
+                              {headerPreviewType === 'about' ? languageSelectorPreviewTranslations.aboutSnippetTitle[currentLanguage]
+                                : headerPreviewType === 'gallery' ? languageSelectorPreviewTranslations.gallerySneakPeekTitle[currentLanguage]
+                                : languageSelectorPreviewTranslations.guestbookSneakPeekTitle[currentLanguage]}
                             </motion.h4>
                             <motion.div
-                                className="header-preview-block-content" 
-                                variants={contentItemVariants(0.1)} 
+                                className="header-preview-block-content"
+                                variants={contentItemVariants(0.1)}
                                 initial="hidden" animate="visible" exit="exit"
                             >
                                 <span
                                     className="header-preview-icon"
-                                    dangerouslySetInnerHTML={{ __html: headerPreviewType === 'about' ? previewIcons.about : previewIcons.gallery }}
+                                    dangerouslySetInnerHTML={{ __html: headerPreviewType === 'about' ? previewIcons.about
+                                                                        : headerPreviewType === 'gallery' ? previewIcons.gallery
+                                                                        : previewIcons.guestbook }}
                                 />
-                                <div className="header-preview-actual-content"> 
+                                <div className="header-preview-actual-content">
                                   {headerPreviewType === 'about' && (
                                     <p className="header-preview-text-enhanced">
                                         {languageSelectorPreviewTranslations.aboutSnippetContent[currentLanguage]}
@@ -456,16 +501,21 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                   )}
                                   {headerPreviewType === 'gallery' && (
                                     <div className="header-preview-images-enhanced">
-                                      {(localImages.length > 0 ? localImages.slice(0,4) : [ 
+                                      {(localImages.length > 0 ? localImages.slice(0,4) : [
                                       ]).map((imgSrc, idx) => (
-                                        <motion.img 
-                                          key={`preview-${idx}`} 
-                                          variants={contentItemVariants(0.1 + idx * 0.4)} 
-                                          src={imgSrc} 
+                                        <motion.img
+                                          key={`preview-${idx}`}
+                                          variants={contentItemVariants(0.1 + idx * 0.08)} // Adjusted delay for faster sequence
+                                          src={imgSrc}
                                           alt={languageSelectorPreviewTranslations.galleryPreviewAlt[currentLanguage].replace("{index}", String(idx + 1))}
                                         />
                                       ))}
                                     </div>
+                                  )}
+                                  {headerPreviewType === 'guestbook' && ( // NEW Guestbook preview
+                                    <p className="header-preview-text-enhanced">
+                                        {languageSelectorPreviewTranslations.guestbookSnippetContent[currentLanguage]}
+                                    </p>
                                   )}
                                 </div>
                             </motion.div>
@@ -520,16 +570,20 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 </motion.div>
 
                 <motion.div className="card-intro-actions"
-                  variants={contentItemVariants(cardIntroActionsDelay)} 
+                  variants={contentItemVariants(cardIntroActionsDelay)}
                   initial="hidden" animate="visible" exit="exit"
                   layout
                   transition={layoutTransition}
                 >
-                    {(['about', 'gallery'] as const).map((type, index) => (
+                    {(['about', 'gallery', 'guestbook'] as const).map((type, index) => ( // ADDED 'guestbook'
                         <motion.button
                             key={type}
                             className="card-intro-button"
-                            onClick={type === 'about' ? () => setCurrentView('about') : () => setCurrentView('gallery')}
+                            onClick={
+                                type === 'about' ? () => setCurrentView('about')
+                                : type === 'gallery' ? () => setCurrentView('gallery')
+                                : () => setCurrentView('guestbook') // NEW
+                            }
                             variants={cardIntroButtonVariants}
                             initial="initial" animate="animate" exit="exit"
                             custom={cardIntroButtonBaseDelay + index * 0.1}
@@ -548,10 +602,15 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 className="button-icon-svg"
                                 variants={cardIntroButtonIconVariants}
                                 animate={isButtonHovered === type ? "hover" : "rest"}
-                                dangerouslySetInnerHTML={{ __html: type === 'about' ? cardIntroTranslations.aboutIconSvg : cardIntroTranslations.galleryIconSvg }}
+                                dangerouslySetInnerHTML={{ __html: type === 'about' ? cardIntroTranslations.aboutIconSvg
+                                                                    : type === 'gallery' ? cardIntroTranslations.galleryIconSvg
+                                                                    : cardIntroTranslations.guestbookIconSvg // NEW
+                                                                }}
                             />
                             <span className="button-text">
-                                {type === 'about' ? cardIntroTranslations.aboutButton[currentLanguage] : cardIntroTranslations.galleryButton[currentLanguage]}
+                                {type === 'about' ? cardIntroTranslations.aboutButton[currentLanguage]
+                                : type === 'gallery' ? cardIntroTranslations.galleryButton[currentLanguage]
+                                : cardIntroTranslations.guestbookButton[currentLanguage]} {/* NEW */}
                             </span>
                              <span className="button-shine-effect"></span>
                         </motion.button>
@@ -569,20 +628,21 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               animate="visible"
               exit="exit"
             >
-              <PersonalCard 
-                name={cardDisplayInfo.name[currentLanguage]} 
-                section="about" 
-                githubUsername={githubUsername} 
-                language={currentLanguage} 
+              <PersonalCard
+                name={cardDisplayInfo.name[currentLanguage]}
+                section="about"
+                githubUsername={githubUsername}
+                language={currentLanguage}
               />
               <motion.button
-                className="card-intro-button back-button-modifier"
+                className="card-view-back-button" // Use a common back button class if available
                 onClick={() => setCurrentView('cardIntro')}
-                variants={cardIntroButtonVariants}
+                variants={cardIntroButtonVariants} // Can reuse button variants or make specific ones
                 initial="initial" animate="animate" exit="exit"
-                custom={0.2}
+                custom={0.2} // Adjust delay as needed
                 whileHover="hover" whileTap="tap"
               >
+                 <span className="button-icon-svg" dangerouslySetInnerHTML={{ __html: aboutNavIconLeft}} />
                 <span className="button-text">{cardIntroTranslations.backButton[currentLanguage]}</span>
               </motion.button>
             </motion.div>
@@ -591,16 +651,48 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           {currentView === 'gallery' && (
             <motion.div
               key="gallery-content"
-              className="content-section card-content-display gallery-view-wrapper" 
-              variants={galleryViewVariants(0.05)} 
+              className="content-section card-content-display gallery-view-wrapper"
+              variants={galleryViewVariants(0.05)}
               initial="hidden"
               animate="visible"
               exit="exit"
             >
-              <Gallery 
-                onBack={() => setCurrentView('cardIntro')} 
-                language={currentLanguage} 
+              <Gallery
+                onBack={() => setCurrentView('cardIntro')}
+                language={currentLanguage}
               />
+              {/* The onBack in Gallery.tsx now handles its own button, so this is redundant */}
+            </motion.div>
+          )}
+
+          {currentView === 'guestbook' && ( // NEW Guestbook View
+            <motion.div
+              key="guestbook-content"
+              className="content-section card-content-display guestbook-view-wrapper"
+              variants={guestbookViewContainerVariants(0.05)}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <Guestbook
+                language={currentLanguage}
+                onBack={() => setCurrentView('cardIntro')}
+                entries={guestbookEntries}
+                onAddEntry={handleAddGuestbookEntry}
+              />
+                 <motion.button
+                    className="card-view-back-button"
+                    onClick={() => setCurrentView('cardIntro')}
+                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] } }}
+                    exit={{ opacity: 0, y: 20, scale: 0.95, transition: { duration: 0.25, ease: "easeIn" } }}
+                    whileHover={{ scale: 1.08, y: -4, boxShadow: "0 8px 20px -5px rgba(var(--primary-color-rgb), 0.35)", backgroundColor: "rgba(var(--primary-color-rgb), 0.1)"}}
+                    whileTap={{ scale: 0.96, y: -1 }}
+                    transition={{type:"spring", stiffness: 300, damping: 15}}
+                >
+                   <span className="button-icon-svg" dangerouslySetInnerHTML={{__html: aboutNavIconLeft }} />
+                   <span className="button-text">{cardIntroTranslations.backButton[currentLanguage]}</span>
+                </motion.button>
             </motion.div>
           )}
         </AnimatePresence>

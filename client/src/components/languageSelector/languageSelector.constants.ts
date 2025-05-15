@@ -349,6 +349,7 @@ export const dividerHorizontalVariants = (delay: number): Variants => ({
 export const cardIntroTranslations = {
   aboutButton: { vi: "Về tôi", en: "About Me", ja: "私について" },
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
+  guestbookButton: { vi: "Viết cảm nghĩ", en: "Guestbook", ja: "感想ノート" }, // NEW
   introTagline: {
       vi: "Chào mừng đến với thế giới của tui !",
       en: "Welcome to my world!",
@@ -356,6 +357,7 @@ export const cardIntroTranslations = {
   },
   aboutIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   galleryIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
+  guestbookIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>`, // NEW
   backButton: { vi: "Quay Lại", en: "Back", ja: "戻る" },
 };
 
@@ -526,6 +528,7 @@ export const previewContentItemVariants: Variants = {
 export const previewIcons = {
   about: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   gallery: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
+  guestbook: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path><path d="M19.5 10.5c.69-.69.69-2.5 0-3.18"></path></svg>`, // NEW
 };
 
 export const galleryViewVariants = (delay: number = 0.1): Variants => ({
@@ -652,12 +655,18 @@ export const personalCardTranslations = {
 export const languageSelectorPreviewTranslations = {
   aboutSnippetTitle: { vi: "Giới thiệu sơ lược", en: "About Me Snippet", ja: "自己紹介（概要）" },
   gallerySneakPeekTitle: { vi: "Xem trước bộ sưu tập", en: "Gallery Sneak Peek", ja: "ギャラリー予告編" },
+  guestbookSneakPeekTitle: { vi: "Góc cảm nghĩ", en: "Guestbook Entries", ja: "感想コーナー" }, // NEW
   aboutSnippetContent: {
     vi: "Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?",
     en: "Hi! I'm Rin,... well, just Rin, that's it? What were you expecting?",
     ja: "こんにちは！リンです。えっと、リンです、それだけ？何を期待してたの？"
   },
-  galleryPreviewAlt: { vi: "Xem trước bộ sưu tập {index}", en: "Gallery preview {index}", ja: "ギャラリープレビュー {index}" }
+  galleryPreviewAlt: { vi: "Xem trước bộ sưu tập {index}", en: "Gallery preview {index}", ja: "ギャラリープレビュー {index}" },
+  guestbookSnippetContent: { // NEW
+    vi: "Lưu giữ những khoảnh khắc và lời nhắn yêu thương từ mọi người...",
+    en: "Treasuring moments and kind words from everyone...",
+    ja: "皆さんからの温かい言葉や瞬間を大切に保管しています。。。"
+  }
 };
 
 // For Gallery component
@@ -685,3 +694,40 @@ export const cardDisplayInfo = {
         ja: "情報技術学生 | サイバーセキュリティ"
     }
 };
+
+//  For Guestbook view
+export const guestbookViewTranslations = {
+  title: { vi: "Sổ Lưu Bút Cảm Xúc", en: "Guestbook of Thoughts", ja: "ゲストブック・思いの記録" },
+  formTitle: { vi: "Để lại lời nhắn của bạn", en: "Leave Your Message", ja: "メッセージを残してください" },
+  nameLabel: { vi: "Tên của bạn (Nhà lữ hành)", en: "Your Name (Fellow Traveler)", ja: "お名前（旅人さん）" },
+  namePlaceholder: { vi: "vd: Lãng khách ẩn danh...", en: "e.g., A Mysterious Wanderer...", ja: "例：名無しの風来坊。。。" },
+  messageLabel: { vi: "Đôi dòng cảm nghĩ...", en: "Your thoughts here...", ja: "ご感想をどうぞ。。。" },
+  messagePlaceholder: { vi: "Nơi này thật đẹp và bình yên...", en: "This place is beautiful and peaceful...", ja: "この場所は美しくて穏やかですね。。。" },
+  submitButton: { vi: "Gửi Cảm Nghĩ", en: "Post Your Thought", ja: "感想を投稿する" },
+  submittingText: { vi: "Đang gửi...", en: "Submitting...", ja: "送信中。。。" },
+  noEntries: {
+    vi: "Chưa có ai để lại cảm nghĩ. Hãy là người đầu tiên chia sẻ nhé!",
+    en: "No thoughts have been shared yet. Be the first one!",
+    ja: "まだ感想はありません。最初の想いを綴りませんか？"
+  },
+  entryBy: { vi: "Lời nhắn từ", en: "A thought from", ja: "からのメッセージ" }, 
+  entryDatePrefix: { vi: "Vào lúc", en: "On", ja: "記録日：" }
+};
+
+// Variant for Guestbook main container
+export const guestbookViewContainerVariants = (delay: number = 0.1): Variants => ({
+    hidden: { opacity: 0, scale: 0.85, y: 50, filter: "blur(8px)" },
+    visible: {
+        opacity: 1, scale: 1, y: 0, filter: "blur(0px)",
+        transition: {
+            type: "spring", stiffness: 160, damping: 22, mass: 1,
+            delay,
+            opacity: { duration: 0.6, ease: "easeOut", delay },
+            filter: { duration: 0.5, ease: "easeOut", delay: delay + 0.1 }
+        }
+    },
+    exit: {
+        opacity: 0, scale: 0.9, y: 30, filter: "blur(5px)",
+        transition: { duration: 0.3, ease: "anticipate" }
+    }
+});
