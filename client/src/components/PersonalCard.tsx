@@ -1,6 +1,6 @@
 // client/src/components/PersonalCard.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useAnimation, useMotionValue, useTransform, animate } from 'framer-motion'; // Thêm animate
+import { motion, AnimatePresence, useAnimation, useMotionValue, useTransform, animate } from 'framer-motion';
 import './styles/PersonalCard.css';
 import {
     aboutNavIconLeft,
@@ -17,7 +17,7 @@ interface PersonalCardProps {
   language: 'vi' | 'en' | 'ja';
 }
 
-type AboutSubSection = 'intro' | 'github' | 'github-stats-ii' | 'github-stats-iii' | 'discord-presence' | 'socials';
+type AboutSubSection = 'intro' | 'github' | 'socials' | 'discord-presence' | 'github-stats-ii' | 'github-stats-iii';
 const aboutSubSectionsOrder: AboutSubSection[] = [
     'intro',
     'github',
@@ -117,20 +117,25 @@ const AnimatedNumber: React.FC<{ value: number }> = ({ value }) => {
             stiffness: 100,
             damping: 20,
             onUpdate: (latest) => {
-                // Cập nhật state nội bộ nếu bạn cần giá trị này ở đâu đó trong component,
-                // hoặc trực tiếp cập nhật textContent của node để tối ưu performance.
-                // Framer Motion khuyến khích dùng motion components để nó tự xử lý.
-                // Vì đây là <motion.span> trong return, nó sẽ tự update.
                 setCurrentValue(Math.round(latest));
             }
         });
         return () => controls.stop();
-    }, [value, currentValue]); // Chỉ chạy lại khi `value` thay đổi (từ props)
+    }, [value, currentValue]);
 
     return <motion.span ref={nodeRef}>{currentValue}</motion.span>;
 };
 
-const ParallaxImage: React.FC<{ src: string; alt: string; className: string; wide?: boolean }> = ({ src, alt, className, wide }) => {
+interface ParallaxImageProps {
+  src: string;
+  alt: string;
+  className: string;
+  wide?: boolean;
+  onImageLoad?: () => void;
+  onImageError?: () => void;
+}
+
+const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className, wide, onImageLoad, onImageError }) => {
     const ref = useRef(null);
     const x = useMotionValue(0);
     const y = useMotionValue(0);
@@ -167,6 +172,8 @@ const ParallaxImage: React.FC<{ src: string; alt: string; className: string; wid
                 alt={alt}
                 className={className}
                 style={{ x: xTransform, y: yTransform }}
+                onLoad={onImageLoad}
+                onError={onImageError || onImageLoad} // Call onImageLoad even on error to prevent blocking
             />
         </motion.div>
     );
@@ -188,6 +195,77 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const currentContentRef = useRef<HTMLDivElement>(null);
   const contentWrapperOuterRef = useRef<HTMLDivElement>(null);
   const prevHeightRef = useRef<number | 'auto' | null>(null);
+
+  const [imagesToLoadCount, setImagesToLoadCount] = useState(0);
+  const expectedImagesInCurrentSectionRef = useRef(0);
+
+  const measureAndAnimateHeight = () => {
+    if (contentWrapperOuterRef.current && currentContentRef.current) {
+      const contentHeight = currentContentRef.current.offsetHeight;
+      const newHeightValue = contentHeight > 0 ? contentHeight : 'auto';
+
+      if (prevHeightRef.current !== newHeightValue) {
+        contentWrapperControls.start(
+          { height: newHeightValue },
+          { type: "spring", stiffness: 260, damping: 30, mass: 0.9 }
+        );
+        prevHeightRef.current = newHeightValue;
+      } else if (prevHeightRef.current === null && newHeightValue !== 'auto' && newHeightValue > 0) {
+        // Set initial height without animation if it's the first measurement
+        contentWrapperControls.set({ height: newHeightValue });
+        prevHeightRef.current = newHeightValue;
+      }
+    }
+  };
+
+  const handleImageLoadedOrError = () => {
+    setImagesToLoadCount(prevCount => {
+      const newCount = prevCount - 1;
+      if (newCount <= 0) {
+        // All expected images for this section have "finished" loading (or errored)
+        // Trigger height measurement after a short delay to allow DOM to settle
+        setTimeout(measureAndAnimateHeight, 50); // 50ms delay, adjust if needed
+      }
+      return Math.max(0, newCount); // Ensure count doesn't go below zero
+    });
+  };
+
+  // Effect to determine number of images to load when section changes
+  useEffect(() => {
+    if (section === 'about') {
+      let expectedImages = 0;
+      // Count expected images for the current sub-section
+      if (currentAboutSubSection === 'discord-presence') {
+        expectedImages = 1;
+      } else if (currentAboutSubSection === 'github-stats-ii' && githubUsername) {
+        expectedImages = 2;
+      } else if (currentAboutSubSection === 'github-stats-iii' && githubUsername) {
+        expectedImages = 4;
+      }
+      // Add other sections if they load API images
+
+      expectedImagesInCurrentSectionRef.current = expectedImages;
+      setImagesToLoadCount(expectedImages);
+
+      // If no images are expected for this section, measure height immediately (after a delay for content to render)
+      if (expectedImages === 0) {
+        setTimeout(measureAndAnimateHeight, 160); // Increased delay for non-image content
+      }
+    }
+  }, [currentAboutSubSection, section, githubUsername, language]); // Re-run if these change
+
+  // Main effect for height animation, now depends on imagesToLoadCount
+  useEffect(() => {
+    if (section === 'about' && contentWrapperOuterRef.current) {
+      // Only measure and animate if no images are pending for the current section
+      if (imagesToLoadCount === 0) {
+        // Delay a bit to ensure other content (text, etc.) of the new section has rendered
+        const timerId = setTimeout(measureAndAnimateHeight, 150);
+        return () => clearTimeout(timerId);
+      }
+    }
+  }, [currentAboutSubSection, githubLoading, githubData?.user, githubError, section, contentWrapperControls, language, name, imagesToLoadCount]);
+
 
   useEffect(() => {
     if (section === 'about' && currentAboutSubSection === 'github' && !githubData && githubUsername && !githubLoading) {
@@ -228,33 +306,9 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
  useEffect(() => {
     if (section === 'about' && contentWrapperOuterRef.current) {
-        const measureAndAnimate = () => {
-            let newHeightValue: number | 'auto';
-            if (currentContentRef.current) {
-                const contentHeight = currentContentRef.current.offsetHeight;
-                newHeightValue = contentHeight > 0 ? contentHeight : 'auto';
-            } else {
-                newHeightValue = 'auto';
-            }
-
-            if (prevHeightRef.current !== newHeightValue) {
-                contentWrapperControls.start(
-                    { height: newHeightValue },
-                    { type: "spring", stiffness: 260, damping: 30, mass: 0.9 }
-                );
-                prevHeightRef.current = newHeightValue;
-            }
-        };
-        
-        const timerId = setTimeout(measureAndAnimate, 150); 
-
-        if (contentWrapperOuterRef.current) {
-          contentWrapperOuterRef.current.scrollTop = 0;
-        }
-        
-        return () => clearTimeout(timerId);
+      contentWrapperOuterRef.current.scrollTop = 0;
     }
-  }, [ currentAboutSubSection, githubLoading, githubData?.user, githubError, section, contentWrapperControls, language, name ]);
+  }, [currentAboutSubSection, section ]);
 
 
   const socialLinksData = [
@@ -282,7 +336,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             default: return "Thông tin";
         }
     };
-    
+
     const bioPart1 = personalCardTranslations.introBio.part1[currentLang].replace(personalCardTranslations.introBio.namePlaceholder, `<span class="bio-name-highlight">${name}</span>`);
     const bioPart2 = personalCardTranslations.introBio.part2[currentLang];
     const bioPart3 = personalCardTranslations.introBio.part3[currentLang];
@@ -415,41 +469,49 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
               )}
               {currentAboutSubSection === 'discord-presence' && (
                 <div className="discord-presence-container sub-section-inner-padding">
-                     <ParallaxImage 
+                     <ParallaxImage
                         src={`https://lanyard-profile-readme.vercel.app/api/${discordUserId}?theme=dark&bg=1A1B26&animated=true&borderRadius=10px&titleColor=BB9AF7&statusColor=79E6F3&hideDiscrim=false&idleMessage=%C4%90ang%20chill...`}
                         alt="Trạng thái Discord" className="discord-presence-image github-stat-image"
+                        onImageLoad={handleImageLoadedOrError}
+                        onImageError={handleImageLoadedOrError}
                      />
                 </div>
               )}
               {currentAboutSubSection === 'github-stats-ii' && githubUsername && (
                 <div className="github-stats-image-container sub-section-inner-padding">
-                    <ParallaxImage 
+                    <ParallaxImage
                         src={`https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=${githubUsername}&theme=tokyonight`}
                         alt="Chi tiết hồ sơ GitHub" className="github-stat-image"
+                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
                     />
-                    <ParallaxImage 
+                    <ParallaxImage
                         src={`https://github-readme-activity-graph.vercel.app/graph?username=${githubUsername}&theme=tokyonight&hide_border=true&area=true&line=BB9AF7&point=79E6F3`}
                         alt="Biểu đồ hoạt động GitHub" className="github-stat-image" wide={true}
+                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
                     />
                 </div>
               )}
               {currentAboutSubSection === 'github-stats-iii' && githubUsername && (
                 <div className="github-stats-image-container grid-2x2 sub-section-inner-padding">
-                    <ParallaxImage 
+                    <ParallaxImage
                         src={`https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${githubUsername}&theme=tokyonight&utcOffset=7`}
                         alt="Thời gian hoạt động hiệu quả GitHub" className="github-stat-image"
+                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
                     />
-                    <ParallaxImage 
+                    <ParallaxImage
                         src={`https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=${githubUsername}&theme=tokyonight`}
                         alt="Ngôn ngữ commit nhiều nhất GitHub" className="github-stat-image"
+                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
                     />
-                    <ParallaxImage 
+                    <ParallaxImage
                         src={`https://github-readme-stats.vercel.app/api/top-langs?username=${githubUsername}&show_icons=true&locale=en&layout=compact&theme=tokyonight`}
                         alt="Các ngôn ngữ hàng đầu GitHub" className="github-stat-image"
+                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
                     />
-                    <ParallaxImage 
+                    <ParallaxImage
                         src={`https://streak-stats.demolab.com/?user=${githubUsername}&theme=tokyonight&date_format=M%20j%5B%2C%20Y%5D`}
                         alt="Thống kê chuỗi GitHub" className="github-stat-image"
+                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
                     />
                 </div>
               )}
@@ -460,46 +522,8 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     );
   }
 
-  // Fallback cho section="all"
-  return (
-    <div className={containerClassName} style={style}>
-      <div className="card-main-header">
-          <img src={cardData.avatarUrl} alt={`${name}'s avatar`} className="my-avatar"/>
-          <div className="my-name-title"><h2>{name}</h2><p className="my-title">{cardData.title}</p></div>
-      </div>
-      <div className="card-section">
-        <h3 className="section-heading">Giới Thiệu</h3>
-        <p className="bio-text">
-          Chào bạn! Mình là {name}, một người đam mê công nghệ với kinh nghiệm trong phát triển phần mềm và quản trị hệ thống.
-          Mình thích khám phá những công nghệ mới và xây dựng các giải pháp sáng tạo.
-          Mình tin vào sức mạnh của mã nguồn mở và cộng đồng.
-        </p>
-      </div>
-      <div className="card-section">
-        <h3 className="section-heading">Kỹ Năng</h3>
-        <ul className="skills-list">
-          <li className="skill-tag">Python</li> <li className="skill-tag">JavaScript/TypeScript</li>
-          <li className="skill-tag">React</li> <li className="skill-tag">Node.js</li>
-          <li className="skill-tag">Docker</li> <li className="skill-tag">Linux</li>
-          <li className="skill-tag">SQL/NoSQL</li> <li className="skill-tag">Git</li>
-          <li className="skill-tag">Cloud (AWS/GCP cơ bản)</li>
-        </ul>
-      </div>
-      <div className="card-section">
-        <h3 className="section-heading">Liên Hệ</h3>
-        <div className="contact-links">
-          <a href={`https://github.com/${githubUsername || 'Rin1809'}`} target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a href="https://www.facebook.com/profile.php?id=100010587553539" target="_blank" rel="noopener noreferrer">Facebook</a>
-          <a href="mailto:khoavo1809@gmail.com">Email</a>
-        </div>
-      </div>
-    </div>
-  );
 };
 
-const cardData = {
-    avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
-    title: "IT Student | Cyber Security "
-};
+
 
 export default PersonalCard;
