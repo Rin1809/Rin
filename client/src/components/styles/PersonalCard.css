@@ -43,11 +43,11 @@
   background:
     radial-gradient(ellipse at 70% 30%, rgba(var(--primary-color-rgb), 0.08) 0%, transparent 55%),
     radial-gradient(ellipse at 30% 70%, rgba(var(--secondary-color-rgb), 0.07) 0%, transparent 55%),
-    rgba(var(--card-background-rgb), 0.7); /* Slightly more opaque background */
-  backdrop-filter: blur(20px) saturate(140%); /* Enhanced backdrop */
+    rgba(var(--card-background-rgb), 0.7);
+  backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   width: 100%;
-  border-radius: 28px; /* Softer, larger radius */
+  border-radius: 28px;
   border: 1.5px solid transparent;
   border-image-slice: 1;
   border-image-source: linear-gradient(145deg,
@@ -60,11 +60,11 @@
   align-items: center;
   font-family: var(--font-family-poetic), var(--font-family-fallback);
   color: var(--text-color-poetic);
-  padding: 0rem 0.5rem 1.2rem 0.5rem; /* Adjusted padding */
+  padding: 0rem 0.5rem 1.2rem 0.5rem;
   box-sizing: border-box;
   position: relative;
   box-shadow:
-    0 15px 50px rgba(var(--background-color-rgb), 0.5), /* Enhanced shadow */
+    0 15px 50px rgba(var(--background-color-rgb), 0.5),
     0 0 35px rgba(var(--highlight-color-poetic-rgb), 0.25),
     inset 0 0 30px rgba(var(--background-color-rgb), 0.3);
   overflow: hidden;
@@ -72,19 +72,18 @@
 
 
 /* --- Styles for About Sub-Section Navigation and Content --- */
-.about-sub-section-header { /* Changed from -navigation to -header for clarity */
+.about-sub-section-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     max-width: 700px;
-    /* margin-bottom: 1rem; Removed direct margin, controlled by navigation-indicator now */
-    padding: 0.6rem 0.3rem; /* Slightly adjusted padding */
+    padding: 0.6rem 0.3rem;
     box-sizing: border-box;
     border-bottom: 1.5px solid;
     border-image-source: linear-gradient(to right,
         transparent 2%,
-        rgba(var(--highlight-color-poetic-rgb), 0.25) 20%, /* Slightly stronger gradient */
+        rgba(var(--highlight-color-poetic-rgb), 0.25) 20%,
         rgba(var(--highlight-color-poetic-rgb), 0.55) 50%,
         rgba(var(--highlight-color-poetic-rgb), 0.25) 80%,
         transparent 98%);
@@ -94,17 +93,17 @@
 
 .about-nav-arrow {
     background: transparent;
-    border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.25); /* Slightly thicker border */
-    color: rgba(var(--highlight-color-poetic-rgb), 0.85); /* Brighter initial color */
+    border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.25);
+    color: rgba(var(--highlight-color-poetic-rgb), 0.85);
     cursor: pointer;
-    padding: 0.65rem; /* Slightly more padding */
+    padding: 0.65rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: color 0.25s ease, background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     line-height: 0;
-    box-shadow: 0 1.5px 5px rgba(var(--background-color-rgb),0.25); /* Slightly stronger shadow */
+    box-shadow: 0 1.5px 5px rgba(var(--background-color-rgb),0.25);
 }
 
 .about-nav-arrow svg {
@@ -113,7 +112,7 @@
     stroke-width: 2.8;
     transition: stroke 0.25s ease;
 }
-.about-nav-arrow[style*="pointer-events: none"] { /* For disabled state */
+.about-nav-arrow[style*="pointer-events: none"] {
     border-color: rgba(var(--highlight-color-poetic-rgb), 0.2) !important;
     color: rgba(var(--highlight-color-poetic-rgb), 0.4) !important;
     box-shadow: 0 1px 3px rgba(var(--background-color-rgb),0.15) !important;
@@ -122,7 +121,7 @@
 
 .about-section-title {
   font-family: var(--font-family-poetic), var(--font-family-fallback);
-  font-size: clamp(1.7em, 4.2vw, 2.1em); /* Slightly larger */
+  font-size: clamp(1.7em, 4.2vw, 2.1em);
   font-weight: 400;
   text-align: center;
   position: relative;
@@ -138,12 +137,12 @@
   background-size: 250% auto;
   animation: galleryTitleFlow 10s linear infinite alternate;
   text-shadow: 0 1.5px 2.5px rgba(var(--background-color-rgb),0.18),
-               0 0 12px rgba(var(--primary-color-rgb), 0.38), /* Enhanced text shadow */
+               0 0 12px rgba(var(--primary-color-rgb), 0.38),
                0 0 22px rgba(var(--secondary-color-rgb), 0.28),
                0 0 38px rgba(var(--highlight-color-poetic-rgb), 0.22);
   line-height: 1.35;
   letter-spacing: 0.8px;
-  margin: 0 0.5rem; /* Increased margin for spacing */
+  margin: 0 0.5rem;
   padding: 0.2rem 0;
   flex-grow: 1;
   min-width: 0;
@@ -154,7 +153,7 @@
     display: flex;
     justify-content: center;
     gap: 0.7rem;
-    padding: 0.8rem 0 1.5rem 0; /* Increased padding, esp. bottom */
+    padding: 0.8rem 0 1.5rem 0;
     width: 100%;
     flex-shrink: 0;
 }
@@ -176,16 +175,17 @@
 .about-sub-section-content-wrapper {
     position: relative;
     width: 100%;
-    max-width: 96%; /* Slightly reduced to allow parent's padding to show */
+    max-width: 96%;
     overflow-y: auto;
     overflow-x: hidden;
-    perspective: 1600px; /* Slightly increased perspective */
+    perspective: 1600px;
     perspective-origin: center center;
-    border-radius: 16px; /* Increased radius */
-    background-color: rgba(var(--card-background-rgb), 0.15); /* Darker for better content contrast */
-    box-shadow: inset 0 0 18px rgba(var(--background-color-rgb),0.28); /* Enhanced inset shadow */
+    border-radius: 16px;
+    background-color: rgba(var(--card-background-rgb), 0.15);
+    box-shadow: inset 0 0 18px rgba(var(--background-color-rgb),0.28);
     scrollbar-width: thin;
     scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.65) rgba(var(--card-background-rgb), 0.15);
+    min-height: 200px; /* Fallback minimum height */
 }
 
 .about-sub-section-content-wrapper::-webkit-scrollbar {
@@ -213,31 +213,71 @@
     border-radius: 16px;
     box-sizing: border-box;
     width: 100%;
+    position: relative;
 }
 .sub-section-inner-padding {
-    padding: 1.2rem 1.8rem; /* Increased padding */
+    padding: 1.2rem 1.8rem;
     box-sizing: border-box;
+}
+
+/* Loading Overlay */
+.section-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(var(--card-background-rgb), 0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 16px;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.section-loading-overlay p {
+    margin-top: 1.2rem;
+    color: var(--highlight-color-poetic);
+    font-size: 1.05em;
+    font-weight: 300;
+    text-shadow: 0 0 5px rgba(var(--highlight-color-poetic-rgb), 0.2);
+}
+
+.spinner {
+    border: 4px solid rgba(var(--highlight-color-poetic-rgb), 0.25);
+    border-left-color: var(--highlight-color-poetic);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 
 .personal-card-about-view .bio-text {
   font-family: var(--font-family-poetic), var(--font-family-fallback);
-  font-size: clamp(1.1em, 2.6vw, 1.2em); /* Slightly larger base font */
+  font-size: clamp(1.1em, 2.6vw, 1.2em);
   font-weight: 300;
-  line-height: 1.95; /* Slightly more leading */
-  color: rgba(var(--text-color-poetic-rgb), 0.94); /* Brighter text */
-  text-align: left; /* Justify can be harsh, left is often more readable */
+  line-height: 1.95;
+  color: rgba(var(--text-color-poetic-rgb), 0.94);
+  text-align: left;
   hyphens: auto;
   white-space: pre-line;
   text-shadow: 0 1.2px 3.5px rgba(var(--background-color-rgb), 0.65);
   letter-spacing: 0.15px;
-  margin-bottom: 0.8rem; /* Spacing between animated paragraphs */
+  margin-bottom: 0.8rem;
 }
 .personal-card-about-view .bio-text:last-child {
   margin-bottom: 0;
 }
 .personal-card-about-view .bio-text strong,
-.personal-card-about-view .bio-text .bio-name-highlight { /* For the name in bio */
+.personal-card-about-view .bio-text .bio-name-highlight {
     font-weight: 500;
     color: var(--highlight-color-poetic);
     text-shadow: 0 0 6px rgba(var(--highlight-color-poetic-rgb),0.35),
@@ -253,7 +293,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.8rem; /* Increased gap */
+    gap: 1.8rem;
     width: 100%;
     color: var(--text-color-poetic);
     box-sizing: border-box;
@@ -264,7 +304,7 @@
 }
 .github-stats-image-container.grid-2x2 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); /* Larger minmax */
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     gap: 1.2rem;
     align-items: stretch;
 }
@@ -272,7 +312,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    min-height: 160px; /* Increased min-height */
+    min-height: 160px;
 }
 .github-stat-image.wide-image, .parallax-image-wrapper.wide-image-wrapper .github-stat-image {
     grid-column: 1 / -1;
@@ -281,10 +321,10 @@
     margin-left: auto;
     margin-right: auto;
 }
-.parallax-image-wrapper { /* For ParallaxImage component */
+.parallax-image-wrapper {
     width: 100%;
     border-radius: 12px;
-    overflow: hidden; /* Crucial for containing transformed child */
+    overflow: hidden;
 }
 .parallax-image-wrapper.wide-image-wrapper {
      grid-column: 1 / -1;
@@ -294,20 +334,19 @@
 .github-stat-image, .discord-presence-image {
     max-width: 100%;
     height: auto;
-    border-radius: 12px; /* Slightly larger radius */
+    border-radius: 12px;
     background-color: rgba(var(--card-background-rgb), 0.12);
-    border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.15); /* Slightly thicker border */
+    border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.15);
     box-shadow: 0 6px 18px rgba(var(--background-color-rgb),0.38),
                 inset 0 0 10px rgba(var(--background-color-rgb),0.28);
     transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s ease, filter 0.3s ease;
     filter: saturate(0.9) brightness(0.95);
-    padding: 0.25rem; /* Slight padding around image itself if not using ParallaxImage wrapper */
-    display: block; /* For ParallaxImage internal img */
-    width: 100%; /* For ParallaxImage internal img */
+    padding: 0.25rem;
+    display: block;
+    width: 100%;
 }
 .parallax-image-wrapper:hover .github-stat-image,
-.parallax-image-wrapper:hover .discord-presence-image { /* If wrapped by ParallaxImage */
-    /* Hover effects managed by ParallaxImage's whileHover on wrapper or direct on image */
+.parallax-image-wrapper:hover .discord-presence-image {
      border-color: rgba(var(--highlight-color-poetic-rgb), 0.4);
     box-shadow: 0 9px 28px rgba(var(--highlight-color-poetic-rgb),0.28),
                 inset 0 0 12px rgba(var(--highlight-color-poetic-rgb),0.12);
@@ -318,7 +357,7 @@
 .github-user-header {
     display: flex;
     align-items: center;
-    gap: 1.8rem; /* Increased gap */
+    gap: 1.8rem;
     width: 100%;
     padding-bottom: 1.2rem;
     margin-bottom: 1.2rem;
@@ -330,14 +369,14 @@
     height: 75px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid rgba(var(--highlight-color-poetic-rgb), 0.65); /* Thicker, more visible border */
+    border: 3px solid rgba(var(--highlight-color-poetic-rgb), 0.65);
     box-shadow: 0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.35);
     flex-shrink: 0;
 }
 
 .github-user-info { flex-grow: 1; min-width: 0;}
 .github-user-info h3 {
-    font-size: clamp(1.3em, 3.2vw, 1.5em); /* Slightly larger */
+    font-size: clamp(1.3em, 3.2vw, 1.5em);
     font-weight: 500;
     color: var(--highlight-color-poetic);
     margin: 0 0 0.3rem 0;
@@ -345,12 +384,11 @@
 }
 .github-bio {
     font-size: clamp(0.88em, 2.1vw, 0.92em);
-    line-height: 1.7; /* Slightly more leading */
+    line-height: 1.7;
     color: var(--subtext-color-poetic);
     margin: 0;
     text-align: left;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Max 2 lines visible */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -358,8 +396,8 @@
 
 .github-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Larger minmax */
-    gap: 1.2rem; /* Increased gap */
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1.2rem;
     width: 100%;
     margin-bottom: 1.2rem;
 }
@@ -369,43 +407,43 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.2rem 0.6rem; /* Increased padding */
-    background-color: rgba(var(--card-background-rgb), 0.2); /* Darker background */
-    border-radius: 12px; /* Increased radius */
+    padding: 1.2rem 0.6rem;
+    background-color: rgba(var(--card-background-rgb), 0.2);
+    border-radius: 12px;
     border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.15);
-    box-shadow: 0 3.5px 10px rgba(var(--background-color-rgb), 0.32), /* Enhanced shadow */
+    box-shadow: 0 3.5px 10px rgba(var(--background-color-rgb), 0.32),
                 inset 0 0 6px rgba(var(--background-color-rgb), 0.12);
     min-height: 95px;
     text-align: center;
 }
 .stat-value {
-    font-size: clamp(1.7em, 5.2vw, 2em); /* Slightly larger */
+    font-size: clamp(1.7em, 5.2vw, 2em);
     font-weight: 400;
     color: var(--highlight-color-poetic);
     line-height: 1.1;
-    text-shadow: 0 0 8px rgba(var(--highlight-color-poetic-rgb), 0.38); /* Enhanced shadow */
+    text-shadow: 0 0 8px rgba(var(--highlight-color-poetic-rgb), 0.38);
 }
 .stat-label {
     font-size: clamp(0.82em, 2.1vw, 0.92em);
     color: var(--subtext-color-poetic);
-    margin-top: 0.25rem; /* Adjusted margin */
+    margin-top: 0.25rem;
     line-height: 1.2;
 }
 
 .github-profile-link {
     display: inline-block;
-    padding: 0.75rem 1.6rem; /* Increased padding */
+    padding: 0.75rem 1.6rem;
     background: linear-gradient(140deg,
         rgba(var(--highlight-color-poetic-rgb), 0.12),
         rgba(var(--primary-color-rgb), 0.08)
     );
     color: var(--highlight-color-poetic);
     text-decoration: none;
-    border-radius: 28px; /* More rounded */
+    border-radius: 28px;
     font-weight: 400;
     border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.28);
     transition: all 0.25s ease-out;
-    box-shadow: 0 2.5px 6px rgba(var(--background-color-rgb), 0.22); /* Enhanced shadow */
+    box-shadow: 0 2.5px 6px rgba(var(--background-color-rgb), 0.22);
 }
 .github-profile-link:hover {
      background: linear-gradient(140deg,
@@ -417,10 +455,10 @@
 }
 
 .loading-text, .error-text {
-    padding: 3.5rem 1rem; /* Increased padding */
-    font-size: 1.15em; /* Slightly larger font */
+    padding: 3.5rem 1rem;
+    font-size: 1.15em;
     color: var(--subtext-color-poetic);
-    min-height: 160px; /* Increased min-height */
+    min-height: 160px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -436,8 +474,8 @@
 /* --- Social Media Links --- */
 .social-media-links-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); /* Larger minmax */
-    gap: 1.2rem; /* Increased gap */
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1.2rem;
     width: 100%;
     padding-top: 0.6rem;
 }
@@ -445,15 +483,15 @@
 .social-media-link {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Align icon and text to start */
-    gap: 0.8rem; /* Space between icon and text */
-    padding: 0.9rem 1.2rem; /* Increased padding */
+    justify-content: flex-start;
+    gap: 0.8rem;
+    padding: 0.9rem 1.2rem;
     background-color: rgba(var(--highlight-color-poetic-rgb), 0.09);
     color: var(--highlight-color-poetic);
     text-decoration: none;
-    border-radius: 12px; /* Increased radius */
+    border-radius: 12px;
     font-weight: 400;
-    font-size: 1em; /* Slightly larger font */
+    font-size: 1em;
     border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.22);
     transition: all 0.25s ease-out;
     box-shadow: 0 2.5px 4.5px rgba(var(--background-color-rgb), 0.18);
@@ -463,12 +501,12 @@
 }
 .social-icon-wrapper {
     flex-shrink: 0;
-    width: 22px; /* Larger icons */
+    width: 22px;
     height: 22px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: currentColor; /* Inherits link color */
+    color: currentColor;
 }
 .social-icon-wrapper svg {
     width: 100%;
@@ -484,12 +522,11 @@
     border-color: rgba(var(--highlight-color-poetic-rgb), 0.45);
     transform: translateY(-2.5px);
     box-shadow: 0 4.5px 9px rgba(var(--highlight-color-poetic-rgb), 0.18);
-    color: var(--primary-color); /* Change text color on hover */
+    color: var(--primary-color);
 }
 
-/* Specific Icon Colors (optional, if you want them different from link color) */
 .social-media-link-github .social-icon-wrapper { color: #c9d1d9; }
-.social-media-link-tiktok .social-icon-wrapper { color: #fe2c55; } /* Example, may need adjustment based on dark theme */
+.social-media-link-tiktok .social-icon-wrapper { color: #fe2c55; }
 .social-media-link-discordProfile .social-icon-wrapper,
 .social-media-link-discordServer .social-icon-wrapper { color: #7289da; }
 .social-media-link-youtube .social-icon-wrapper { color: #FF0000; }
@@ -574,7 +611,7 @@
 
   .about-sub-section-content-wrapper {
      min-height: 250px;
-     max-height: 68vh; /* Slightly more generous on tablet */
+     max-height: 68vh;
   }
   .sub-section-inner-padding { padding: 1rem 1.2rem; }
   .github-avatar { width: 65px; height: 65px; }
@@ -594,7 +631,7 @@
     .personal-card-container .contact-links a { font-size: 0.95em; }
     .personal-card-container .bio-text { font-weight: 300; }
 
-    .personal-card-about-view { padding: 0rem 0.1rem 0.8rem 0.1rem; border-radius: 22px; } /* Reduced padding slightly */
+    .personal-card-about-view { padding: 0rem 0.1rem 0.8rem 0.1rem; border-radius: 22px; }
     .about-sub-section-header { padding: 0.3rem 0; }
     .about-nav-arrow { padding: 0.5rem; }
     .about-nav-arrow svg { width: 20px; height: 20px; stroke-width: 2.5; }
@@ -603,7 +640,7 @@
 
 
     .about-sub-section-content-wrapper {
-      min-height: 280px; /* Ensure enough space for small mobile */
+      min-height: 280px;
       max-height: 65vh;
       scrollbar-width: auto;
       border-radius: 14px;
@@ -611,7 +648,7 @@
     .about-sub-section-content-wrapper::-webkit-scrollbar {
         width: 7px;
     }
-    .sub-section-inner-padding { padding: 0.8rem 1rem; } /* Reduced padding */
+    .sub-section-inner-padding { padding: 0.8rem 1rem; }
     .personal-card-about-view .bio-text { line-height: 1.85; font-size: clamp(1em, 2.4vw, 1.1em); }
 
     .github-user-header { flex-direction: column; align-items: center; text-align: center; gap: 0.9rem; }

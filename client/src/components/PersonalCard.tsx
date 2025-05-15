@@ -173,7 +173,7 @@ const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className, wide
                 className={className}
                 style={{ x: xTransform, y: yTransform }}
                 onLoad={onImageLoad}
-                onError={onImageError || onImageLoad} // Call onImageLoad even on error to prevent blocking
+                onError={onImageError || onImageLoad}
             />
         </motion.div>
     );
@@ -186,7 +186,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const [slideDirection, setSlideDirection] = useState(0);
 
   const [githubData, setGithubData] = useState<any>(null);
-  const [githubLoading, setGithubLoading] = useState<boolean>(false);
+  const [githubLoading, setGithubLoading] = useState<boolean>(false); // Only for GitHub API call
   const [githubError, setGithubError] = useState<string | null>(null);
 
   const discordUserId = "873576591693873252";
@@ -197,80 +197,67 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const prevHeightRef = useRef<number | 'auto' | null>(null);
 
   const [imagesToLoadCount, setImagesToLoadCount] = useState(0);
-  const expectedImagesInCurrentSectionRef = useRef(0);
+  const [isSectionLoadingContent, setIsSectionLoadingContent] = useState(false); // Overall loading state for the section's content
 
-  const measureAndAnimateHeight = () => {
-    if (contentWrapperOuterRef.current && currentContentRef.current) {
-      const contentHeight = currentContentRef.current.offsetHeight;
-      const newHeightValue = contentHeight > 0 ? contentHeight : 'auto';
+  const measureAndAnimateHeight = (forceMeasure = false) => {
+    requestAnimationFrame(() => { // Ensure measurement after layout updates
+      if (contentWrapperOuterRef.current && currentContentRef.current) {
+        if (isSectionLoadingContent && !forceMeasure) {
+            // If still loading and not forced, don't measure yet,
+            // or set to a temporary loading height if desired.
+            // For now, we'll just skip to avoid measuring partially loaded content.
+            return;
+        }
 
-      if (prevHeightRef.current !== newHeightValue) {
-        contentWrapperControls.start(
-          { height: newHeightValue },
-          { type: "spring", stiffness: 260, damping: 30, mass: 0.9 }
-        );
-        prevHeightRef.current = newHeightValue;
-      } else if (prevHeightRef.current === null && newHeightValue !== 'auto' && newHeightValue > 0) {
-        // Set initial height without animation if it's the first measurement
-        contentWrapperControls.set({ height: newHeightValue });
-        prevHeightRef.current = newHeightValue;
+        const contentHeight = currentContentRef.current.offsetHeight;
+        const newHeightValue = contentHeight > 0 ? contentHeight : 'auto';
+
+        if (prevHeightRef.current !== newHeightValue || forceMeasure) {
+          contentWrapperControls.start(
+            { height: newHeightValue },
+            { type: "spring", stiffness: 260, damping: 30, mass: 0.9, delay: forceMeasure ? 0.05 : 0 } // Add small delay if forced
+          );
+          prevHeightRef.current = newHeightValue;
+        } else if (prevHeightRef.current === null && newHeightValue !== 'auto' && newHeightValue > 0) {
+          contentWrapperControls.set({ height: newHeightValue });
+          prevHeightRef.current = newHeightValue;
+        }
       }
-    }
-  };
-
-  const handleImageLoadedOrError = () => {
-    setImagesToLoadCount(prevCount => {
-      const newCount = prevCount - 1;
-      if (newCount <= 0) {
-        // All expected images for this section have "finished" loading (or errored)
-        // Trigger height measurement after a short delay to allow DOM to settle
-        setTimeout(measureAndAnimateHeight, 50); // 50ms delay, adjust if needed
-      }
-      return Math.max(0, newCount); // Ensure count doesn't go below zero
     });
   };
 
-  // Effect to determine number of images to load when section changes
+  const handleImageLoadedOrError = () => {
+    setImagesToLoadCount(prevCount => Math.max(0, prevCount - 1));
+  };
+
+  // Effect to determine initial loading state and image count for a new section
   useEffect(() => {
     if (section === 'about') {
       let expectedImages = 0;
-      // Count expected images for the current sub-section
-      if (currentAboutSubSection === 'discord-presence') {
-        expectedImages = 1;
-      } else if (currentAboutSubSection === 'github-stats-ii' && githubUsername) {
-        expectedImages = 2;
-      } else if (currentAboutSubSection === 'github-stats-iii' && githubUsername) {
-        expectedImages = 4;
-      }
-      // Add other sections if they load API images
+      if (currentAboutSubSection === 'discord-presence') expectedImages = 1;
+      else if (currentAboutSubSection === 'github-stats-ii' && githubUsername) expectedImages = 2;
+      else if (currentAboutSubSection === 'github-stats-iii' && githubUsername) expectedImages = 4;
 
-      expectedImagesInCurrentSectionRef.current = expectedImages;
       setImagesToLoadCount(expectedImages);
 
-      // If no images are expected for this section, measure height immediately (after a delay for content to render)
-      if (expectedImages === 0) {
-        setTimeout(measureAndAnimateHeight, 160); // Increased delay for non-image content
+      const needsGithubAPICall = currentAboutSubSection === 'github' && !githubData && githubUsername && !githubLoading;
+
+      if (expectedImages > 0 || needsGithubAPICall) {
+        setIsSectionLoadingContent(true);
+        // Optionally set a temporary height for the loading state
+        // contentWrapperControls.start({ height: 250 }, { duration: 0.1 });
+      } else {
+        setIsSectionLoadingContent(false);
       }
     }
-  }, [currentAboutSubSection, section, githubUsername, language]); // Re-run if these change
+  }, [currentAboutSubSection, section, githubUsername, githubData, githubLoading]); // Added githubLoading
 
-  // Main effect for height animation, now depends on imagesToLoadCount
-  useEffect(() => {
-    if (section === 'about' && contentWrapperOuterRef.current) {
-      // Only measure and animate if no images are pending for the current section
-      if (imagesToLoadCount === 0) {
-        // Delay a bit to ensure other content (text, etc.) of the new section has rendered
-        const timerId = setTimeout(measureAndAnimateHeight, 150);
-        return () => clearTimeout(timerId);
-      }
-    }
-  }, [currentAboutSubSection, githubLoading, githubData?.user, githubError, section, contentWrapperControls, language, name, imagesToLoadCount]);
-
-
+  // Effect for fetching GitHub API data
   useEffect(() => {
     if (section === 'about' && currentAboutSubSection === 'github' && !githubData && githubUsername && !githubLoading) {
+      setIsSectionLoadingContent(true); // Ensure loading state is true
       const fetchGithubData = async () => {
-        setGithubLoading(true);
+        setGithubLoading(true); // Specific for API call
         setGithubError(null);
         try {
           const userRes = await fetch(`https://api.github.com/users/${githubUsername}`);
@@ -281,12 +268,44 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
           console.error("Không thể tải dữ liệu GitHub:", error);
           setGithubError(error.message || "Không thể tải dữ liệu GitHub.");
         } finally {
-          setGithubLoading(false);
+          setGithubLoading(false); // API call finished
+          // Don't set setIsSectionLoadingContent(false) here directly. Let the combined logic handle it.
         }
       };
       fetchGithubData();
     }
   }, [section, currentAboutSubSection, githubData, githubUsername, githubLoading]);
+
+  // Effect to update overall section loading state based on GitHub API and image loading
+  useEffect(() => {
+    if (section === 'about') {
+      const isGithubAPILoading = currentAboutSubSection === 'github' && githubLoading;
+      const areImagesStillLoading = imagesToLoadCount > 0 &&
+        (currentAboutSubSection === 'discord-presence' ||
+         currentAboutSubSection === 'github-stats-ii' ||
+         currentAboutSubSection === 'github-stats-iii');
+
+      setIsSectionLoadingContent(isGithubAPILoading || areImagesStillLoading);
+    } else {
+      setIsSectionLoadingContent(false);
+    }
+  }, [section, currentAboutSubSection, githubLoading, imagesToLoadCount]);
+
+  // Effect to measure height AFTER content is loaded and visible
+  useEffect(() => {
+    if (section === 'about' && !isSectionLoadingContent && contentWrapperOuterRef.current) {
+        // Key change in motion.div should re-render currentContentRef.
+        // Wait for a couple of frames to ensure new content is laid out.
+        const measureTimeout = setTimeout(() => {
+            measureAndAnimateHeight(true); // Force measure after loading is done
+        }, 100); // Increased delay slightly
+
+        if (contentWrapperOuterRef.current) {
+            contentWrapperOuterRef.current.scrollTop = 0;
+        }
+        return () => clearTimeout(measureTimeout);
+    }
+  }, [isSectionLoadingContent, section, currentAboutSubSection, language, name, githubData]); // Added githubData
 
   const changeSubSection = (direction: 'next' | 'prev') => {
     const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);
@@ -300,16 +319,11 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
       nextIndex = (currentIndex - 1 + aboutSubSectionsOrder.length) % aboutSubSectionsOrder.length;
     }
     if (currentIndex !== nextIndex) {
+        // Reset height related refs when section changes to allow fresh measurement
+        // prevHeightRef.current = null; // Let's try without this first, might cause jump
         setCurrentAboutSubSection(aboutSubSectionsOrder[nextIndex]);
     }
   };
-
- useEffect(() => {
-    if (section === 'about' && contentWrapperOuterRef.current) {
-      contentWrapperOuterRef.current.scrollTop = 0;
-    }
-  }, [currentAboutSubSection, section ]);
-
 
   const socialLinksData = [
     { id: 'github', url: `https://github.com/${githubUsername || 'Rin1809'}`, translationKey: 'github' as keyof typeof personalCardTranslations.socialLinks, icon: SocialIcons.github },
@@ -394,9 +408,32 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             ref={contentWrapperOuterRef} className="about-sub-section-content-wrapper"
             animate={contentWrapperControls} initial={{ height: 'auto' }}
         >
+            <AnimatePresence mode="wait">
+                {isSectionLoadingContent && (
+                    <motion.div
+                        key="loading-indicator"
+                        className="section-loading-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <div className="spinner"></div>
+                        <p>{personalCardTranslations.loadingText[currentLang] || "Đang tải..."}</p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
           <AnimatePresence initial={false} custom={slideDirection} mode="wait" >
             <motion.div
-              ref={currentContentRef} key={currentAboutSubSection + currentLang} className="about-sub-section-content"
+              style={{
+                opacity: isSectionLoadingContent ? 0 : 1,
+                pointerEvents: isSectionLoadingContent ? 'none' : 'auto',
+              }}
+              transition={{ duration: 0.2, delay: isSectionLoadingContent ? 0 : 0.15 }} // Delay showing content until loading overlay is gone
+              ref={currentContentRef}
+              key={currentAboutSubSection + currentLang + name} // Ensure key changes to remount
+              className="about-sub-section-content"
               custom={slideDirection} variants={aboutSectionContentVariants} initial="enter" animate="center" exit="exit"
             >
               {currentAboutSubSection === 'intro' && (
@@ -412,9 +449,8 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
               {currentAboutSubSection === 'github' && (
                 <div className="sub-section-inner-padding">
-                  {githubLoading && <p className="loading-text">{personalCardTranslations.loadingText[currentLang]}</p>}
-                  {githubError && <p className="error-text">{personalCardTranslations.errorTextPrefix[currentLang]}{githubError}</p>}
-                  {githubData?.user && (
+                  {githubError && !githubLoading && <p className="error-text">{personalCardTranslations.errorTextPrefix[currentLang]}{githubError}</p>}
+                  {githubData?.user && !githubLoading && (
                     <div className="github-stats-container api-stats">
                         <div className="github-user-header">
                             <motion.img
@@ -470,7 +506,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
               {currentAboutSubSection === 'discord-presence' && (
                 <div className="discord-presence-container sub-section-inner-padding">
                      <ParallaxImage
-                        src={`https://lanyard-profile-readme.vercel.app/api/${discordUserId}?theme=dark&bg=1A1B26&animated=true&borderRadius=10px&titleColor=BB9AF7&statusColor=79E6F3&hideDiscrim=false&idleMessage=%C4%90ang%20chill...`}
+                        src={`https://lanyard-profile-readme.vercel.app/api/${discordUserId}?theme=dark&bg=1A1B26&animated=true&borderRadius=10px&titleColor=BB9AF7&statusColor=79E6F3&hideDiscrim=false&idleMessage=${encodeURIComponent("Đang chill...")}`}
                         alt="Trạng thái Discord" className="discord-presence-image github-stat-image"
                         onImageLoad={handleImageLoadedOrError}
                         onImageError={handleImageLoadedOrError}
@@ -523,7 +559,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   }
 
 };
-
 
 
 export default PersonalCard;
