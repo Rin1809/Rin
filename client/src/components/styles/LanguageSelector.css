@@ -525,9 +525,8 @@
   padding: 0.9rem 1.8rem;
   border-radius: 16px;
   cursor: pointer;
-  min-width: 160px;
+  min-width: 200px;
   flex: 1 1 auto;
-  max-width: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
