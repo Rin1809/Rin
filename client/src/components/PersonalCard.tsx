@@ -264,21 +264,28 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const measureAndAnimateHeight = useCallback((forceMeasure = false) => {
     requestAnimationFrame(() => {
       if (contentWrapperOuterRef.current && currentContentRef.current) {
-        if (isSectionLoadingContent && !forceMeasure && currentAboutSubSection !== 'placeholder') { // K đo khi đang loading, trừ placeholder
+        if (isSectionLoadingContent && !forceMeasure && currentAboutSubSection !== 'placeholder') {
             return;
         }
         const contentHeight = currentContentRef.current.offsetHeight;
-        // Ensure placeholder has some min height for visual feedback during auto-next
         const minHeightForPlaceholder = currentAboutSubSection === 'placeholder' ? 200 : 0;
         const finalHeight = Math.max(contentHeight, minHeightForPlaceholder);
         const newHeightValue = finalHeight > 0 ? finalHeight : 'auto';
 
-
         if (prevHeightRef.current !== newHeightValue || forceMeasure) {
             // Ưu tiên spring cho placeholder để tạo cảm giác mượt khi nó init chiều cao
-            const transitionConfig = (currentAboutSubSection === 'placeholder' && prevHeightRef.current === null)
-                ? { type: "spring", stiffness: 180, damping: 25, mass: 0.8 } // Mượt hơn cho placeholder
-                : { type: "spring", stiffness: 260, damping: 30, mass: 0.9 };
+            // --- ĐIỀU CHỈNH Ở ĐÂY ---
+            const transitionType: "spring" | "tween" = // Ép kiểu hoặc đảm bảo là 'spring'/'tween'
+              (currentAboutSubSection === 'placeholder' && prevHeightRef.current === null)
+                ? "spring" // Ví dụ: luôn dùng spring
+                : "spring"; // Hoặc "tween" nếu bạn muốn
+
+            const transitionConfig = {
+                type: transitionType, // Sử dụng biến đã ép kiểu
+                stiffness: (currentAboutSubSection === 'placeholder' && prevHeightRef.current === null) ? 180 : 260,
+                damping: (currentAboutSubSection === 'placeholder' && prevHeightRef.current === null) ? 25 : 30,
+                mass: (currentAboutSubSection === 'placeholder' && prevHeightRef.current === null) ? 0.8 : 0.9,
+            };
 
             contentWrapperControls.start(
                 { height: newHeightValue },
