@@ -2,87 +2,117 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './styles/Guestbook.css';
-import { guestbookViewTranslations as t } from './languageSelector/languageSelector.constants'; 
-import type { GuestbookEntry } from '../data/guestbook.data'; 
+import { guestbookViewTranslations as t } from './languageSelector/languageSelector.constants';
+import type { GuestbookEntry } from '../data/guestbook.data';
 
-// --- ICONS ---
-const IconPencil = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-    <path d="m15 5 4 4"></path>
+// --- NEW ICONS (Feather Pen and Ink Splatter Cancel) ---
+const IconFeatherPen = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20.7_3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/>
+    <path d="m17.6 6.7 3.1-3.1"/>
+    <path d="M2.6 20.1C5.9 19.4 10 18 13 15c2-2 3.3-4.2 4-6.3.4-1.1.6-2.3.5-3.5S17 3.2 16 3.3c-1 .1-2.3.7-3.7 2s-3 3.1-4.2 4.6c-1.9 2.4-3.8 4.6-5.3 6.8"/>
+    <path d="M10.7 11.3 2.6 20.1"/>
+    <path d="m19.2 5.2.4.4"/>
   </svg>
 );
 
-const IconXCircle = () => ( // More visually distinct cancel icon
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="15" y1="9" x2="9" y2="15"></line>
-        <line x1="9" y1="9" x2="15" y2="15"></line>
-    </svg>
+const IconInkSplatterCancel = () => ( // More thematic cancel icon
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10.5 20.5C6 20 4 17 4 12A8 8 0 0 1 12 4c5 0 7 2.5 7.5 7.5"/>
+    <path d="m18 18-5.5-5.5"/>
+    <path d="m12.5 18-5.5-5.5"/>
+    <path d="M4.5 10C5.7 9.3 6.5 8.2 7 7"/>
+    <path d="M7.5 3.5C9 4.2 10.8 5.1 11.5 6.5"/>
+    <circle cx="14" cy="5.5" r="0.5" fill="currentColor"/>
+    <circle cx="9" cy="3.5" r="0.5" fill="currentColor"/>
+    <circle cx="4.5" cy="6" r="0.5" fill="currentColor"/>
+    <circle cx="20.5" cy="11" r="0.5" fill="currentColor"/>
+  </svg>
 );
-// --- END ICONS ---
+
 
 interface GuestbookProps {
   language: 'vi' | 'en' | 'ja';
   onBack: () => void;
   entries: GuestbookEntry[];
-  onAddEntry: (name: string, message: string, lang: 'vi' | 'en' | 'ja') => Promise<void>; 
+  onAddEntry: (name: string, message: string, lang: 'vi' | 'en' | 'ja') => Promise<void>;
 }
 
-// --- FRAMER MOTION VARIANTS ---
+// --- FRAMER MOTION VARIANTS (ENHANCED) ---
 const guestbookContainerVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95, filter: "blur(5px)" },
+  hidden: { opacity: 0, y: 50, scale: 0.9, filter: "blur(8px) saturate(0.5)" },
   visible: {
-    opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
-    transition: { 
-      type: "spring", stiffness: 180, damping: 28, mass: 1,
-      staggerChildren: 0.08, delayChildren: 0.1 
+    opacity: 1, y: 0, scale: 1, filter: "blur(0px) saturate(1)",
+    transition: {
+      type: "spring", stiffness: 150, damping: 25, mass: 1.1,
+      staggerChildren: 0.1, delayChildren: 0.15
     }
   },
-  exit: { opacity: 0, y: 20, scale: 0.97, filter: "blur(3px)", transition: { duration: 0.25 } }
+  exit: { opacity: 0, y: 30, scale: 0.92, filter: "blur(5px) saturate(0.7)", transition: { duration: 0.3, ease:"anticipate" } }
 };
 
-const guestbookInteractiveSectionVariants = { // For form OR write prompt
-  hidden: { opacity: 0, height: 0, y: 20, marginBottom: 0 },
-  visible: { opacity: 1, height: 'auto', y: 0, marginBottom: "2.5rem", transition: { duration: 0.5, ease: "easeOut", staggerChildren: 0.07, when: "beforeChildren" } },
-  exit: { opacity: 0, height: 0, y: -15, marginBottom: 0, transition: { duration: 0.3, ease: "easeIn", when: "afterChildren" } }
+const guestbookInteractiveSectionVariants = {
+  hidden: { opacity: 0, height: 0, y: 25, filter:"blur(3px)", marginBottom: 0 },
+  visible: {
+    opacity: 1, height: 'auto', y: 0, filter:"blur(0px)", marginBottom: "2.8rem",
+    transition: {
+      opacity: { duration: 0.4, ease: "easeOut" },
+      height: { type:"spring", stiffness: 200, damping: 28, delay:0.05 },
+      y: {type:"spring", stiffness:220, damping:20, delay: 0.1 },
+      filter: { duration: 0.3, delay: 0.15},
+      staggerChildren: 0.08,
+      when: "beforeChildren"
+    }
+  },
+  exit: {
+    opacity: 0, height: 0, y: -20, filter:"blur(3px)", marginBottom: 0,
+    transition: {
+      opacity: { duration: 0.25, ease: "easeIn" },
+      height: { type:"spring", stiffness: 230, damping: 30, duration: 0.35 },
+      filter: {duration: 0.2},
+      when: "afterChildren"
+    }
+  }
 };
 
-const guestbookItemVariants = {
-  hidden: { opacity: 0, x: -20, filter: "blur(2px)" },
-  visible: { opacity: 1, x: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 220, damping: 20, mass: 0.9 } },
+const guestbookItemVariants = { // General item fade-in for title, form elements
+  hidden: { opacity: 0, y: 18, filter: "blur(2.5px)" },
+  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 250, damping: 22, mass: 0.95 } },
 };
 
 const entryCardVariants = {
-  initial: { opacity: 0, y: 40, scale: 0.92, filter: "blur(4px) saturate(0.7)" },
+  initial: { opacity: 0, y: 55, x: -15, scale: 0.88, rotate: -3, filter: "blur(5px) saturate(0.6) brightness(0.8)" },
   animate: (i: number) => ({
-    opacity: 1, y: 0, scale: 1, filter: "blur(0px) saturate(1)",
+    opacity: 1, y: 0, x:0, scale: 1, rotate:0, filter: "blur(0px) saturate(1) brightness(1)",
     transition: {
-      type: "spring", stiffness: 200, damping: 25, mass: 0.85,
-      delay: i * 0.07 + 0.15,
+      type: "spring", stiffness: 190, damping: 26, mass: 0.9,
+      delay: i * 0.1 + 0.2, // Staggered delay for each card
     }
   }),
-  exit: { opacity: 0, scale: 0.95, y: -20, filter: "blur(3px) saturate(0.8)", transition: { duration: 0.22 } }
+  exit: { opacity: 0, scale: 0.9, y: -25, x:10, rotate: 2, filter: "blur(4px) saturate(0.7)", transition: { duration: 0.25, ease:"circIn" } }
 };
 
 const feedbackMessageVariants = {
-  initial: { opacity: 0, y: 15, height: 0, marginTop: 0, marginBottom: 0 },
-  animate: { 
-    opacity: 1, y: 0, height: 'auto', 
-    marginTop: '0.3rem', marginBottom: '0.5rem', 
-    transition: { type: "spring", stiffness: 250, damping: 22 } 
+  initial: { opacity: 0, y: 18, height: 0, marginTop: 0, marginBottom: 0, filter:"blur(2px)" },
+  animate: {
+    opacity: 1, y: 0, height: 'auto', filter:"blur(0px)",
+    marginTop: '0.4rem', marginBottom: '0.6rem',
+    transition: { type: "spring", stiffness: 260, damping: 24 }
   },
-  exit: { 
-    opacity: 0, y: -10, height: 0, 
-    marginTop: 0, marginBottom: 0, 
-    transition: { duration: 0.25, ease:"easeIn" } 
+  exit: {
+    opacity: 0, y: -12, height: 0, filter:"blur(2px)",
+    marginTop: 0, marginBottom: 0,
+    transition: { duration: 0.28, ease:"easeIn" }
   }
 };
 
 const writePromptButtonVariants = {
-    initial: { opacity: 0, scale: 0.8, y: 10 },
-    animate: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 250, damping: 18, delay: 0.2 } },
-    exit: { opacity: 0, scale: 0.85, y: 5, transition: { duration: 0.15 } }
+    initial: { opacity: 0, scale: 0.75, y: 15, rotate:5 },
+    animate: {
+        opacity: 1, scale: 1, y: 0, rotate:0,
+        transition: { type: "spring", stiffness: 230, damping: 16, delay: 0.25 }
+    },
+    exit: { opacity: 0, scale: 0.8, y: 10, rotate: -3, transition: { duration: 0.18, ease:"easeIn" } }
 }
 
 
@@ -106,20 +136,20 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
     setSubmitError(null);
     setSubmitSuccess(null);
     try {
-      await onAddEntry(name.trim(), message.trim(), language); 
+      await onAddEntry(name.trim(), message.trim(), language);
       setName('');
       setMessage('');
       setSubmitSuccess(language === 'vi' ? 'Cảm ơn bạn đã chia sẻ!' : language === 'en' ? 'Thank you for sharing!' : 'ご感想ありがとうございます！');
       setTimeout(() => {
         setSubmitSuccess(null);
         setViewMode('read'); // Switch back to read mode
-      }, 3500); 
+      }, 3500);
     } catch (error: any) {
       console.error("Error submitting entry in Guestbook.tsx:", error);
       let userErrorMessage = language === 'vi' ? 'Gửi thất bại, vui lòng thử lại.' : language === 'en' ? 'Submission failed, please try again.' : '送信に失敗しました。もう一度お試しください。';
-      if (error && typeof error.message === 'string' && error.message.startsWith('Failed to submit:')) { 
+      if (error && typeof error.message === 'string' && error.message.startsWith('Failed to submit:')) {
          userErrorMessage = `${userErrorMessage} (${error.message})`;
-      } else if (error && typeof error.message === 'string') { 
+      } else if (error && typeof error.message === 'string') {
         userErrorMessage = error.message;
       }
       setSubmitError(userErrorMessage);
@@ -149,7 +179,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
     return new Intl.DateTimeFormat(language, options).format(date);
   };
 
-  const displayedEntries = [...entries].reverse(); 
+  const displayedEntries = [...entries].reverse();
 
   return (
     <motion.div
@@ -157,44 +187,44 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
       variants={guestbookContainerVariants}
       initial="hidden" animate="visible" exit="exit"
     >
-      <motion.h2 
-        className="guestbook-title" 
-        variants={guestbookItemVariants}
+      <motion.h2
+        className="guestbook-title"
+        variants={guestbookItemVariants} // Re-use simple item variant
       >
         {t.title[language]}
       </motion.h2>
 
       <AnimatePresence mode="wait">
         {viewMode === 'read' && (
-            <motion.div 
+            <motion.div
                 key="read-prompt"
                 className="guestbook-write-prompt"
                 variants={guestbookInteractiveSectionVariants}
                 initial="hidden" animate="visible" exit="exit"
             >
                 <motion.p variants={guestbookItemVariants}>{t.promptWrite[language]}</motion.p>
-                <motion.button 
-                    className="guestbook-write-button" 
+                <motion.button
+                    className="guestbook-write-button poetic-button" // Added poetic-button class
                     onClick={() => setViewMode('write')}
                     variants={writePromptButtonVariants}
-                    initial="initial" animate="animate" exit="initial" // Exit to initial state
-                    whileHover={{ scale: 1.08, y: -4, rotate: -3.5, 
-                        boxShadow: "0 8px 22px -4px rgba(var(--highlight-color-poetic-rgb),0.35), 0 0 12px rgba(var(--highlight-color-poetic-rgb),0.2) inset"
+                    initial="initial" animate="animate" exit="exit"
+                    whileHover={{ scale: 1.07, y: -5, rotate: -4.5,
+                        boxShadow: "0 10px 28px -6px rgba(var(--highlight-color-poetic-rgb),0.4), 0 0 15px rgba(var(--highlight-color-poetic-rgb),0.25) inset"
                     }}
-                    whileTap={{ scale: 0.95, y: -1, rotate: 1 }}
-                    transition={{type: "spring", stiffness:300, damping:15}}
+                    whileTap={{ scale: 0.96, y: -2, rotate: 1.5 }}
+                    transition={{type: "spring", stiffness:320, damping:14}}
                 >
-                    <IconPencil />
+                    <IconFeatherPen />
                     <span>{t.writeButtonLabel[language]}</span>
                 </motion.button>
             </motion.div>
         )}
 
         {viewMode === 'write' && (
-            <motion.form 
+            <motion.form
                 key="write-form"
-                onSubmit={handleSubmit} 
-                className="guestbook-form" 
+                onSubmit={handleSubmit}
+                className="guestbook-form"
                 variants={guestbookInteractiveSectionVariants}
                 initial="hidden" animate="visible" exit="exit"
             >
@@ -206,12 +236,12 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t.namePlaceholder[language]}
                     disabled={isSubmitting} maxLength={100}
-                    whileFocus={{ 
-                        borderColor: "var(--highlight-color-poetic)", 
-                        boxShadow: "0 0 10px 2px rgba(var(--highlight-color-poetic-rgb),0.28)",
-                        scale: 1.01
+                    whileFocus={{
+                        borderColor: "var(--highlight-color-poetic)",
+                        boxShadow: "0 0 12px 3px rgba(var(--highlight-color-poetic-rgb),0.3), inset 0 1px 3px rgba(0,0,0,0.1)",
+                        scale: 1.015
                     }}
-                    transition={{type:"spring", stiffness:300, damping:15}}
+                    transition={{type:"spring", stiffness:320, damping:16}}
                 />
                 </motion.div>
                 <motion.div className="form-group" variants={guestbookItemVariants}>
@@ -220,25 +250,25 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
                     id="guestMessage" value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder={t.messagePlaceholder[language]}
-                    rows={4} disabled={isSubmitting} maxLength={1000}
-                    whileFocus={{ 
-                        borderColor: "var(--highlight-color-poetic)", 
-                        boxShadow: "0 0 10px 2px rgba(var(--highlight-color-poetic-rgb),0.28)",
-                        scale: 1.01
+                    rows={5} disabled={isSubmitting} maxLength={1000} // Increased rows
+                    whileFocus={{
+                        borderColor: "var(--highlight-color-poetic)",
+                        boxShadow: "0 0 12px 3px rgba(var(--highlight-color-poetic-rgb),0.3), inset 0 1px 3px rgba(0,0,0,0.1)",
+                        scale: 1.015
                     }}
-                    transition={{type:"spring", stiffness:300, damping:15}}
+                    transition={{type:"spring", stiffness:320, damping:16}}
                 />
                 </motion.div>
                 <div className="form-feedback-container">
                 <AnimatePresence mode="wait">
                     {submitError && (
-                        <motion.p key="error" className="submit-feedback error" 
+                        <motion.p key="error" className="submit-feedback error"
                         variants={feedbackMessageVariants} initial="initial" animate="animate" exit="exit">
                         {submitError}
                         </motion.p>
                     )}
                     {submitSuccess && (
-                        <motion.p key="success" className="submit-feedback success" 
+                        <motion.p key="success" className="submit-feedback success"
                         variants={feedbackMessageVariants} initial="initial" animate="animate" exit="exit">
                         {submitSuccess}
                         </motion.p>
@@ -248,23 +278,23 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
                 <motion.div className="form-actions" variants={guestbookItemVariants}>
                     <motion.button
                         type="button"
-                        className="guestbook-cancel-button"
+                        className="guestbook-cancel-button poetic-button-subtle" // Added poetic-button-subtle class
                         onClick={handleCancelWrite}
                         disabled={isSubmitting}
-                        whileHover={{ scale: 1.05, filter: "brightness(0.9)" }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{ type: "spring", stiffness: 350, damping: 18 }}
+                        whileHover={{ scale: 1.06, filter: "brightness(0.95)", borderColor: "rgba(var(--subtext-color-poetic-rgb),0.6)" }}
+                        whileTap={{ scale: 0.97 }}
+                        transition={{ type: "spring", stiffness: 360, damping: 20 }}
                     >
-                        <IconXCircle />
+                        <IconInkSplatterCancel />
                         <span>{t.cancelButton[language]}</span>
                     </motion.button>
                     <motion.button
                         type="submit"
-                        className="guestbook-submit-button"
+                        className="guestbook-submit-button poetic-button-primary" // Added poetic-button-primary class
                         disabled={isSubmitting}
-                        whileHover={{ scale: 1.05, y: -3, filter: "brightness(1.12)" }}
-                        whileTap={{ scale: 0.97, y: -1, filter: "brightness(0.95)" }}
-                        transition={{ type: "spring", stiffness: 350, damping: 18 }}
+                        whileHover={{ scale: 1.04, y: -3.5, filter: "brightness(1.15) saturate(1.1)", boxShadow:"0 7px 22px -4px rgba(var(--highlight-color-poetic-rgb),0.42), 0 3px 10px rgba(var(--primary-color-rgb),0.3)" }}
+                        whileTap={{ scale: 0.98, y: -1, filter: "brightness(0.92)" }}
+                        transition={{ type: "spring", stiffness: 360, damping: 16 }}
                     >
                         {isSubmitting ? (
                         <>
@@ -279,29 +309,29 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
       </AnimatePresence>
 
 
-      <motion.div 
-        className="guestbook-divider" 
+      <motion.div
+        className="guestbook-divider"
         variants={guestbookItemVariants}
+        initial="hidden" animate={{...guestbookItemVariants.visible, transition: {...guestbookItemVariants.visible.transition, delay: viewMode === 'read' ? 0.3 : 0.5} }} exit="hidden" // delay based on viewMode for better flow
       />
 
-      {/* Entries list will be under guestbookSectionVariants in the main container's stagger */}
-      <motion.div className="guestbook-entries-list-wrapper"> 
+      <motion.div className="guestbook-entries-list-wrapper">
         {displayedEntries.length > 0 ? (
           <AnimatePresence>
             {displayedEntries.map((entry, index) => (
               <motion.div
-                key={entry.id || `entry-${index}`}
+                key={entry.id || `entry-${index}`} // Ensure unique key
                 className="guestbook-entry"
                 custom={index}
                 variants={entryCardVariants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                whileHover={{ y: -6, scale: 1.015, // Subtle scale
-                    boxShadow: "0 12px 35px -8px rgba(var(--highlight-color-poetic-rgb),0.22), 0 0 18px rgba(var(--highlight-color-poetic-rgb),0.12) inset"
+                whileHover={{ y: -8, scale: 1.025,
+                    boxShadow: "0 15px 40px -10px rgba(var(--highlight-color-poetic-rgb),0.3), 0 0 22px rgba(var(--highlight-color-poetic-rgb),0.18) inset, 5px 5px 15px rgba(var(--background-color-rgb), 0.18)"
                 }}
-                transition={{type: "spring", stiffness: 280, damping: 15}}
-                layout
+                transition={{type: "spring", stiffness: 260, damping: 16, mass:0.8}}
+                layout // Enable smooth reordering on add/remove
               >
                 <blockquote className="entry-message-wrapper">
                     <p className="entry-message">{entry.message}</p>
@@ -320,9 +350,10 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
             ))}
           </AnimatePresence>
         ) : (
-          <motion.p 
-            className="no-entries-message" 
-            variants={guestbookItemVariants} // Can reuse for simple fade/slide
+          <motion.p
+            className="no-entries-message"
+            variants={guestbookItemVariants}
+            initial="hidden" animate="visible" exit="hidden"
           >
             {t.noEntries[language]}
           </motion.p>

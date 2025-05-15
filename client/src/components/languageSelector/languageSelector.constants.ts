@@ -743,3 +743,7 @@ export const guestbookViewContainerVariants = (delay: number = 0.1): Variants =>
         transition: { duration: 0.3, ease: "anticipate" }
     }
 });
+
+export const guestbookIconFeatherPen = `<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.7_3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/><path d="m17.6 6.7 3.1-3.1"/><path d="M2.6 20.1C5.9 19.4 10 18 13 15c2-2 3.3-4.2 4-6.3.4-1.1.6-2.3.5-3.5S17 3.2 16 3.3c-1 .1-2.3.7-3.7 2s-3 3.1-4.2 4.6c-1.9 2.4-3.8 4.6-5.3 6.8"/><path d="M10.7 11.3 2.6 20.1"/><path d="m19.2 5.2.4.4"/></svg>`;
+
+export const guestbookIconInkSplatterCancel = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5C6 20 4 17 4 12A8 8 0 0 1 12 4c5 0 7 2.5 7.5 7.5"/><path d="m18 18-5.5-5.5"/><path d="m12.5 18-5.5-5.5"/><path d="M4.5 10C5.7 9.3 6.5 8.2 7 7"/><path d="M7.5 3.5C9 4.2 10.8 5.1 11.5 6.5"/><circle cx="14" cy="5.5" r="0.5" fill="currentColor"/><circle cx="9" cy="3.5" r="0.5" fill="currentColor"/><circle cx="4.5" cy="6" r="0.5" fill="currentColor"/><circle cx="20.5" cy="11" r="0.5" fill="currentColor"/></svg>`;
