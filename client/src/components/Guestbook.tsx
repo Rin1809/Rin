@@ -8,7 +8,7 @@ import type { GuestbookEntry } from '../data/guestbook.data';
 // --- NEW ICONS (Feather Pen and Ink Splatter Cancel) ---
 const IconFeatherPen = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20.7_3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/>
+    <path d="M20.7 3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/>
     <path d="m17.6 6.7 3.1-3.1"/>
     <path d="M2.6 20.1C5.9 19.4 10 18 13 15c2-2 3.3-4.2 4-6.3.4-1.1.6-2.3.5-3.5S17 3.2 16 3.3c-1 .1-2.3.7-3.7 2s-3 3.1-4.2 4.6c-1.9 2.4-3.8 4.6-5.3 6.8"/>
     <path d="M10.7 11.3 2.6 20.1"/>
@@ -33,7 +33,7 @@ const IconInkSplatterCancel = () => ( // More thematic cancel icon
 
 interface GuestbookProps {
   language: 'vi' | 'en' | 'ja';
-  onBack: () => void;
+  onBack: () => void; // Keep onBack from original props
   entries: GuestbookEntry[];
   onAddEntry: (name: string, message: string, lang: 'vi' | 'en' | 'ja') => Promise<void>;
 }
@@ -116,7 +116,7 @@ const writePromptButtonVariants = {
 }
 
 
-const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) => {
+const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry, onBack }) => { // Added onBack
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -142,13 +142,13 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       setSubmitSuccess(language === 'vi' ? 'Cảm ơn bạn đã chia sẻ!' : language === 'en' ? 'Thank you for sharing!' : 'ご感想ありがとうございます！');
       setTimeout(() => {
         setSubmitSuccess(null);
-        setViewMode('read'); // Switch back to read mode
+        setViewMode('read'); 
       }, 3500);
     } catch (error: any) {
       console.error("Error submitting entry in Guestbook.tsx:", error);
       let userErrorMessage = language === 'vi' ? 'Gửi thất bại, vui lòng thử lại.' : language === 'en' ? 'Submission failed, please try again.' : '送信に失敗しました。もう一度お試しください。';
       if (error && typeof error.message === 'string' && error.message.startsWith('Failed to submit:')) {
-         userErrorMessage = `${userErrorMessage} (${error.message})`;
+         userErrorMessage = `${userErrorMessage} (${error.message.replace('Failed to submit: ', '')})`; // Cleaner message
       } else if (error && typeof error.message === 'string') {
         userErrorMessage = error.message;
       }
@@ -316,7 +316,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
         initial="hidden" animate={{...guestbookItemVariants.visible, transition: {...guestbookItemVariants.visible.transition, delay: viewMode === 'read' ? 0.3 : 0.5} }} exit="hidden" 
       />
 
-      <div className="guestbook-entries-list-wrapper"> {/* Changed from motion.div as children handle animation */}
+      <div className="guestbook-entries-list-wrapper">
         {displayedEntries.length > 0 ? (
           <AnimatePresence>
             {displayedEntries.map((entry, index) => (
@@ -353,8 +353,8 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
         ) : (
           <motion.p
             className="no-entries-message"
-            variants={guestbookItemVariants}
-            initial="hidden" animate="visible" exit="hidden"
+            variants={guestbookItemVariants} // Re-use general item variant
+            initial="hidden" animate={{...guestbookItemVariants.visible, transition: {...guestbookItemVariants.visible.transition, delay: 0.4} }} exit="hidden"
           >
             {t.noEntries[language]}
           </motion.p>

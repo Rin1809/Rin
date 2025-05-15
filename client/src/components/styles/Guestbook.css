@@ -9,8 +9,7 @@
   --paper-text-color: #5a4230; /* Slightly warmer dark brown for text */
   --paper-text-rgb: 90, 66, 48;
 
-  /* Poetic Guestbook Specific Highlights - ensure these are defined in App.css or LanguageSelector.css or here */
-  /* Assuming they are inherited from App.css or higher scope */
+  /* Poetic Guestbook Specific Highlights - these should be defined in App.css or a global scope */
   --guestbook-highlight: var(--highlight-color-poetic, #D8BFD8);
   --guestbook-highlight-rgb: var(--highlight-color-poetic-rgb, 216, 191, 216);
   --guestbook-primary-action: var(--primary-color, #ffaaaa);
@@ -270,11 +269,11 @@
   border-radius: 2.2px; 
 }
 
-.guestbook-entries-list-wrapper { /* Added a wrapper */
+.guestbook-entries-list-wrapper {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    padding-right: 5px; /* Space for scrollbar if items are too wide initially */
+    padding-right: 5px; 
 }
 
 /* --- ENHANCED ENTRY CARD STYLES --- */

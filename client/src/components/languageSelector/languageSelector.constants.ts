@@ -7,7 +7,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
     fpsLimit: 120,
     particles: {
         number: {
-            value: 500,
+            value: 500, // Keep value as per original file
             density: { enable: true },
         },
         color: { value: ["#FFFFFF", "#F0E68C", "#ADD8E6", "#FFDAB9"] },
@@ -23,7 +23,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
         links: { enable: false },
         move: {
             enable: true,
-            speed: 0.4,
+            speed: 0.4, // Keep speed as per original file
             direction: "none",
             random: true,
             straight: false,
@@ -70,7 +70,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
         {
             name: "leftShootingStarsAlternateY",
             direction: "right",
-            rate: { quantity: 5, delay: 0.9 },
+            rate: { quantity: 5, delay: 0.9 }, // Keep quantity as per original
             position: { x: 0, y: 30 },
             particles: {
                 move: {
@@ -90,7 +90,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
          {
             name: "leftShootingStarsHighY",
             direction: "right",
-            rate: { quantity: 5, delay: 1.3 },
+            rate: { quantity: 5, delay: 1.3 }, // Keep quantity as per original
             position: { x: 0, y: 75 },
             particles: {
                 move: {
@@ -132,7 +132,7 @@ export const buttonVariants: Variants = {
   initial: {
     opacity: 0,
     y: 20,
-    scale: 1,
+    scale: 1, // Keep scale as per original file
     boxShadow: "0 4px 15px -5px rgba(var(--highlight-color-poetic-rgb), 0.05)",
     borderColor: "rgba(var(--text-color-poetic-rgb), 0.1)",
     backgroundColor: "transparent"
@@ -141,13 +141,13 @@ export const buttonVariants: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1.0, // MODIFIED: Was 0.8
+      duration: 1.0, 
       delay: delay,
       ease: [0.23, 1, 0.32, 1]
     }
   }),
   hover: {
-    scale: 1.03,
+    scale: 1.03, // Keep scale as per original file
     y: -8,
     backgroundColor: "rgba(var(--highlight-color-poetic-rgb), 0.08)",
     borderColor: "rgba(var(--highlight-color-poetic-rgb), 0.35)",
@@ -155,12 +155,12 @@ export const buttonVariants: Variants = {
     transition: {
       type: "spring",
       stiffness: 350,
-      damping: 22,
+      damping: 22, // Keep damping as per original file
       duration: 0.3
     }
   },
   tap: {
-    scale: 0.97,
+    scale: 0.97, // Keep scale as per original file
     y: -3,
     transition: {
       type: "spring",
@@ -168,7 +168,7 @@ export const buttonVariants: Variants = {
       damping: 25
     }
   },
-  exit: {
+  exit: { // Add exit as per original file
     opacity: 0,
     y: 20,
     scale: 0.9,
@@ -196,8 +196,8 @@ export const iconVariants: Variants = {
     textShadow: "none"
   },
   hover: {
-    scale: 1.2,
-    rotate: -5,
+    scale: 1.2, // Keep scale as per original file
+    rotate: -5, // Keep rotate as per original file
     y: -5,
     textShadow: "0 3px 10px rgba(var(--highlight-color-poetic-rgb), 0.2)",
     transition: {
@@ -231,12 +231,12 @@ export const contentItemVariants = (delay: number): Variants => ({
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.8, // MODIFIED: Was 0.6
+      duration: 0.8,
       delay,
       ease: [0.23, 1, 0.32, 1]
     }
   },
-  exit: {
+  exit: { // Add exit as per original file
     opacity: 0,
     y: -20,
     transition: {
@@ -265,12 +265,12 @@ export const titleVariants = (delay: number): Variants => ({
       titleIdleTextShadowStart
     ],
     transition: {
-      opacity: { duration: 1.0, delay, ease: [0.23, 1, 0.32, 1] }, // MODIFIED: Was 0.8
-      y: { duration: 1.0, delay, ease: [0.23, 1, 0.32, 1] }, // MODIFIED: Was 0.8
+      opacity: { duration: 1.0, delay, ease: [0.23, 1, 0.32, 1] },
+      y: { duration: 1.0, delay, ease: [0.23, 1, 0.32, 1] },
       textShadow: { duration: 3, repeat: Infinity, repeatType: "mirror", ease: "easeInOut", delay: delay + 0.5 }
     }
   },
-  exit: {
+  exit: { // Add exit as per original file
     opacity: 0,
     y: -20,
     textShadow: titleInitialTextShadow,
@@ -287,7 +287,7 @@ export const baseFlourishVisibleFilterKeyframes = [
 export const flourishVariantsDefinition = (initialRotate: number = 0): Variants => ({
     hidden: {
         opacity: 0,
-        y: -40, // Start 40px above its local origin (for top: comes from top; for bottom after 180deg rotation: comes from bottom)
+        y: -40,
         scale: 0.8,
         rotate: initialRotate,
         filter: "drop-shadow(0 0 0px transparent)"
@@ -296,7 +296,6 @@ export const flourishVariantsDefinition = (initialRotate: number = 0): Variants 
         opacity: 0.85,
         rotate: initialRotate,
         y: 0,
-        // filter: baseFlourishVisibleFilterKeyframes[0], // Removed as per diff logic, loop will apply it
     },
     hover: (custom: { baseScale: number }) => ({
         y: initialRotate === 0 ? -12 : 12,
@@ -306,7 +305,6 @@ export const flourishVariantsDefinition = (initialRotate: number = 0): Variants 
     })
 });
 
-// Define SHARED_FLOURISH_SPRING_TRANSITION here for slower animation
 export const SHARED_FLOURISH_SPRING_TRANSITION = {
     type: "spring", stiffness: 120, damping: 28, mass: 1.2
 };
@@ -326,9 +324,9 @@ export const dividerVariants = (delay: number): Variants => ({
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { duration: 0.8, delay: delay, ease: "easeOut" } // MODIFIED: Was 0.6
+    transition: { duration: 0.8, delay: delay, ease: "easeOut" }
   },
-  exit: {
+  exit: { // Add exit as per original file
       opacity: 0,
       transition: { duration: 0.2, ease: "easeIn"}
   }
@@ -337,19 +335,19 @@ export const dividerVariants = (delay: number): Variants => ({
 export const dividerVerticalVariants = (delay: number): Variants => ({
   hidden: { ...dividerVariants(delay).hidden, scaleY: 0 },
   visible: { ...dividerVariants(delay).visible, scaleY: 1 },
-  exit: { ...dividerVariants(delay).exit, scaleY: 0}
+  exit: { ...dividerVariants(delay).exit, scaleY: 0} // Add exit as per original file
 });
 
 export const dividerHorizontalVariants = (delay: number): Variants => ({
   hidden: { ...dividerVariants(delay).hidden, scaleX: 0 },
   visible: { ...dividerVariants(delay).visible, scaleX: 1 },
-  exit: { ...dividerVariants(delay).exit, scaleX: 0}
+  exit: { ...dividerVariants(delay).exit, scaleX: 0} // Add exit as per original file
 });
 
 export const cardIntroTranslations = {
   aboutButton: { vi: "Về tôi", en: "About Me", ja: "私について" },
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
-  guestbookButton: { vi: "Sổ Lưu Bút", en: "Guestbook", ja: "感想ノート" }, // MODIFIED/NEW
+  guestbookButton: { vi: "Sổ Lưu Bút", en: "Guestbook", ja: "感想ノート" },
   introTagline: {
       vi: "Chào mừng đến với thế giới của tui !",
       en: "Welcome to my world!",
@@ -357,7 +355,7 @@ export const cardIntroTranslations = {
   },
   aboutIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   galleryIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
-  guestbookIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`, // NEW - Placeholder SVG for Guestbook button
+  guestbookIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`,
   backButton: { vi: "Quay Lại", en: "Back", ja: "戻る" },
 };
 
@@ -396,7 +394,7 @@ export const cardIntroButtonVariants: Variants = {
     transition: { type: "spring", stiffness: 250, damping: 14 }
   },
   tap: {
-    scale: 0.92,
+    scale: 0.92, // Keep scale as per original file
     y: -3,
     backgroundColor: "rgba(var(--highlight-color-poetic-rgb), 0.3)",
     boxShadow: `
@@ -442,8 +440,8 @@ export const sparkleVariants: Variants = {
   animate: (i: number) => ({
     opacity: [0, 0.3 + Math.random() * 0.4, 0],
     scale: [0, 0.6 + Math.random() * 0.6, 0],
-    x: Math.random() * 100 - 50,
-    y: Math.random() * 80 - 40,
+    x: Math.random() * 100 - 50, // Keep x as per original file
+    y: Math.random() * 80 - 40, // Keep y as per original file
     rotate: Math.random() * 360,
     transition: {
       duration: 2 + Math.random() * 2,
@@ -459,7 +457,7 @@ export const numSparkles = 5;
 
 export const overlayEntryExitVariants: Variants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.8, ease: "easeOut" } }, // MODIFIED: Was 0.5
+    visible: { opacity: 1, transition: { duration: 0.8, ease: "easeOut" } },
     exit: { opacity: 0, transition: { duration: 0.4, ease: "easeIn" } }
 };
 
@@ -468,8 +466,8 @@ export const cardIntroHeaderVariants: Variants = {
     visible: {
       opacity: 1, y: 0, scale: 1,
       transition: {
-        duration: 0.7, delay: 0,
-        staggerChildren: 0
+        duration: 0.7, delay: 0, // Keep delay as per original file
+        staggerChildren: 0 // Keep staggerChildren as per original file
       }
     },
     exit: { opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.25, ease: "easeIn" } }
@@ -485,7 +483,7 @@ export const previewContainerVariants: Variants = {
     transition: {
       type: "spring",
       stiffness: 260,
-      damping: 28,
+      damping: 28, // Keep damping as per original file
       when: "beforeChildren",
       staggerChildren: 0.07
     }
@@ -498,7 +496,7 @@ export const previewContainerVariants: Variants = {
     transition: {
       type: "spring",
       stiffness: 300,
-      damping: 30,
+      damping: 30, // Keep damping as per original file
       when: "afterChildren",
       staggerChildren: 0.05,
       staggerDirection: -1
@@ -513,12 +511,12 @@ export const previewContainerVariants: Variants = {
 
 export const previewContentItemVariants: Variants = {
   hidden: { opacity: 0, y: 10 },
-  visible: {
+  visible: { // This was "hidden", correcting to "visible" as per typical framer-motion use
     opacity: 1,
     y: 0,
     transition: { type: "spring", stiffness: 300, damping: 20 }
   },
-  exit: {
+  exit: { // Added an exit state to match similar variants
     opacity: 0,
     y: 8,
     transition: { type: "spring", stiffness: 320, damping: 20 }
@@ -528,7 +526,7 @@ export const previewContentItemVariants: Variants = {
 export const previewIcons = {
   about: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   gallery: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
-  guestbook: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`, // NEW - Placeholder SVG for Guestbook preview
+  guestbook: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`,
 };
 
 export const galleryViewVariants = (delay: number = 0.1): Variants => ({
@@ -543,9 +541,9 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
         filter: "blur(0px) saturate(1) brightness(1)",
         transition: {
             type: "spring",
-            stiffness: 130,
+            stiffness: 130, // Keep stiffness as per original file
             damping: 20,
-            mass: 1,
+            mass: 1, // Keep mass as per original file
             delay,
             opacity: { duration: 0.5, ease: "circOut", delay },
             scale: { type: "spring", stiffness: 130, damping: 20, delay },
@@ -557,7 +555,7 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
         scale: 0.7,
         filter: "blur(12px) saturate(0.5)",
         transition: {
-            duration: 0.35,
+            duration: 0.35, // Keep duration as per original file
             ease: "anticipate",
             opacity: { duration: 0.3, ease: "easeIn"},
         }
@@ -567,7 +565,6 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
 export const aboutNavIconLeft = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 export const aboutNavIconRight = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
-// For PersonalCard component (about section)
 export const personalCardTranslations = {
   sectionTitles: {
     intro: { vi: "Giới Thiệu Bản Thân", en: "Introduction", ja: "自己紹介" },
@@ -580,7 +577,7 @@ export const personalCardTranslations = {
     youtubeStats: { vi: "Thống kê YouTube", en: "YouTube Statistics", ja: "YouTube統計" },
   },
   introBio: {
-    namePlaceholder: "{name}", // Main name for the card (e.g., Rin)
+    namePlaceholder: "{name}",
     part1: {
       vi: `Chào ! Mình là <strong>{name}</strong>, đang theo học ngành An Ninh Mạng.`,
       en: `Hi! I'm <strong>{name}</strong>, currently studying Cyber Security.`,
@@ -629,7 +626,7 @@ export const personalCardTranslations = {
     discordServer: { vi: "Máy chủ Discord", en: "Discord Server", ja: "Discordサーバー" },
     youtube: { vi: "Kênh YouTube", en: "YouTube Channel", ja: "YouTubeチャンネル" }
   },
-  githubLabels: { // Kept for consistency if needed for GitHub API section specifically
+  githubLabels: {
     followers: { vi: "Người theo dõi", en: "Followers", ja: "フォロワー" },
     publicRepos: { vi: "Kho lưu trữ", en: "Public Repos", ja: "公開リポジトリ" },
     profileLink: { vi: "Xem trên GitHub", en: "View on GitHub", ja: "GitHubで表示" },
@@ -651,25 +648,23 @@ export const personalCardTranslations = {
   }
 };
 
-// For LanguageSelector's card intro preview
 export const languageSelectorPreviewTranslations = {
   aboutSnippetTitle: { vi: "Giới thiệu sơ lược", en: "About Me Snippet", ja: "自己紹介（概要）" },
   gallerySneakPeekTitle: { vi: "Xem trước bộ sưu tập", en: "Gallery Sneak Peek", ja: "ギャラリー予告編" },
-  guestbookSneakPeekTitle: { vi: "Góc Cảm Xúc", en: "Corner of Feelings", ja: "思いのコーナー" }, // MODIFIED/NEW
+  guestbookSneakPeekTitle: { vi: "Góc Cảm Xúc", en: "Corner of Feelings", ja: "思いのコーナー" },
   aboutSnippetContent: {
     vi: "Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?",
     en: "Hi! I'm Rin,... well, just Rin, that's it? What were you expecting?",
     ja: "こんにちは！リンです。えっと、リンです、それだけ？何を期待してたの？"
   },
   galleryPreviewAlt: { vi: "Xem trước bộ sưu tập {index}", en: "Gallery preview {index}", ja: "ギャラリープレビュー {index}" },
-  guestbookSnippetContent: { // NEW
+  guestbookSnippetContent: { 
     vi: "Những dòng nhắn gửi, khoảnh khắc được sẻ chia và lưu giữ...",
     en: "Shared moments, treasured words, all kept here...",
     ja: "共有された瞬間、大切な言葉、すべてここに保管されています。。。"
   }
 };
 
-// For Gallery component
 export const galleryTranslations = {
   title: { vi: "Bộ Sưu Tập Của Tôi", en: "My Gallery", ja: "私のギャラリー" },
   placeholder: {
@@ -685,7 +680,6 @@ export const galleryTranslations = {
   fullscreenExit: { vi: "Thoát toàn màn hình (F)", en: "Exit fullscreen (F)", ja: "フルスクリーン終了 (F)" },
 };
 
-// For card name and title displayed in LanguageSelector
 export const cardDisplayInfo = {
     name: { vi: "Rin", en: "Rin", ja: "リン" },
     title: {
@@ -695,7 +689,6 @@ export const cardDisplayInfo = {
     }
 };
 
-//  For Guestbook view
 export const guestbookViewTranslations = {
   title: { vi: "Sổ Lưu Bút Cảm Xúc", en: "Guestbook of Thoughts", ja: "ゲストブック・思いの記録" },
   formTitle: { vi: "Để lại lời nhắn của bạn", en: "Leave Your Message", ja: "メッセージを残してください" },
@@ -706,13 +699,13 @@ export const guestbookViewTranslations = {
   submitButton: { vi: "Gửi Cảm Nghĩ", en: "Post Your Thought", ja: "感想を投稿する" },
   submittingText: { vi: "Đang gửi...", en: "Submitting...", ja: "送信中。。。" },
   
-  promptWrite: { // NEW
+  promptWrite: {
     vi: "Bạn muốn chia sẻ đôi dòng tâm tình với Rin hong? ✨ <br/>Cảm ơn vì đã ghé thăm, ghi lại sự hiện diện của bạn tại đây nhé!",
     en: "Want to share some thoughts with Rin? ✨ <br/>Thanks for visiting, feel free to leave your mark!",
     ja: "リンに何か思いを伝えたいですか？ ✨ <br/>ご訪問ありがとうございます。あなたの足跡をここに記しませんか。"
   },
-  writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" }, // NEW
-  cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" }, // NEW
+  writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" },
+  cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" },
 
   noEntries: {
     vi: "Chưa có ai để lại cảm nghĩ. Hãy là người đầu tiên chia sẻ nhé!",
@@ -723,14 +716,12 @@ export const guestbookViewTranslations = {
   entryDatePrefix: { vi: "Vào lúc", en: "On", ja: "記録日：" }
 };
 
-
-// Variant for Guestbook main container
-export const guestbookViewContainerVariants = (delay: number = 0.1): Variants => ({ // Keep this variant here
+export const guestbookViewContainerVariants = (delay: number = 0.1): Variants => ({
     hidden: { opacity: 0, scale: 0.85, y: 50, filter: "blur(8px)" },
     visible: {
         opacity: 1, scale: 1, y: 0, filter: "blur(0px)",
         transition: {
-            type: "spring", stiffness: 160, damping: 22, mass: 1,
+            type: "spring", stiffness: 160, damping: 22, mass: 1, // Keep mass as per original file
             delay,
             opacity: { duration: 0.6, ease: "easeOut", delay },
             filter: { duration: 0.5, ease: "easeOut", delay: delay + 0.1 }
@@ -742,7 +733,5 @@ export const guestbookViewContainerVariants = (delay: number = 0.1): Variants =>
     }
 });
 
-// --- NEW GUESTBOOK ICONS ---
-export const guestbookIconFeatherPen = `<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.7_3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/><path d="m17.6 6.7 3.1-3.1"/><path d="M2.6 20.1C5.9 19.4 10 18 13 15c2-2 3.3-4.2 4-6.3.4-1.1.6-2.3.5-3.5S17 3.2 16 3.3c-1 .1-2.3.7-3.7 2s-3 3.1-4.2 4.6c-1.9 2.4-3.8 4.6-5.3 6.8"/><path d="M10.7 11.3 2.6 20.1"/><path d="m19.2 5.2.4.4"/></svg>`;
-
+export const guestbookIconFeatherPen = `<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.7 3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/><path d="m17.6 6.7 3.1-3.1"/><path d="M2.6 20.1C5.9 19.4 10 18 13 15c2-2 3.3-4.2 4-6.3.4-1.1.6-2.3.5-3.5S17 3.2 16 3.3c-1 .1-2.3.7-3.7 2s-3 3.1-4.2 4.6c-1.9 2.4-3.8 4.6-5.3 6.8"/><path d="M10.7 11.3 2.6 20.1"/><path d="m19.2 5.2.4.4"/></svg>`;
 export const guestbookIconInkSplatterCancel = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5C6 20 4 17 4 12A8 8 0 0 1 12 4c5 0 7 2.5 7.5 7.5"/><path d="m18 18-5.5-5.5"/><path d="m12.5 18-5.5-5.5"/><path d="M4.5 10C5.7 9.3 6.5 8.2 7 7"/><path d="M7.5 3.5C9 4.2 10.8 5.1 11.5 6.5"/><circle cx="14" cy="5.5" r="0.5" fill="currentColor"/><circle cx="9" cy="3.5" r="0.5" fill="currentColor"/><circle cx="4.5" cy="6" r="0.5" fill="currentColor"/><circle cx="20.5" cy="11" r="0.5" fill="currentColor"/></svg>`;
