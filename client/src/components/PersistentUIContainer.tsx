@@ -255,4 +255,5 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
   );
 };
 
-export default React.memo(PersistentUIContainer);
+
+export default React.memo(PersistentUIContainer);   
