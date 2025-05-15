@@ -12,8 +12,8 @@
   backdrop-filter: blur(18px) saturate(130%);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
   z-index: 1000;
-  padding: 1rem;
-  overflow: hidden; /* Prevent body scroll when overlay is active */
+  padding: 0.5rem; /* Giảm padding tổng thể để có thêm không gian */
+  overflow: hidden;
   font-family: var(--font-family-poetic), var(--font-family-fallback);
 }
 
@@ -64,8 +64,8 @@
 .language-selector-content-wrapper {
   text-align: center;
   color: var(--text-color-poetic);
-  max-width: 600px; /* Default max-width for language options */
-  min-height: 400px;
+  max-width: 600px;
+  min-height: 380px; /* Giảm min-height một chút */
   width: 100%;
   position: relative;
   z-index: 1;
@@ -73,7 +73,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
 }
 
 
@@ -82,7 +81,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.2rem 0; /* Minimal padding for sections */
+  padding: 0.2rem 0;
 }
 
 /* --- LANGUAGE OPTIONS STYLES --- */
@@ -136,7 +135,7 @@
   display: block;
   margin-bottom: 0.8rem;
   line-height: 1;
-  font-family: sans-serif; /* For flags to render correctly if not default */
+  font-family: sans-serif;
 }
 
 .lang-name-poetic {
@@ -167,7 +166,7 @@
   background-color: rgba(var(--text-color-poetic-rgb), 0.2);
 }
 
-.poetic-divider-horizontal .divider-line { /* If you add inner line for gradient effects */
+.poetic-divider-horizontal .divider-line {
     height: 100%;
     width: 100%;
     background: linear-gradient(to right, transparent, rgba(var(--text-color-poetic-rgb), 0.2), transparent);
@@ -211,7 +210,6 @@
   width: 100%;
 }
 
-/* Avatar Enhancements */
 .card-intro-avatar-wrapper {
   margin-bottom: 0rem;
   position: relative;
@@ -300,8 +298,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Align content to top */
-  min-height: 200px; /* Ensure consistent height */
+  justify-content: flex-start;
+  min-height: 200px;
   width: 100%;
   padding: 0.2rem 0;
   position: relative;
@@ -368,7 +366,6 @@
   letter-spacing: 0.4px;
 }
 
-/* --- ENHANCED PREVIEW STYLES --- */
 .header-preview-container {
   background-color: rgba(var(--card-background-rgb), 0.55);
   backdrop-filter: blur(12px) saturate(110%);
@@ -458,19 +455,19 @@
   line-height: 1.65;
   color: var(--subtext-color-poetic);
   text-align: left;
-  max-height: 70px; /* Approx 3-4 lines */
-  overflow: hidden; /* Hide overflowing text */
+  max-height: 70px;
+  overflow: hidden;
 
   position: relative;
 }
-.header-preview-text-enhanced.has-overflow::after { /* Apply class with JS if needed */
+.header-preview-text-enhanced.has-overflow::after {
     content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 1.5em; /* Height of one line to fade out */
-    background: linear-gradient(to bottom, transparent, rgba(var(--card-background-rgb), 0.8)); /* Use the bg color of parent */
+    height: 1.5em;
+    background: linear-gradient(to bottom, transparent, rgba(var(--card-background-rgb), 0.8));
     pointer-events: none;
 }
 
@@ -512,17 +509,11 @@
   display: flex;
   justify-content: center;
   gap: 1.5rem;
-  margin-top: 0; /* Already handled by second divider's margin */
+  margin-top: 0;
   width: 100%;
-  max-width: 500px; /* Original constraint for 2 buttons */
+  max-width: 500px;
   position: relative;
 }
-/* Adjust max-width for 3 buttons if they feel cramped */
-/* Example:
-.card-intro-actions {
-   max-width: 600px; If three buttons
-} */
-
 
 .card-intro-button {
   background: rgba(var(--card-background-rgb), 0.2);
@@ -534,9 +525,9 @@
   padding: 0.9rem 1.8rem;
   border-radius: 16px;
   cursor: pointer;
-  min-width: 160px; /* Allow buttons to shrink a bit for 3-across */
-  flex: 1 1 auto;   /* Allow buttons to share space */
-  max-width: 200px; /* Prevent them from becoming too wide */
+  min-width: 160px;
+  flex: 1 1 auto;
+  max-width: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -612,7 +603,6 @@
   .card-intro-actions { margin-top: 0.8rem; }
 
 
-  /* Stack language options and card intro buttons on smaller screens */
   .language-options-poetic, .card-intro-actions {
     flex-direction: column;
     gap: 1rem;
@@ -621,7 +611,7 @@
   .card-intro-button, .lang-choice-poetic {
     width: 100%;
     max-width: 280px;
-    min-width: auto; /* Reset min-width when stacking */
+    min-width: auto;
   }
 
   .poetic-divider-vertical { display: none; }
@@ -638,7 +628,7 @@
   .poetic-footer-note { margin-top: 1rem; font-size: 0.9em; }
 
   .card-intro-header-swappable-content {
-    min-height: 160px; /* Adjusted from fixed height */
+    min-height: 160px;
   }
   .card-intro-name { font-size: 2.0em; letter-spacing: 1.0px;}
   .card-intro-title { font-size: 1.1em; }
@@ -654,7 +644,7 @@
   }
   .header-preview-text-enhanced {
     font-size: 0.85em;
-    max-height: 65px; /* Adjust max-height for smaller screens */
+    max-height: 65px;
   }
   .header-preview-images-enhanced img {
     width: 60px;
@@ -676,7 +666,7 @@
 }
 @media (max-width: 420px) {
   .card-intro-header-swappable-content {
-    min-height: 150px; /* Adjusted */
+    min-height: 150px;
   }
   .card-intro-name { font-size: 1.8em; }
   .card-intro-title { font-size: 1.0em; }
@@ -704,40 +694,35 @@
 }
 
 
-/* Class to style About/Gallery/Guestbook content sections */
 .card-content-display {
   width: 100%;
-  max-width: 750px; /* Adjust if guestbook/gallery need more/less */
-  padding: 0rem 0; /* Reduce top/bottom padding; child will have its own */
+  max-width: 95%; /* Tăng max-width cho content display */
+  padding: 0rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem; /* Gap between content (PersonalCard/Gallery/Guestbook) and its back button */
+  gap: 1.5rem;
 }
 
-/* Styles for specific views within .card-content-display if needed */
 .gallery-view-wrapper, .guestbook-view-wrapper {
   width: 100%;
-  max-width: 100%; /* Allows gallery/guestbook to define their own max-width via their container */
-  display: flex; /* Needed for AnimatePresence if children are directly motion.div */
+  max-width: 100%;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem; /* Space between component and its common back button */
+  gap: 1rem;
 }
-/* Specific sizing for gallery's internal container, if needed for LanguageSelector layout */
 .gallery-view-wrapper > .gallery-main-container {
     width: 100%;
-    max-width: 1000px; /* As per Gallery.css */
+    max-width: 1000px;
     box-sizing: border-box;
 }
-/* Specific sizing for guestbook's internal container */
 .guestbook-view-wrapper > .guestbook-container {
     width: 100%;
-    max-width: 720px; /* As per Guestbook.css */
+    max-width: 980px; /* << ĐỒNG BỘ VỚI Guestbook.css */
     box-sizing: border-box;
 }
 
-/* --- Common Back Button Styling (for About, Gallery, Guestbook) --- */
 .card-view-back-button {
   display: flex;
   align-items: center;
@@ -745,22 +730,22 @@
   gap: 0.6rem;
   background-color: rgba(var(--card-background-rgb), 0.45);
   border: 1.5px solid rgba(var(--border-color-rgb), 0.25);
-  color: var(--text-color-poetic); /* Match language selector's text color */
+  color: var(--text-color-poetic);
   font-family: var(--font-family-poetic), var(--font-family-fallback);
   font-size: 1.05em;
   font-weight: 400;
   padding: 0.7rem 1.6rem;
   border-radius: 30px;
   cursor: pointer;
-  margin-top: 0.5rem; /* Space above the button after the content */
-  margin-bottom: 0.5rem; /* Space below button before bottom flourish */
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   align-self: center;
   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
   transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
   will-change: transform, background-color, box-shadow;
 }
 
-.card-view-back-button .button-icon-svg { /* Use for icon if it's a span with SVG */
+.card-view-back-button .button-icon-svg {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -774,7 +759,7 @@
 
 .card-view-back-button:hover {
   background-color: rgba(var(--primary-color-rgb), 0.12);
-  color: var(--primary-color); /* Use primary for hover highlight */
+  color: var(--primary-color);
   transform: translateY(-3px);
   box-shadow: 0 6px 15px -3px rgba(var(--primary-color-rgb), 0.35);
 }
@@ -787,6 +772,9 @@
 }
 
 @media (max-width: 768px) {
+  .card-content-display {
+      max-width: 100%; /* Cho phép content con tự quyết định max-width */
+  }
   .card-view-back-button { font-size: 1em; padding: 0.6rem 1.4rem; }
   .card-view-back-button .button-icon-svg { width: 20px; height: 20px; }
 }
@@ -798,12 +786,12 @@
 
 .language-selector-footer {
   position: absolute;
-  bottom: 1rem;
+  bottom: 0.5rem; /* Giảm bottom để đỡ chiếm không gian */
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.9em;
+  font-size: 0.85em; /* Giảm font-size footer */
   color: var(--subtext-color-poetic);
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   background-color: rgba(var(--card-background-rgb), 0.5);
   border-radius: 8px;
   backdrop-filter: blur(5px);
@@ -815,13 +803,13 @@
 
 @media (max-width: 600px) {
   .card-content-display {
-    max-width: 95%;
+    max-width: 98%; /* Cho phép content con tự quyết định max-width */
     gap: 1rem;
   }
 
   .language-selector-footer {
-    font-size: 0.85em;
-    bottom: 0.5rem;
-    padding: 0.4rem 0.8rem;
+    font-size: 0.8em; /* Giảm nữa */
+    bottom: 0.25rem; /* Sát hơn */
+    padding: 0.3rem 0.6rem;
   }
 }
