@@ -118,7 +118,7 @@ export const translations = {
   },
   subtitle: {
     vi: "Chọn một dòng chảy cho riêng mình  ",
-    en: "Choose your own flow", 
+    en: "Choose your own flow",
     ja: "自分だけの流れを選んでください"
   },
   note: {
@@ -288,10 +288,10 @@ export const flourishVariantsDefinition = (initialRotate: number = 0): Variants 
     hidden: {
         opacity: 0, y: 20, scale: 0.8, rotate: initialRotate, filter: "drop-shadow(0 0 0px transparent)"
     },
-    visibleBase: { 
-        opacity: 0.85, 
+    visibleBase: {
+        opacity: 0.85,
         rotate: initialRotate,
-        y: 0, 
+        y: 0,
         filter: baseFlourishVisibleFilterKeyframes[0],
     },
     hover: (custom: { baseScale: number }) => ({
@@ -523,8 +523,8 @@ export const previewIcons = {
 export const galleryViewVariants = (delay: number = 0.1): Variants => ({
     hidden: {
         opacity: 0,
-        scale: 0.6, 
-        filter: "blur(15px) saturate(0.3)", 
+        scale: 0.6,
+        filter: "blur(15px) saturate(0.3)",
     },
     visible: {
         opacity: 1,
@@ -543,11 +543,11 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
     },
     exit: {
         opacity: 0,
-        scale: 0.7, 
+        scale: 0.7,
         filter: "blur(12px) saturate(0.5)",
         transition: {
             duration: 0.35,
-            ease: "anticipate", 
+            ease: "anticipate",
             opacity: { duration: 0.3, ease: "easeIn"},
         }
     }
@@ -586,6 +586,7 @@ export const personalCardTranslations = {
     githubStatsIi: { vi: "Thống kê GitHub II", en: "GitHub Statistics II", ja: "GitHub統計 II" },
     githubStatsIii: { vi: "Thống kê GitHub III", en: "GitHub Statistics III", ja: "GitHub統計 III" },
     discordPresence: { vi: "Trạng thái Discord", en: "Discord Presence", ja: "Discordステータス" },
+    socials: { vi: "Mạng xã hội", en: "Social Media", ja: "ソーシャルメディア" } // Added
   },
   introBio: {
     namePlaceholder: "{name}",
@@ -629,6 +630,13 @@ export const personalCardTranslations = {
     vi: "Không có mô tả.",
     en: "No bio provided.",
     ja: "紹介文はありません。"
+  },
+  socialLinks: { // Added
+    github: { vi: "Ghé thăm GitHub", en: "Visit GitHub", ja: "GitHubを見る" },
+    tiktok: { vi: "Xem TikTok", en: "Watch TikTok", ja: "TikTokを見る" },
+    discordProfile: { vi: "Hồ sơ Discord", en: "Discord Profile", ja: "Discordプロフィール" },
+    discordServer: { vi: "Máy chủ Discord", en: "Discord Server", ja: "Discordサーバー" },
+    youtube: { vi: "Kênh YouTube", en: "YouTube Channel", ja: "YouTubeチャンネル" }
   }
 };
 

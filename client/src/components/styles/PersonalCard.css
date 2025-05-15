@@ -27,7 +27,7 @@
                 0 12px 40px rgba(var(--background-color-rgb), 0.4);
 }
 
-@keyframes fadeInCardSmoothOld { 
+@keyframes fadeInCardSmoothOld {
   from {
     opacity: 0;
     transform: translateY(20px) scale(0.98);
@@ -40,33 +40,33 @@
 
 /* Styles for section="about" - Focused "Về tôi" view */
 .personal-card-about-view {
-  background: 
+  background:
     radial-gradient(ellipse at 70% 30%, rgba(var(--primary-color-rgb), 0.06) 0%, transparent 50%),
     radial-gradient(ellipse at 30% 70%, rgba(var(--secondary-color-rgb), 0.05) 0%, transparent 50%),
-    rgba(var(--card-background-rgb), 0.65); 
-  backdrop-filter: blur(18px) saturate(130%); 
+    rgba(var(--card-background-rgb), 0.65);
+  backdrop-filter: blur(18px) saturate(130%);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
-  width: 100%; 
-  border-radius: 24px; 
+  width: 100%;
+  border-radius: 24px;
   border: 1px solid transparent;
   border-image-slice: 1;
-  border-image-source: linear-gradient(145deg, 
-    rgba(var(--highlight-color-poetic-rgb), 0.3), 
-    rgba(var(--primary-color-rgb), 0.15), 
+  border-image-source: linear-gradient(145deg,
+    rgba(var(--highlight-color-poetic-rgb), 0.3),
+    rgba(var(--primary-color-rgb), 0.15),
     rgba(var(--secondary-color-rgb), 0.15),
     rgba(var(--highlight-color-poetic-rgb), 0.3));
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: var(--font-family-poetic), var(--font-family-fallback);
-  color: var(--text-color-poetic); 
-  padding: 0rem 0.5rem 1rem 0.5rem; 
+  color: var(--text-color-poetic);
+  padding: 0rem 0.5rem 1rem 0.5rem;
   box-sizing: border-box;
   position: relative;
-  box-shadow: 
-    0 12px 45px rgba(var(--background-color-rgb), 0.45), 
-    0 0 30px rgba(var(--highlight-color-poetic-rgb), 0.2), 
-    inset 0 0 25px rgba(var(--background-color-rgb), 0.25); 
+  box-shadow:
+    0 12px 45px rgba(var(--background-color-rgb), 0.45),
+    0 0 30px rgba(var(--highlight-color-poetic-rgb), 0.2),
+    inset 0 0 25px rgba(var(--background-color-rgb), 0.25);
   overflow: hidden; /* To clip content during animations or if wrapper doesn't perfectly contain children before JS height sync */
 }
 
@@ -77,19 +77,19 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 700px; 
-    margin-bottom: 1.5rem; 
-    padding: 0.5rem 0.2rem; 
+    max-width: 700px;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0.2rem;
     box-sizing: border-box;
-    border-bottom: 1.5px solid; 
-    border-image-source: linear-gradient(to right, 
-        transparent 2%, 
-        rgba(var(--highlight-color-poetic-rgb), 0.2) 20%, 
+    border-bottom: 1.5px solid;
+    border-image-source: linear-gradient(to right,
+        transparent 2%,
+        rgba(var(--highlight-color-poetic-rgb), 0.2) 20%,
         rgba(var(--highlight-color-poetic-rgb), 0.5) 50%,
-        rgba(var(--highlight-color-poetic-rgb), 0.2) 80%, 
+        rgba(var(--highlight-color-poetic-rgb), 0.2) 80%,
         transparent 98%);
     border-image-slice: 1;
-    flex-shrink: 0; 
+    flex-shrink: 0;
 }
 
 .about-nav-arrow {
@@ -97,7 +97,7 @@
     border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.2);
     color: var(--highlight-color-poetic);
     cursor: pointer;
-    padding: 0.6rem; 
+    padding: 0.6rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -108,22 +108,22 @@
 }
 
 .about-nav-arrow svg {
-    width: 24px; 
+    width: 24px;
     height: 24px;
-    stroke-width: 2.8; 
+    stroke-width: 2.8;
     transition: stroke 0.25s ease;
 }
 
 
-.about-section-title { 
+.about-section-title {
   font-family: var(--font-family-poetic), var(--font-family-fallback);
-  font-size: clamp(1.6em, 4vw, 2em); 
+  font-size: clamp(1.6em, 4vw, 2em);
   font-weight: 400;
   text-align: center;
   position: relative;
   background: linear-gradient(
-    125deg, 
-    var(--secondary-color, #f5c2e7) 15%, 
+    125deg,
+    var(--secondary-color, #f5c2e7) 15%,
     var(--highlight-color-poetic, #D8BFD8) 45%,
     var(--primary-color, #ffaaaa) 75%
   );
@@ -131,51 +131,51 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 250% auto;
-  animation: galleryTitleFlow 10s linear infinite alternate; 
+  animation: galleryTitleFlow 10s linear infinite alternate;
   text-shadow: 0 1px 2px rgba(var(--background-color-rgb),0.15),
-               0 0 10px rgba(var(--primary-color-rgb), 0.35), 
-               0 0 20px rgba(var(--secondary-color-rgb), 0.25), 
+               0 0 10px rgba(var(--primary-color-rgb), 0.35),
+               0 0 20px rgba(var(--secondary-color-rgb), 0.25),
                0 0 35px rgba(var(--highlight-color-poetic-rgb), 0.2);
   line-height: 1.35;
-  letter-spacing: 0.8px; 
-  margin: 0 0.4rem; 
+  letter-spacing: 0.8px;
+  margin: 0 0.4rem;
   padding: 0.2rem 0;
-  flex-grow: 1; 
-  min-width: 0; 
+  flex-grow: 1;
+  min-width: 0;
   overflow-wrap: break-word;
 }
 
 
 .about-sub-section-content-wrapper {
-    position: relative; 
+    position: relative;
     width: 100%;
-    max-width: 95%; 
+    max-width: 95%;
     /* REMOVED max-height, height will be animated by JS */
     /* min-height: 200px; A min-height can be useful to prevent complete collapse initially */
     overflow-y: auto; /* Still allow scroll if animated height is too much for viewport */
-    overflow-x: hidden; 
-    perspective: 1500px; 
+    overflow-x: hidden;
+    perspective: 1500px;
     perspective-origin: center center;
-    border-radius: 12px; 
+    border-radius: 12px;
     background-color: rgba(var(--card-background-rgb), 0.1);
     box-shadow: inset 0 0 15px rgba(var(--background-color-rgb),0.2);
-    scrollbar-width: thin; 
-    scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.6) rgba(var(--card-background-rgb), 0.1); 
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.6) rgba(var(--card-background-rgb), 0.1);
 }
 
 .about-sub-section-content-wrapper::-webkit-scrollbar {
-    width: 8px; 
+    width: 8px;
 }
 
 .about-sub-section-content-wrapper::-webkit-scrollbar-track {
-    background: rgba(var(--card-background-rgb), 0.1); 
+    background: rgba(var(--card-background-rgb), 0.1);
     border-radius: 10px;
 }
 
 .about-sub-section-content-wrapper::-webkit-scrollbar-thumb {
-    background-color: rgba(var(--highlight-color-poetic-rgb), 0.5); 
+    background-color: rgba(var(--highlight-color-poetic-rgb), 0.5);
     border-radius: 10px;
-    border: 2px solid transparent; 
+    border: 2px solid transparent;
     background-clip: content-box;
 }
 
@@ -185,31 +185,31 @@
 
 
 .about-sub-section-content {
-    border-radius: 12px; 
+    border-radius: 12px;
     box-sizing: border-box;
     /* This div's height will dictate its parent's animated height */
     width: 100%; /* Ensure it takes full width of its scrollable parent for measurement */
 }
 .sub-section-inner-padding {
-    padding: 1rem 1.5rem; 
+    padding: 1rem 1.5rem;
     box-sizing: border-box;
 }
 
 
-.personal-card-about-view .bio-text { 
+.personal-card-about-view .bio-text {
   font-family: var(--font-family-poetic), var(--font-family-fallback);
   font-size: clamp(1.05em, 2.5vw, 1.15em);
-  font-weight: 300; 
-  line-height: 1.9; 
-  color: rgba(var(--text-color-poetic-rgb), 0.92); 
-  text-align: justify; 
+  font-weight: 300;
+  line-height: 1.9;
+  color: rgba(var(--text-color-poetic-rgb), 0.92);
+  text-align: justify;
   hyphens: auto;
-  white-space: pre-line; 
-  text-shadow: 0 1px 3px rgba(var(--background-color-rgb), 0.6); 
+  white-space: pre-line;
+  text-shadow: 0 1px 3px rgba(var(--background-color-rgb), 0.6);
   letter-spacing: 0.1px;
 }
 .personal-card-about-view .bio-text strong {
-    font-weight: 500; 
+    font-weight: 500;
     color: var(--highlight-color-poetic);
     text-shadow: 0 0 5px rgba(var(--highlight-color-poetic-rgb),0.3);
 }
@@ -220,31 +220,31 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem; 
+    gap: 1.5rem;
     width: 100%;
     color: var(--text-color-poetic);
     box-sizing: border-box;
 }
 
 .github-stats-image-container, .discord-presence-container {
-    gap: 1rem; 
+    gap: 1rem;
 }
 .github-stats-image-container.grid-2x2 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-    gap: 1rem; 
-    align-items: stretch; 
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    align-items: stretch;
 }
 .github-stats-image-container.grid-2x2 .github-stat-image {
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-    min-height: 150px; 
-}
-.github-stat-image.wide-image { 
-    grid-column: 1 / -1; 
     width: 100%;
-    max-width: 600px; 
+    height: 100%;
+    object-fit: cover;
+    min-height: 150px;
+}
+.github-stat-image.wide-image {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -252,25 +252,25 @@
 .github-stat-image, .discord-presence-image {
     max-width: 100%;
     height: auto;
-    border-radius: 10px; 
-    background-color: rgba(var(--card-background-rgb), 0.1); 
+    border-radius: 10px;
+    background-color: rgba(var(--card-background-rgb), 0.1);
     border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.1);
     box-shadow: 0 5px 15px rgba(var(--background-color-rgb),0.35),
                 inset 0 0 8px rgba(var(--background-color-rgb),0.25);
     transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s ease;
-    filter: saturate(0.85) brightness(0.9); 
-    padding: 0.2rem; 
+    filter: saturate(0.85) brightness(0.9);
+    padding: 0.2rem;
 }
 .github-stat-image:hover, .discord-presence-image:hover {
     border-color: rgba(var(--highlight-color-poetic-rgb), 0.35);
-    box-shadow: 0 8px 25px rgba(var(--highlight-color-poetic-rgb),0.25), 
+    box-shadow: 0 8px 25px rgba(var(--highlight-color-poetic-rgb),0.25),
                 inset 0 0 10px rgba(var(--highlight-color-poetic-rgb),0.1);
     filter: saturate(1.05) brightness(1.05);
 }
 
 .github-user-header {
     display: flex;
-    align-items: center; 
+    align-items: center;
     gap: 1.5rem;
     width: 100%;
     padding-bottom: 1rem;
@@ -298,11 +298,11 @@
 }
 .github-bio {
     font-size: clamp(0.85em, 2vw, 0.9em);
-    line-height: 1.65; 
+    line-height: 1.65;
     color: var(--subtext-color-poetic);
     margin: 0;
     text-align: left;
-    display: -webkit-box; 
+    display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -321,18 +321,18 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1rem 0.5rem; 
-    background-color: rgba(var(--card-background-rgb), 0.15); 
+    padding: 1rem 0.5rem;
+    background-color: rgba(var(--card-background-rgb), 0.15);
     border-radius: 10px;
     border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.12);
     box-shadow: 0 3px 8px rgba(var(--background-color-rgb), 0.3),
                 inset 0 0 5px rgba(var(--background-color-rgb), 0.1);
-    min-height: 90px; 
+    min-height: 90px;
     text-align: center;
 }
 .stat-value {
-    font-size: clamp(1.6em, 5vw, 1.9em); 
-    font-weight: 400; 
+    font-size: clamp(1.6em, 5vw, 1.9em);
+    font-weight: 400;
     color: var(--highlight-color-poetic);
     line-height: 1.1;
     text-shadow: 0 0 7px rgba(var(--highlight-color-poetic-rgb), 0.35);
@@ -346,23 +346,23 @@
 
 .github-profile-link {
     display: inline-block;
-    padding: 0.7rem 1.5rem; 
-    background: linear-gradient(140deg, 
-        rgba(var(--highlight-color-poetic-rgb), 0.1), 
+    padding: 0.7rem 1.5rem;
+    background: linear-gradient(140deg,
+        rgba(var(--highlight-color-poetic-rgb), 0.1),
         rgba(var(--primary-color-rgb), 0.07)
     );
     color: var(--highlight-color-poetic);
     text-decoration: none;
-    border-radius: 25px; 
-    font-weight: 400; 
+    border-radius: 25px;
+    font-weight: 400;
     border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.25);
-    transition: all 0.25s ease-out; 
+    transition: all 0.25s ease-out;
     box-shadow: 0 2px 5px rgba(var(--background-color-rgb), 0.2);
 }
 .github-profile-link:hover {
-    background-position: right center; 
-     background: linear-gradient(140deg, 
-        rgba(var(--highlight-color-poetic-rgb), 0.2), 
+    background-position: right center;
+     background: linear-gradient(140deg,
+        rgba(var(--highlight-color-poetic-rgb), 0.2),
         rgba(var(--primary-color-rgb), 0.15)
     );
     border-color: rgba(var(--highlight-color-poetic-rgb), 0.45);
@@ -381,9 +381,44 @@
     font-style: italic;
 }
 .error-text {
-    color: var(--error-color); 
+    color: var(--error-color);
     font-weight: 400;
     text-shadow: 0 0 5px rgba(var(--error-color-rgb),0.2);
+}
+
+/* --- Social Media Links --- */
+.social-media-links-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive columns */
+    gap: 1rem;
+    width: 100%;
+    padding-top: 0.5rem;
+}
+
+.social-media-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1rem;
+    background-color: rgba(var(--highlight-color-poetic-rgb), 0.08);
+    color: var(--highlight-color-poetic);
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 400;
+    font-size: 0.95em;
+    border: 1px solid rgba(var(--highlight-color-poetic-rgb), 0.2);
+    transition: all 0.25s ease-out;
+    box-shadow: 0 2px 4px rgba(var(--background-color-rgb), 0.15);
+    text-align: center;
+    min-height: 50px; /* Ensure consistent height */
+    word-break: break-word;
+}
+
+.social-media-link:hover {
+    background-color: rgba(var(--highlight-color-poetic-rgb), 0.15);
+    border-color: rgba(var(--highlight-color-poetic-rgb), 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(var(--highlight-color-poetic-rgb), 0.15);
 }
 
 
@@ -462,6 +497,7 @@
   .sub-section-inner-padding { padding: 0.8rem 1rem; }
   .github-avatar { width: 60px; height: 60px; }
   .stat-item { min-height: 80px; }
+  .social-media-links-container { grid-template-columns: 1fr; } /* Single column on smaller screens */
 }
 
 @media (max-width: 480px) {
@@ -480,11 +516,11 @@
     .about-sub-section-navigation { margin-bottom: 1rem; padding: 0.3rem 0; }
     .about-nav-arrow { padding: 0.5rem; }
     .about-nav-arrow svg { width: 20px; height: 20px; stroke-width: 2.5; }
-    
+
     .about-sub-section-content-wrapper {
-      min-height: 220px; 
-      max-height: 60vh; 
-      scrollbar-width: auto; 
+      min-height: 220px;
+      max-height: 60vh;
+      scrollbar-width: auto;
     }
     .about-sub-section-content-wrapper::-webkit-scrollbar {
         width: 6px;
@@ -494,11 +530,14 @@
 
     .github-user-header { flex-direction: column; align-items: center; text-align: center; gap: 0.8rem; }
     .github-avatar { width: 60px; height: 60px; }
-    
-    .github-stats-grid { grid-template-columns: 1fr; gap: 0.8rem; } 
+
+    .github-stats-grid { grid-template-columns: 1fr; gap: 0.8rem; }
     .stat-item { min-height: 70px; }
     .github-profile-link { font-size: 0.9em; padding: 0.6rem 1.2rem; }
 
-    .github-stats-image-container.grid-2x2 { grid-template-columns: 1fr; } 
-    .discord-presence-image { width: 100%; max-width: 300px; } 
-} 
+    .github-stats-image-container.grid-2x2 { grid-template-columns: 1fr; }
+    .discord-presence-image { width: 100%; max-width: 300px; }
+
+    .social-media-links-container { grid-template-columns: 1fr; gap: 0.8rem; }
+    .social-media-link { font-size: 0.9em; padding: 0.7rem 1rem; }
+}

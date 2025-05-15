@@ -1,12 +1,12 @@
 // client/src/components/PersonalCard.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useAnimation } from 'framer-motion'; 
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import './styles/PersonalCard.css';
-import { 
-    aboutNavIconLeft, 
+import {
+    aboutNavIconLeft,
     aboutNavIconRight,
     githubSectionTranslations,
-    personalCardTranslations, 
+    personalCardTranslations,
 } from './languageSelector/languageSelector.constants';
 
 interface PersonalCardProps {
@@ -14,16 +14,17 @@ interface PersonalCardProps {
   name: string;
   section: 'about' | 'all';
   githubUsername?: string;
-  language: 'vi' | 'en' | 'ja'; 
+  language: 'vi' | 'en' | 'ja';
 }
 
-type AboutSubSection = 'intro' | 'github' | 'github-stats-ii' | 'github-stats-iii' | 'discord-presence';
+type AboutSubSection = 'intro' | 'github' | 'github-stats-ii' | 'github-stats-iii' | 'discord-presence' | 'socials';
 const aboutSubSectionsOrder: AboutSubSection[] = [
-    'intro', 
-    'github', 
-    'github-stats-ii', 
+    'intro',
+    'github',
+    'github-stats-ii',
     'github-stats-iii',
-    'discord-presence'
+    'discord-presence',
+    'socials'
 ];
 
 const aboutSectionContentVariants: { [key: string]: any } = {
@@ -67,13 +68,13 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const [githubData, setGithubData] = useState<any>(null);
   const [githubLoading, setGithubLoading] = useState<boolean>(false);
   const [githubError, setGithubError] = useState<string | null>(null);
-  
+
   const discordUserId = "873576591693873252";
 
-  const contentWrapperControls = useAnimation(); 
-  const currentContentRef = useRef<HTMLDivElement>(null); 
-  const contentWrapperOuterRef = useRef<HTMLDivElement>(null); 
-  const prevHeightRef = useRef<number | null>(null); 
+  const contentWrapperControls = useAnimation();
+  const currentContentRef = useRef<HTMLDivElement>(null);
+  const contentWrapperOuterRef = useRef<HTMLDivElement>(null);
+  const prevHeightRef = useRef<number | null>(null);
 
 
   useEffect(() => {
@@ -108,7 +109,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
       setSlideDirection(-1);
       nextIndex = (currentIndex - 1 + aboutSubSectionsOrder.length) % aboutSubSectionsOrder.length;
     }
-    if (currentIndex !== nextIndex) { 
+    if (currentIndex !== nextIndex) {
         setCurrentAboutSubSection(aboutSubSectionsOrder[nextIndex]);
     }
   };
@@ -119,22 +120,50 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
         if (newHeight > 0 && (prevHeightRef.current === null || prevHeightRef.current !== newHeight)) {
             contentWrapperControls.start({
-                height: newHeight, 
+                height: newHeight,
                 transition: { type: "spring", stiffness: 260, damping: 30, mass: 0.9, duration: 0.45 }
             });
             prevHeightRef.current = newHeight;
         } else if (prevHeightRef.current === null && newHeight === 0) {
-            contentWrapperControls.start({ height: 'auto' }); 
+            contentWrapperControls.start({ height: 'auto' });
         }
         if (contentWrapperOuterRef.current) {
             contentWrapperOuterRef.current.scrollTop = 0;
         }
     }
-  }, [currentAboutSubSection, githubLoading, githubData, githubError, section, contentWrapperControls]);
+  }, [currentAboutSubSection, githubLoading, githubData, githubError, section, contentWrapperControls, language]); // Added language as dependency
+
+  const socialLinksData = [
+    {
+        id: 'github',
+        url: `https://github.com/${githubUsername || 'Rin1809'}`,
+        translationKey: 'github' as keyof typeof personalCardTranslations.socialLinks
+    },
+    {
+        id: 'tiktok',
+        url: "https://www.tiktok.com/@rinrinn1913",
+        translationKey: 'tiktok' as keyof typeof personalCardTranslations.socialLinks
+    },
+    {
+        id: 'discordProfile',
+        url: `https://discord.com/users/873576591693873252`,
+        translationKey: 'discordProfile' as keyof typeof personalCardTranslations.socialLinks
+    },
+    {
+        id: 'discordServer',
+        url: "https://discord.com/invite/homqua",
+        translationKey: 'discordServer' as keyof typeof personalCardTranslations.socialLinks
+    },
+    {
+        id: 'youtube',
+        url: "https://www.youtube.com/@RinnRin1913",
+        translationKey: 'youtube' as keyof typeof personalCardTranslations.socialLinks
+    }
+  ];
 
 
   if (section === 'about') {
-    const currentLang = language; 
+    const currentLang = language;
     const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);
     const isFirstSection = currentIndex === 0;
     const isLastSection = currentIndex === aboutSubSectionsOrder.length - 1;
@@ -146,7 +175,8 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             case 'github-stats-ii': return personalCardTranslations.sectionTitles.githubStatsIi[currentLang];
             case 'github-stats-iii': return personalCardTranslations.sectionTitles.githubStatsIii[currentLang];
             case 'discord-presence': return personalCardTranslations.sectionTitles.discordPresence[currentLang];
-            default: return "Information"; 
+            case 'socials': return personalCardTranslations.sectionTitles.socials[currentLang]; // Added
+            default: return "Information";
         }
     };
 
@@ -155,12 +185,12 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     const bioPart3 = personalCardTranslations.introBio.part3[currentLang];
     const bioPart4 = personalCardTranslations.introBio.part4[currentLang];
     const bioPart5 = personalCardTranslations.introBio.part5[currentLang];
-    
+
     const fullBioHtml = `${bioPart1}<br/><br/>${bioPart2}<br/><br/>${bioPart3}<br/><br/>${bioPart4}<br/><br/>${bioPart5}`;
 
     return (
-      <motion.div 
-        className={containerClassName} 
+      <motion.div
+        className={containerClassName}
         style={style}
         initial={{ opacity: 0, y: 30, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: 0.1 } }}
@@ -172,12 +202,12 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                 onClick={() => changeSubSection('prev')}
                 aria-label="Previous section"
                 initial={{ opacity: 0, x: -10 }}
-                animate={{ 
-                    opacity: isFirstSection ? 0.3 : 1, 
-                    x: 0, 
-                    pointerEvents: isFirstSection ? 'none' : 'auto' 
+                animate={{
+                    opacity: isFirstSection ? 0.3 : 1,
+                    x: 0,
+                    pointerEvents: isFirstSection ? 'none' : 'auto'
                 }}
-                whileHover={{ scale: !isFirstSection ? 1.15 : 1, x: !isFirstSection ? -3 : 0, 
+                whileHover={{ scale: !isFirstSection ? 1.15 : 1, x: !isFirstSection ? -3 : 0,
                               color: !isFirstSection ? "var(--primary-color)" : "var(--highlight-color-poetic)",
                               boxShadow: !isFirstSection ? "0 0 10px rgba(var(--primary-color-rgb),0.3)" : "none"
                             }}
@@ -186,10 +216,10 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             >
                 <span dangerouslySetInnerHTML={{ __html: aboutNavIconLeft }} />
             </motion.button>
-            
+
             <AnimatePresence mode="wait">
-                <motion.h2 
-                    key={currentAboutSubSection + "-title"}
+                <motion.h2
+                    key={currentAboutSubSection + "-title-" + currentLang} // Added currentLang to key
                     className="about-section-title"
                     variants={aboutSectionTitleAnimVariants}
                     initial="initial"
@@ -205,9 +235,9 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                 onClick={() => changeSubSection('next')}
                 aria-label="Next section"
                 initial={{ opacity: 0, x: 10 }}
-                animate={{ 
-                    opacity: isLastSection ? 0.3 : 1, 
-                    x: 0, 
+                animate={{
+                    opacity: isLastSection ? 0.3 : 1,
+                    x: 0,
                     pointerEvents: isLastSection ? 'none' : 'auto'
                 }}
                 whileHover={{ scale: !isLastSection ? 1.15 : 1, x: !isLastSection ? 3 : 0,
@@ -222,20 +252,20 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
         </div>
 
         <motion.div
-            ref={contentWrapperOuterRef} 
-            className="about-sub-section-content-wrapper" 
-            animate={contentWrapperControls} 
-            initial={{ height: 'auto' }} 
+            ref={contentWrapperOuterRef}
+            className="about-sub-section-content-wrapper"
+            animate={contentWrapperControls}
+            initial={{ height: 'auto' }}
         >
-          <AnimatePresence 
-            initial={false} 
-            custom={slideDirection} 
+          <AnimatePresence
+            initial={false}
+            custom={slideDirection}
             mode="wait"
           >
             <motion.div
-              ref={currentContentRef} 
-              key={currentAboutSubSection}
-              className="about-sub-section-content" 
+              ref={currentContentRef}
+              key={currentAboutSubSection + currentLang} // Added currentLang to key
+              className="about-sub-section-content"
               custom={slideDirection}
               variants={aboutSectionContentVariants}
               initial="enter"
@@ -255,10 +285,10 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                   {githubData?.user && (
                     <div className="github-stats-container api-stats">
                         <div className="github-user-header">
-                            <motion.img 
-                                src={githubData.user.avatar_url} 
-                                alt={`${githubData.user.login}'s avatar`} 
-                                className="github-avatar" 
+                            <motion.img
+                                src={githubData.user.avatar_url}
+                                alt={`${githubData.user.login}'s avatar`}
+                                className="github-avatar"
                                 whileHover={{ scale: 1.1, rotate: 2, y: -2, boxShadow: "0 0 25px rgba(var(--primary-color-rgb),0.6), 0 0 10px rgba(var(--primary-color-rgb),0.8)"}}
                                 transition={{type: "spring", stiffness:300, damping:10}}
                             />
@@ -278,8 +308,8 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                             </motion.div>
                         </div>
                         {githubData.user.html_url && (
-                            <motion.a 
-                                href={githubData.user.html_url} target="_blank" rel="noopener noreferrer" 
+                            <motion.a
+                                href={githubData.user.html_url} target="_blank" rel="noopener noreferrer"
                                 className="github-profile-link"
                                 whileHover={{scale:1.05, y: -2, boxShadow: "0 0 15px rgba(var(--highlight-color-poetic-rgb),0.4)"}}
                                 whileTap={{scale:0.95}}
@@ -293,15 +323,15 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
               )}
               {currentAboutSubSection === 'github-stats-ii' && githubUsername && (
                 <div className="github-stats-image-container sub-section-inner-padding">
-                    <motion.img 
-                        src={`https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=${githubUsername}&theme=tokyonight`} 
-                        alt="GitHub Profile Details" 
+                    <motion.img
+                        src={`https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=${githubUsername}&theme=tokyonight`}
+                        alt="GitHub Profile Details"
                         className="github-stat-image"
                          whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
-                    <motion.img 
-                        src={`https://github-readme-activity-graph.vercel.app/graph?username=${githubUsername}&theme=tokyonight&hide_border=true&area=true&line=BB9AF7&point=79E6F3`} 
-                        alt="GitHub Activity Graph" 
+                    <motion.img
+                        src={`https://github-readme-activity-graph.vercel.app/graph?username=${githubUsername}&theme=tokyonight&hide_border=true&area=true&line=BB9AF7&point=79E6F3`}
+                        alt="GitHub Activity Graph"
                         className="github-stat-image wide-image"
                         whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
@@ -309,27 +339,27 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
               )}
               {currentAboutSubSection === 'github-stats-iii' && githubUsername && (
                 <div className="github-stats-image-container grid-2x2 sub-section-inner-padding">
-                    <motion.img 
-                        src={`https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${githubUsername}&theme=tokyonight&utcOffset=7`} 
-                        alt="GitHub Productive Time" 
+                    <motion.img
+                        src={`https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${githubUsername}&theme=tokyonight&utcOffset=7`}
+                        alt="GitHub Productive Time"
                         className="github-stat-image"
                         whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
-                    <motion.img 
+                    <motion.img
                         src={`https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=${githubUsername}&theme=tokyonight`}
-                        alt="GitHub Most Committed Language" 
+                        alt="GitHub Most Committed Language"
                         className="github-stat-image"
                          whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
-                    <motion.img 
-                        src={`https://github-readme-stats.vercel.app/api/top-langs?username=${githubUsername}&show_icons=true&locale=en&layout=compact&theme=tokyonight`} 
-                        alt="GitHub Top Languages" 
+                    <motion.img
+                        src={`https://github-readme-stats.vercel.app/api/top-langs?username=${githubUsername}&show_icons=true&locale=en&layout=compact&theme=tokyonight`}
+                        alt="GitHub Top Languages"
                         className="github-stat-image"
                         whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
-                    <motion.img 
-                        src={`https://streak-stats.demolab.com/?user=${githubUsername}&theme=tokyonight&date_format=M%20j%5B%2C%20Y%5D`} 
-                        alt="GitHub Streak Stats" 
+                    <motion.img
+                        src={`https://streak-stats.demolab.com/?user=${githubUsername}&theme=tokyonight&date_format=M%20j%5B%2C%20Y%5D`}
+                        alt="GitHub Streak Stats"
                         className="github-stat-image"
                         whileHover={{y:-5, scale:1.03, transition:{type:"spring", stiffness:300, damping:12}}}
                     />
@@ -345,6 +375,26 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                     />
                 </div>
               )}
+              {currentAboutSubSection === 'socials' && (
+                <div className="sub-section-inner-padding">
+                    <div className="social-media-links-container">
+                        {socialLinksData.map(link => (
+                            <motion.a
+                                key={link.id}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="social-media-link"
+                                whileHover={{ y: -3, scale:1.03, boxShadow: "0 5px 15px rgba(var(--highlight-color-poetic-rgb),0.2)" }}
+                                whileTap={{ scale: 0.97 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                            >
+                                {personalCardTranslations.socialLinks[link.translationKey][currentLang]}
+                            </motion.a>
+                        ))}
+                    </div>
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </motion.div>
@@ -352,17 +402,18 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     );
   }
 
+  // Fallback for section="all" or other unhandled cases
   return (
     <div className={containerClassName} style={style}>
       <div className="card-main-header">
-          <img 
+          <img
               src={cardData.avatarUrl}
-              alt={`${name}'s avatar`} 
-              className="my-avatar" 
+              alt={`${name}'s avatar`}
+              className="my-avatar"
           />
           <div className="my-name-title">
               <h2>{name}</h2>
-              <p className="my-title">{cardData.title}</p> 
+              <p className="my-title">{cardData.title}</p>
           </div>
       </div>
       <div className="card-section">
@@ -397,11 +448,11 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
       </div>
     </div>
   );
-};  
+};
 
 const cardData = {
     avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
     title: "IT Student | Cyber Security "
 };
 
-export default PersonalCard;    
+export default PersonalCard;
