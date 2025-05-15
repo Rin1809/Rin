@@ -37,7 +37,8 @@ import {
     previewIcons,
     languageSelectorPreviewTranslations, 
     cardDisplayInfo, 
-    galleryViewVariants, 
+    galleryViewVariants,
+    SHARED_FLOURISH_SPRING_TRANSITION, // Import from constants
 } from './languageSelector/languageSelector.constants';
 
 
@@ -60,8 +61,6 @@ const getFlourishLayoutPropsForView = (view: SelectorView) => {
     }
     return { scale };
 };
-
-const SHARED_FLOURISH_SPRING_TRANSITION = { type: "spring", stiffness: 210, damping: 30, mass: 0.9 };
 
 // New proposed isInitialMount delays (slower sequence) for languageOptions view
 const initialMountTitleDelay = 0.5;
@@ -143,10 +142,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         ...(baseVariantSet.visibleBase as object),
         scale: scaleValue,
         transition: {
-            opacity: { duration: isInitialMount ? 1.2 : 0.7, ease: [0.23, 1, 0.32, 1], delay: entryDelay },
-            filter: { type: "tween", duration: isInitialMount ? 0.5 : 0.3, ease: "easeOut", delay: entryDelay },
+            opacity: { duration: isInitialMount ? 2.0 : 1.5, ease: [0.23, 1, 0.32, 1], delay: entryDelay }, // MODIFIED duration
+            filter: { type: "tween", duration: isInitialMount ? 1.2 : 0.9, ease: "easeOut", delay: entryDelay }, // MODIFIED duration
             y: { ...SHARED_FLOURISH_SPRING_TRANSITION, delay: entryDelay },
-            rotate: { ...SHARED_FLOURISH_SPRING_TRANSITION, delay: entryDelay },
+            rotate: { ...SHARED_FLOURISH_SPRING_TRANSITION, delay: entryDelay + (isInitialMount ? 0.1 : 0.05) }, // Slightly delay rotate for effect
             scale: { ...SHARED_FLOURISH_SPRING_TRANSITION, delay: entryDelay }
         }
     });

@@ -286,13 +286,17 @@ export const baseFlourishVisibleFilterKeyframes = [
 
 export const flourishVariantsDefinition = (initialRotate: number = 0): Variants => ({
     hidden: {
-        opacity: 0, y: 20, scale: 0.8, rotate: initialRotate, filter: "drop-shadow(0 0 0px transparent)"
+        opacity: 0,
+        y: -40, // Start 40px above its local origin (for top: comes from top; for bottom after 180deg rotation: comes from bottom)
+        scale: 0.8,
+        rotate: initialRotate,
+        filter: "drop-shadow(0 0 0px transparent)"
     },
     visibleBase: {
         opacity: 0.85,
         rotate: initialRotate,
         y: 0,
-        filter: baseFlourishVisibleFilterKeyframes[0],
+        // filter: baseFlourishVisibleFilterKeyframes[0], // Removed as per diff logic, loop will apply it
     },
     hover: (custom: { baseScale: number }) => ({
         y: initialRotate === 0 ? -12 : 12,
@@ -302,6 +306,10 @@ export const flourishVariantsDefinition = (initialRotate: number = 0): Variants 
     })
 });
 
+// Define SHARED_FLOURISH_SPRING_TRANSITION here for slower animation
+export const SHARED_FLOURISH_SPRING_TRANSITION = {
+    type: "spring", stiffness: 120, damping: 28, mass: 1.2
+};
 
 export const createFlourishLoopAnimation = (initialRotate: number) => ({
     y: initialRotate === 0 ? [0, -7, 0] : [0, 7, 0],

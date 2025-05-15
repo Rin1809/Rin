@@ -43,25 +43,20 @@
   --wow-move-distance: 70px;
   --wow-hide-duration: 0.5s;
   --content-fade-in-duration: 0.5s;
-  --results-fade-duration: 0.6s; /* For PersonalCard animation */
+  --results-fade-duration: 0.6s; 
 
-  /* --- START FONT CHANGES --- */
-  /* Font Variables */
-  /* New primary font */
+  /* --- FONT  --- */
+
   --font-family-primary: "Playwrite DK Loopet", cursive;
-  /* Standard fallback */
   --font-family-fallback: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-
-  /* Poetic Style Variables (now using new primary font) */
   --font-family-poetic: var(--font-family-primary);
-  /* --- END FONT CHANGES --- */
 
   --text-color-poetic: #e6e6e6;
   --text-color-poetic-rgb: 230, 230, 230;
   --subtext-color-poetic: #c0c0c0;
-  --highlight-color-poetic: #D8BFD8; /* Light Thistle / Soft Lavender */
+  --highlight-color-poetic: #D8BFD8;
   --highlight-color-poetic-rgb: 216, 191, 216;
   --background-overlay-poetic: rgba(30, 30, 46, 0.9);
   --card-hover-bg-poetic: rgba(255, 255, 255, 0.04);
@@ -69,9 +64,8 @@
 
 body {
   margin: 0;
-  /* Apply new font to the entire body */
   font-family: var(--font-family-primary), var(--font-family-fallback);
-  font-weight: 300; /* Default weight for the body text, adjust as needed */
+  font-weight: 300; 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--background-color);
@@ -193,7 +187,7 @@ body {
   animation: catBob 1.2s ease-in-out infinite alternate;
   margin-bottom: 0.5rem;
   transition: text-shadow 0.3s ease-out, filter 0.3s ease-out;
-  font-family: sans-serif; /* Keep cat icon as default emoji font */
+  font-family: sans-serif;
 }
 .ellipsis {
   font-size: 2rem;
@@ -223,7 +217,7 @@ body {
 .server-name-wow {
   color: var(--secondary-color);
   font-size: 2.2em;
-  font-weight: 400; /* Max weight for this font */
+  font-weight: 400; 
   margin: 0;
   white-space: nowrap;
   opacity: 0;

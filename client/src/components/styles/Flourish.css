@@ -24,12 +24,12 @@
 
 .flourish-bottom {
   margin-top: 0.4rem; /* Khoảng cách trên flourish dưới */
-  transform: rotate(180deg); /* Lật ngược flourish dưới nếu dùng cùng path */
+  transform: rotate(180deg); 
 }
 
 /* Ví dụ: Làm cho flourish trong card nhỏ hơn và màu khác */
 .personal-card-container .flourish-svg-container {
-  color: rgba(var(--primary-color-rgb), 0.55); /* Màu nhạt hơn trong card */
+  color: rgba(var(--primary-color-rgb), 0.55); 
   width: 35%;
   max-width: 150px;
 }
