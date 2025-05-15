@@ -1,11 +1,12 @@
 // client/src/components/PersonalCard.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useAnimation } from 'framer-motion'; // Re-added useAnimation
+import { motion, AnimatePresence, useAnimation } from 'framer-motion'; 
 import './styles/PersonalCard.css';
 import { 
     aboutNavIconLeft, 
     aboutNavIconRight,
     githubSectionTranslations,
+    personalCardTranslations, 
 } from './languageSelector/languageSelector.constants';
 
 interface PersonalCardProps {
@@ -13,6 +14,7 @@ interface PersonalCardProps {
   name: string;
   section: 'about' | 'all';
   githubUsername?: string;
+  language: 'vi' | 'en' | 'ja'; 
 }
 
 type AboutSubSection = 'intro' | 'github' | 'github-stats-ii' | 'github-stats-iii' | 'discord-presence';
@@ -57,7 +59,7 @@ const aboutSectionTitleAnimVariants = {
     exit: { opacity: 0, y: 10, filter: "blur(2px)", transition: {duration: 0.2}}
 };
 
-const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githubUsername }) => {
+const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githubUsername, language }) => {
   const containerClassName = section === 'about' ? 'personal-card-about-view' : 'personal-card-container';
   const [currentAboutSubSection, setCurrentAboutSubSection] = useState<AboutSubSection>('intro');
   const [slideDirection, setSlideDirection] = useState(0);
@@ -68,10 +70,10 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   
   const discordUserId = "873576591693873252";
 
-  const contentWrapperControls = useAnimation(); // Re-added for height animation
-  const currentContentRef = useRef<HTMLDivElement>(null); // Ref for the actual content div
-  const contentWrapperOuterRef = useRef<HTMLDivElement>(null); // Ref for the scrollable outer wrapper
-  const prevHeightRef = useRef<number | null>(null); // To track height changes
+  const contentWrapperControls = useAnimation(); 
+  const currentContentRef = useRef<HTMLDivElement>(null); 
+  const contentWrapperOuterRef = useRef<HTMLDivElement>(null); 
+  const prevHeightRef = useRef<number | null>(null); 
 
 
   useEffect(() => {
@@ -111,22 +113,19 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     }
   };
 
-  // Effect for animating height of content wrapper
   useEffect(() => {
     if (section === 'about' && currentContentRef.current) {
-        // Measure the true scroll height of the content
         const newHeight = currentContentRef.current.offsetHeight;
 
         if (newHeight > 0 && (prevHeightRef.current === null || prevHeightRef.current !== newHeight)) {
             contentWrapperControls.start({
-                height: newHeight, // Animate to this height
+                height: newHeight, 
                 transition: { type: "spring", stiffness: 260, damping: 30, mass: 0.9, duration: 0.45 }
             });
             prevHeightRef.current = newHeight;
         } else if (prevHeightRef.current === null && newHeight === 0) {
             contentWrapperControls.start({ height: 'auto' }); 
         }
-        // Scroll the outer wrapper to top
         if (contentWrapperOuterRef.current) {
             contentWrapperOuterRef.current.scrollTop = 0;
         }
@@ -135,21 +134,29 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
 
   if (section === 'about') {
-    const lang = 'vi'; 
+    const currentLang = language; 
     const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);
     const isFirstSection = currentIndex === 0;
     const isLastSection = currentIndex === aboutSubSectionsOrder.length - 1;
 
     const getSectionTitleText = () => {
         switch(currentAboutSubSection) {
-            case 'intro': return "Giới Thiệu Bản Thân";
-            case 'github': return githubSectionTranslations.title[lang];
-            case 'github-stats-ii': return githubSectionTranslations.titlePart2[lang];
-            case 'github-stats-iii': return githubSectionTranslations.titlePart3[lang];
-            case 'discord-presence': return githubSectionTranslations.discordPresenceTitle[lang];
-            default: return "Thông tin";
+            case 'intro': return personalCardTranslations.sectionTitles.intro[currentLang];
+            case 'github': return personalCardTranslations.sectionTitles.github[currentLang];
+            case 'github-stats-ii': return personalCardTranslations.sectionTitles.githubStatsIi[currentLang];
+            case 'github-stats-iii': return personalCardTranslations.sectionTitles.githubStatsIii[currentLang];
+            case 'discord-presence': return personalCardTranslations.sectionTitles.discordPresence[currentLang];
+            default: return "Information"; 
         }
     };
+
+    const bioPart1 = personalCardTranslations.introBio.part1[currentLang].replace(personalCardTranslations.introBio.namePlaceholder, name);
+    const bioPart2 = personalCardTranslations.introBio.part2[currentLang];
+    const bioPart3 = personalCardTranslations.introBio.part3[currentLang];
+    const bioPart4 = personalCardTranslations.introBio.part4[currentLang];
+    const bioPart5 = personalCardTranslations.introBio.part5[currentLang];
+    
+    const fullBioHtml = `${bioPart1}<br/><br/>${bioPart2}<br/><br/>${bioPart3}<br/><br/>${bioPart4}<br/><br/>${bioPart5}`;
 
     return (
       <motion.div 
@@ -215,10 +222,10 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
         </div>
 
         <motion.div
-            ref={contentWrapperOuterRef} // Ref for scrolling the outer container
-            className="about-sub-section-content-wrapper" // This will have overflow-y and be scrollable
-            animate={contentWrapperControls} // Height animated by JS
-            initial={{ height: 'auto' }} // Start with auto height or a min-height if preferred
+            ref={contentWrapperOuterRef} 
+            className="about-sub-section-content-wrapper" 
+            animate={contentWrapperControls} 
+            initial={{ height: 'auto' }} 
         >
           <AnimatePresence 
             initial={false} 
@@ -226,9 +233,9 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             mode="wait"
           >
             <motion.div
-              ref={currentContentRef} // Ref for measuring the height of this specific content block
+              ref={currentContentRef} 
               key={currentAboutSubSection}
-              className="about-sub-section-content" // This block flows normally, dictates parent height
+              className="about-sub-section-content" 
               custom={slideDirection}
               variants={aboutSectionContentVariants}
               initial="enter"
@@ -237,24 +244,14 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             >
               {currentAboutSubSection === 'intro' && (
                 <div className="sub-section-inner-padding">
-                  <p className="bio-text">
-                    Chào ! Mình là <strong>{name}</strong>, đang theo học ngành An Ninh Mạng.
-                    <br/><br/>                    
-                    Mình thích mèo, thích vẽ, thích hát, ghét An Ninh Mạng. 
-                    <br/><br/>
-                    Mình chỉ có 1 điều ước nhỏ nhoi là...
-                    <br/><br/>
-                    uớc gì có 100 tỷ....  
-                    <br/><br/>
-                    Thì sao? đang đánh giá đó hả? ai mà chả có ước mơ ....?
-                  </p>
+                  <p className="bio-text" dangerouslySetInnerHTML={{ __html: fullBioHtml }} />
                 </div>
               )}
 
               {currentAboutSubSection === 'github' && (
                 <div className="sub-section-inner-padding">
-                  {githubLoading && <p className="loading-text">Đang dệt những vì sao từ GitHub...</p>}
-                  {githubError && <p className="error-text">Lỗi: {githubError}</p>}
+                  {githubLoading && <p className="loading-text">{personalCardTranslations.loadingText[currentLang]}</p>}
+                  {githubError && <p className="error-text">{personalCardTranslations.errorTextPrefix[currentLang]}{githubError}</p>}
                   {githubData?.user && (
                     <div className="github-stats-container api-stats">
                         <div className="github-user-header">
@@ -267,17 +264,17 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                             />
                             <div className="github-user-info">
                                 <h3>{githubData.user.name || githubData.user.login}</h3>
-                                {githubData.user.bio && <p className="github-bio">{githubData.user.bio}</p>}
+                                <p className="github-bio">{githubData.user.bio || personalCardTranslations.githubUserBioDefault[currentLang]}</p>
                             </div>
                         </div>
                         <div className="github-stats-grid">
                             <motion.div className="stat-item" whileHover={{y:-4, boxShadow:"0 6px 18px rgba(var(--highlight-color-poetic-rgb),0.2)"}}>
                                 <span className="stat-value">{githubData.user.followers}</span>
-                                <span className="stat-label">{githubSectionTranslations.followers[lang]}</span>
+                                <span className="stat-label">{githubSectionTranslations.followers[currentLang]}</span>
                             </motion.div>
                             <motion.div className="stat-item" whileHover={{y:-4, boxShadow:"0 6px 18px rgba(var(--highlight-color-poetic-rgb),0.2)"}}>
                                 <span className="stat-value">{githubData.user.public_repos}</span>
-                                <span className="stat-label">{githubSectionTranslations.publicRepos[lang]}</span>
+                                <span className="stat-label">{githubSectionTranslations.publicRepos[currentLang]}</span>
                             </motion.div>
                         </div>
                         {githubData.user.html_url && (
@@ -287,7 +284,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                                 whileHover={{scale:1.05, y: -2, boxShadow: "0 0 15px rgba(var(--highlight-color-poetic-rgb),0.4)"}}
                                 whileTap={{scale:0.95}}
                             >
-                                {githubSectionTranslations.profileLink[lang]}
+                                {githubSectionTranslations.profileLink[currentLang]}
                             </motion.a>
                         )}
                     </div>
@@ -355,7 +352,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     );
   }
 
-  // Fallback for section="all"
   return (
     <div className={containerClassName} style={style}>
       <div className="card-main-header">

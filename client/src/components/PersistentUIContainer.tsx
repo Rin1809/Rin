@@ -13,12 +13,11 @@ import { loadExternalTrailInteraction } from "@tsparticles/interaction-external-
 import { loadCircleShape } from "@tsparticles/shape-circle";
 import { loadStarShape } from "@tsparticles/shape-star";
 
-
 // --- CẤU HÌNH PARTICLE CHO STAGE CHỌN NGÔN NGỮ (Poetic Stars) ---
 const poeticStarsOptionsDefinition: PoeticISourceOptions = {
     fpsLimit: 120,
     particles: {
-        number: { value: 300, density: { enable: true } }, // Giảm số lượng để cải thiện hiệu suất khi chạy cùng particles chính
+        number: { value: 300, density: { enable: true } }, 
         color: { value: ["#FFFFFF", "#F0E68C", "#ADD8E6", "#FFDAB9"] },
         shape: { type: "star" },
         opacity: { value: { min: 0.1, max: 0.5 }, animation: { enable: true, speed: 0.8, sync: false } },
@@ -28,13 +27,12 @@ const poeticStarsOptionsDefinition: PoeticISourceOptions = {
     },
     interactivity: { events: { onHover: { enable: false }, onClick: { enable: false }, resize: { enable: true } } },
     detectRetina: true,
-    style: { position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', pointerEvents: 'none'}, // zIndex 0 để nằm sau nội dung
-    // Emitters có thể được thêm lại nếu muốn, nhưng bắt đầu đơn giản
+    style: { position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', pointerEvents: 'none'}, 
 };
 
 
 // --- VARIANTS ANIMATION (Chuyển thể từ LanguageSelector và CardIntro) ---
-const langSelButtonVariants: Variants = { // Đổi tên để tránh xung đột
+const langSelButtonVariants: Variants = { 
   initial: { opacity: 0, y: 20, scale: 0.95 },
   animate: (delay: number) => ({
     opacity: 1, y: 0, scale: 1,
@@ -49,7 +47,7 @@ const langSelButtonVariants: Variants = { // Đổi tên để tránh xung độ
   },
   tap: { scale: 0.97, y: -2, transition: { type: "spring", stiffness: 380, damping: 22 } }
 };
-const cardIntroButtonVariants = langSelButtonVariants; // Có thể giống hoặc khác
+const cardIntroButtonVariants = langSelButtonVariants; 
 
 const contentBlockVariants: Variants = {
   initial: { opacity: 0, y: 20, scale: 0.98 },
@@ -75,7 +73,10 @@ const translations = {
   langSubtitle: { vi: "Chọn dòng chảy của bạn", en: "Choose your flow", ja: "流れを選んでください" },
   aboutButton: { vi: "Về tôi", en: "About Me", ja: "私について" },
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
-  backButton: { vi: "Quay lại", en: "Back", ja: "戻る" }
+  backButton: { vi: "Quay lại", en: "Back", ja: "戻る" },
+  // Example for cardData, assuming it might also need to be translated or handled by this component's logic
+  cardName: { vi: "Rin", en: "Rin", ja: "リン" },
+  cardTitle: { vi: "Sinh viên IT | An Ninh Mạng", en: "IT Student | Cyber Security", ja: "IT学生 | サイバーセキュリティ"}
 };
 
 interface PersistentUIContainerProps {
@@ -85,7 +86,12 @@ interface PersistentUIContainerProps {
   onShowAbout: () => void;
   onShowGallery: () => void;
   onBackToCardIntro: () => void;
-  cardData: { avatarUrl: string; name: string; title: string };
+  cardData: { 
+    avatarUrl: string; 
+    name: string; // Assume name in cardData is a key or default, actual display handled by translations here
+    title: string; // Same as name
+    githubUsername?: string; // Added githubUsername to cardData type
+  };
 }
 
 const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
@@ -103,12 +109,11 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
 
   useEffect(() => {
     isMountedRef.current = true;
-    // Khởi tạo poeticStars particles chỉ khi cần và chưa được khởi tạo
     if (currentStage === 'languageSelection' && !poeticParticlesInitialized && !initInProgressRef.current) {
         initInProgressRef.current = true;
         initPoeticParticlesEngine(async (engine: PoeticEngine) => {
-            await loadEmittersPlugin(engine); // Nếu sử dụng emitters
-            await loadExternalTrailInteraction(engine); // Nếu sử dụng trails
+            await loadEmittersPlugin(engine); 
+            await loadExternalTrailInteraction(engine); 
             await loadCircleShape(engine);
             await loadStarShape(engine);
             if (isMountedRef.current) setPoeticParticlesInitialized(true);
@@ -121,17 +126,14 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
     return () => { isMountedRef.current = false; };
   }, [currentStage, poeticParticlesInitialized]);
 
-
-  // Xác định thuộc tính animation cho flourish dựa trên currentStage
-  // Điều này cho phép kiểm soát rõ ràng kích thước/lề nếu `layout` không đủ.
   const getFlourishAnimProps = (stage: PersistentUIContainerProps['currentStage']) => {
     let scale = 1;
     let opacity = 0.85;
-    let y = 0; // Trục Y cho hiệu ứng "lơ lửng" nhẹ
-    let marginVertical = "0.5rem"; // Lề trên/dưới mặc định
+    let y = 0; 
+    let marginVertical = "0.5rem"; 
 
     if (stage === 'cardAbout' || stage === 'cardGallery') {
-      scale = 0.75; // Nhỏ hơn khi xem card
+      scale = 0.75; 
       opacity = 0.7;
       y = -5;
       marginVertical = "0.2rem";
@@ -144,19 +146,22 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
   
   const flourishAnim = getFlourishAnimProps(currentStage);
 
+  // Get translated name and title for this container
+  const displayName = translations.cardName[selectedLanguage] || cardData.name;
+  const displayTitle = translations.cardTitle[selectedLanguage] || cardData.title;
 
   return (
     <motion.div 
         className="persistent-ui-wrapper"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { duration: 0.8, delay: 0.4 } }} // Trì hoãn để intro ban đầu mờ dần
+        animate={{ opacity: 1, transition: { duration: 0.8, delay: 0.4 } }} 
         exit={{ opacity: 0 }}
     >
         {currentStage === 'languageSelection' && poeticParticlesInitialized && (
             <Particles
                 id="tsparticles-poetic-stars"
                 options={poeticStarsOptionsDefinition}
-                key="poetic-particles" // Key để đảm bảo re-render đúng cách khi bật/tắt
+                key="poetic-particles" 
             />
         )}
 
@@ -171,7 +176,7 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
 
         <AnimatePresence mode="wait">
             <motion.div
-                key={currentStage} // Quan trọng để AnimatePresence phát hiện thay đổi
+                key={currentStage} 
                 className="content-area"
                 variants={contentBlockVariants}
                 initial="initial"
@@ -189,7 +194,7 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
                                     className={`item-button lang-button ${selectedLanguage === lang ? 'selected' : ''}`}
                                     onClick={() => onSelectLanguage(lang)}
                                     variants={langSelButtonVariants}
-                                    custom={0.2 + index * 0.1} // Animation so le
+                                    custom={0.2 + index * 0.1} 
                                     initial="initial" animate="animate" whileHover="hover" whileTap="tap"
                                 >
                                     {lang === 'vi' ? '🇻🇳 Tiếng Việt' : lang === 'en' ? '🇬🇧 English' : '🇯🇵 日本語'}
@@ -201,9 +206,9 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
 
                 {currentStage === 'cardIntro' && (
                     <div className="card-intro-content">
-                        <motion.img src={cardData.avatarUrl} alt={cardData.name} className="intro-avatar" variants={textItemVariants} custom={0.1} />
-                        <motion.h2 className="intro-name" variants={titleTextVariants} custom={0.2}>{cardData.name}</motion.h2>
-                        <motion.p className="intro-title subtitle" variants={textItemVariants} custom={0.3}>{cardData.title}</motion.p>
+                        <motion.img src={cardData.avatarUrl} alt={displayName} className="intro-avatar" variants={textItemVariants} custom={0.1} />
+                        <motion.h2 className="intro-name" variants={titleTextVariants} custom={0.2}>{displayName}</motion.h2>
+                        <motion.p className="intro-title subtitle" variants={textItemVariants} custom={0.3}>{displayTitle}</motion.p>
                         <motion.div className="options-group" variants={textItemVariants} custom={0.4}>
                             <motion.button onClick={onShowAbout} className="item-button" variants={cardIntroButtonVariants} custom={0.1} initial="initial" animate="animate" whileHover="hover" whileTap="tap">
                                 {translations.aboutButton[selectedLanguage]}
@@ -217,7 +222,12 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
 
                 {currentStage === 'cardAbout' && (
                     <motion.div className="card-display-content" variants={textItemVariants} custom={0.1}>
-                        <PersonalCard name={cardData.name} section="about" />
+                        <PersonalCard 
+                            name={displayName} 
+                            section="about" 
+                            language={selectedLanguage} 
+                            githubUsername={cardData.githubUsername}
+                        />
                         <motion.button onClick={onBackToCardIntro} className="item-button back-button" variants={cardIntroButtonVariants} custom={0.2} initial="initial" animate="animate" whileHover="hover" whileTap="tap">
                             {translations.backButton[selectedLanguage]}
                         </motion.button>
@@ -226,10 +236,8 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
 
                 {currentStage === 'cardGallery' && (
                     <motion.div className="card-display-content" variants={textItemVariants} custom={0.1}>
-                        <Gallery />
-                         <motion.button onClick={onBackToCardIntro} className="item-button back-button" variants={cardIntroButtonVariants} custom={0.2} initial="initial" animate="animate" whileHover="hover" whileTap="tap">
-                            {translations.backButton[selectedLanguage]}
-                        </motion.button>
+                        <Gallery language={selectedLanguage} onBack={onBackToCardIntro} />
+                         {/* Removed the redundant back button here, as Gallery now has its own onBack */}
                     </motion.div>
                 )}
             </motion.div>
@@ -240,7 +248,7 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
             src={flourishImage}
             alt="Họa tiết trang trí"
             className="flourish-image flourish-image-bottom"
-            animate={{ scale: flourishAnim.scale, opacity: flourishAnim.opacity, y: -flourishAnim.y, rotate: 180, marginTop: flourishAnim.marginVertical }} // Giữ xoay cho flourish dưới, y ngược lại
+            animate={{ scale: flourishAnim.scale, opacity: flourishAnim.opacity, y: -flourishAnim.y, rotate: 180, marginTop: flourishAnim.marginVertical }} 
             transition={{ type: 'spring', stiffness: 180, damping: 25, duration: 0.6 }}
         />
     </motion.div>

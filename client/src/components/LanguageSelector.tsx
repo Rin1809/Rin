@@ -35,14 +35,16 @@ import {
     layoutTransition,
     previewContainerVariants,
     previewIcons,
-    galleryViewVariants, // <-- Import new variants
+    languageSelectorPreviewTranslations, 
+    cardDisplayInfo, 
+    galleryViewVariants, 
 } from './languageSelector/languageSelector.constants';
 
 
 interface LanguageSelectorProps {
   onLanguageSelected: (language: 'vi' | 'en' | 'ja') => void;
-  cardName: string;
-  cardTitle: string;
+  // cardName: string; // Removed
+  // cardTitle: string; // Removed
   cardAvatarUrl: string;
   initialSelectedLanguage: 'vi' | 'en' | 'ja' | null;
   yourNameForIntro: string;
@@ -64,7 +66,8 @@ const SHARED_FLOURISH_SPRING_TRANSITION = { type: "spring", stiffness: 210, damp
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     onLanguageSelected,
-    cardName, cardTitle, cardAvatarUrl,
+    // cardName, cardTitle, // Removed
+    cardAvatarUrl,
     initialSelectedLanguage,
     yourNameForIntro,
     githubUsername // Destructure new prop
@@ -333,7 +336,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                       transition={{ type: "spring", stiffness: 200, damping: 10}}
                     >
                       <motion.img
-                          src={cardAvatarUrl} alt={`${cardName}'s avatar`}
+                          src={cardAvatarUrl} alt={`${cardDisplayInfo.name[currentLanguage]}'s avatar`}
                           className="card-intro-avatar"
                           initial={{scale:0.1, opacity:0, rotate: -60, y: 50, filter: "blur(10px) brightness(0.5)"}}
                           animate={{
@@ -384,7 +387,8 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                               className="header-preview-title"
                               variants={contentItemVariants(0)} 
                             >
-                              {headerPreviewType === 'about' ? "About Me Snippet" : "Gallery Sneak Peek"}
+                              {headerPreviewType === 'about' ? languageSelectorPreviewTranslations.aboutSnippetTitle[currentLanguage] 
+                                                            : languageSelectorPreviewTranslations.gallerySneakPeekTitle[currentLanguage]}
                             </motion.h4>
                             <motion.div
                                 className="header-preview-block-content" 
@@ -398,19 +402,18 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 <div className="header-preview-actual-content"> 
                                   {headerPreviewType === 'about' && (
                                     <p className="header-preview-text-enhanced">
-                                        Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?
+                                        {languageSelectorPreviewTranslations.aboutSnippetContent[currentLanguage]}
                                     </p>
                                   )}
                                   {headerPreviewType === 'gallery' && (
                                     <div className="header-preview-images-enhanced">
-                                      {/* Sử dụng localImages cho preview gallery thay vì link cứng */}
                                       {(localImages.length > 0 ? localImages.slice(0,4) : [ 
                                       ]).map((imgSrc, idx) => (
                                         <motion.img 
                                           key={`preview-${idx}`} 
                                           variants={contentItemVariants(0.1 + idx * 0.4)} 
                                           src={imgSrc} 
-                                          alt={`Gallery preview ${idx + 1}`} 
+                                          alt={languageSelectorPreviewTranslations.galleryPreviewAlt[currentLanguage].replace("{index}", String(idx + 1))}
                                         />
                                       ))}
                                     </div>
@@ -431,7 +434,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                     whileHover="hover"
                                     initial="initial" animate="animate" exit="exit"
                                 >
-                                    {cardName}
+                                    {cardDisplayInfo.name[currentLanguage]}
                                     <span className="text-shine-effect"></span>
                                 </motion.h2>
                                 <motion.p
@@ -440,7 +443,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                     animate={{y:0, opacity:1, filter:"blur(0px)", transition: {delay: cardIntroTitleDisplayDelay, duration:0.6, ease: "easeOut"}}}
                                     exit={{y:15, opacity:0, filter:"blur(2px)", transition: {duration:0.15}}}
                                 >
-                                    {cardTitle}
+                                    {cardDisplayInfo.title[currentLanguage]}
                                 </motion.p>
                                 <motion.p
                                     className="card-intro-tagline"
@@ -518,9 +521,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               exit="exit"
             >
               <PersonalCard 
-                name={cardName} 
+                name={cardDisplayInfo.name[currentLanguage]} 
                 section="about" 
-                githubUsername={githubUsername} // Pass to PersonalCard
+                githubUsername={githubUsername} 
+                language={currentLanguage} 
               />
               <motion.button
                 className="card-intro-button back-button-modifier"
@@ -544,7 +548,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               animate="visible"
               exit="exit"
             >
-              <Gallery onBack={() => setCurrentView('cardIntro')} />
+              <Gallery 
+                onBack={() => setCurrentView('cardIntro')} 
+                language={currentLanguage} 
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -578,7 +585,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   );
 };
 
-// Biến này dùng để giúp LanguageSelector lấy một vài ảnh từ thư mục để hiển thị preview
 const localImages = Object.values(import.meta.glob('/src/assets/gallery_images/*.{png,jpg,jpeg,gif,svg,webp}', { eager: true, import: 'default' })) as string[];
 
 export default React.memo(LanguageSelector);

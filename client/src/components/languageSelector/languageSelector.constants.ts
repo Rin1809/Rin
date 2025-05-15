@@ -565,3 +565,95 @@ export const githubSectionTranslations = { // Renamed or use a more general name
   titlePart3: { vi: "Thống kê GitHub III", en: "GitHub Statistics III", ja: "GitHub統計 III" },
   discordPresenceTitle: { vi: "Trạng thái Discord", en: "Discord Presence", ja: "Discordステータス"},
 };
+
+// For LanguageSelector's card intro preview
+export const languageSelectorPreviewTranslations = {
+  aboutSnippetTitle: { vi: "Giới thiệu sơ lược", en: "About Me Snippet", ja: "自己紹介（概要）" },
+  gallerySneakPeekTitle: { vi: "Xem trước bộ sưu tập", en: "Gallery Sneak Peek", ja: "ギャラリー予告編" },
+  aboutSnippetContent: {
+    vi: "Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?",
+    en: "Hi! I'm Rin,... well, just Rin, that's it? What were you expecting?",
+    ja: "こんにちは！リンです。えっと、リンです、それだけ？何を期待してたの？"
+  },
+  galleryPreviewAlt: { vi: "Xem trước bộ sưu tập {index}", en: "Gallery preview {index}", ja: "ギャラリープレビュー {index}" }
+};
+
+// For PersonalCard component (about section)
+export const personalCardTranslations = {
+  sectionTitles: {
+    intro: { vi: "Giới Thiệu Bản Thân", en: "Introduction", ja: "自己紹介" },
+    github: { vi: "Thống kê GitHub", en: "GitHub Statistics", ja: "GitHub統計" },
+    githubStatsIi: { vi: "Thống kê GitHub II", en: "GitHub Statistics II", ja: "GitHub統計 II" },
+    githubStatsIii: { vi: "Thống kê GitHub III", en: "GitHub Statistics III", ja: "GitHub統計 III" },
+    discordPresence: { vi: "Trạng thái Discord", en: "Discord Presence", ja: "Discordステータス" },
+  },
+  introBio: {
+    namePlaceholder: "{name}",
+    part1: {
+      vi: `Chào ! Mình là <strong>{name}</strong>, đang theo học ngành An Ninh Mạng.`,
+      en: `Hi! I'm <strong>{name}</strong>, currently studying Cyber Security.`,
+      ja: `こんにちは！<strong>{name}</strong>です。サイバーセキュリティを勉強しています。`
+    },
+    part2: {
+      vi: `Mình thích mèo, thích vẽ, thích hát, ghét An Ninh Mạng.`,
+      en: `I like cats, drawing, singing, and dislike Cyber Security.`,
+      ja: `猫が好き、絵を描くのが好き、歌うのが好き、サイバーセキュリティは嫌いです。`
+    },
+    part3: {
+      vi: `Mình chỉ có 1 điều ước nhỏ nhoi là...`,
+      en: `I have just one small wish...`,
+      ja: `たった一つの小さな願いがあります。。。`
+    },
+    part4: {
+      vi: `ước gì có 100 tỷ....`,
+      en: `to have 100 billion....`,
+      ja: `1000億あったらなぁ。。。`
+    },
+    part5: {
+      vi: `Thì sao? đang đánh giá đó hả? ai mà chả có ước mơ ....?`,
+      en: `So what? Judging me? Doesn't everyone have dreams....?`,
+      ja: `だから何？評価してるの？誰だって夢くらいあるでしょう。。。？`
+    }
+  },
+  loadingText: {
+    vi: "Đang dệt những vì sao từ GitHub...",
+    en: "Weaving stars from GitHub...",
+    ja: "GitHubから星を紡いでいます..."
+  },
+  errorTextPrefix: {
+    vi: "Lỗi: ",
+    en: "Error: ",
+    ja: "エラー: "
+  },
+  githubUserBioDefault: {
+    vi: "Không có mô tả.",
+    en: "No bio provided.",
+    ja: "紹介文はありません。"
+  }
+};
+
+// For Gallery component
+export const galleryTranslations = {
+  title: { vi: "Bộ Sưu Tập Của Tôi", en: "My Gallery", ja: "私のギャラリー" },
+  placeholder: {
+    line1: { vi: "Không tìm thấy ảnh nào để hiển thị.", en: "No images found to display.", ja: "表示する画像が見つかりません。" },
+    line2: { vi: "Vui lòng thêm ảnh vào thư mục `src/assets/gallery_images/`.", en: "Please add images to the `src/assets/gallery_images/` folder.", ja: "`src/assets/gallery_images/` フォルダに画像を追加してください。" },
+  },
+  navPrev: { vi: "Ảnh trước", en: "Previous image", ja: "前の画像" },
+  navNext: { vi: "Ảnh kế", en: "Next image", ja: "次の画像" },
+  viewLarger: { vi: "Xem ảnh {index} lớn hơn", en: "View image {index} larger", ja: "画像 {index} を拡大表示" },
+  closeLightbox: { vi: "Đóng (Esc)", en: "Close (Esc)", ja: "閉じる (Esc)" },
+  downloadImage: { vi: "Tải ảnh", en: "Download image", ja: "画像をダウンロード" },
+  fullscreenEnter: { vi: "Toàn màn hình (F)", en: "Enter fullscreen (F)", ja: "フルスクリーン (F)" },
+  fullscreenExit: { vi: "Thoát toàn màn hình (F)", en: "Exit fullscreen (F)", ja: "フルスクリーン終了 (F)" },
+};
+
+// For card name and title displayed in LanguageSelector
+export const cardDisplayInfo = {
+    name: { vi: "Rin", en: "Rin", ja: "リン" },
+    title: {
+        vi: "Sinh viên IT | An Ninh Mạng",
+        en: "IT Student | Cyber Security",
+        ja: "情報技術学生 | サイバーセキュリティ"
+    }
+};

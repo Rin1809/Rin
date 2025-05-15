@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import './styles/Gallery.css';
+import { galleryTranslations } from './languageSelector/languageSelector.constants'; // Import translations
 
 // --- ICONS (No change) ---
 const IconClose = () => (
@@ -47,17 +48,17 @@ const localImages: string[] = Object.values(imageModules) as string[];
 
 interface GalleryProps {
   images?: string[];
-  onBack?: () => void; // Add onBack prop
+  onBack?: () => void; 
+  language: 'vi' | 'en' | 'ja'; 
 }
 
-// --- UPDATED DIVIDER VARIANTS for better visibility and animation ---
 const galleryDividerVariants = (delay: number = 0): Variants => ({
-  hidden: { opacity: 0, scaleX: 0.6, filter: "blur(2px)" }, // Start more blurred and smaller
+  hidden: { opacity: 0, scaleX: 0.6, filter: "blur(2px)" }, 
   visible: {
-    opacity: 0.75, // Increased opacity
+    opacity: 0.75, 
     scaleX: 1,
     filter: "blur(0px)",
-    transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1], delay } // Smoother ease and slightly longer duration
+    transition: { duration: 1.0, ease: [0.16, 1, 0.3, 1], delay } 
   },
   exit: {
     opacity: 0,
@@ -66,10 +67,9 @@ const galleryDividerVariants = (delay: number = 0): Variants => ({
     transition: { duration: 0.3, ease: "easeIn" }
   }
 });
-// --- END UPDATED DIVIDER VARIANTS ---
 
 
-const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure onBack
+const Gallery: React.FC<GalleryProps> = ({ images, onBack, language }) => { 
   const displayImages = useMemo(() => {
     if (images && images.length > 0) return images;
     return localImages;
@@ -81,14 +81,15 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
   const [isFullscreen, setIsFullscreen] = useState(false);
   const lightboxImageWrapperRef = useRef<HTMLDivElement>(null);
 
+  const t = galleryTranslations; 
+
   const totalImages = displayImages.length;
 
-  // Delay constants for animations
   const initialContainerDelay = 0.15;
-  const titleDelay = initialContainerDelay + 0.05; // Title appears after container starts
-  const topDividerDelay = titleDelay + 0.3; // Top divider appears after title is mostly visible
-  const contentDelay = topDividerDelay + 0.15; // Carousel/Placeholder content appears after top divider
-  const bottomDividerDelay = contentDelay + (totalImages > 0 ? 0.5 : 0.25); // Bottom divider delay depends on content
+  const titleDelay = initialContainerDelay + 0.05; 
+  const topDividerDelay = titleDelay + 0.3; 
+  const contentDelay = topDividerDelay + 0.15; 
+  const bottomDividerDelay = contentDelay + (totalImages > 0 ? 0.5 : 0.25); 
 
   useEffect(() => {
     if (selectedImageIndex === null && totalImages > 0) {
@@ -178,8 +179,7 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
     }
   }, []);
 
-  // --- ANIMATION VARIANTS ---
-  const containerMotionVariants = { // Kept for staggering children inside this component
+  const containerMotionVariants = { 
     hidden: { },
     visible: { transition: { staggerChildren: 0.05, delayChildren: 0.15 } }, 
     exit: { } 
@@ -190,7 +190,7 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
     visible:{ opacity:1, y:0, filter: "blur(0px)", transition:{delay:titleDelay, duration: 0.7, ease: [0.23, 1, 0.32, 1]}}
   };
   
-  const galleryContentVariants = { // For Carousel or Placeholder
+  const galleryContentVariants = { 
     hidden: { opacity: 0, y: 15 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "circOut", delay: contentDelay } },
     exit: { opacity: 0, y: -10, transition: { duration: 0.3 } }
@@ -237,7 +237,6 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
     hidden: { opacity: 0, y: 8, scale: 0.7 },
     visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness:380, damping:20 } },
   };
-  // --- END ANIMATION VARIANTS ---
 
   const { prevImgIndex, currentImgIndex, nextImgIndex } = useMemo(() => {
     if (selectedImageIndex === null || totalImages === 0) {
@@ -269,7 +268,7 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
         exit="exit"
         variants={containerMotionVariants} 
       >
-        <motion.h2 className="gallery-title" variants={galleryTitleVariants}>My Enhanced Gallery</motion.h2>
+        <motion.h2 className="gallery-title" variants={galleryTitleVariants}>{t.title[language]}</motion.h2>
         <motion.div
           className="gallery-divider top"
           variants={galleryDividerVariants(topDividerDelay)}
@@ -288,7 +287,8 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
             <div className="gallery-carousel-wrapper">
               {totalImages > 1 && (
                 <motion.button
-                  className="gallery-carousel-nav prev" onClick={() => changeImage('prev')} aria-label="Previous image"
+                  className="gallery-carousel-nav prev" onClick={() => changeImage('prev')}
+                  aria-label={t.navPrev[language]}
                   whileHover={{ scale: 1.2, x: -6, backgroundColor: "rgba(var(--primary-color-rgb),0.18)", color: "var(--primary-color)" }}
                   whileTap={{ scale: 0.92 }} transition={{type:"spring", stiffness:380, damping:16}}
                 ><IconChevronLeft /></motion.button>
@@ -309,7 +309,7 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
                       key={"carousel_main_" + currentImgIndex} className="gallery-carousel-item main-item-clickable"
                       custom={{ role: 'main', direction: slideDirection }} variants={carouselItemVariants}
                       initial="enter" animate="center" exit="exit"
-                      onClick={() => openLightbox(currentImgIndex)} tabIndex={0} role="button" aria-label={`View image ${currentImgIndex + 1} larger`}
+                      onClick={() => openLightbox(currentImgIndex)} tabIndex={0} role="button" aria-label={t.viewLarger[language].replace("{index}", String(currentImgIndex+1))}
                       whileHover={{
                           scale: 1.08, y: -10, z: 10,
                           boxShadow: "0 22px 60px -18px rgba(var(--primary-color-rgb), 0.6), 0 0 25px -6px rgba(var(--primary-color-rgb), 0.4), inset 0 0 14px rgba(var(--primary-color-rgb),0.25), 0 0 0 3px rgba(var(--primary-color-rgb), 0.5)",
@@ -331,7 +331,8 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
 
               {totalImages > 1 && (
                 <motion.button
-                  className="gallery-carousel-nav next" onClick={() => changeImage('next')} aria-label="Next image"
+                  className="gallery-carousel-nav next" onClick={() => changeImage('next')} 
+                  aria-label={t.navNext[language]}
                   whileHover={{ scale: 1.2, x: 6, backgroundColor: "rgba(var(--primary-color-rgb),0.18)", color: "var(--primary-color)" }}
                   whileTap={{ scale: 0.92 }} transition={{type:"spring", stiffness:380, damping:16}}
                 ><IconChevronRight /></motion.button>
@@ -351,9 +352,8 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
           </>
           ) : (
             <motion.p className="gallery-placeholder">
-              Không tìm thấy ảnh nào để hiển thị.<br/>
-              Vui lòng thêm ảnh vào thư mục `src/assets/gallery_images/`.<br/>
-              <span style={{fontSize: '0.9em', opacity: 0.8}}>(No images found. Please add images to the `src/assets/gallery_images/` folder.)</span>
+              {t.placeholder.line1[language]}<br/>
+              {t.placeholder.line2[language]}
             </motion.p>
           )}
         </motion.div>
@@ -409,11 +409,26 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
               onClick={(e) => e.stopPropagation()}
               initial="hidden" animate="visible" exit="exit"
             >
-              <motion.button className="lightbox-close-button" onClick={closeLightbox} aria-label="Close lightbox" title="Close (Esc)" variants={controlButtonIndividualVariants} whileHover={{ scale: 1.2, rotate: 95, color: "var(--error-color, #f38ba8)", backgroundColor: "rgba(var(--error-color-rgb), 0.2)" }} whileTap={{ scale: 0.9, rotate: 80 }} transition={{ type: "spring", stiffness: 380, damping: 16 }} ><IconClose /></motion.button>
+              <motion.button 
+                className="lightbox-close-button" onClick={closeLightbox} 
+                aria-label={t.closeLightbox[language]} title={t.closeLightbox[language]} 
+                variants={controlButtonIndividualVariants} 
+                whileHover={{ scale: 1.2, rotate: 95, color: "var(--error-color, #f38ba8)", backgroundColor: "rgba(var(--error-color-rgb), 0.2)" }} 
+                whileTap={{ scale: 0.9, rotate: 80 }} 
+                transition={{ type: "spring", stiffness: 380, damping: 16 }} 
+              ><IconClose /></motion.button>
               {totalImages > 1 && (
                  <>
-                    <motion.button className="lightbox-nav-button prev" onClick={() => changeImage('prev')} aria-label="Previous image" title="Previous (←)" variants={controlButtonIndividualVariants} whileHover={{ scale: 1.15, x: -7, color: "var(--primary-color)", backgroundColor: "rgba(var(--primary-color-rgb),0.12)"}} whileTap={{ scale: 0.92 }} ><IconChevronLeft /></motion.button>
-                    <motion.button className="lightbox-nav-button next" onClick={() => changeImage('next')} aria-label="Next image" title="Next (→)" variants={controlButtonIndividualVariants} whileHover={{ scale: 1.15, x: 7, color: "var(--primary-color)", backgroundColor: "rgba(var(--primary-color-rgb),0.12)"}} whileTap={{ scale: 0.92 }} ><IconChevronRight /></motion.button>
+                    <motion.button 
+                      className="lightbox-nav-button prev" onClick={() => changeImage('prev')} 
+                      aria-label={t.navPrev[language]} title={`${t.navPrev[language]} (←)`} 
+                      variants={controlButtonIndividualVariants} whileHover={{ scale: 1.15, x: -7, color: "var(--primary-color)", backgroundColor: "rgba(var(--primary-color-rgb),0.12)"}} whileTap={{ scale: 0.92 }} 
+                    ><IconChevronLeft /></motion.button>
+                    <motion.button 
+                      className="lightbox-nav-button next" onClick={() => changeImage('next')} 
+                      aria-label={t.navNext[language]} title={`${t.navNext[language]} (→)`} 
+                      variants={controlButtonIndividualVariants} whileHover={{ scale: 1.15, x: 7, color: "var(--primary-color)", backgroundColor: "rgba(var(--primary-color-rgb),0.12)"}} whileTap={{ scale: 0.92 }} 
+                    ><IconChevronRight /></motion.button>
                  </>
               )}
               <div className="lightbox-image-wrapper" ref={lightboxImageWrapperRef}>
@@ -422,13 +437,24 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack }) => { // Destructure
                 </AnimatePresence>
               </div>
               <motion.div className="lightbox-controls-bar" variants={controlsBarVariants} initial="hidden" animate="visible" exit="exit" >
-                <motion.button className="lightbox-action-button" onClick={handleDownload} aria-label="Download image" title="Download image" variants={controlButtonIndividualVariants} whileHover={{ scale: 1.18, y: -3, color: "var(--primary-color)" }} whileTap={{ scale: 0.92 }} ><IconDownload /></motion.button>
+                <motion.button 
+                  className="lightbox-action-button" onClick={handleDownload} 
+                  aria-label={t.downloadImage[language]} title={t.downloadImage[language]} 
+                  variants={controlButtonIndividualVariants} whileHover={{ scale: 1.18, y: -3, color: "var(--primary-color)" }} whileTap={{ scale: 0.92 }} 
+                ><IconDownload /></motion.button>
                 <motion.div variants={controlButtonIndividualVariants}>
                     <AnimatePresence mode="wait">
                         {currentImgIndex !== null && totalImages > 0 && (<motion.span key={`lightbox-counter-${currentImgIndex}`} className="lightbox-counter" initial={{ opacity: 0, y:6 }} animate={{ opacity: 1, y:0, transition: {duration: 0.3, delay:0.12} }} exit={{ opacity: 0, y:-6, transition: { duration: 0.18 } }} >{currentImgIndex + 1} / {totalImages}</motion.span>)}
                     </AnimatePresence>
                 </motion.div>
-                <motion.button className="lightbox-action-button" onClick={handleFullscreenToggle} aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"} title={isFullscreen ? "Exit fullscreen (F)" : "Enter fullscreen (F)"} variants={controlButtonIndividualVariants} whileHover={{ scale: 1.18, y: -3, color: "var(--primary-color)"}} whileTap={{ scale: 0.92 }} >{isFullscreen ? <IconExitFullscreen /> : <IconFullscreen />}</motion.button>
+                <motion.button 
+                  className="lightbox-action-button" 
+                  onClick={handleFullscreenToggle} 
+                  aria-label={isFullscreen ? t.fullscreenExit[language] : t.fullscreenEnter[language]} 
+                  title={isFullscreen ? t.fullscreenExit[language] : t.fullscreenEnter[language]} 
+                  variants={controlButtonIndividualVariants} 
+                  whileHover={{ scale: 1.18, y: -3, color: "var(--primary-color)"}} whileTap={{ scale: 0.92 }} 
+                >{isFullscreen ? <IconExitFullscreen /> : <IconFullscreen />}</motion.button>
               </motion.div>
             </motion.div>
           </motion.div>

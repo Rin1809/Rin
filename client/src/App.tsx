@@ -47,8 +47,8 @@ const YOUR_NAME_FOR_INTRO = "よこそう！！";
 
 const PERSONAL_CARD_DATA = {
     avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
-    name: "Rin",
-    title: "IT Students | Cyber Security",
+    // name: "Rin", // Will be handled by LanguageSelector's translations
+    // title: "IT Students | Cyber Security", // Will be handled by LanguageSelector's translations
     githubUsername: "Rin1809" // <<< ADD YOUR GITHUB USERNAME HERE
 };
 
@@ -192,10 +192,9 @@ function App() {
             {currentIntroStage === 'languageSelection' ? (
                 <LanguageSelector 
                     onLanguageSelected={handleLanguageSelectedInSelector}
-                    cardName={PERSONAL_CARD_DATA.name}
-                    cardTitle={PERSONAL_CARD_DATA.title}
+                    // cardName={PERSONAL_CARD_DATA.name} // Removed
+                    // cardTitle={PERSONAL_CARD_DATA.title} // Removed
                     cardAvatarUrl={PERSONAL_CARD_DATA.avatarUrl}
-                    // Không truyền onNavigateToAbout, onNavigateToGallery nữa
                     githubUsername={PERSONAL_CARD_DATA.githubUsername} // Pass username
                     initialSelectedLanguage={selectedLanguage}
                     yourNameForIntro={YOUR_NAME_FOR_INTRO} // Truyền tên cho footer
