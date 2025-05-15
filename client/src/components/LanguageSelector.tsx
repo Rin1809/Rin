@@ -63,6 +63,16 @@ const getFlourishLayoutPropsForView = (view: SelectorView) => {
 
 const SHARED_FLOURISH_SPRING_TRANSITION = { type: "spring", stiffness: 210, damping: 30, mass: 0.9 };
 
+// New proposed isInitialMount delays (slower sequence) for languageOptions view
+const initialMountTitleDelay = 0.5;
+const initialMountSubtitleDelay = initialMountTitleDelay + 0.3; // 0.8
+const initialMountButton1Delay = initialMountSubtitleDelay + 0.4; // 1.2
+const initialMountDivider1Delay = initialMountButton1Delay + 0.1; // 1.3
+const initialMountButton2Delay = initialMountDivider1Delay + 0.2; // 1.5
+const initialMountDivider2Delay = initialMountButton2Delay + 0.1; // 1.6
+const initialMountButton3Delay = initialMountDivider2Delay + 0.2; // 1.8
+const initialMountFooterNoteDelay = initialMountButton3Delay + 0.4; // 2.2
+
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     onLanguageSelected,
@@ -276,7 +286,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               <motion.h2
                 key={`title-${langForTextDisplayInOptionsView}`}
                 className="poetic-title"
-                variants={titleVariants(isInitialMount ? 0.3 : 0.05)}
+                variants={titleVariants(isInitialMount ? initialMountTitleDelay : 0.05)}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
@@ -286,7 +296,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               <motion.p
                 key={`subtitle-${langForTextDisplayInOptionsView}`}
                 className="poetic-subtitle"
-                variants={contentItemVariants(isInitialMount ? 0.4 : 0.1)}
+                variants={contentItemVariants(isInitialMount ? initialMountSubtitleDelay : 0.1)}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
@@ -296,18 +306,58 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               <motion.div
                 className="language-options-poetic"
               >
-                <LangButton onClick={() => handleLanguageButtonClick('vi')} ariaLabel="Chọn Tiếng Việt" icon="🇻🇳" name="Tiếng Việt" animationDelay={isInitialMount ? 0.5 : 0.15} onMouseEnter={() => handleMouseEnterLangBtn('vi')} onMouseLeave={handleMouseLeaveLangBtn} />
-                <motion.div className="poetic-divider poetic-divider-vertical" variants={dividerVerticalVariants(isInitialMount ? 0.55 : 0.2)} initial="hidden" animate="visible" exit="exit"/>
-                <motion.div className="poetic-divider poetic-divider-horizontal" variants={dividerHorizontalVariants(isInitialMount ? 0.55 : 0.2)} initial="hidden" animate="visible" exit="exit"/>
-                <LangButton onClick={() => handleLanguageButtonClick('en')} ariaLabel="Choose English" icon="🇬🇧" name="English" animationDelay={isInitialMount ? 0.6 : 0.25} onMouseEnter={() => handleMouseEnterLangBtn('en')} onMouseLeave={handleMouseLeaveLangBtn} />
-                <motion.div className="poetic-divider poetic-divider-vertical" variants={dividerVerticalVariants(isInitialMount ? 0.65 : 0.3)} initial="hidden" animate="visible" exit="exit"/>
-                <motion.div className="poetic-divider poetic-divider-horizontal" variants={dividerHorizontalVariants(isInitialMount ? 0.65 : 0.3)} initial="hidden" animate="visible" exit="exit"/>
-                <LangButton onClick={() => handleLanguageButtonClick('ja')} ariaLabel="日本語を選択" icon="🇯🇵" name="日本語" animationDelay={isInitialMount ? 0.7 : 0.35} onMouseEnter={() => handleMouseEnterLangBtn('ja')} onMouseLeave={handleMouseLeaveLangBtn} />
+                <LangButton 
+                    onClick={() => handleLanguageButtonClick('vi')} 
+                    ariaLabel="Chọn Tiếng Việt" 
+                    icon="🇻🇳" 
+                    name="Tiếng Việt" 
+                    animationDelay={isInitialMount ? initialMountButton1Delay : 0.15} 
+                    onMouseEnter={() => handleMouseEnterLangBtn('vi')} 
+                    onMouseLeave={handleMouseLeaveLangBtn} 
+                />
+                <motion.div 
+                    className="poetic-divider poetic-divider-vertical" 
+                    variants={dividerVerticalVariants(isInitialMount ? initialMountDivider1Delay : 0.2)} 
+                    initial="hidden" animate="visible" exit="exit"
+                />
+                <motion.div 
+                    className="poetic-divider poetic-divider-horizontal" 
+                    variants={dividerHorizontalVariants(isInitialMount ? initialMountDivider1Delay : 0.2)} 
+                    initial="hidden" animate="visible" exit="exit"
+                />
+                <LangButton 
+                    onClick={() => handleLanguageButtonClick('en')} 
+                    ariaLabel="Choose English" 
+                    icon="🇬🇧" 
+                    name="English" 
+                    animationDelay={isInitialMount ? initialMountButton2Delay : 0.25} 
+                    onMouseEnter={() => handleMouseEnterLangBtn('en')} 
+                    onMouseLeave={handleMouseLeaveLangBtn} 
+                />
+                <motion.div 
+                    className="poetic-divider poetic-divider-vertical" 
+                    variants={dividerVerticalVariants(isInitialMount ? initialMountDivider2Delay : 0.3)} 
+                    initial="hidden" animate="visible" exit="exit"
+                />
+                <motion.div 
+                    className="poetic-divider poetic-divider-horizontal" 
+                    variants={dividerHorizontalVariants(isInitialMount ? initialMountDivider2Delay : 0.3)} 
+                    initial="hidden" animate="visible" exit="exit"
+                />
+                <LangButton 
+                    onClick={() => handleLanguageButtonClick('ja')} 
+                    ariaLabel="日本語を選択" 
+                    icon="🇯🇵" 
+                    name="日本語" 
+                    animationDelay={isInitialMount ? initialMountButton3Delay : 0.35} 
+                    onMouseEnter={() => handleMouseEnterLangBtn('ja')} 
+                    onMouseLeave={handleMouseLeaveLangBtn} 
+                />
               </motion.div>
               <motion.p
                 key={`note-${langForTextDisplayInOptionsView}`}
                 className="poetic-footer-note"
-                variants={contentItemVariants(isInitialMount ? 0.8 : 0.4)}
+                variants={contentItemVariants(isInitialMount ? initialMountFooterNoteDelay : 0.4)}
                 initial="hidden"
                 animate="visible"
                 exit="exit"

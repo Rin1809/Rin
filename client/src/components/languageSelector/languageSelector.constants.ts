@@ -141,7 +141,7 @@ export const buttonVariants: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.8,
+      duration: 1.0, // MODIFIED: Was 0.8
       delay: delay,
       ease: [0.23, 1, 0.32, 1]
     }
@@ -231,7 +231,7 @@ export const contentItemVariants = (delay: number): Variants => ({
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.8, // MODIFIED: Was 0.6
       delay,
       ease: [0.23, 1, 0.32, 1]
     }
@@ -265,8 +265,8 @@ export const titleVariants = (delay: number): Variants => ({
       titleIdleTextShadowStart
     ],
     transition: {
-      opacity: { duration: 0.8, delay, ease: [0.23, 1, 0.32, 1] },
-      y: { duration: 0.8, delay, ease: [0.23, 1, 0.32, 1] },
+      opacity: { duration: 1.0, delay, ease: [0.23, 1, 0.32, 1] }, // MODIFIED: Was 0.8
+      y: { duration: 1.0, delay, ease: [0.23, 1, 0.32, 1] }, // MODIFIED: Was 0.8
       textShadow: { duration: 3, repeat: Infinity, repeatType: "mirror", ease: "easeInOut", delay: delay + 0.5 }
     }
   },
@@ -318,7 +318,7 @@ export const dividerVariants = (delay: number): Variants => ({
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { duration: 0.6, delay: delay, ease: "easeOut" }
+    transition: { duration: 0.8, delay: delay, ease: "easeOut" } // MODIFIED: Was 0.6
   },
   exit: {
       opacity: 0,
@@ -449,7 +449,7 @@ export const numSparkles = 5;
 
 export const overlayEntryExitVariants: Variants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+    visible: { opacity: 1, transition: { duration: 0.8, ease: "easeOut" } }, // MODIFIED: Was 0.5
     exit: { opacity: 0, transition: { duration: 0.4, ease: "easeIn" } }
 };
 
