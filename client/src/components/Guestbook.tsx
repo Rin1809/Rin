@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './styles/Guestbook.css';
-import { guestbookViewTranslations as t, aboutNavIconLeft } from './languageSelector/languageSelector.constants'; 
+import { guestbookViewTranslations as t } from './languageSelector/languageSelector.constants'; 
 import type { GuestbookEntry } from '../data/guestbook.data'; 
 
 interface GuestbookProps {
@@ -39,7 +39,7 @@ const entryVariants = {
 };
 
 
-const Guestbook: React.FC<GuestbookProps> = ({ language, onBack, entries, onAddEntry }) => {
+const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) => {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,14 +57,20 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, onBack, entries, onAddE
     setSubmitError(null);
     setSubmitSuccess(null);
     try {
-      await onAddEntry(name, message, language); 
+      await onAddEntry(name.trim(), message.trim(), language); 
       setName('');
       setMessage('');
       setSubmitSuccess(language === 'vi' ? 'Cảm ơn bạn đã chia sẻ!' : language === 'en' ? 'Thank you for sharing!' : 'ご感想ありがとうございます！');
-      setTimeout(() => setSubmitSuccess(null), 3000);
-    } catch (error) {
-      console.error("Error submitting entry:", error);
-      setSubmitError(language === 'vi' ? 'Gửi thất bại, vui lòng thử lại.' : language === 'en' ? 'Submission failed, please try again.' : '送信に失敗しました。もう一度お試しください。');
+      setTimeout(() => setSubmitSuccess(null), 3500); // Tăng thời gian hiển thị success
+    } catch (error: any) {
+      console.error("Error submitting entry in Guestbook.tsx:", error);
+      let userErrorMessage = language === 'vi' ? 'Gửi thất bại, vui lòng thử lại.' : language === 'en' ? 'Submission failed, please try again.' : '送信に失敗しました。もう一度お試しください。';
+      if (error && typeof error.message === 'string' && error.message.startsWith('Failed to submit:')) { // Lỗi HTTP từ fetch
+         userErrorMessage = `${userErrorMessage} (${error.message})`;
+      } else if (error && typeof error.message === 'string') { // Lỗi chung khác
+        userErrorMessage = error.message;
+      }
+      setSubmitError(userErrorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -72,6 +78,10 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, onBack, entries, onAddE
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
+    // Kiểm tra nếu date không hợp lệ (có thể do timestamp null từ DB hoặc lỗi parse)
+    if (isNaN(date.getTime())) {
+        return language === 'vi' ? 'Không rõ thời gian' : language === 'en' ? 'Unknown time' : '時刻不明';
+    }
     const options: Intl.DateTimeFormatOptions = {
         year: 'numeric', month: 'long', day: 'numeric',
         hour: '2-digit', minute: '2-digit', hour12: language === 'en'
@@ -79,8 +89,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, onBack, entries, onAddE
     return new Intl.DateTimeFormat(language, options).format(date);
   };
 
-  // Reverse entries to show newest first
-  const displayedEntries = [...entries].reverse();
+  const displayedEntries = [...entries].reverse(); 
 
   return (
     <motion.div
@@ -105,6 +114,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, onBack, entries, onAddE
             onChange={(e) => setName(e.target.value)}
             placeholder={t.namePlaceholder[language]}
             disabled={isSubmitting}
+            maxLength={100}
           />
         </motion.div>
         <motion.div className="form-group" variants={inputFieldVariants}>
@@ -116,6 +126,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, onBack, entries, onAddE
             placeholder={t.messagePlaceholder[language]}
             rows={4}
             disabled={isSubmitting}
+            maxLength={1000}
           />
         </motion.div>
         <AnimatePresence mode="wait">
@@ -141,7 +152,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, onBack, entries, onAddE
           <AnimatePresence>
             {displayedEntries.map((entry, index) => (
               <motion.div
-                key={entry.id}
+                key={entry.id || `entry-${index}`} // Sử dụng ID từ DB nếu có, fallback index
                 className="guestbook-entry"
                 custom={index}
                 variants={entryVariants}
@@ -150,10 +161,10 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, onBack, entries, onAddE
                 exit="exit"
                 layout
               >
-                <p className="entry-message">"{entry.message}"</p>
+                <p className="entry-message">{entry.message}</p>
                 <p className="entry-meta">
                   <span className="entry-author">{t.entryBy[language]} <strong>{entry.name}</strong></span>
-                  <span className="entry-timestamp">({t.entryDatePrefix[language]} {formatDate(entry.timestamp)})</span>
+                  {entry.timestamp && <span className="entry-timestamp">({t.entryDatePrefix[language]} {formatDate(entry.timestamp)})</span>}
                 </p>
               </motion.div>
             ))}

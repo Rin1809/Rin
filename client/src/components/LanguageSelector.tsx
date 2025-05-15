@@ -1,14 +1,13 @@
 // client/src/components/LanguageSelector.tsx
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { motion, AnimatePresence, useAnimation, Variants } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import './styles/LanguageSelector.css';
 import flourishImage from '../assets/flourish.png';
 
 import PersonalCard from './PersonalCard';
 import Gallery from './Gallery';
-import Guestbook from './Guestbook'; // NEW: Import Guestbook
-import { initialGuestbookEntries, type GuestbookEntry } from '../data/guestbook.data'; // NEW: Import guestbook data
-import { v4 as uuidv4 } from 'uuid';
+import Guestbook from './Guestbook';
+import type { GuestbookEntry } from '../data/guestbook.data';
 
 import { initParticlesEngine } from "@tsparticles/react";
 import type { Engine, Container } from "@tsparticles/engine";
@@ -42,9 +41,9 @@ import {
     languageSelectorPreviewTranslations,
     cardDisplayInfo,
     galleryViewVariants,
-    guestbookViewContainerVariants, // NEW
+    guestbookViewContainerVariants,
     SHARED_FLOURISH_SPRING_TRANSITION,
-    aboutNavIconLeft, // Import for back button
+    aboutNavIconLeft,
 } from './languageSelector/languageSelector.constants';
 
 
@@ -56,25 +55,26 @@ interface LanguageSelectorProps {
   githubUsername: string;
 }
 
-type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook'; // ADDED 'guestbook'
+type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const getFlourishLayoutPropsForView = (view: SelectorView) => {
     let scale = 1;
-    if (view === 'about' || view === 'gallery' || view === 'guestbook') { // ADDED 'guestbook'
+    if (view === 'about' || view === 'gallery' || view === 'guestbook') {
         scale = 0.85;
     }
     return { scale };
 };
 
-// New proposed isInitialMount delays (slower sequence) for languageOptions view
 const initialMountTitleDelay = 0.5;
-const initialMountSubtitleDelay = initialMountTitleDelay + 0.3; // 0.8
-const initialMountButton1Delay = initialMountSubtitleDelay + 0.4; // 1.2
-const initialMountDivider1Delay = initialMountButton1Delay + 0.1; // 1.3
-const initialMountButton2Delay = initialMountDivider1Delay + 0.2; // 1.5
-const initialMountDivider2Delay = initialMountButton2Delay + 0.1; // 1.6
-const initialMountButton3Delay = initialMountDivider2Delay + 0.2; // 1.8
-const initialMountFooterNoteDelay = initialMountButton3Delay + 0.4; // 2.2
+const initialMountSubtitleDelay = initialMountTitleDelay + 0.3;
+const initialMountButton1Delay = initialMountSubtitleDelay + 0.4;
+const initialMountDivider1Delay = initialMountButton1Delay + 0.1;
+const initialMountButton2Delay = initialMountDivider1Delay + 0.2;
+const initialMountDivider2Delay = initialMountButton2Delay + 0.1;
+const initialMountButton3Delay = initialMountDivider2Delay + 0.2;
+const initialMountFooterNoteDelay = initialMountButton3Delay + 0.4;
 
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
@@ -93,18 +93,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const [isInitialMount, setIsInitialMount] = useState(true);
 
   const [isButtonHovered, setIsButtonHovered] = useState<string | null>(null);
-  const [headerPreviewType, setHeaderPreviewType] = useState<'about' | 'gallery' | 'guestbook' | null>(null); // ADDED 'guestbook'
+  const [headerPreviewType, setHeaderPreviewType] = useState<'about' | 'gallery' | 'guestbook' | null>(null);
 
-  const [guestbookEntries, setGuestbookEntries] = useState<GuestbookEntry[]>(() => {
-    // Attempt to load from localStorage, otherwise use initial
-    try {
-        const localData = localStorage.getItem('guestbookEntries');
-        return localData ? JSON.parse(localData) : initialGuestbookEntries;
-    } catch (error) {
-        console.error("Error loading guestbook from localStorage", error);
-        return initialGuestbookEntries;
-    }
-  });
+  const [guestbookEntries, setGuestbookEntries] = useState<GuestbookEntry[]>([]);
+  const [guestbookLoading, setGuestbookLoading] = useState<boolean>(true);
+  const [_guestbookError, setGuestbookError] = useState<string | null>(null); // Underscore to avoid unsused var if not showing to user
 
   const topFlourishVisualControls = useAnimation();
   const bottomFlourishVisualControls = useAnimation();
@@ -149,10 +142,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
    useEffect(() => {
     if (!isMountedRef.current) return;
 
-    const { scale: targetScale } = getFlourishLayoutPropsForView(currentView); // Ensures currentView update is used
+    const { scale: targetScale } = getFlourishLayoutPropsForView(currentView);
     const entryDelay = isInitialMount ? 0.1 : 0;
 
-    const createTargetFlourishState = (baseVariantSet: Variants, scaleValue: number) => ({
+    const createTargetFlourishState = (baseVariantSet: any, scaleValue: number) => ({
         ...(baseVariantSet.visibleBase as object),
         scale: scaleValue,
         transition: {
@@ -173,7 +166,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         loopDefinition: any
     ) => {
         await controls.start(targetState);
-        
         if (isMountedRef.current) {
              controls.start(loopDefinition);
         }
@@ -187,12 +179,12 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
              if(isMountedRef.current) setIsInitialMount(false);
         });
     }
-  }, [currentView, isInitialMount, topFlourishVisualControls, bottomFlourishVisualControls, topFlourishVariants, bottomFlourishVariants, flourishLoopAnimTop, flourishLoopAnimBottom]); 
+  }, [currentView, isInitialMount, topFlourishVisualControls, bottomFlourishVisualControls, topFlourishVariants, bottomFlourishVariants, flourishLoopAnimTop, flourishLoopAnimBottom]);
 
 
   const handleFlourishHoverStart = useCallback((
       controls: ReturnType<typeof useAnimation>,
-      variants: Variants
+      variants: any
   ) => {
       const currentBaseScale = getFlourishLayoutPropsForView(currentView).scale;
       const hoverVariant = (variants.hover as (custom: { baseScale: number }) => any)({ baseScale: currentBaseScale });
@@ -201,7 +193,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   const handleFlourishHoverEnd = useCallback(async (
       controls: ReturnType<typeof useAnimation>,
-      variants: Variants,
+      variants: any,
       loopAnimDef: any
   ) => {
       const currentBaseScale = getFlourishLayoutPropsForView(currentView).scale;
@@ -231,8 +223,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   };
 
   const handleMouseLeaveLangBtn = () => {
-    // If you want it to revert to the selected language on mouse leave from button list
-    // setDisplayTextLanguage(currentLanguage);
+    // Keep the displayed text, don't revert
   };
 
   const langForTextDisplayInOptionsView = displayTextLanguage;
@@ -243,11 +234,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     ? `ᓚᘏᗢ ${yourNameForIntro} | ${new Date().getFullYear()}`
     : `ᓚᘏᗢ ${yourNameForIntro} | ${new Date().getFullYear()}`;
 
-  const showFooter = currentView === 'cardIntro' || currentView === 'about' || currentView === 'gallery' || currentView === 'guestbook'; // ADDED 'guestbook'
+  const showFooter = currentView === 'cardIntro' || currentView === 'about' || currentView === 'gallery' || currentView === 'guestbook';
 
   const getFlourishWrapperStyle = (view: SelectorView, isTop: boolean) => {
       let marginVertical = "1rem";
-      if (view === 'about' || view === 'gallery' || view === 'guestbook') { // ADDED 'guestbook'
+      if (view === 'about' || view === 'gallery' || view === 'guestbook') {
           marginVertical = "0.5rem";
       }
       return isTop ? { marginBottom: marginVertical } : { marginTop: marginVertical };
@@ -263,31 +254,68 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const cardIntroButtonBaseDelay = 0.1;
   const headerContentBlockDelay = 0.05;
 
+  const fetchGuestbookEntries = useCallback(async () => {
+      if (!isMountedRef.current) return;
+      setGuestbookLoading(true);
+      setGuestbookError(null);
+      try {
+          const response = await fetch(`${API_BASE_URL}/api/guestbook`);
+          if (!response.ok) {
+              let errorMsg = `HTTP error! status: ${response.status}`;
+              try {
+                  const errorData = await response.json();
+                  errorMsg = errorData.error || errorMsg;
+              } catch (e) { /* ignore if parsing error body fails */ }
+              throw new Error(errorMsg);
+          }
+          const data: GuestbookEntry[] = await response.json();
+          if (isMountedRef.current) {
+            // Backend sends data sorted (newest first).
+            // Guestbook.tsx's `.reverse()` makes oldest appear first and new entry added at bottom, then list reversed to show new entry at top.
+            // To align with current Guestbook.tsx logic (showing newest at top from reversed list), pass as-is.
+            setGuestbookEntries(data); 
+          }
+      } catch (error: any) {
+          console.error("Error fetching guestbook entries:", error);
+          if (isMountedRef.current) {
+              setGuestbookError(error.message || 'Failed to load entries.');
+          }
+      } finally {
+          if (isMountedRef.current) {
+              setGuestbookLoading(false);
+          }
+      }
+  }, []);
 
-  // NEW: Handler for adding a guestbook entry
-  const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi' | 'en' | 'ja') => {
-    // Simulate API call delay for now
-    await new Promise(resolve => setTimeout(resolve, 700));
+  useEffect(() => {
+      fetchGuestbookEntries();
+  }, [fetchGuestbookEntries]);
 
-    const newEntry: GuestbookEntry = {
-      id: uuidv4(), // Generate a unique ID
-      name,
-      message,
-      timestamp: new Date().toISOString(),
-      language: lang,
-    };
+  const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi' | 'en' | 'ja'): Promise<void> => {
+      const newEntryPayload = { name, message, language: lang };
+      try {
+          const response = await fetch(`${API_BASE_URL}/api/guestbook`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newEntryPayload),
+          });
 
-    const updatedEntries = [newEntry, ...guestbookEntries].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).reverse(); // Keep sorted
-    setGuestbookEntries(updatedEntries);
+          if (!response.ok) {
+              let errorMsg = `Failed to submit: ${response.status}`;
+              try {
+                  const errorData = await response.json();
+                  errorMsg = errorData.error || errorMsg;
+              } catch (e) { /* ignore parsing error */ }
+              throw new Error(errorMsg);
+          }
+          
+          await fetchGuestbookEntries(); // Refresh list after successful post
 
-    // Save to localStorage (simple persistence)
-    try {
-        localStorage.setItem('guestbookEntries', JSON.stringify(updatedEntries));
-    } catch (error) {
-        console.error("Error saving guestbook to localStorage", error);
-    }
+      } catch (error: any) {
+          console.error("Error submitting entry from LanguageSelector:", error);
+          throw error;
+      }
   };
-
 
   return (
     <motion.div
@@ -505,14 +533,14 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                       ]).map((imgSrc, idx) => (
                                         <motion.img
                                           key={`preview-${idx}`}
-                                          variants={contentItemVariants(0.1 + idx * 0.08)} // Adjusted delay for faster sequence
+                                          variants={contentItemVariants(0.1 + idx * 0.08)}
                                           src={imgSrc}
                                           alt={languageSelectorPreviewTranslations.galleryPreviewAlt[currentLanguage].replace("{index}", String(idx + 1))}
                                         />
                                       ))}
                                     </div>
                                   )}
-                                  {headerPreviewType === 'guestbook' && ( // NEW Guestbook preview
+                                  {headerPreviewType === 'guestbook' && (
                                     <p className="header-preview-text-enhanced">
                                         {languageSelectorPreviewTranslations.guestbookSnippetContent[currentLanguage]}
                                     </p>
@@ -575,14 +603,14 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                   layout
                   transition={layoutTransition}
                 >
-                    {(['about', 'gallery', 'guestbook'] as const).map((type, index) => ( // ADDED 'guestbook'
+                    {(['about', 'gallery', 'guestbook'] as const).map((type, index) => (
                         <motion.button
                             key={type}
                             className="card-intro-button"
                             onClick={
                                 type === 'about' ? () => setCurrentView('about')
                                 : type === 'gallery' ? () => setCurrentView('gallery')
-                                : () => setCurrentView('guestbook') // NEW
+                                : () => setCurrentView('guestbook')
                             }
                             variants={cardIntroButtonVariants}
                             initial="initial" animate="animate" exit="exit"
@@ -604,13 +632,13 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 animate={isButtonHovered === type ? "hover" : "rest"}
                                 dangerouslySetInnerHTML={{ __html: type === 'about' ? cardIntroTranslations.aboutIconSvg
                                                                     : type === 'gallery' ? cardIntroTranslations.galleryIconSvg
-                                                                    : cardIntroTranslations.guestbookIconSvg // NEW
+                                                                    : cardIntroTranslations.guestbookIconSvg
                                                                 }}
                             />
                             <span className="button-text">
                                 {type === 'about' ? cardIntroTranslations.aboutButton[currentLanguage]
                                 : type === 'gallery' ? cardIntroTranslations.galleryButton[currentLanguage]
-                                : cardIntroTranslations.guestbookButton[currentLanguage]} {/* NEW */}
+                                : cardIntroTranslations.guestbookButton[currentLanguage]}
                             </span>
                              <span className="button-shine-effect"></span>
                         </motion.button>
@@ -635,11 +663,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 language={currentLanguage}
               />
               <motion.button
-                className="card-view-back-button" // Use a common back button class if available
+                className="card-view-back-button"
                 onClick={() => setCurrentView('cardIntro')}
-                variants={cardIntroButtonVariants} // Can reuse button variants or make specific ones
+                variants={cardIntroButtonVariants}
                 initial="initial" animate="animate" exit="exit"
-                custom={0.2} // Adjust delay as needed
+                custom={0.2}
                 whileHover="hover" whileTap="tap"
               >
                  <span className="button-icon-svg" dangerouslySetInnerHTML={{ __html: aboutNavIconLeft}} />
@@ -661,11 +689,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 onBack={() => setCurrentView('cardIntro')}
                 language={currentLanguage}
               />
-              {/* The onBack in Gallery.tsx now handles its own button, so this is redundant */}
             </motion.div>
           )}
 
-          {currentView === 'guestbook' && ( // NEW Guestbook View
+          {currentView === 'guestbook' && (
             <motion.div
               key="guestbook-content"
               className="content-section card-content-display guestbook-view-wrapper"
@@ -674,12 +701,16 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               animate="visible"
               exit="exit"
             >
-              <Guestbook
-                language={currentLanguage}
-                onBack={() => setCurrentView('cardIntro')}
-                entries={guestbookEntries}
-                onAddEntry={handleAddGuestbookEntry}
-              />
+                {guestbookLoading ? (
+                    <motion.p initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>Loading messages...</motion.p>
+                ) : (
+                     <Guestbook
+                        language={currentLanguage}
+                        onBack={() => setCurrentView('cardIntro')}
+                        entries={guestbookEntries}
+                        onAddEntry={handleAddGuestbookEntry}
+                      />
+                )}
                  <motion.button
                     className="card-view-back-button"
                     onClick={() => setCurrentView('cardIntro')}
