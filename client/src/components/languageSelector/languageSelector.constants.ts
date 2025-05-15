@@ -117,7 +117,7 @@ export const translations = {
     ja: "お好みの言語"
   },
   subtitle: {
-    vi: "Chọn một dòng chảy cho riêng bạn",
+    vi: "Chọn một dòng chảy cho riêng mình  ",
     en: "Choose your own flow", 
     ja: "自分だけの流れを選んでください"
   },
@@ -342,9 +342,9 @@ export const cardIntroTranslations = {
   aboutButton: { vi: "Về tôi", en: "About Me", ja: "私について" },
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
   introTagline: {
-      vi: "Hãy cùng khám phá một chút về thế giới huyền ảo của mình nhé!",
-      en: "Let's explore a little about my whimsical world!",
-      ja: "私の幻想的な世界を少し探検してみませんか！"
+      vi: "Chào mừng đến với thế giới của tui !",
+      en: "Welcome to my world!",
+      ja: "アタシの世界へよこそう！ "
   },
   aboutIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   galleryIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,

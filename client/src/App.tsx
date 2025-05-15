@@ -48,7 +48,7 @@ const YOUR_NAME_FOR_INTRO = "よこそう！！";
 const PERSONAL_CARD_DATA = {
     avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
     name: "Rin",
-    title: "Developer | SysAdmin | Tech Enthusiast",
+    title: "IT Students | Cyber Security",
     githubUsername: "Rin1809" // <<< ADD YOUR GITHUB USERNAME HERE
 };
 

@@ -238,9 +238,15 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
               {currentAboutSubSection === 'intro' && (
                 <div className="sub-section-inner-padding">
                   <p className="bio-text">
-                    Chào bạn! Mình là <strong>{name}</strong>, một nhà phát triển phần mềm và người quản trị hệ thống với niềm đam mê mãnh liệt dành cho công nghệ. Mình luôn tìm tòi, học hỏi những điều mới mẻ, từ đó kiến tạo nên các giải pháp không chỉ mạnh mẽ về mặt kỹ thuật mà còn mang lại trải nghiệm tinh tế cho người dùng.
+                    Chào ! Mình là <strong>{name}</strong>, đang theo học ngành An Ninh Mạng.
+                    <br/><br/>                    
+                    Mình thích mèo, thích vẽ, thích hát, ghét An Ninh Mạng. 
                     <br/><br/>
-                    Thế giới số với mình là một vũ trụ đầy tiềm năng, nơi mỗi dòng code là một nét vẽ, mỗi hệ thống là một kiến trúc kỳ diệu. Mình tin vào sức mạnh của sự hợp tác, tinh thần mã nguồn mở và không ngừng tìm kiếm cơ hội để cùng cộng đồng tạo ra những giá trị bền vững.
+                    Mình chỉ có 1 điều ước nhỏ nhoi là...
+                    <br/><br/>
+                    uớc gì có 100 tỷ....  
+                    <br/><br/>
+                    Thì sao? đang đánh giá đó hả? ai mà chả có ước mơ ....?
                   </p>
                 </div>
               )}
@@ -395,11 +401,11 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
       </div>
     </div>
   );
-};
+};  
 
 const cardData = {
     avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
-    title: "Developer | SysAdmin | Tech Enthusiast"
+    title: "IT Student | Cyber Security "
 };
 
 export default PersonalCard;    

@@ -398,7 +398,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 <div className="header-preview-actual-content"> 
                                   {headerPreviewType === 'about' && (
                                     <p className="header-preview-text-enhanced">
-                                        Chào bạn! Mình là Rin, một người đam mê công nghệ với kinh nghiệm trong phát triển phần mềm và quản trị hệ thống...
+                                        Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?
                                     </p>
                                   )}
                                   {headerPreviewType === 'gallery' && (
