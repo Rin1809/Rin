@@ -37,11 +37,11 @@
 .book-core {
   width: 165%;
   height: 100%;
-  max-height: calc(85vh - 80px); /* Giữ nguyên hoặc điều chỉnh nếu cần thêm không gian */
+  max-height: calc(65vh - 1px); /* Giữ nguyên hoặc điều chỉnh nếu cần thêm không gian */
   display: flex;
   flex-direction: column;
   background-color: transparent; /* Nền sẽ do .book-pages-wrapper */
-  border-radius: 10px; /* Giữ bo góc này cho hiệu ứng 'ruột sách' */
+  border-radius: 50px; /* Giữ bo góc này cho hiệu ứng 'ruột sách' */
   box-shadow: 0 18px 55px rgba(var(--background-color-rgb, 12, 14, 26), 0.45), /* Shadow sâu hơn */
               0 8px 22px rgba(var(--background-color-rgb, 12, 14, 26), 0.3),
               inset 0 0 15px rgba(var(--paper-bg-rgb), 0.05); /* Inner shadow nhẹ */
@@ -49,39 +49,6 @@
   position: relative; /* Cho ::before, ::after */
 }
 
-/* Hiệu ứng lớp giấy dày cho .book-core */
-.book-core::before,
-.book-core::after {
-  content: '';
-  position: absolute;
-  left: 2.5%; /* Hoặc giá trị nhỏ hơn nếu muốn hiệu ứng tinh tế hơn */
-  right: 2.5%;
-  height: 30px; /* Độ dày của mép sách */
-  background: var(--paper-bg); /* Màu của lớp giấy */
-  opacity: 0.95; /* Hơi trong suốt để lộ lớp dưới */
-  z-index: 0; /* Dưới nội dung chính */
-  box-shadow: /* Mô phỏng các lớp giấy xếp chồng */
-    0 1px 1px rgba(var(--paper-text-rgb), 0.05) inset,
-    0 2px 2px rgba(var(--paper-text-rgb), 0.04) inset,
-    0 3px 3px rgba(var(--paper-text-rgb), 0.03) inset,
-    0 4px 4px rgba(var(--paper-text-rgb), 0.02) inset;
-}
-.book-core::before { /* Mép giấy trên */
-  top: -2px; /* Nhô lên một chút */
-  border-top-left-radius: 60% var(--book-cover-edge-curve); /* Cong mềm mại */
-  border-top-right-radius: 60% var(--book-cover-edge-curve);
-}
-.book-core::after { /* Mép giấy dưới */
-  bottom: -2px; /* Nhô xuống một chút */
-  border-bottom-left-radius: 60% var(--book-cover-edge-curve);
-  border-bottom-right-radius: 60% var(--book-cover-edge-curve);
-  box-shadow: /* Thêm shadow ngoài cho mép dưới để tạo chiều sâu */
-    0 1px 1px rgba(var(--paper-text-rgb), 0.05) inset,
-    0 2px 2px rgba(var(--paper-text-rgb), 0.04) inset,
-    0 3px 3px rgba(var(--paper-text-rgb), 0.03) inset,
-    0 4px 4px rgba(var(--paper-text-rgb), 0.02) inset,
-    0 5px 8px rgba(var(--paper-text-rgb), 0.12); /* Shadow bên ngoài */
-}
 
 
 /* Tiêu đề của Guestbook */
