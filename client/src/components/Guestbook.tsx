@@ -52,24 +52,40 @@ const guestbookContainerVariants = {
 };
 
 const guestbookInteractiveSectionVariants = {
-  hidden: { opacity: 0, height: 0, y: 25, filter:"blur(3px)", marginBottom: 0 },
+  hidden: {
+    opacity: 0,
+    // height: 0, // REMOVED
+    y: 25,
+    filter: "blur(3px)",
+    marginBottom: "0rem"
+  },
   visible: {
-    opacity: 1, height: 'auto', y: 0, filter:"blur(0px)", marginBottom: "2.8rem",
+    opacity: 1,
+    // height: 'auto', // REMOVED
+    y: 0,
+    filter: "blur(0px)",
+    marginBottom: "2.8rem",
     transition: {
       opacity: { duration: 0.4, ease: "easeOut" },
-      height: { type:"spring", stiffness: 200, damping: 28, delay:0.05 },
-      y: {type:"spring", stiffness:220, damping:20, delay: 0.1 },
-      filter: { duration: 0.3, delay: 0.15},
+      // height: { type:"spring", stiffness: 200, damping: 28, delay:0.05 }, // REMOVED
+      y: { type: "spring", stiffness: 220, damping: 20, delay: 0.1 },
+      filter: { duration: 0.3, delay: 0.15 },
+      marginBottom: { type: "spring", stiffness: 200, damping: 24, delay: 0.05 },
       staggerChildren: 0.08,
       when: "beforeChildren"
     }
   },
   exit: {
-    opacity: 0, height: 0, y: -20, filter:"blur(3px)", marginBottom: 0,
+    opacity: 0,
+    // height: 0, // REMOVED
+    y: -20,
+    filter: "blur(3px)",
+    marginBottom: "0rem",
     transition: {
       opacity: { duration: 0.25, ease: "easeIn" },
-      height: { type:"spring", stiffness: 230, damping: 30, duration: 0.35 },
-      filter: {duration: 0.2},
+      // height: { type:"spring", stiffness: 230, damping: 30, duration: 0.35 }, // REMOVED
+      marginBottom: { type: "spring", stiffness: 230, damping: 28, duration: 0.3 },
+      filter: { duration: 0.2 },
       when: "afterChildren"
     }
   }
@@ -116,7 +132,7 @@ const writePromptButtonVariants = {
 }
 
 
-const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry, onBack }) => { // Added onBack
+const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) => {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -142,7 +158,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry, on
       setSubmitSuccess(language === 'vi' ? 'Cảm ơn bạn đã chia sẻ!' : language === 'en' ? 'Thank you for sharing!' : 'ご感想ありがとうございます！');
       setTimeout(() => {
         setSubmitSuccess(null);
-        setViewMode('read'); 
+        setViewMode('read');
       }, 3500);
     } catch (error: any) {
       console.error("Error submitting entry in Guestbook.tsx:", error);
@@ -190,7 +206,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry, on
     >
       <motion.h2
         className="guestbook-title"
-        variants={guestbookItemVariants} 
+        variants={guestbookItemVariants}
       >
         {t.title[language]}
       </motion.h2>
@@ -205,7 +221,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry, on
             >
                 <motion.p variants={guestbookItemVariants} dangerouslySetInnerHTML={{ __html: t.promptWrite[language] }} />
                 <motion.button
-                    className="guestbook-write-button poetic-button" 
+                    className="guestbook-write-button poetic-button"
                     onClick={() => setViewMode('write')}
                     variants={writePromptButtonVariants}
                     initial="initial" animate="animate" exit="exit"
@@ -313,7 +329,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry, on
       <motion.div
         className="guestbook-divider"
         variants={guestbookItemVariants}
-        initial="hidden" animate={{...guestbookItemVariants.visible, transition: {...guestbookItemVariants.visible.transition, delay: viewMode === 'read' ? 0.3 : 0.5} }} exit="hidden" 
+        initial="hidden" animate={{...guestbookItemVariants.visible, transition: {...guestbookItemVariants.visible.transition, delay: viewMode === 'read' ? 0.3 : 0.5} }} exit="hidden"
       />
 
       <div className="guestbook-entries-list-wrapper">
@@ -321,7 +337,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry, on
           <AnimatePresence>
             {displayedEntries.map((entry, index) => (
               <motion.div
-                key={entry.id || `entry-${index}`} 
+                key={entry.id || `entry-${index}`}
                 className="guestbook-entry"
                 custom={index}
                 variants={entryCardVariants}
@@ -332,7 +348,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry, on
                     boxShadow: "0 15px 40px -10px rgba(var(--guestbook-highlight-rgb),0.3), 0 0 22px rgba(var(--guestbook-highlight-rgb),0.18) inset, 5px 5px 15px rgba(var(--paper-bg-rgb), 0.18)"
                 }}
                 transition={{type: "spring", stiffness: 260, damping: 16, mass:0.8}}
-                layout 
+                layout
               >
                 <blockquote className="entry-message-wrapper">
                     <p className="entry-message">{entry.message}</p>

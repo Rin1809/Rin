@@ -41,7 +41,7 @@ import {
     languageSelectorPreviewTranslations,
     cardDisplayInfo,
     galleryViewVariants,
-    guestbookViewContainerVariants,
+    guestbookViewContainerVariants, // Updated from guestbookViewTranslations (if it was a variant before)
     SHARED_FLOURISH_SPRING_TRANSITION,
     aboutNavIconLeft,
 } from './languageSelector/languageSelector.constants';
