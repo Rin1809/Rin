@@ -116,7 +116,7 @@ const writePromptButtonVariants = {
 }
 
 
-const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) => {
+const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) => {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -179,7 +179,8 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
     return new Intl.DateTimeFormat(language, options).format(date);
   };
 
-  const displayedEntries = [...entries].reverse();
+  const displayedEntries = [...entries].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
 
   return (
     <motion.div
@@ -189,7 +190,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
     >
       <motion.h2
         className="guestbook-title"
-        variants={guestbookItemVariants} // Re-use simple item variant
+        variants={guestbookItemVariants} 
       >
         {t.title[language]}
       </motion.h2>
@@ -202,14 +203,14 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
                 variants={guestbookInteractiveSectionVariants}
                 initial="hidden" animate="visible" exit="exit"
             >
-                <motion.p variants={guestbookItemVariants}>{t.promptWrite[language]}</motion.p>
+                <motion.p variants={guestbookItemVariants} dangerouslySetInnerHTML={{ __html: t.promptWrite[language] }} />
                 <motion.button
-                    className="guestbook-write-button poetic-button" // Added poetic-button class
+                    className="guestbook-write-button poetic-button" 
                     onClick={() => setViewMode('write')}
                     variants={writePromptButtonVariants}
                     initial="initial" animate="animate" exit="exit"
                     whileHover={{ scale: 1.07, y: -5, rotate: -4.5,
-                        boxShadow: "0 10px 28px -6px rgba(var(--highlight-color-poetic-rgb),0.4), 0 0 15px rgba(var(--highlight-color-poetic-rgb),0.25) inset"
+                        boxShadow: "0 10px 28px -6px rgba(var(--guestbook-highlight-rgb),0.4), 0 0 15px rgba(var(--guestbook-highlight-rgb),0.25) inset"
                     }}
                     whileTap={{ scale: 0.96, y: -2, rotate: 1.5 }}
                     transition={{type: "spring", stiffness:320, damping:14}}
@@ -237,8 +238,8 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
                     placeholder={t.namePlaceholder[language]}
                     disabled={isSubmitting} maxLength={100}
                     whileFocus={{
-                        borderColor: "var(--highlight-color-poetic)",
-                        boxShadow: "0 0 12px 3px rgba(var(--highlight-color-poetic-rgb),0.3), inset 0 1px 3px rgba(0,0,0,0.1)",
+                        borderColor: "var(--guestbook-highlight)",
+                        boxShadow: "0 0 12px 3px rgba(var(--guestbook-highlight-rgb),0.3), inset 0 1px 3px rgba(0,0,0,0.1)",
                         scale: 1.015
                     }}
                     transition={{type:"spring", stiffness:320, damping:16}}
@@ -250,10 +251,10 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
                     id="guestMessage" value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder={t.messagePlaceholder[language]}
-                    rows={5} disabled={isSubmitting} maxLength={1000} // Increased rows
+                    rows={5} disabled={isSubmitting} maxLength={1000}
                     whileFocus={{
-                        borderColor: "var(--highlight-color-poetic)",
-                        boxShadow: "0 0 12px 3px rgba(var(--highlight-color-poetic-rgb),0.3), inset 0 1px 3px rgba(0,0,0,0.1)",
+                        borderColor: "var(--guestbook-highlight)",
+                        boxShadow: "0 0 12px 3px rgba(var(--guestbook-highlight-rgb),0.3), inset 0 1px 3px rgba(0,0,0,0.1)",
                         scale: 1.015
                     }}
                     transition={{type:"spring", stiffness:320, damping:16}}
@@ -278,7 +279,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
                 <motion.div className="form-actions" variants={guestbookItemVariants}>
                     <motion.button
                         type="button"
-                        className="guestbook-cancel-button poetic-button-subtle" // Added poetic-button-subtle class
+                        className="guestbook-cancel-button poetic-button-subtle"
                         onClick={handleCancelWrite}
                         disabled={isSubmitting}
                         whileHover={{ scale: 1.06, filter: "brightness(0.95)", borderColor: "rgba(var(--subtext-color-poetic-rgb),0.6)" }}
@@ -290,9 +291,9 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
                     </motion.button>
                     <motion.button
                         type="submit"
-                        className="guestbook-submit-button poetic-button-primary" // Added poetic-button-primary class
+                        className="guestbook-submit-button poetic-button-primary"
                         disabled={isSubmitting}
-                        whileHover={{ scale: 1.04, y: -3.5, filter: "brightness(1.15) saturate(1.1)", boxShadow:"0 7px 22px -4px rgba(var(--highlight-color-poetic-rgb),0.42), 0 3px 10px rgba(var(--primary-color-rgb),0.3)" }}
+                        whileHover={{ scale: 1.04, y: -3.5, filter: "brightness(1.15) saturate(1.1)", boxShadow:"0 7px 22px -4px rgba(var(--guestbook-highlight-rgb),0.42), 0 3px 10px rgba(var(--guestbook-primary-action-rgb),0.3)" }}
                         whileTap={{ scale: 0.98, y: -1, filter: "brightness(0.92)" }}
                         transition={{ type: "spring", stiffness: 360, damping: 16 }}
                     >
@@ -312,15 +313,15 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
       <motion.div
         className="guestbook-divider"
         variants={guestbookItemVariants}
-        initial="hidden" animate={{...guestbookItemVariants.visible, transition: {...guestbookItemVariants.visible.transition, delay: viewMode === 'read' ? 0.3 : 0.5} }} exit="hidden" // delay based on viewMode for better flow
+        initial="hidden" animate={{...guestbookItemVariants.visible, transition: {...guestbookItemVariants.visible.transition, delay: viewMode === 'read' ? 0.3 : 0.5} }} exit="hidden" 
       />
 
-      <motion.div className="guestbook-entries-list-wrapper">
+      <div className="guestbook-entries-list-wrapper"> {/* Changed from motion.div as children handle animation */}
         {displayedEntries.length > 0 ? (
           <AnimatePresence>
             {displayedEntries.map((entry, index) => (
               <motion.div
-                key={entry.id || `entry-${index}`} // Ensure unique key
+                key={entry.id || `entry-${index}`} 
                 className="guestbook-entry"
                 custom={index}
                 variants={entryCardVariants}
@@ -328,10 +329,10 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
                 animate="animate"
                 exit="exit"
                 whileHover={{ y: -8, scale: 1.025,
-                    boxShadow: "0 15px 40px -10px rgba(var(--highlight-color-poetic-rgb),0.3), 0 0 22px rgba(var(--highlight-color-poetic-rgb),0.18) inset, 5px 5px 15px rgba(var(--background-color-rgb), 0.18)"
+                    boxShadow: "0 15px 40px -10px rgba(var(--guestbook-highlight-rgb),0.3), 0 0 22px rgba(var(--guestbook-highlight-rgb),0.18) inset, 5px 5px 15px rgba(var(--paper-bg-rgb), 0.18)"
                 }}
                 transition={{type: "spring", stiffness: 260, damping: 16, mass:0.8}}
-                layout // Enable smooth reordering on add/remove
+                layout 
               >
                 <blockquote className="entry-message-wrapper">
                     <p className="entry-message">{entry.message}</p>
@@ -358,7 +359,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry }) 
             {t.noEntries[language]}
           </motion.p>
         )}
-      </motion.div>
+      </div>
     </motion.div>
   );
 };

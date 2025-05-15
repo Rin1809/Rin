@@ -349,7 +349,7 @@ export const dividerHorizontalVariants = (delay: number): Variants => ({
 export const cardIntroTranslations = {
   aboutButton: { vi: "Về tôi", en: "About Me", ja: "私について" },
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
-  guestbookButton: { vi: "Viết cảm nghĩ", en: "Guestbook", ja: "感想ノート" }, // NEW
+  guestbookButton: { vi: "Sổ Lưu Bút", en: "Guestbook", ja: "感想ノート" }, // MODIFIED/NEW
   introTagline: {
       vi: "Chào mừng đến với thế giới của tui !",
       en: "Welcome to my world!",
@@ -357,7 +357,7 @@ export const cardIntroTranslations = {
   },
   aboutIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   galleryIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
-  guestbookIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>`, // NEW
+  guestbookIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`, // NEW - Placeholder SVG for Guestbook button
   backButton: { vi: "Quay Lại", en: "Back", ja: "戻る" },
 };
 
@@ -528,7 +528,7 @@ export const previewContentItemVariants: Variants = {
 export const previewIcons = {
   about: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   gallery: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
-  guestbook: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path><path d="M19.5 10.5c.69-.69.69-2.5 0-3.18"></path></svg>`, // NEW
+  guestbook: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`, // NEW - Placeholder SVG for Guestbook preview
 };
 
 export const galleryViewVariants = (delay: number = 0.1): Variants => ({
@@ -655,7 +655,7 @@ export const personalCardTranslations = {
 export const languageSelectorPreviewTranslations = {
   aboutSnippetTitle: { vi: "Giới thiệu sơ lược", en: "About Me Snippet", ja: "自己紹介（概要）" },
   gallerySneakPeekTitle: { vi: "Xem trước bộ sưu tập", en: "Gallery Sneak Peek", ja: "ギャラリー予告編" },
-  guestbookSneakPeekTitle: { vi: "Góc cảm nghĩ", en: "Guestbook Entries", ja: "感想コーナー" }, // NEW
+  guestbookSneakPeekTitle: { vi: "Góc Cảm Xúc", en: "Corner of Feelings", ja: "思いのコーナー" }, // MODIFIED/NEW
   aboutSnippetContent: {
     vi: "Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?",
     en: "Hi! I'm Rin,... well, just Rin, that's it? What were you expecting?",
@@ -663,9 +663,9 @@ export const languageSelectorPreviewTranslations = {
   },
   galleryPreviewAlt: { vi: "Xem trước bộ sưu tập {index}", en: "Gallery preview {index}", ja: "ギャラリープレビュー {index}" },
   guestbookSnippetContent: { // NEW
-    vi: "Lưu giữ những khoảnh khắc và lời nhắn yêu thương từ mọi người...",
-    en: "Treasuring moments and kind words from everyone...",
-    ja: "皆さんからの温かい言葉や瞬間を大切に保管しています。。。"
+    vi: "Những dòng nhắn gửi, khoảnh khắc được sẻ chia và lưu giữ...",
+    en: "Shared moments, treasured words, all kept here...",
+    ja: "共有された瞬間、大切な言葉、すべてここに保管されています。。。"
   }
 };
 
@@ -698,7 +698,6 @@ export const cardDisplayInfo = {
 //  For Guestbook view
 export const guestbookViewTranslations = {
   title: { vi: "Sổ Lưu Bút Cảm Xúc", en: "Guestbook of Thoughts", ja: "ゲストブック・思いの記録" },
-  // Form related, will be shown when form is active
   formTitle: { vi: "Để lại lời nhắn của bạn", en: "Leave Your Message", ja: "メッセージを残してください" },
   nameLabel: { vi: "Tên của bạn (Nhà lữ hành)", en: "Your Name (Fellow Traveler)", ja: "お名前（旅人さん）" },
   namePlaceholder: { vi: "vd: Lãng khách ẩn danh...", en: "e.g., A Mysterious Wanderer...", ja: "例：名無しの風来坊。。。" },
@@ -707,14 +706,13 @@ export const guestbookViewTranslations = {
   submitButton: { vi: "Gửi Cảm Nghĩ", en: "Post Your Thought", ja: "感想を投稿する" },
   submittingText: { vi: "Đang gửi...", en: "Submitting...", ja: "送信中。。。" },
   
-  // New for read mode prompt and write/cancel buttons
-  promptWrite: {
+  promptWrite: { // NEW
     vi: "Bạn muốn chia sẻ đôi dòng tâm tình với Rin hong? ✨ <br/>Cảm ơn vì đã ghé thăm, ghi lại sự hiện diện của bạn tại đây nhé!",
     en: "Want to share some thoughts with Rin? ✨ <br/>Thanks for visiting, feel free to leave your mark!",
     ja: "リンに何か思いを伝えたいですか？ ✨ <br/>ご訪問ありがとうございます。あなたの足跡をここに記しませんか。"
   },
-  writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" },
-  cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" }, // Updated for clarity
+  writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" }, // NEW
+  cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" }, // NEW
 
   noEntries: {
     vi: "Chưa có ai để lại cảm nghĩ. Hãy là người đầu tiên chia sẻ nhé!",
@@ -727,7 +725,7 @@ export const guestbookViewTranslations = {
 
 
 // Variant for Guestbook main container
-export const guestbookViewContainerVariants = (delay: number = 0.1): Variants => ({
+export const guestbookViewContainerVariants = (delay: number = 0.1): Variants => ({ // Keep this variant here
     hidden: { opacity: 0, scale: 0.85, y: 50, filter: "blur(8px)" },
     visible: {
         opacity: 1, scale: 1, y: 0, filter: "blur(0px)",

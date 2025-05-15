@@ -9,7 +9,8 @@
   --paper-text-color: #5a4230; /* Slightly warmer dark brown for text */
   --paper-text-rgb: 90, 66, 48;
 
-  /* Poetic Guestbook Specific Highlights */
+  /* Poetic Guestbook Specific Highlights - ensure these are defined in App.css or LanguageSelector.css or here */
+  /* Assuming they are inherited from App.css or higher scope */
   --guestbook-highlight: var(--highlight-color-poetic, #D8BFD8);
   --guestbook-highlight-rgb: var(--highlight-color-poetic-rgb, 216, 191, 216);
   --guestbook-primary-action: var(--primary-color, #ffaaaa);
@@ -19,60 +20,60 @@
   --guestbook-text: var(--text-color-poetic, #e6e6e6);
   --guestbook-text-rgb: var(--text-color-poetic-rgb, 230, 230, 230);
   --guestbook-subtext: var(--subtext-color-poetic, #c0c0c0);
-  --guestbook-card-bg: rgba(var(--card-background-rgb, 30, 30, 46), 0.78); /* Main bg for guestbook card itself */
-  --guestbook-card-bg-lighter: rgba(var(--card-background-rgb, 30, 30, 46), 0.55); /* For inner elements like form/prompt bg */
+  --guestbook-subtext-rgb: var(--subtext-color-poetic-rgb, 192,192,192);
+  --guestbook-card-bg: rgba(var(--card-background-rgb, 30, 30, 46), 0.85); /* Main bg for guestbook card itself */
+  --guestbook-card-bg-lighter: rgba(var(--card-background-rgb, 30, 30, 46), 0.65); /* For inner elements like form/prompt bg */
 }
 
 .guestbook-container {
   width: 100%;
-  max-width: 800px; /* Slightly wider for better readability */
+  max-width: 720px; 
   margin: 0 auto;
   padding: clamp(1.8rem, 3.5vw, 2.5rem) clamp(1.2rem, 4.5vw, 2.8rem);
   color: var(--guestbook-text);
   font-family: var(--font-family-poetic), var(--font-family-fallback);
-  border-radius: 28px; /* Softer radius */
+  border-radius: 28px; 
   background:
-    radial-gradient(ellipse at 15% 20%, rgba(var(--guestbook-highlight-rgb), 0.07) 0%, transparent 65%),
-    radial-gradient(ellipse at 85% 80%, rgba(var(--guestbook-primary-action-rgb), 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 15% 20%, rgba(var(--guestbook-highlight-rgb), 0.09) 0%, transparent 65%),
+    radial-gradient(ellipse at 85% 80%, rgba(var(--guestbook-primary-action-rgb), 0.08) 0%, transparent 60%),
     var(--guestbook-card-bg);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  box-shadow: 0 20px 65px rgba(var(--background-color-rgb, 12,14,26), 0.5),
-              0 0 45px rgba(var(--guestbook-highlight-rgb), 0.2),
-              inset 0 0 30px rgba(var(--background-color-rgb, 12,14,26), 0.35);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 22px 70px rgba(var(--background-color-rgb, 12,14,26), 0.55),
+              0 0 50px rgba(var(--guestbook-highlight-rgb), 0.22),
+              inset 0 0 35px rgba(var(--background-color-rgb, 12,14,26), 0.4);
   border: 2px solid transparent;
   border-image-slice: 1;
   border-image-source: linear-gradient(155deg,
-    rgba(var(--guestbook-highlight-rgb), 0.35),
-    rgba(var(--guestbook-primary-action-rgb), 0.22),
-    rgba(var(--guestbook-secondary-action-rgb), 0.22),
-    rgba(var(--guestbook-highlight-rgb), 0.35));
+    rgba(var(--guestbook-highlight-rgb), 0.4),
+    rgba(var(--guestbook-primary-action-rgb), 0.25),
+    rgba(var(--guestbook-secondary-action-rgb), 0.25),
+    rgba(var(--guestbook-highlight-rgb), 0.4));
   
-  /* Scrollbar handling for when content overflows */
-  overflow-y: auto; /* Make it scrollable when content exceeds max-height */
-  max-height: calc(90vh - 110px); /* Approx height, assuming some margin from LS flourishes */
+  overflow-y: auto; 
+  max-height: calc(88vh - 100px); 
   scrollbar-width: thin;
-  scrollbar-color: rgba(var(--guestbook-highlight-rgb), 0.6) rgba(var(--card-background-rgb,30,30,46), 0.15);
-  padding-bottom: clamp(2.2rem, 4.5vw, 3rem); /* Ensure space at the bottom */
+  scrollbar-color: rgba(var(--guestbook-highlight-rgb), 0.6) rgba(var(--card-background-rgb,30,30,46), 0.2);
+  padding-bottom: clamp(2.2rem, 4.5vw, 3rem); 
 }
 
 .guestbook-container::-webkit-scrollbar { width: 11px; }
-.guestbook-container::-webkit-scrollbar-track { background: rgba(var(--card-background-rgb,30,30,46), 0.15); border-radius: 10px; margin: 6px 0; }
-.guestbook-container::-webkit-scrollbar-thumb { background-color: rgba(var(--guestbook-highlight-rgb), 0.5); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
-.guestbook-container::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--guestbook-highlight-rgb), 0.75); }
+.guestbook-container::-webkit-scrollbar-track { background: rgba(var(--card-background-rgb,30,30,46), 0.2); border-radius: 10px; margin: 6px 0; }
+.guestbook-container::-webkit-scrollbar-thumb { background-color: rgba(var(--guestbook-highlight-rgb), 0.55); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
+.guestbook-container::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--guestbook-highlight-rgb), 0.8); }
 
 
 .guestbook-title {
-  font-size: clamp(2.2em, 5vw, 2.8em);
-  font-weight: 400; /* Consistent with Poetic style */
+  font-size: clamp(2.1em, 5vw, 2.7em);
+  font-weight: 400; 
   text-align: center;
-  margin-bottom: 2.8rem; /* More space after title */
+  margin-bottom: 2.8rem; 
   color: var(--guestbook-highlight);
-  text-shadow: 0 0 25px rgba(var(--guestbook-highlight-rgb), 0.5),
-               0 0 10px rgba(var(--guestbook-highlight-rgb), 0.35),
-               0 2.5px 4px rgba(var(--background-color-rgb, 12,14,26), 0.25);
-  letter-spacing: 2px;
-  line-height: 1.35;
+  text-shadow: 0 0 28px rgba(var(--guestbook-highlight-rgb), 0.55),
+               0 0 12px rgba(var(--guestbook-highlight-rgb), 0.4),
+               0 2.8px 4.5px rgba(var(--background-color-rgb, 12,14,26), 0.3);
+  letter-spacing: 2.5px;
+  line-height: 1.38;
 }
 
 .guestbook-write-prompt {
@@ -80,22 +81,22 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem; /* Increased gap */
-  padding: 2rem 1.5rem; /* More padding */
+  gap: 1.6rem; 
+  padding: 2.2rem 1.6rem; 
   text-align: center;
-  border-radius: 20px; /* Softer radius */
+  border-radius: 22px; 
   background-color: var(--guestbook-card-bg-lighter);
-  border: 1.5px dashed rgba(var(--guestbook-highlight-rgb), 0.3); /* Slightly more prominent dash */
-  min-height: 170px; /* To prevent layout shifts on form appearance */
+  border: 1.8px dashed rgba(var(--guestbook-highlight-rgb), 0.35); 
+  min-height: 170px; 
 }
 .guestbook-write-prompt p {
-  font-size: clamp(1.1em, 2.4vw, 1.25em);
+  font-size: clamp(1.05em, 2.4vw, 1.2em);
   color: var(--guestbook-subtext);
-  opacity: 0.95;
+  opacity: 0.96;
   font-weight: 300;
   margin: 0;
-  max-width: 92%; /* To prevent text from touching edges */
-  line-height: 1.7; /* Improved readability */
+  max-width: 90%; 
+  line-height: 1.75; 
 }
 
 /* Shared Poetic Button Base Style */
@@ -103,256 +104,264 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.85em; /* Space between icon and text */
-  padding: 0.95rem 2.2rem; /* Generous padding */
-  border-radius: 35px; /* More rounded */
+  gap: 0.9em; 
+  padding: 0.9rem 2.1rem; 
+  border-radius: 38px; 
   font-family: inherit;
-  font-size: clamp(1.05em, 2.3vw, 1.15em);
+  font-size: clamp(1em, 2.3vw, 1.1em);
   font-weight: 500;
   cursor: pointer;
   transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1),
               box-shadow 0.25s cubic-bezier(0.23, 1, 0.32, 1),
               filter 0.25s cubic-bezier(0.23, 1, 0.32, 1),
               background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
-  text-shadow: 0 1px 2px rgba(var(--background-color-rgb, 12,14,26), 0.1);
-  position: relative; /* For potential ::before/::after effects */
-  overflow: hidden; /* For ::before/::after effects like shine */
+  text-shadow: 0 1.2px 2.5px rgba(var(--background-color-rgb, 12,14,26), 0.12);
+  position: relative; 
+  overflow: hidden; 
 }
 .poetic-button svg, .poetic-button-subtle svg, .poetic-button-primary svg {
-  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.poetic-button:hover svg, .poetic-button-subtle:hover svg, .poetic-button-primary:hover svg {
-  transform: rotate(8deg) scale(1.1); /* Playful icon movement on hover */
+.poetic-button:hover:not(:disabled) svg, 
+.poetic-button-subtle:hover:not(:disabled) svg, 
+.poetic-button-primary:hover:not(:disabled) svg {
+  transform: rotate(8.5deg) scale(1.12); 
 }
 
 /* Specifics for the 'write' button in the prompt */
 .guestbook-write-button.poetic-button {
-  border: 2px solid transparent;
+  border: 2.2px solid transparent;
   border-image-slice: 1;
   border-image-source: linear-gradient(140deg, var(--guestbook-primary-action), var(--guestbook-secondary-action));
   background: linear-gradient(140deg,
-    rgba(var(--guestbook-primary-action-rgb), 0.15),
-    rgba(var(--guestbook-secondary-action-rgb), 0.12)
+    rgba(var(--guestbook-primary-action-rgb), 0.18),
+    rgba(var(--guestbook-secondary-action-rgb), 0.15)
   );
   color: var(--guestbook-highlight);
-  box-shadow: 0 6px 22px -6px rgba(var(--guestbook-primary-action-rgb),0.3);
+  box-shadow: 0 6.5px 24px -6.5px rgba(var(--guestbook-primary-action-rgb),0.32);
 }
-.guestbook-write-button.poetic-button:hover {
-  filter: brightness(1.18); /* Slightly brighter on hover */
-  box-shadow: 0 10px 28px -6px rgba(var(--guestbook-highlight-rgb),0.4), /* Enhanced shadow on hover */
-              0 0 18px rgba(var(--guestbook-highlight-rgb),0.25) inset; /* Inner glow on hover */
+.guestbook-write-button.poetic-button:hover:not(:disabled) {
+  filter: brightness(1.2); 
+  box-shadow: 0 10.5px 30px -6.5px rgba(var(--guestbook-highlight-rgb),0.42), 
+              0 0 20px rgba(var(--guestbook-highlight-rgb),0.28) inset; 
 }
 
 
 .guestbook-form {
   display: flex;
   flex-direction: column;
-  gap: 1.6rem; /* Increased gap between form elements */
-  padding: clamp(1.5rem, 3.5vw, 2rem) clamp(1.3rem, 3.5vw, 2.2rem); /* Dynamic padding */
+  gap: 1.7rem; 
+  padding: clamp(1.6rem, 3.5vw, 2.1rem) clamp(1.4rem, 3.5vw, 2.3rem); 
   background-color: var(--guestbook-card-bg-lighter);
-  border-radius: 20px; /* Consistent soft radius */
-  border: 1.5px solid rgba(var(--guestbook-highlight-rgb), 0.28); /* Subtle border */
-  box-shadow: 0 6px 18px rgba(var(--background-color-rgb, 12,14,26),0.25),
-              inset 0 0 10px rgba(var(--background-color-rgb, 12,14,26),0.2); /* Inner shadow */
+  border-radius: 22px; 
+  border: 1.8px solid rgba(var(--guestbook-highlight-rgb), 0.3); 
+  box-shadow: 0 7px 20px rgba(var(--background-color-rgb, 12,14,26),0.28),
+              inset 0 0 12px rgba(var(--background-color-rgb, 12,14,26),0.22); 
 }
 
 .guestbook-form-title {
-    font-size: clamp(1.25em, 2.8vw, 1.5em);
-    font-weight: 500; /* More emphasis than regular text */
+    font-size: clamp(1.2em, 2.8vw, 1.45em);
+    font-weight: 500; 
     color: var(--guestbook-subtext);
-    opacity: 0.95;
-    margin: 0 0 1rem 0; /* Space below title */
+    opacity: 0.96;
+    margin: 0 0 1.1rem 0; 
     text-align: left;
-    padding-bottom: 0.7rem; /* Increased padding */
-    border-bottom: 1.5px solid rgba(var(--guestbook-highlight-rgb),0.2); /* More subtle */
+    padding-bottom: 0.75rem; 
+    border-bottom: 1.8px solid rgba(var(--guestbook-highlight-rgb),0.22); 
 }
 
-.form-group { display: flex; flex-direction: column; gap: 0.7rem; text-align: left; }
+.form-group { display: flex; flex-direction: column; gap: 0.75rem; text-align: left; }
 .form-group label {
-  font-size: clamp(0.95em, 2.1vw, 1.05em); /* Slightly larger label */
-  font-weight: 400; /* Normal weight */
-  color: rgba(var(--guestbook-subtext-rgb,192,192,192), 0.95); /* Using var for rgb */
-  padding-left: 0.3rem; /* Slight indent */
-  letter-spacing: 0.3px; /* Added letter spacing */
+  font-size: clamp(0.9em, 2.1vw, 1em); 
+  font-weight: 400; 
+  color: rgba(var(--guestbook-subtext-rgb), 0.96); 
+  padding-left: 0.35rem; 
+  letter-spacing: 0.35px; 
 }
 
 .form-group input,
 .form-group textarea {
-  padding: 1rem 1.2rem; /* More padding */
-  border-radius: 12px; /* Softer radius */
-  border: 2px solid rgba(var(--guestbook-highlight-rgb), 0.4); /* Slightly thicker border */
-  background-color: rgba(var(--background-color-rgb, 12,14,26), 0.75); /* Darker bg for contrast */
+  padding: 1.05rem 1.25rem; 
+  border-radius: 14px; 
+  border: 2.2px solid rgba(var(--guestbook-highlight-rgb), 0.45); 
+  background-color: rgba(var(--background-color-rgb, 12,14,26), 0.8); 
   color: var(--guestbook-text);
   font-family: inherit;
-  font-size: 1.05em; /* Slightly larger font in inputs */
-  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.25s ease, background-color 0.25s ease;
+  font-size: 1.0em; 
+  transition: border-color 0.38s ease, box-shadow 0.38s ease, transform 0.28s ease, background-color 0.28s ease;
   outline: none;
-  line-height: 1.5; /* Improved line height */
+  line-height: 1.55; 
 }
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: rgba(var(--guestbook-subtext-rgb,192,192,192), 0.6); /* Subtler placeholder */
+  color: rgba(var(--guestbook-subtext-rgb), 0.65); 
   font-style: italic;
   font-weight: 300;
 }
-.form-group textarea { resize: vertical; min-height: 110px; } /* Increased min-height */
+.form-group textarea { resize: vertical; min-height: 115px; } 
 
 
-.form-feedback-container { min-height: 2.8em; display: flex; flex-direction: column; justify-content: center; margin-top: -0.6rem; } /* Allows feedback message to pop in without jiggling layout */
+.form-feedback-container { min-height: 2.9em; display: flex; flex-direction: column; justify-content: center; margin-top: -0.65rem; } 
 .submit-feedback {
-  font-size: clamp(0.9em, 1.9vw, 1em); padding: 0.8rem 1.2rem; border-radius: 10px; /* Softer radius */
-  text-align: center; font-weight: 500; /* Bolder feedback */
-  border-width: 2px; border-style: solid; letter-spacing: 0.2px;
+  font-size: clamp(0.88em, 1.9vw, 0.98em); padding: 0.85rem 1.25rem; border-radius: 12px; 
+  text-align: center; font-weight: 500; 
+  border-width: 2.2px; border-style: solid; letter-spacing: 0.25px;
 }
 .submit-feedback.error {
-  background-color: rgba(var(--error-color-rgb), 0.22); color: var(--error-color);
-  border-color: rgba(var(--error-color-rgb), 0.45); text-shadow: 0 0 7px rgba(var(--error-color-rgb), 0.25);
+  background-color: rgba(var(--error-color-rgb), 0.25); color: var(--error-color);
+  border-color: rgba(var(--error-color-rgb), 0.5); text-shadow: 0 0 8px rgba(var(--error-color-rgb), 0.28);
 }
 .submit-feedback.success {
-  background-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.25); color: var(--success-color, #a6e3a1);
-  border-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.5); text-shadow: 0 0 7px rgba(var(--success-color-rgb, 166, 227, 161), 0.3);
+  background-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.28); color: var(--success-color, #a6e3a1);
+  border-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.55); text-shadow: 0 0 8px rgba(var(--success-color-rgb, 166, 227, 161), 0.32);
 }
 
-.form-actions { display: flex; gap: 1.2rem; margin-top: 1rem; justify-content: flex-start; } /* Buttons at the start */
+.form-actions { display: flex; gap: 1.3rem; margin-top: 1.1rem; justify-content: flex-start; } 
 
 /* Submit Button */
 .guestbook-submit-button.poetic-button-primary {
-  padding: 1rem 2rem; /* Slightly more padding */
+  padding: 0.95rem 1.9rem; 
   background: linear-gradient(145deg, var(--guestbook-highlight) 0%, var(--guestbook-primary-action) 100%);
-  color: #2E2038; /* Darker, more contrasting text */
+  color: #2E2038; 
   font-weight: 500;
   border: none;
-  box-shadow: 0 5px 18px -4px rgba(var(--guestbook-highlight-rgb),0.35),
-              0 3px 8px rgba(var(--guestbook-primary-action-rgb),0.25),
-              inset 0 -2px 3px rgba(0,0,0,0.1); /* Inner shadow for depth */
-  flex-grow: 1; min-width: 160px; /* Allow it to take more space if needed */
+  box-shadow: 0 5.5px 20px -4.5px rgba(var(--guestbook-highlight-rgb),0.38),
+              0 3.5px 9px rgba(var(--guestbook-primary-action-rgb),0.28),
+              inset 0 -2.5px 3.5px rgba(0,0,0,0.12); 
+  flex-grow: 1; min-width: 160px; 
 }
-.guestbook-submit-button.poetic-button-primary:disabled { opacity: 0.65; cursor: not-allowed; filter: saturate(0.5) brightness(0.9); }
+.guestbook-submit-button.poetic-button-primary:disabled { opacity: 0.6; cursor: not-allowed; filter: saturate(0.45) brightness(0.88); }
 .button-spinner {
-  width: 1.3em; height: 1.3em; border: 3px solid rgba(var(--card-background-rgb,30,30,46), 0.6); /* Spinner track color */
-  border-top-color: #2E2038; /* Spinner moving part color */ animation: buttonSpin 0.9s linear infinite;
+  width: 1.35em; height: 1.35em; border: 3.3px solid rgba(var(--card-background-rgb,30,30,46), 0.65); 
+  border-top-color: #2E2038; 
+  animation: buttonSpin 0.95s linear infinite;
   border-radius: 50%;
 }
 @keyframes buttonSpin { to { transform: rotate(360deg); } }
 
 /* Cancel Button */
 .guestbook-cancel-button.poetic-button-subtle {
-  border: 2px solid rgba(var(--guestbook-subtext-rgb,192,192,192), 0.45);
+  border: 2.2px solid rgba(var(--guestbook-subtext-rgb), 0.5);
   background-color: transparent;
   color: var(--guestbook-subtext);
-  font-size: clamp(1em, 2.1vw, 1.1em);
-  font-weight: 400; /* Not too bold for cancel */
-  box-shadow: 0 2.5px 6px rgba(var(--background-color-rgb,12,14,26),0.12);
+  font-size: clamp(0.95em, 2.1vw, 1.05em);
+  font-weight: 400; 
+  box-shadow: 0 2.8px 6.5px rgba(var(--background-color-rgb,12,14,26),0.14);
 }
 .guestbook-cancel-button.poetic-button-subtle:hover:not(:disabled) {
-  background-color: rgba(var(--guestbook-subtext-rgb,192,192,192), 0.12);
-  border-color: rgba(var(--guestbook-subtext-rgb,192,192,192), 0.7);
-  color: var(--guestbook-text); /* Brighten text on hover */
+  background-color: rgba(var(--guestbook-subtext-rgb), 0.14);
+  border-color: rgba(var(--guestbook-subtext-rgb), 0.75);
+  color: var(--guestbook-text); 
 }
-.guestbook-cancel-button.poetic-button-subtle:disabled { opacity: 0.55; cursor: not-allowed; }
+.guestbook-cancel-button.poetic-button-subtle:disabled { opacity: 0.5; cursor: not-allowed; }
 
 
 .guestbook-divider {
-  height: 2px; /* Slightly thicker */
-  width: 90%; /* Almost full width */
+  height: 2.2px; 
+  width: 88%; 
   background: linear-gradient(to right,
     transparent 2%,
-    rgba(var(--guestbook-highlight-rgb),0.25) 20%,
-    rgba(var(--guestbook-highlight-rgb),0.6) 50%,
-    rgba(var(--guestbook-highlight-rgb),0.25) 80%,
+    rgba(var(--guestbook-highlight-rgb),0.28) 20%,
+    rgba(var(--guestbook-highlight-rgb),0.65) 50%,
+    rgba(var(--guestbook-highlight-rgb),0.28) 80%,
     transparent 98%
   );
-  margin: 2.5rem auto 3rem auto; /* More vertical space */
-  border-radius: 2px; /* Rounded edges for divider */
+  margin: 2.6rem auto 3.1rem auto; 
+  border-radius: 2.2px; 
 }
 
-.guestbook-entries-list { display: flex; flex-direction: column; gap: 2rem; } /* Spacing between entries */
+.guestbook-entries-list-wrapper { /* Added a wrapper */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-right: 5px; /* Space for scrollbar if items are too wide initially */
+}
 
 /* --- ENHANCED ENTRY CARD STYLES --- */
 .guestbook-entry {
   background-color: var(--paper-bg);
-  padding: clamp(1.4rem, 3.5vw, 1.8rem) clamp(1.6rem, 4.5vw, 2rem); /* Responsive padding */
-  border-radius: 14px; /* Consistent with input fields */
-  border: 1.5px solid var(--paper-border);
-  box-shadow: 4px 4px 12px rgba(var(--background-color-rgb,12,14,26), 0.25), /* Softer main shadow */
-              2px 2px 5px rgba(var(--background-color-rgb,12,14,26), 0.2),
-              inset 0 0 10px rgba(255,255,255,0.25); /* Lighter inner shadow for paper */
-  text-align: left; /* Ensure text aligns left */
-  overflow-wrap: break-word; /* Ensure long words break nicely */
-  position: relative; /* For dog-ear effect */
+  padding: clamp(1.5rem, 3.5vw, 1.9rem) clamp(1.7rem, 4.5vw, 2.1rem); 
+  border-radius: 16px; 
+  border: 1.8px solid var(--paper-border);
+  box-shadow: 5px 5px 14px rgba(var(--background-color-rgb,12,14,26), 0.28), 
+              2.5px 2.5px 6px rgba(var(--background-color-rgb,12,14,26), 0.22),
+              inset 0 0 12px rgba(255,255,255,0.3); 
+  text-align: left; 
+  overflow-wrap: break-word; 
+  position: relative; 
   color: var(--paper-text-color);
 }
 
-.guestbook-entry::after { /* Dog-ear effect */
-  content: ""; position: absolute; top: -1.5px; right: -1.5px; /* Align with border */
-  width: 40px; height: 40px; /* Slightly larger dog-ear */
-  background: linear-gradient(135deg, transparent 49%, rgba(var(--paper-border-rgb), 0.55) 49.5%, rgba(var(--paper-border-rgb), 0.35) 55%, var(--paper-bg) 68%);
-  border-bottom-left-radius: 10px; /* Softer radius for dog-ear */
-  filter: drop-shadow(-1.5px 1.5px 1.5px rgba(0,0,0,0.1));
+.guestbook-entry::after { 
+  content: ""; position: absolute; top: -1.8px; right: -1.8px; 
+  width: 42px; height: 42px; 
+  background: linear-gradient(135deg, transparent 48.5%, rgba(var(--paper-border-rgb), 0.6) 49%, rgba(var(--paper-border-rgb), 0.4) 55.5%, var(--paper-bg) 68.5%);
+  border-bottom-left-radius: 12px; 
+  filter: drop-shadow(-1.8px 1.8px 1.8px rgba(0,0,0,0.12));
   pointer-events: none;
 }
 
 
-.entry-message-wrapper { margin: 0 0 1.2rem 0; padding: 0; border: none; position: relative; }
-.entry-message-wrapper::before { /* Opening quote style */
-  content: '“'; font-family: 'Georgia', 'Times New Roman', serif; /* More classic quote font */
-  font-size: 3.2em; /* Larger quote mark */
-  color: rgba(var(--paper-text-rgb), 0.3); /* Subtler quote mark */
-  position: absolute; left: -0.15em; top: -0.4em; /* Fine-tune position */
-  line-height: 0.8; opacity: 0.95; pointer-events: none;
-  font-style: italic; /* Italicize quote mark */
+.entry-message-wrapper { margin: 0 0 1.3rem 0; padding: 0; border: none; position: relative; }
+.entry-message-wrapper::before { 
+  content: '“'; font-family: 'Georgia', 'Times New Roman', serif; 
+  font-size: 3.3em; 
+  color: rgba(var(--paper-text-rgb), 0.35); 
+  position: absolute; left: -0.18em; top: -0.42em; 
+  line-height: 0.85; opacity: 0.96; pointer-events: none;
+  font-style: italic; 
 }
 
 .entry-message {
-  font-family: var(--font-family-primary), 'cursive'; /* Ensure Poetic font */
-  font-size: clamp(1.1em, 2.4vw, 1.25em);
-  line-height: 1.75; /* More spacious line height */
+  font-family: var(--font-family-primary), 'cursive'; 
+  font-size: clamp(1.05em, 2.4vw, 1.2em);
+  line-height: 1.8; 
   color: var(--paper-text-color);
-  margin: 0; padding-left: 1em; /* Indent text from quote mark */
-  white-space: pre-wrap; font-style: normal; font-weight: 400; /* Regular weight for message */
+  margin: 0; padding-left: 1.05em; 
+  white-space: pre-wrap; font-style: normal; font-weight: 400; 
 }
 
 .entry-meta {
-  font-size: clamp(0.85em, 1.9vw, 0.95em);
-  color: rgba(var(--paper-text-rgb), 0.8); /* Slightly darker meta text */
+  font-size: clamp(0.82em, 1.9vw, 0.92em);
+  color: rgba(var(--paper-text-rgb), 0.82); 
   display: flex; flex-direction: row; justify-content: space-between;
-  align-items: center; flex-wrap: wrap; gap: 0.5rem;
-  opacity: 0.95; padding-top: 1rem; /* More padding for separator */
-  border-top: 1.5px dashed rgba(var(--paper-border-rgb), 0.75); /* Dashed line separator */
-  margin-top: 0.7rem;
+  align-items: center; flex-wrap: wrap; gap: 0.55rem;
+  opacity: 0.96; padding-top: 1.05rem; 
+  border-top: 1.8px dashed rgba(var(--paper-border-rgb), 0.8); 
+  margin-top: 0.75rem;
 }
-.entry-author strong { font-weight: 500; color: var(--paper-text-color); letter-spacing: 0.4px; }
-.entry-timestamp { font-style: italic; } /* Italicize timestamp */
+.entry-author strong { font-weight: 500; color: var(--paper-text-color); letter-spacing: 0.45px; }
+.entry-timestamp { font-style: italic; } 
 
 .no-entries-message {
   text-align: center; font-style: italic; color: var(--guestbook-subtext);
-  opacity: 0.85; padding: 3rem 2rem; /* Generous padding for emphasis */
-  font-size: clamp(1.1em, 2.3vw, 1.25em);
-  border: 2px dashed rgba(var(--guestbook-highlight-rgb), 0.3);
-  border-radius: 15px; background-color: var(--guestbook-card-bg-lighter);
-  line-height: 1.7;
+  opacity: 0.88; padding: 3.2rem 2.1rem; 
+  font-size: clamp(1.05em, 2.3vw, 1.2em);
+  border: 2.2px dashed rgba(var(--guestbook-highlight-rgb), 0.32);
+  border-radius: 16px; background-color: var(--guestbook-card-bg-lighter);
+  line-height: 1.75;
 }
 
 
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 768px) {
-  .guestbook-container { max-height: calc(90vh - 90px); border-radius: 24px; }
-  .guestbook-title { margin-bottom: 2.2rem; }
-  .guestbook-form { padding: clamp(1.2rem, 3vw, 1.8rem); gap: 1.4rem;}
-  .guestbook-write-prompt p { font-size: clamp(1.05em, 2.1vw, 1.15em); }
-  .poetic-button, .poetic-button-subtle, .poetic-button-primary { font-size: clamp(1em, 2.1vw, 1.1em); padding: 0.85rem 2rem; }
-  .form-actions { flex-direction: column-reverse; gap: 1rem; } /* Stack buttons on smaller screens */
-  .form-actions > button { width: 100%; } /* Full width buttons when stacked */
+  .guestbook-container { max-height: calc(88vh - 80px); border-radius: 24px; }
+  .guestbook-title { margin-bottom: 2.3rem; }
+  .guestbook-form { padding: clamp(1.3rem, 3vw, 1.9rem); gap: 1.5rem;}
+  .guestbook-write-prompt p { font-size: clamp(1em, 2.1vw, 1.1em); }
+  .poetic-button, .poetic-button-subtle, .poetic-button-primary { font-size: clamp(0.95em, 2.1vw, 1.05em); padding: 0.8rem 1.9rem; }
+  .form-actions { flex-direction: column-reverse; gap: 1.1rem; } 
+  .form-actions > button { width: 100%; } 
 }
 
 @media (max-width: 480px) {
-    .guestbook-container { max-height: calc(93vh - 75px); border-radius: 20px; padding-bottom: clamp(1.8rem, 3.5vw, 2.5rem);} /* More bottom padding */
-    .guestbook-form-title { border-bottom: none; text-align: center; margin-bottom: 0.8rem; }
-    .form-group input, .form-group textarea { font-size: 1em; } /* Keep input font reasonable */
-    .poetic-button-primary { width: 100%; padding: 0.9rem 1.5rem; }
+    .guestbook-container { max-height: calc(92vh - 65px); border-radius: 20px; padding-bottom: clamp(1.9rem, 3.5vw, 2.6rem);} 
+    .guestbook-form-title { border-bottom: none; text-align: center; margin-bottom: 0.85rem; }
+    .form-group input, .form-group textarea { font-size: 0.95em; } 
+    .poetic-button-primary { width: 100%; padding: 0.85rem 1.4rem; }
     .poetic-button-subtle { width: 100%; justify-content: center; }
-    .entry-meta { flex-direction: column; align-items: flex-start; gap: 0.3rem; } /* Stack meta info on small screens */
-    .guestbook-entry::after { width: 35px; height: 35px; }
-    .entry-message-wrapper::before { font-size: 2.8em; }
-    .no-entries-message { padding: 2.5rem 1.5rem; font-size: clamp(1.05em, 2.1vw, 1.15em); }
+    .entry-meta { flex-direction: column; align-items: flex-start; gap: 0.35rem; } 
+    .guestbook-entry::after { width: 36px; height: 36px; }
+    .entry-message-wrapper::before { font-size: 2.9em; }
+    .no-entries-message { padding: 2.6rem 1.6rem; font-size: clamp(1em, 2.1vw, 1.1em); }
 }
