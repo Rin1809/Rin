@@ -75,7 +75,7 @@ const translations = {
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
   backButton: { vi: "Quay lại", en: "Back", ja: "戻る" },
   cardName: { vi: "Rin", en: "Rin", ja: "リン" },
-  cardTitle: { vi: "Sinh viên IT | An Ninh Mạng", en: "IT Student | Cyber Security", ja: "IT学生 | サイバーセキュリティ"}
+  cardTitle: { vi: "Sinh viên | An Ninh Mạng", en: "IT Student | Cyber Security", ja: "IT学生 | サイバーセキュリティ"}
 };
 
 interface PersistentUIContainerProps {
@@ -236,7 +236,6 @@ const PersistentUIContainer: React.FC<PersistentUIContainerProps> = ({
                 {currentStage === 'cardGallery' && (
                     <motion.div className="card-display-content" variants={textItemVariants} custom={0.1}>
                         <Gallery language={selectedLanguage} onBack={onBackToCardIntro} />
-                         {/* Removed the redundant back button here, as Gallery now has its own onBack */}
                     </motion.div>
                 )}
             </motion.div>

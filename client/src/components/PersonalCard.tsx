@@ -1,7 +1,7 @@
 // client/src/components/PersonalCard.tsx
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useAnimation, useMotionValue, useTransform, animate } from 'framer-motion';
-import './styles/PersonalCard.css';
+import './styles/PersonalCard.css'; // CSS sẽ chứa anim cho icon load
 import {
     aboutNavIconLeft,
     aboutNavIconRight,
@@ -14,9 +14,11 @@ interface PersonalCardProps {
   section: 'about' | 'all';
   githubUsername?: string;
   language: 'vi' | 'en' | 'ja';
+  personalCardKey?: string; // Key để reset state từ cha
 }
 
 type AboutSubSection =
+  | 'placeholder'
   | 'intro'
   | 'github'
   | 'tiktok'
@@ -26,18 +28,13 @@ type AboutSubSection =
   | 'github-stats-iii'
   | 'socials';
 
-const aboutSubSectionsOrder: AboutSubSection[] = [
-    'intro',
-    'github',
-    'tiktok',
-    'youtube',
-    'discord-presence',
-    'github-stats-ii',
-    'github-stats-iii',
-    'socials',
+const aboutSubSectionsOrderWithPlaceholder: AboutSubSection[] = [
+    'placeholder', 'intro', 'github', 'tiktok', 'youtube',
+    'discord-presence', 'github-stats-ii', 'github-stats-iii', 'socials',
 ];
+const aboutSubSectionsOrderForNav = aboutSubSectionsOrderWithPlaceholder.filter(s => s !== 'placeholder');
 
-const SocialIcons: { [key: string]: JSX.Element } = {
+const SocialIcons: { [key: string]: JSX.Element } = { /* Nội dung SocialIcons giữ nguyên */
     github: (
         <svg viewBox="0 0 16 16" fill="currentColor">
             <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
@@ -68,27 +65,16 @@ const SocialIcons: { [key: string]: JSX.Element } = {
 
 const aboutSectionContentVariants: { [key: string]: any } = {
   enter: (direction: number) => ({
-    rotateY: direction > 0 ? 50 : -50,
-    opacity: 0,
-    scale: 0.97,
-    originX: direction > 0 ? 0 : 1,
-    filter: "blur(5px) brightness(0.75)",
+    rotateY: direction > 0 ? 50 : -50, opacity: 0, scale: 0.97,
+    originX: direction > 0 ? 0 : 1, filter: "blur(5px) brightness(0.75)",
   }),
   center: {
-    zIndex: 1,
-    rotateY: 0,
-    opacity: 1,
-    scale: 1,
-    filter: "blur(0px) brightness(1)",
+    zIndex: 1, rotateY: 0, opacity: 1, scale: 1, filter: "blur(0px) brightness(1)",
     transition: { type: "spring", stiffness: 180, damping: 26, mass: 0.9, duration: 0.6 }
   },
   exit: (direction: number) => ({
-    zIndex: 0,
-    rotateY: direction < 0 ? -50 : 50,
-    opacity: 0,
-    scale: 0.97,
-    originX: direction < 0 ? 1 : 0,
-    filter: "blur(5px) brightness(0.75)",
+    zIndex: 0, rotateY: direction < 0 ? -50 : 50, opacity: 0, scale: 0.97,
+    originX: direction < 0 ? 1 : 0, filter: "blur(5px) brightness(0.75)",
     transition: { type: "tween", ease: [0.75, 0.05, 0.35, 0.95], duration: 0.4 }
   })
 };
@@ -102,44 +88,24 @@ const aboutSectionTitleAnimVariants = {
 const bioParagraphVariants = {
     hidden: { opacity: 0, y: 25, x: -20, rotateY: 8, filter: "blur(4px)", originX: 0 },
     visible: (i: number) => ({
-        opacity: 1,
-        y: 0,
-        x: 0,
-        rotateY: 0,
-        filter: "blur(0px)",
-        transition: {
-            delay: i * 0.22, 
-            duration: 0.75, 
-            ease: [0.16, 1, 0.3, 1]
-        }
+        opacity: 1, y: 0, x: 0, rotateY: 0, filter: "blur(0px)",
+        transition: { delay: i * 0.22, duration: 0.75, ease: [0.16, 1, 0.3, 1] }
     })
 };
 
-
 const parseNumericValue = (valueWithSuffix: string | number): number => {
-    if (typeof valueWithSuffix === 'number') {
-        return valueWithSuffix;
-    }
-    const cleanedValue = valueWithSuffix.toUpperCase().replace(',', '.'); 
+    if (typeof valueWithSuffix === 'number') return valueWithSuffix;
+    const cleanedValue = valueWithSuffix.toUpperCase().replace(',', '.');
     let numericPart = parseFloat(cleanedValue);
     if (isNaN(numericPart)) return 0;
-
-    if (cleanedValue.endsWith('K')) {
-        numericPart *= 1000;
-    } else if (cleanedValue.endsWith('M')) {
-        numericPart *= 1000000;
-    } else if (cleanedValue.endsWith('N')) { 
-        numericPart *= 1000;
-    }
+    if (cleanedValue.endsWith('K')) numericPart *= 1000;
+    else if (cleanedValue.endsWith('M')) numericPart *= 1000000;
+    else if (cleanedValue.endsWith('N')) numericPart *= 1000;
     return numericPart;
 };
 
-
-interface AnimatedNumberProps {
-  value: string | number; 
-}
-
-const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
+interface AnimatedNumberProps { value: string | number; }
+const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => { /* Nội dung giữ nguyên */
     const [currentDisplayValue, setCurrentDisplayValue] = useState("0");
     const nodeRef = useRef<HTMLSpanElement>(null);
 
@@ -149,7 +115,7 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
         const upperVal = value.toUpperCase();
         if (upperVal.endsWith('K')) return 'K';
         if (upperVal.endsWith('M')) return 'M';
-        if (upperVal.endsWith('N')) return 'N'; 
+        if (upperVal.endsWith('N')) return 'N';
         return "";
     }, [value]);
 
@@ -163,9 +129,9 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
             damping: 20,
             onUpdate: (latest) => {
                 let displayVal;
-                if (suffix && (latest >= 1000 && targetNumericValue >=1000) ) { 
+                if (suffix && (latest >= 1000 && targetNumericValue >=1000) ) {
                     if (suffix === 'K' || suffix === 'N') {
-                        displayVal = (latest / 1000).toFixed(latest % 1000 !== 0 && latest < 10000 ? 1 : 0); 
+                        displayVal = (latest / 1000).toFixed(latest % 1000 !== 0 && latest < 10000 ? 1 : 0);
                     } else if (suffix === 'M') {
                          displayVal = (latest / 1000000).toFixed(latest % 1000000 !== 0 && latest < 10000000 ? 1 : 0);
                     } else {
@@ -174,7 +140,7 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
                 } else {
                     displayVal = Math.round(latest).toString();
                 }
-    
+
                 if (typeof value === 'string' && value.includes(',')) {
                    displayVal = displayVal.replace('.', ',');
                 }
@@ -182,13 +148,12 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
             }
         });
         return () => controls.stop();
-    }, [targetNumericValue, suffix, value]); 
+    }, [targetNumericValue, suffix, value]);
 
     return <motion.span ref={nodeRef}>{currentDisplayValue}{suffix && targetNumericValue >=1000 ? suffix : ""}</motion.span>;
 };
 
-
-interface ParallaxImageProps {
+interface ParallaxImageProps { /* Nội dung giữ nguyên */
   src: string;
   alt: string;
   className: string;
@@ -196,8 +161,7 @@ interface ParallaxImageProps {
   onImageLoad?: () => void;
   onImageError?: () => void;
 }
-
-const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className, wide, onImageLoad, onImageError }) => {
+const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className, wide, onImageLoad, onImageError }) => { /* Nội dung giữ nguyên */
     const ref = useRef(null);
     const x = useMotionValue(0);
     const y = useMotionValue(0);
@@ -241,37 +205,27 @@ const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className, wide
     );
 };
 
-
-const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githubUsername, language }) => {
+const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githubUsername, language, personalCardKey }) => {
   const containerClassName = section === 'about' ? 'personal-card-about-view' : 'personal-card-container';
-  const [currentAboutSubSection, setCurrentAboutSubSection] = useState<AboutSubSection>('intro');
+  const [currentAboutSubSection, setCurrentAboutSubSection] = useState<AboutSubSection>('placeholder');
   const [slideDirection, setSlideDirection] = useState(0);
+  const [hasAutoNextedToIntro, setHasAutoNextedToIntro] = useState(false);
 
   const [githubData, setGithubData] = useState<any>(null);
   const [githubLoading, setGithubLoading] = useState<boolean>(false);
   const [githubError, setGithubError] = useState<string | null>(null);
 
   const discordUserId = "873576591693873252";
-
-  const tiktokData = {
+  const tiktokData = { /* Nội dung giữ nguyên */
     avatarUrl: "https://p9-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/e6ba1da948f191e11a87ab576c7cecad~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=107f3956&x-expires=1747436400&x-signature=QqgIJxmVOURHsn0O4XCY0IwfIdA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my",
-    name: "Harumi",
-    following: 9,
-    followers: "19.2K",
-    likes: "714.8K",
-    description: "ᓚᘏᗢ",
+    name: "Harumi", following: 9, followers: "19.2K", likes: "714.8K", description: "ᓚᘏᗢ",
     profileUrl: "https://www.tiktok.com/@rinrinn1913"
   };
-
-  const youtubeData = {
+  const youtubeData = { /* Nội dung giữ nguyên */
     avatarUrl: "https://yt3.googleusercontent.com/sPwTQORt809qB1fiC2fPj28qFAEtbxSRt471DFZVN9GVEgWX4gfiu_tm1Rm7jOn3QUybLe1XkiQ=s160-c-k-c0x00ffffff-no-rj",
-    name: "Rin",
-    description: "List nhạc go go",
-    joinedDate: "7 thg 5, 2023",
-    subscribers: "7,65 N",
+    name: "Rin", description: "List nhạc go go", joinedDate: "7 thg 5, 2023", subscribers: "7,65 N",
     profileUrl: "https://www.youtube.com/@RinnRin1913"
   };
-
 
   const contentWrapperControls = useAnimation();
   const currentContentRef = useRef<HTMLDivElement>(null);
@@ -279,35 +233,69 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const prevHeightRef = useRef<number | 'auto' | null>(null);
 
   const [imagesToLoadCount, setImagesToLoadCount] = useState(0);
-  const [isSectionLoadingContent, setIsSectionLoadingContent] = useState(false);
+  const [isSectionLoadingContent, setIsSectionLoadingContent] = useState(false); // Tổng thể loading của section
 
-  const measureAndAnimateHeight = (forceMeasure = false) => {
+  // Reset state khi key của PersonalCard thay đổi
+  useEffect(() => {
+    setCurrentAboutSubSection('placeholder'); // Luôn bắt đầu từ placeholder
+    setHasAutoNextedToIntro(false);
+    setSlideDirection(0);
+    // Có thể cân nhắc reset githubData ở đây nếu muốn fetch lại mỗi lần key đổi
+    // setGithubData(null); setGithubError(null); setGithubLoading(false);
+    setIsSectionLoadingContent(true); // Placeholder = loading
+    prevHeightRef.current = null;
+  }, [personalCardKey]);
+
+
+  // Tự động "next" từ 'placeholder' sang 'intro'
+  useEffect(() => {
+    if (section === 'about' && currentAboutSubSection === 'placeholder' && !hasAutoNextedToIntro) {
+      const timer = setTimeout(() => {
+        setSlideDirection(1); // Simulate 'next'
+        setCurrentAboutSubSection('intro');
+        setHasAutoNextedToIntro(true);
+      }, 3000); // Tăng delay lên 3 giây
+      return () => clearTimeout(timer);
+    }
+  }, [section, currentAboutSubSection, hasAutoNextedToIntro]);
+
+
+  // Logic đo và anim chiều cao container
+  const measureAndAnimateHeight = useCallback((forceMeasure = false) => {
     requestAnimationFrame(() => {
       if (contentWrapperOuterRef.current && currentContentRef.current) {
-        if (isSectionLoadingContent && !forceMeasure) {
+        if (isSectionLoadingContent && !forceMeasure && currentAboutSubSection !== 'placeholder') { // K đo khi đang loading, trừ placeholder
             return;
         }
         const contentHeight = currentContentRef.current.offsetHeight;
-        const newHeightValue = contentHeight > 0 ? contentHeight : 'auto';
+        // Ensure placeholder has some min height for visual feedback during auto-next
+        const minHeightForPlaceholder = currentAboutSubSection === 'placeholder' ? 200 : 0;
+        const finalHeight = Math.max(contentHeight, minHeightForPlaceholder);
+        const newHeightValue = finalHeight > 0 ? finalHeight : 'auto';
+
 
         if (prevHeightRef.current !== newHeightValue || forceMeasure) {
-          contentWrapperControls.start(
-            { height: newHeightValue },
-            { type: "spring", stiffness: 260, damping: 30, mass: 0.9, delay: forceMeasure ? 0.05 : 0 }
-          );
-          prevHeightRef.current = newHeightValue;
+            // Ưu tiên spring cho placeholder để tạo cảm giác mượt khi nó init chiều cao
+            const transitionConfig = (currentAboutSubSection === 'placeholder' && prevHeightRef.current === null)
+                ? { type: "spring", stiffness: 180, damping: 25, mass: 0.8 } // Mượt hơn cho placeholder
+                : { type: "spring", stiffness: 260, damping: 30, mass: 0.9 };
+
+            contentWrapperControls.start(
+                { height: newHeightValue },
+                { ...transitionConfig, delay: forceMeasure ? 0.05 : 0 }
+            );
+            prevHeightRef.current = newHeightValue;
         } else if (prevHeightRef.current === null && newHeightValue !== 'auto' && newHeightValue > 0) {
-          // Set initial height without animation if it was null
-          contentWrapperControls.set({ height: newHeightValue });
+          contentWrapperControls.set({ height: newHeightValue }); // Set ban đầu k anim
           prevHeightRef.current = newHeightValue;
         }
       }
     });
-  };
+  }, [isSectionLoadingContent, currentAboutSubSection, contentWrapperControls]); // Thêm currentAboutSubSection vào deps
 
-  const handleImageLoadedOrError = () => {
+  const handleImageLoadedOrError = useCallback(() => {
     setImagesToLoadCount(prevCount => Math.max(0, prevCount - 1));
-  };
+  }, []);
 
   useEffect(() => {
     if (section === 'about') {
@@ -315,87 +303,86 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
       if (currentAboutSubSection === 'discord-presence') expectedImages = 1;
       else if (currentAboutSubSection === 'github-stats-ii' && githubUsername) expectedImages = 2;
       else if (currentAboutSubSection === 'github-stats-iii' && githubUsername) expectedImages = 4;
-
       setImagesToLoadCount(expectedImages);
-
-      const needsGithubAPICall = currentAboutSubSection === 'github' && !githubData && githubUsername && !githubLoading;
-
-      if (expectedImages > 0 || needsGithubAPICall) {
-        setIsSectionLoadingContent(true);
-      } else {
-        setIsSectionLoadingContent(false);
-      }
     }
-  }, [currentAboutSubSection, section, githubUsername, githubData, githubLoading]);
+  }, [currentAboutSubSection, section, githubUsername]); // Chạy khi sub-section đổi
 
   useEffect(() => {
     if (section === 'about' && currentAboutSubSection === 'github' && !githubData && githubUsername && !githubLoading) {
-      setIsSectionLoadingContent(true);
       const fetchGithubData = async () => {
-        setGithubLoading(true);
-        setGithubError(null);
+        setGithubLoading(true); setGithubError(null);
         try {
-          const userRes = await fetch(`https://api.github.com/users/${githubUsername}`);
-          if (!userRes.ok) throw new Error(`Lỗi API GitHub: ${userRes.status}`);
-          const userData = await userRes.json();
-          setGithubData({ user: userData });
-        } catch (error: any) {
-          console.error("Không thể tải dữ liệu GitHub:", error);
-          setGithubError(error.message || "Không thể tải dữ liệu GitHub.");
-        } finally {
-          setGithubLoading(false);
-        }
+          const res = await fetch(`https://api.github.com/users/${githubUsername}`);
+          if (!res.ok) throw new Error(`API GH Error: ${res.status}`);
+          setGithubData({ user: await res.json() });
+        } catch (e: any) { setGithubError(e.message || "Lỗi tải data GH."); }
+        finally { setGithubLoading(false); }
       };
       fetchGithubData();
     }
   }, [section, currentAboutSubSection, githubData, githubUsername, githubLoading]);
 
+
+  // Effect Q.TRỌNG: Cập nhật isSectionLoadingContent
   useEffect(() => {
     if (section === 'about') {
-      const isGithubAPILoading = currentAboutSubSection === 'github' && githubLoading;
-      const areImagesStillLoading = imagesToLoadCount > 0 &&
-        (currentAboutSubSection === 'discord-presence' ||
-         currentAboutSubSection === 'github-stats-ii' ||
-         currentAboutSubSection === 'github-stats-iii');
-
-      setIsSectionLoadingContent(isGithubAPILoading || areImagesStillLoading);
+        if (currentAboutSubSection === 'placeholder') {
+            setIsSectionLoadingContent(true); // Placeholder luôn là loading (để chờ auto-next)
+            return;
+        }
+      const githubStillLoading = currentAboutSubSection === 'github' && githubLoading;
+      const imagesStillLoading = imagesToLoadCount > 0 &&
+        ['discord-presence', 'github-stats-ii', 'github-stats-iii'].includes(currentAboutSubSection);
+      setIsSectionLoadingContent(githubStillLoading || imagesStillLoading);
     } else {
       setIsSectionLoadingContent(false);
     }
   }, [section, currentAboutSubSection, githubLoading, imagesToLoadCount]);
 
-  useEffect(() => {
-    if (section === 'about' && !isSectionLoadingContent && contentWrapperOuterRef.current) {
-        // Increased delay for bio text animations to settle before measuring height
-        const delay = currentAboutSubSection === 'intro' ? 500 : 150; // Longer for intro (bio), shorter for others
-        const measureTimeout = setTimeout(() => {
-            measureAndAnimateHeight(true); 
-        }, delay);
 
-        if (contentWrapperOuterRef.current) {
+  // Effect đo chiều cao
+  useEffect(() => {
+    if (section === 'about' && contentWrapperOuterRef.current) {
+        // Chờ AP content vào xong MỚI đo, đặc biệt cho 'intro' có stagger
+        let delayMeasure = 150; // Delay mặc định
+        if (currentAboutSubSection === 'placeholder') {
+            delayMeasure = 50; // Đo nhanh cho placeholder để set minHeight
+        } else if (currentAboutSubSection === 'intro' && (slideDirection !== 0 || hasAutoNextedToIntro)) {
+            // Khi slide vào intro, tính delay dựa trên anim của bio text cuối
+             // Tổng thời gian anim cho bio para (i * 0.22 + 0.75) + 1 khoảng buffer nhỏ
+            const numBioParas = personalCardTranslations.introBio.part5[language] ? 5 : 4; // Tùy số lượng para
+            delayMeasure = (numBioParas -1) * 220 + 750 + 100; // ms
+        }
+
+        const measureTimeout = setTimeout(() => {
+            measureAndAnimateHeight(true); // Luôn forceMeasure sau khi các điều kiện load/anim ổn định
+        }, delayMeasure);
+
+        if (contentWrapperOuterRef.current && currentAboutSubSection !== 'placeholder') { // K scroll cho placeholder
             contentWrapperOuterRef.current.scrollTop = 0;
         }
         return () => clearTimeout(measureTimeout);
     }
-  }, [isSectionLoadingContent, section, currentAboutSubSection, language, name, githubData, tiktokData, youtubeData, contentWrapperControls]);
+  }, [isSectionLoadingContent, section, currentAboutSubSection, language, name, measureAndAnimateHeight, slideDirection, hasAutoNextedToIntro]); // Dependencies quan trọng
 
-  const changeSubSection = (direction: 'next' | 'prev') => {
-    const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);
-    let nextIndex;
+  const changeSubSection = (direction: 'next' | 'prev') => { /* Giữ nguyên logic đã fix */
+    const currentIndexInNavOrder = aboutSubSectionsOrderForNav.indexOf(currentAboutSubSection as Exclude<AboutSubSection, 'placeholder'>);
+    let nextIndexInNavOrder;
 
     if (direction === 'next') {
       setSlideDirection(1);
-      nextIndex = (currentIndex + 1) % aboutSubSectionsOrder.length;
+      nextIndexInNavOrder = (currentIndexInNavOrder + 1) % aboutSubSectionsOrderForNav.length;
     } else {
       setSlideDirection(-1);
-      nextIndex = (currentIndex - 1 + aboutSubSectionsOrder.length) % aboutSubSectionsOrder.length;
+      nextIndexInNavOrder = (currentIndexInNavOrder - 1 + aboutSubSectionsOrderForNav.length) % aboutSubSectionsOrderForNav.length;
     }
-    if (currentIndex !== nextIndex) {
-        setCurrentAboutSubSection(aboutSubSectionsOrder[nextIndex]);
+
+    if (currentAboutSubSection !== aboutSubSectionsOrderForNav[nextIndexInNavOrder]) {
+        setCurrentAboutSubSection(aboutSubSectionsOrderForNav[nextIndexInNavOrder]);
     }
   };
 
-  const socialLinksData = [
+  const socialLinksData = [ /* Nội dung giữ nguyên */
     { id: 'github', url: `https://github.com/${githubUsername || 'Rin1809'}`, translationKey: 'github' as keyof typeof personalCardTranslations.socialLinks, icon: SocialIcons.github },
     { id: 'tiktok', url: tiktokData.profileUrl, translationKey: 'tiktok' as keyof typeof personalCardTranslations.socialLinks, icon: SocialIcons.tiktok },
     { id: 'discordProfile', url: `https://discord.com/users/${discordUserId}`, translationKey: 'discordProfile' as keyof typeof personalCardTranslations.socialLinks, icon: SocialIcons.discordProfile },
@@ -405,12 +392,13 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
   if (section === 'about') {
     const currentLang = language;
-    const currentIndex = aboutSubSectionsOrder.indexOf(currentAboutSubSection);
-    const isFirstSection = currentIndex === 0;
-    const isLastSection = currentIndex === aboutSubSectionsOrder.length - 1;
+    const currentActualIndex = aboutSubSectionsOrderForNav.indexOf(currentAboutSubSection as Exclude<AboutSubSection, 'placeholder'>);
+    const isFirstActualSection = currentActualIndex === 0;
+    const isLastActualSection = currentActualIndex === aboutSubSectionsOrderForNav.length - 1;
 
-    const getSectionTitleText = () => {
+    const getSectionTitleText = () => { /* Logic giữ nguyên */
         switch(currentAboutSubSection) {
+            case 'placeholder': return "";
             case 'intro': return personalCardTranslations.sectionTitles.intro[currentLang];
             case 'github': return personalCardTranslations.sectionTitles.github[currentLang];
             case 'github-stats-ii': return personalCardTranslations.sectionTitles.githubStatsIi[currentLang];
@@ -429,8 +417,9 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     const bioPart4 = personalCardTranslations.introBio.part4[currentLang];
     const bioPart5 = personalCardTranslations.introBio.part5[currentLang];
     const bioParagraphs = [bioPart1, bioPart2, bioPart3, bioPart4, bioPart5].filter(p => p.trim() !== '');
-
     const t = personalCardTranslations;
+    const disablePrev = currentAboutSubSection === 'placeholder' || isFirstActualSection;
+    const disableNext = currentAboutSubSection === 'placeholder' || isLastActualSection;
 
     return (
       <motion.div
@@ -440,258 +429,107 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
         exit={{ opacity: 0, y: 20, scale: 0.98, transition: { duration: 0.3 } }}
       >
         <div className="about-sub-section-header">
-            <motion.button
+            <motion.button /* Nút Prev */
                 className="about-nav-arrow prev" onClick={() => changeSubSection('prev')} aria-label="Phần trước"
                 initial={{ opacity: 0, x: -15 }}
-                animate={{ opacity: isFirstSection ? 0.4 : 1, x: 0, pointerEvents: isFirstSection ? 'none' : 'auto' }}
-                whileHover={{ scale: !isFirstSection ? 1.18 : 1, x: !isFirstSection ? -4 : 0, color: !isFirstSection ? "var(--primary-color)" : "currentColor", boxShadow: !isFirstSection ? "0 0 12px rgba(var(--primary-color-rgb),0.35)" : "none", borderColor: !isFirstSection ? "rgba(var(--primary-color-rgb),0.5)" : "currentColor" }}
-                whileTap={{ scale: !isFirstSection ? 0.94 : 1 }}
+                animate={{ opacity: disablePrev ? 0.4 : 1, x: 0, pointerEvents: disablePrev ? 'none' : 'auto' }}
+                whileHover={{ scale: !disablePrev ? 1.18 : 1, x: !disablePrev ? -4 : 0, color: !disablePrev ? "var(--primary-color)" : "currentColor", boxShadow: !disablePrev ? "0 0 12px rgba(var(--primary-color-rgb),0.35)" : "none", borderColor: !disablePrev ? "rgba(var(--primary-color-rgb),0.5)" : "currentColor" }}
+                whileTap={{ scale: !disablePrev ? 0.94 : 1 }}
                 transition={{type:"spring", stiffness:350, damping:18}}
             ><span dangerouslySetInnerHTML={{ __html: aboutNavIconLeft }} /></motion.button>
-
             <AnimatePresence mode="wait">
-                <motion.h2
+                <motion.h2 /* Title */
                     key={currentAboutSubSection + "-title-" + currentLang} className="about-section-title"
                     variants={aboutSectionTitleAnimVariants} initial="initial" animate="animate" exit="exit"
                 >{getSectionTitleText()}</motion.h2>
             </AnimatePresence>
-
-            <motion.button
+            <motion.button /* Nút Next */
                 className="about-nav-arrow next" onClick={() => changeSubSection('next')} aria-label="Phần kế tiếp"
                 initial={{ opacity: 0, x: 15 }}
-                animate={{ opacity: isLastSection ? 0.4 : 1, x: 0, pointerEvents: isLastSection ? 'none' : 'auto' }}
-                whileHover={{ scale: !isLastSection ? 1.18 : 1, x: !isLastSection ? 4 : 0, color: !isLastSection ? "var(--primary-color)" : "currentColor", boxShadow: !isLastSection ? "0 0 12px rgba(var(--primary-color-rgb),0.35)" : "none", borderColor: !isLastSection ? "rgba(var(--primary-color-rgb),0.5)" : "currentColor" }}
-                whileTap={{ scale: !isLastSection ? 0.94 : 1 }}
+                animate={{ opacity: disableNext ? 0.4 : 1, x: 0, pointerEvents: disableNext ? 'none' : 'auto' }}
+                whileHover={{ scale: !disableNext ? 1.18 : 1, x: !disableNext ? 4 : 0, color: !disableNext ? "var(--primary-color)" : "currentColor", boxShadow: !disableNext ? "0 0 12px rgba(var(--primary-color-rgb),0.35)" : "none", borderColor: !disableNext ? "rgba(var(--primary-color-rgb),0.5)" : "currentColor" }}
+                whileTap={{ scale: !disableNext ? 0.94 : 1 }}
                 transition={{type:"spring", stiffness:350, damping:18}}
             ><span dangerouslySetInnerHTML={{ __html: aboutNavIconRight }} /></motion.button>
         </div>
-
         <div className="about-navigation-indicator">
-            {aboutSubSectionsOrder.map((sectionKey) => (
-                <motion.div
-                    key={`indicator-${sectionKey}`}
+             {aboutSubSectionsOrderForNav.map((sectionKey) => (
+                <motion.div key={`indicator-${sectionKey}`}
                     className={`indicator-dot ${sectionKey === currentAboutSubSection ? 'active' : ''}`}
                     initial={{ scale: 0.8, opacity: 0.5 }}
                     animate={{ scale: sectionKey === currentAboutSubSection ? 1.3 : 1, opacity: sectionKey === currentAboutSubSection ? 1 : 0.6, backgroundColor: sectionKey === currentAboutSubSection ? "var(--primary-color)" : "rgba(var(--highlight-color-poetic-rgb), 0.5)"}}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                />
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }} />
             ))}
         </div>
-
         <motion.div
             ref={contentWrapperOuterRef} className="about-sub-section-content-wrapper"
-            animate={contentWrapperControls} initial={{ height: 'auto' }}
+            animate={contentWrapperControls} initial={{ height: 'auto' }} // 'auto' để FM tự tính chiều cao ban đầu
         >
             <AnimatePresence mode="wait">
-                {isSectionLoadingContent && (
-                    <motion.div
-                        key="loading-indicator"
+                 {/* Luôn hiển thị loading overlay cho placeholder, HOẶC khi isSectionLoadingContent=true VÀ k phải là placeholder */}
+                {(isSectionLoadingContent || currentAboutSubSection === 'placeholder') && (
+                    <motion.div key="loading-or-placeholder-indicator"
                         className="section-loading-overlay"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        <div className="spinner"></div>
-                        <p>{t.loadingText[currentLang] || "Đang tải..."}</p>
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}>
+                        {/* Icon load cho placeholder, spinner cho các section khác */}
+                        {currentAboutSubSection === 'placeholder' ? (
+                            <span className="placeholder-load-icon">ᓚᘏᗢ</span>
+                        ) : (
+                            <div className="spinner"></div>
+                        )}
+                        <p>{currentAboutSubSection === 'placeholder' ? (t.loadingText[currentLang] || "...") : (t.loadingText[currentLang] || "Đang tải...")}</p>
                     </motion.div>
                 )}
             </AnimatePresence>
-
           <AnimatePresence initial={false} custom={slideDirection} mode="wait" >
             <motion.div
-              style={{
-                opacity: isSectionLoadingContent ? 0 : 1,
-                pointerEvents: isSectionLoadingContent ? 'none' : 'auto',
+              style={{ // Chỉ ẩn content thật sự khi đang loading (ko phải placeholder)
+                opacity: (isSectionLoadingContent && currentAboutSubSection !== 'placeholder') ? 0 : 1,
+                pointerEvents: (isSectionLoadingContent && currentAboutSubSection !== 'placeholder') ? 'none' : 'auto',
               }}
-              transition={{ duration: 0.2, delay: isSectionLoadingContent ? 0 : 0.15 }}
+              transition={{ duration: 0.2, delay: (isSectionLoadingContent && currentAboutSubSection !== 'placeholder') ? 0 : 0.15 }}
               ref={currentContentRef}
-              key={currentAboutSubSection + currentLang + name + githubUsername}
+              key={currentAboutSubSection + currentLang + name + githubUsername} // Key này RẤT quan trọng
               className="about-sub-section-content"
               custom={slideDirection} variants={aboutSectionContentVariants} initial="enter" animate="center" exit="exit"
             >
-              {currentAboutSubSection === 'intro' && (
+              {currentAboutSubSection === 'placeholder' && (
+                <div className="sub-section-inner-padding placeholder-content-div"> {/* Class để style min-height cho placeholder */}
+                  {/* Phần này trống để AP chạy exit/enter */}
+                </div>
+              )}
+              {currentAboutSubSection === 'intro' && ( /* Các mục nội dung giữ nguyên */
                 <div className="sub-section-inner-padding">
                     {bioParagraphs.map((paragraph, index) => (
-                        <motion.p
-                            key={index} className="bio-text" custom={index} variants={bioParagraphVariants}
-                            initial="hidden" animate="visible" dangerouslySetInnerHTML={{ __html: paragraph }}
-                        />
+                        <motion.p key={index} className="bio-text" custom={index} variants={bioParagraphVariants}
+                            initial="hidden" animate="visible" dangerouslySetInnerHTML={{ __html: paragraph }} />
                     ))}
                 </div>
               )}
-
-              {currentAboutSubSection === 'github' && (
-                <div className="sub-section-inner-padding">
+              {currentAboutSubSection === 'github' && ( <div className="sub-section-inner-padding">
                   {githubError && !githubLoading && <p className="error-text">{t.errorTextPrefix[currentLang]}{githubError}</p>}
-                  {githubData?.user && !githubLoading && (
-                    <div className="github-stats-container social-stats-container">
+                  {githubData?.user && !githubLoading && ( <div className="github-stats-container social-stats-container">
                         <div className="social-user-header">
-                            <motion.img
-                                src={githubData.user.avatar_url} alt={`${githubData.user.login}'s avatar`} className="social-avatar"
-                                whileHover={{ scale: 1.12, rotate: 2.5, y: -3, boxShadow: "0 0 28px rgba(var(--primary-color-rgb),0.65), 0 0 12px rgba(var(--primary-color-rgb),0.85)"}}
-                                transition={{type: "spring", stiffness:320, damping:12}}
-                            />
-                            <div className="social-user-info">
-                                <h3>{githubData.user.name || githubData.user.login}</h3>
-                                <p className="social-bio">{githubData.user.bio || t.githubUserBioDefault[currentLang]}</p>
-                            </div>
-                        </div>
-                        <div className="social-stats-grid">
-                            <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}>
-                                <span className="stat-value"><AnimatedNumberDisplay value={githubData.user.followers} /></span>
-                                <span className="stat-label">{t.githubLabels.followers[currentLang]}</span>
-                            </motion.div>
-                            <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}>
-                                <span className="stat-value"><AnimatedNumberDisplay value={githubData.user.public_repos} /></span>
-                                <span className="stat-label">{t.githubLabels.publicRepos[currentLang]}</span>
-                            </motion.div>
-                        </div>
-                        {githubData.user.html_url && (
-                            <motion.a
-                                href={githubData.user.html_url} target="_blank" rel="noopener noreferrer" className="social-profile-link"
-                                whileHover={{scale:1.06, y: -2.5, boxShadow: "0 0 18px rgba(var(--highlight-color-poetic-rgb),0.45)"}}
-                                whileTap={{scale:0.96}}
-                            >{t.githubLabels.profileLink[currentLang]}</motion.a>
-                        )}
-                    </div>
-                  )}
-                </div>
+                            <motion.img src={githubData.user.avatar_url} alt={`${githubData.user.login}'s avatar`} className="social-avatar" whileHover={{ scale: 1.12, rotate: 2.5, y: -3, boxShadow: "0 0 28px rgba(var(--primary-color-rgb),0.65), 0 0 12px rgba(var(--primary-color-rgb),0.85)"}} transition={{type: "spring", stiffness:320, damping:12}} />
+                            <div className="social-user-info"> <h3>{githubData.user.name || githubData.user.login}</h3> <p className="social-bio">{githubData.user.bio || t.githubUserBioDefault[currentLang]}</p> </div>
+                        </div> <div className="social-stats-grid">
+                            <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}> <span className="stat-value"><AnimatedNumberDisplay value={githubData.user.followers} /></span> <span className="stat-label">{t.githubLabels.followers[currentLang]}</span> </motion.div>
+                            <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}> <span className="stat-value"><AnimatedNumberDisplay value={githubData.user.public_repos} /></span> <span className="stat-label">{t.githubLabels.publicRepos[currentLang]}</span> </motion.div>
+                        </div> {githubData.user.html_url && ( <motion.a href={githubData.user.html_url} target="_blank" rel="noopener noreferrer" className="social-profile-link" whileHover={{scale:1.06, y: -2.5, boxShadow: "0 0 18px rgba(var(--highlight-color-poetic-rgb),0.45)"}} whileTap={{scale:0.96}} >{t.githubLabels.profileLink[currentLang]}</motion.a> )}
+                    </div> )} </div>
               )}
-              {currentAboutSubSection === 'socials' && (
-                <div className="sub-section-inner-padding">
-                    <div className="social-media-links-container">
-                        {socialLinksData.map((link, index) => (
-                            <motion.a
-                                key={link.id} href={link.url} target="_blank" rel="noopener noreferrer"
-                                className={`social-media-link social-media-link-${link.id}`}
-                                initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                                animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.1, type: 'spring', stiffness: 200, damping: 15 } }}
-                                whileHover={{ y: -4, scale:1.04, boxShadow: "0 6px 18px rgba(var(--highlight-color-poetic-rgb),0.25), inset 0 0 8px rgba(var(--highlight-color-poetic-rgb),0.1)" }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                <span className="social-icon-wrapper">{link.icon}</span>
-                                {t.socialLinks[link.translationKey][currentLang]}
-                            </motion.a>
-                        ))}
-                    </div>
-                </div>
+              {currentAboutSubSection === 'socials' && ( <div className="sub-section-inner-padding"> <div className="social-media-links-container"> {socialLinksData.map((link, index) => ( <motion.a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className={`social-media-link social-media-link-${link.id}`} initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: index * 0.1, type: 'spring', stiffness: 200, damping: 15 } }} whileHover={{ y: -4, scale:1.04, boxShadow: "0 6px 18px rgba(var(--highlight-color-poetic-rgb),0.25), inset 0 0 8px rgba(var(--highlight-color-poetic-rgb),0.1)" }} whileTap={{ scale: 0.98 }} > <span className="social-icon-wrapper">{link.icon}</span> {t.socialLinks[link.translationKey][currentLang]} </motion.a> ))} </div> </div>
               )}
-              {currentAboutSubSection === 'tiktok' && (
-                <div className="sub-section-inner-padding">
-                    <div className="tiktok-stats-container social-stats-container">
-                        <div className="social-user-header">
-                            <motion.img
-                                src={tiktokData.avatarUrl} alt={`${tiktokData.name}'s TikTok avatar`} className="social-avatar"
-                                whileHover={{ scale: 1.12, rotate: 2.5, y: -3, boxShadow: "0 0 28px rgba(var(--primary-color-rgb),0.65), 0 0 12px rgba(var(--primary-color-rgb),0.85)"}}
-                                transition={{type: "spring", stiffness:320, damping:12}}
-                            />
-                            <div className="social-user-info">
-                                <h3>{tiktokData.name}</h3>
-                                {tiktokData.description && <p className="social-bio">{tiktokData.description}</p>}
-                            </div>
-                        </div>
-                        <div className="social-stats-grid tiktok-grid">
-                            <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}>
-                                <span className="stat-value"><AnimatedNumberDisplay value={tiktokData.following} /></span>
-                                <span className="stat-label">{t.tiktokLabels.following[currentLang]}</span>
-                            </motion.div>
-                            <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}>
-                                <span className="stat-value"><AnimatedNumberDisplay value={tiktokData.followers} /></span>
-                                <span className="stat-label">{t.tiktokLabels.followers[currentLang]}</span>
-                            </motion.div>
-                            <motion.div className="stat-item tiktok-likes-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}>
-                                <span className="stat-value"><AnimatedNumberDisplay value={tiktokData.likes} /></span>
-                                <span className="stat-label">{t.tiktokLabels.likes[currentLang]}</span>
-                            </motion.div>
-                        </div>
-                         <motion.a
-                            href={tiktokData.profileUrl} target="_blank" rel="noopener noreferrer" className="social-profile-link"
-                            whileHover={{scale:1.06, y: -2.5, boxShadow: "0 0 18px rgba(var(--highlight-color-poetic-rgb),0.45)"}}
-                            whileTap={{scale:0.96}}
-                        >{t.tiktokLabels.profileLink[currentLang]}</motion.a>
-                    </div>
-                </div>
+              {currentAboutSubSection === 'tiktok' && ( <div className="sub-section-inner-padding"> <div className="tiktok-stats-container social-stats-container"> <div className="social-user-header"> <motion.img src={tiktokData.avatarUrl} alt={`${tiktokData.name}'s TikTok avatar`} className="social-avatar" whileHover={{ scale: 1.12, rotate: 2.5, y: -3, boxShadow: "0 0 28px rgba(var(--primary-color-rgb),0.65), 0 0 12px rgba(var(--primary-color-rgb),0.85)"}} transition={{type: "spring", stiffness:320, damping:12}} /> <div className="social-user-info"> <h3>{tiktokData.name}</h3> {tiktokData.description && <p className="social-bio">{tiktokData.description}</p>} </div> </div> <div className="social-stats-grid tiktok-grid"> <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}> <span className="stat-value"><AnimatedNumberDisplay value={tiktokData.following} /></span> <span className="stat-label">{t.tiktokLabels.following[currentLang]}</span> </motion.div> <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}> <span className="stat-value"><AnimatedNumberDisplay value={tiktokData.followers} /></span> <span className="stat-label">{t.tiktokLabels.followers[currentLang]}</span> </motion.div> <motion.div className="stat-item tiktok-likes-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}> <span className="stat-value"><AnimatedNumberDisplay value={tiktokData.likes} /></span> <span className="stat-label">{t.tiktokLabels.likes[currentLang]}</span> </motion.div> </div> <motion.a href={tiktokData.profileUrl} target="_blank" rel="noopener noreferrer" className="social-profile-link" whileHover={{scale:1.06, y: -2.5, boxShadow: "0 0 18px rgba(var(--highlight-color-poetic-rgb),0.45)"}} whileTap={{scale:0.96}} >{t.tiktokLabels.profileLink[currentLang]}</motion.a> </div> </div>
               )}
-              {currentAboutSubSection === 'youtube' && (
-                 <div className="sub-section-inner-padding">
-                    <div className="youtube-stats-container social-stats-container">
-                        <div className="social-user-header">
-                             <motion.img
-                                src={youtubeData.avatarUrl} alt={`${youtubeData.name}'s YouTube avatar`} className="social-avatar"
-                                whileHover={{ scale: 1.12, rotate: 2.5, y: -3, boxShadow: "0 0 28px rgba(var(--primary-color-rgb),0.65), 0 0 12px rgba(var(--primary-color-rgb),0.85)"}}
-                                transition={{type: "spring", stiffness:320, damping:12}}
-                            />
-                            <div className="social-user-info">
-                                <h3>{youtubeData.name}</h3>
-                                {youtubeData.description && <p className="social-bio">{youtubeData.description}</p>}
-                            </div>
-                        </div>
-                        <div className="social-stats-grid youtube-grid">
-                            <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}>
-                                <span className="stat-value"><AnimatedNumberDisplay value={youtubeData.subscribers} /></span>
-                                <span className="stat-label">{t.youtubeLabels.subscribers[currentLang]}</span>
-                            </motion.div>
-                            <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}>
-                                <span className="stat-value textual-stat">{youtubeData.joinedDate}</span>
-                                <span className="stat-label">{t.youtubeLabels.joinedDate[currentLang]}</span>
-                            </motion.div>
-                        </div>
-                        <motion.a
-                            href={youtubeData.profileUrl} target="_blank" rel="noopener noreferrer" className="social-profile-link"
-                            whileHover={{scale:1.06, y: -2.5, boxShadow: "0 0 18px rgba(var(--highlight-color-poetic-rgb),0.45)"}}
-                            whileTap={{scale:0.96}}
-                        >{t.youtubeLabels.profileLink[currentLang]}</motion.a>
-                    </div>
-                </div>
+              {currentAboutSubSection === 'youtube' && ( <div className="sub-section-inner-padding"> <div className="youtube-stats-container social-stats-container"> <div className="social-user-header"> <motion.img src={youtubeData.avatarUrl} alt={`${youtubeData.name}'s YouTube avatar`} className="social-avatar" whileHover={{ scale: 1.12, rotate: 2.5, y: -3, boxShadow: "0 0 28px rgba(var(--primary-color-rgb),0.65), 0 0 12px rgba(var(--primary-color-rgb),0.85)"}} transition={{type: "spring", stiffness:320, damping:12}} /> <div className="social-user-info"> <h3>{youtubeData.name}</h3> {youtubeData.description && <p className="social-bio">{youtubeData.description}</p>} </div> </div> <div className="social-stats-grid youtube-grid"> <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}> <span className="stat-value"><AnimatedNumberDisplay value={youtubeData.subscribers} /></span> <span className="stat-label">{t.youtubeLabels.subscribers[currentLang]}</span> </motion.div> <motion.div className="stat-item" whileHover={{y:-5, boxShadow:"0 7px 20px rgba(var(--highlight-color-poetic-rgb),0.22)"}}> <span className="stat-value textual-stat">{youtubeData.joinedDate}</span> <span className="stat-label">{t.youtubeLabels.joinedDate[currentLang]}</span> </motion.div> </div> <motion.a href={youtubeData.profileUrl} target="_blank" rel="noopener noreferrer" className="social-profile-link" whileHover={{scale:1.06, y: -2.5, boxShadow: "0 0 18px rgba(var(--highlight-color-poetic-rgb),0.45)"}} whileTap={{scale:0.96}} >{t.youtubeLabels.profileLink[currentLang]}</motion.a> </div> </div>
               )}
-              {currentAboutSubSection === 'discord-presence' && (
-                <div className="discord-presence-container sub-section-inner-padding">
-                     <ParallaxImage
-                        src={`https://lanyard-profile-readme.vercel.app/api/${discordUserId}?theme=dark&bg=1A1B26&animated=true&borderRadius=10px&titleColor=BB9AF7&statusColor=79E6F3&hideDiscrim=false&idleMessage=${encodeURIComponent("Đang chill...")}`}
-                        alt="Trạng thái Discord" className="discord-presence-image github-stat-image"
-                        onImageLoad={handleImageLoadedOrError}
-                        onImageError={handleImageLoadedOrError}
-                     />
-                </div>
+              {currentAboutSubSection === 'discord-presence' && ( <div className="discord-presence-container sub-section-inner-padding"> <ParallaxImage src={`https://lanyard-profile-readme.vercel.app/api/${discordUserId}?theme=dark&bg=1A1B26&animated=true&borderRadius=10px&titleColor=BB9AF7&statusColor=79E6F3&hideDiscrim=false&idleMessage=${encodeURIComponent("Đang chill...")}`} alt="Trạng thái Discord" className="discord-presence-image github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError} /> </div>
               )}
-              {currentAboutSubSection === 'github-stats-ii' && githubUsername && (
-                <div className="github-stats-image-container sub-section-inner-padding">
-                    <ParallaxImage
-                        src={`https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=${githubUsername}&theme=tokyonight`}
-                        alt="Chi tiết hồ sơ GitHub" className="github-stat-image"
-                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
-                    />
-                    <ParallaxImage
-                        src={`https://github-readme-activity-graph.vercel.app/graph?username=${githubUsername}&theme=tokyonight&hide_border=true&area=true&line=BB9AF7&point=79E6F3`}
-                        alt="Biểu đồ hoạt động GitHub" className="github-stat-image" wide={true}
-                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
-                    />
-                </div>
+              {currentAboutSubSection === 'github-stats-ii' && githubUsername && ( <div className="github-stats-image-container sub-section-inner-padding"> <ParallaxImage src={`https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=${githubUsername}&theme=tokyonight`} alt="Chi tiết hồ sơ GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError} /> <ParallaxImage src={`https://github-readme-activity-graph.vercel.app/graph?username=${githubUsername}&theme=tokyonight&hide_border=true&area=true&line=BB9AF7&point=79E6F3`} alt="Biểu đồ hoạt động GitHub" className="github-stat-image" wide={true} onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError} /> </div>
               )}
-              {currentAboutSubSection === 'github-stats-iii' && githubUsername && (
-                <div className="github-stats-image-container grid-2x2 sub-section-inner-padding">
-                    <ParallaxImage
-                        src={`https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${githubUsername}&theme=tokyonight&utcOffset=7`}
-                        alt="Thời gian hoạt động hiệu quả GitHub" className="github-stat-image"
-                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
-                    />
-                    <ParallaxImage
-                        src={`https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=${githubUsername}&theme=tokyonight`}
-                        alt="Ngôn ngữ commit nhiều nhất GitHub" className="github-stat-image"
-                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
-                    />
-                    <ParallaxImage
-                        src={`https://github-readme-stats.vercel.app/api/top-langs?username=${githubUsername}&show_icons=true&locale=en&layout=compact&theme=tokyonight`}
-                        alt="Các ngôn ngữ hàng đầu GitHub" className="github-stat-image"
-                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
-                    />
-                    <ParallaxImage
-                        src={`https://streak-stats.demolab.com/?user=${githubUsername}&theme=tokyonight&date_format=M%20j%5B%2C%20Y%5D`}
-                        alt="Thống kê chuỗi GitHub" className="github-stat-image"
-                        onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}
-                    />
-                </div>
+              {currentAboutSubSection === 'github-stats-iii' && githubUsername && ( <div className="github-stats-image-container grid-2x2 sub-section-inner-padding"> <ParallaxImage src={`https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=${githubUsername}&theme=tokyonight&utcOffset=7`} alt="Thời gian hoạt động hiệu quả GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError} /> <ParallaxImage src={`https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=${githubUsername}&theme=tokyonight`} alt="Ngôn ngữ commit nhiều nhất GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError} /> <ParallaxImage src={`https://github-readme-stats.vercel.app/api/top-langs?username=${githubUsername}&show_icons=true&locale=en&layout=compact&theme=tokyonight`} alt="Các ngôn ngữ hàng đầu GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError} /> <ParallaxImage src={`https://streak-stats.demolab.com/?user=${githubUsername}&theme=tokyonight&date_format=M%20j%5B%2C%20Y%5D`} alt="Thống kê chuỗi GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError} /> </div>
               )}
             </motion.div>
           </AnimatePresence>
@@ -700,10 +538,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     );
   }
   return (
-    <div className={containerClassName} style={style}>
-        <p>Original card view for section '{section}'</p>
-    </div>
+    <div className={containerClassName} style={style}> <p>Original card view for section '{section}'</p> </div>
   );
 };
-
 export default PersonalCard;

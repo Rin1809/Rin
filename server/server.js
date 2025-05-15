@@ -14,11 +14,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Khởi tạo Database Table
 initializeDb().then(() => {
     app.listen(PORT, '0.0.0.0', () => { // Nghe trên 0.0.0.0 cho Railway
-        console.log(`🚀 Server is running on port ${PORT}`);
-        console.log(`Backend API accessible at http://localhost:${PORT} (local) or your Railway service URL.`);
+        console.log(`🚀 Server đang chạy trên port: ${PORT}`);
+        console.log(`Backend API đang hoạt động ở http://localhost:${PORT} (local) hoặc trên URL của Railway.`);
     });
 }).catch(err => {
-  console.error("🔴 Failed to initialize DB and start server:", err);
+  console.error("🔴 Khởi tạo và kết nối tới DB thất bại tại:", err);
   process.exit(1);
 });
 

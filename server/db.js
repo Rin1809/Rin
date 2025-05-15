@@ -8,7 +8,7 @@ const { Pool } = pg;
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  console.error('🔴 DATABASE_URL is not set. Please configure your environment variables.');
+  console.error('🔴 DATABASE_URL không được thiết lập, hãy check/thiết lập lại file .env');
   // Chỉ thoát nếu không phải môi trường Railway/production
   if (process.env.NODE_ENV !== 'production' && !process.env.RAILWAY_ENVIRONMENT) {
     process.exit(1);
@@ -24,11 +24,11 @@ const pool = new Pool({
 });
 
 pool.on('connect', () => {
-  console.log('🟢 Connected to the PostgreSQL database!');
+  console.log('🟢 Đã kết nối tới PostgreSQL database!');
 });
 
 pool.on('error', (err) => {
-  console.error('🔴 Unexpected error on idle client', err);
+  console.error('🔴 Unexpected error với idle client', err);
   process.exit(-1); // Thoát nếu có lỗi nghiêm trọng với pool
 });
 
@@ -45,9 +45,9 @@ const initializeDb = async () => {
         timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log('✨ Table "guestbook_entries" is ready.');
+    console.log('✨ Bảng "guestbook_entries" đã được chuẩn bị !');
   } catch (err) {
-    console.error('🔴 Error initializing database table:', err);
+    console.error('🔴 Error với database table:', err);
     // Nếu đang trong môi trường Railway/production và không khởi tạo được DB thì là vấn đề lớn
     if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
         throw err; // Ném lỗi để server không khởi động nếu DB không sẵn sàng
