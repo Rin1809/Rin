@@ -181,6 +181,8 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     };
     
 
+  
+
     const bioPart1 = personalCardTranslations.introBio.part1[currentLang].replace(personalCardTranslations.introBio.namePlaceholder, name);
     const bioPart2 = personalCardTranslations.introBio.part2[currentLang];
     const bioPart3 = personalCardTranslations.introBio.part3[currentLang];
