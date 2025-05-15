@@ -20,4 +20,3 @@ declare module '*.jpg' {
   const value: string;
   export default value;
 }
-// Thêm các kiểu file khác nếu cần

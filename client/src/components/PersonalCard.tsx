@@ -1,5 +1,5 @@
 // client/src/components/PersonalCard.tsx
-import React, { useState, useEffect, useRef, useMemo } from 'react'; // Added useMemo
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useAnimation, useMotionValue, useTransform, animate } from 'framer-motion';
 import './styles/PersonalCard.css';
 import {
@@ -61,7 +61,7 @@ const SocialIcons: { [key: string]: JSX.Element } = {
     ),
     youtube: (
         <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M21.582 7.072A2.493 2.493 0 0 0 19.81 5.28a28.784 28.784 0 0 0-7.807-.416A28.92 28.92 0 0 0 4.19 5.28a2.495 2.495 0 0 0-1.775 1.792A26.092 26.092 0 0 0 2 11.995a26.084 26.084 0 0 0 .415 4.923A2.49 2.49 0 0 0 4.19 18.71a28.954 28.954 0 0 0 7.81.417 28.76 28.76 0 0 0 7.807-.417A2.493 2.493 0 0 0 21.58 16.918a26.08 26.08 0 0 0 .417-4.923 26.092 26.092 0 0 0-.417-4.923ZM9.992 15.168V8.829l5.262 3.173-5.262 3.166Z" />
+            <path d="M21.582 7.072A2.493 2.493 0 0 0 19.81 5.28a28.784 28.784 0 0 0-7.807-.416A28.92 28.92 0 0 0 4.19 5.28a2.495 2.495 0 0 0-1.775 1.792A26.092 26.092 0 0 0 2 11.995a26.084 26.084 0 0 0 .415 4.923A2.49 2.49 0 0 0 4.19 18.71a28.954 28.954 0 0 0 7.81 .417 28.76 28.76 0 0 0 7.807-.417A2.493 2.493 0 0 0 21.58 16.918a26.08 26.08 0 0 0 .417-4.923 26.092 26.092 0 0 0-.417-4.923ZM9.992 15.168V8.829l5.262 3.173-5.262 3.166Z" />
         </svg>
     )
 };
@@ -100,25 +100,27 @@ const aboutSectionTitleAnimVariants = {
 };
 
 const bioParagraphVariants = {
-    hidden: { opacity: 0, y: 20, filter: "blur(2px)" },
+    hidden: { opacity: 0, y: 25, x: -20, rotateY: 8, filter: "blur(4px)", originX: 0 },
     visible: (i: number) => ({
         opacity: 1,
         y: 0,
+        x: 0,
+        rotateY: 0,
         filter: "blur(0px)",
         transition: {
-            delay: i * 0.2,
-            duration: 0.6,
-            ease: [0.23, 1, 0.32, 1]
+            delay: i * 0.22, // Điều chỉnh nhẹ delay
+            duration: 0.75, // Thời gian animation dài hơn một chút
+            ease: [0.16, 1, 0.3, 1] // Ease function mượt mà hơn
         }
     })
 };
 
-// Helper function to parse numbers with K, M suffixes and convert comma to dot for parseFloat
+
 const parseNumericValue = (valueWithSuffix: string | number): number => {
     if (typeof valueWithSuffix === 'number') {
         return valueWithSuffix;
     }
-    const cleanedValue = valueWithSuffix.toUpperCase().replace(',', '.'); // Replace comma with dot
+    const cleanedValue = valueWithSuffix.toUpperCase().replace(',', '.'); 
     let numericPart = parseFloat(cleanedValue);
     if (isNaN(numericPart)) return 0;
 
@@ -126,7 +128,7 @@ const parseNumericValue = (valueWithSuffix: string | number): number => {
         numericPart *= 1000;
     } else if (cleanedValue.endsWith('M')) {
         numericPart *= 1000000;
-    } else if (cleanedValue.endsWith('N')) { // Assuming N means Nghìn (thousand)
+    } else if (cleanedValue.endsWith('N')) { 
         numericPart *= 1000;
     }
     return numericPart;
@@ -134,7 +136,7 @@ const parseNumericValue = (valueWithSuffix: string | number): number => {
 
 
 interface AnimatedNumberProps {
-  value: string | number; // Can be "19.2K", "7,65 N", or a plain number
+  value: string | number; 
 }
 
 const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
@@ -147,7 +149,7 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
         const upperVal = value.toUpperCase();
         if (upperVal.endsWith('K')) return 'K';
         if (upperVal.endsWith('M')) return 'M';
-        if (upperVal.endsWith('N')) return 'N'; // Assuming N is like K
+        if (upperVal.endsWith('N')) return 'N'; 
         return "";
     }, [value]);
 
@@ -155,16 +157,15 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
         const node = nodeRef.current;
         if (!node) return;
 
-        // Animate from 0 to the target numeric value (without suffix for animation)
         const controls = animate(0, targetNumericValue, {
             type: "spring",
             stiffness: 100,
             damping: 20,
             onUpdate: (latest) => {
                 let displayVal;
-                if (suffix && (latest >= 1000 && targetNumericValue >=1000) ) { // Only add suffix if the animated value is also large enough
+                if (suffix && (latest >= 1000 && targetNumericValue >=1000) ) { 
                     if (suffix === 'K' || suffix === 'N') {
-                        displayVal = (latest / 1000).toFixed(latest % 1000 !== 0 && latest < 10000 ? 1 : 0); // Show decimal for <10K if not whole
+                        displayVal = (latest / 1000).toFixed(latest % 1000 !== 0 && latest < 10000 ? 1 : 0); 
                     } else if (suffix === 'M') {
                          displayVal = (latest / 1000000).toFixed(latest % 1000000 !== 0 && latest < 10000000 ? 1 : 0);
                     } else {
@@ -173,7 +174,7 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
                 } else {
                     displayVal = Math.round(latest).toString();
                 }
-                // Add comma back for display if it was originally there for numbers >= 1000
+    
                 if (typeof value === 'string' && value.includes(',')) {
                    displayVal = displayVal.replace('.', ',');
                 }
@@ -181,7 +182,7 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
             }
         });
         return () => controls.stop();
-    }, [targetNumericValue, suffix, value]); // Rerun if target or suffix changes, or original value
+    }, [targetNumericValue, suffix, value]); 
 
     return <motion.span ref={nodeRef}>{currentDisplayValue}{suffix && targetNumericValue >=1000 ? suffix : ""}</motion.span>;
 };

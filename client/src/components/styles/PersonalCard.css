@@ -1,6 +1,4 @@
 /* client/src/components/styles/PersonalCard.css */
-
-/* Styles for section="all" - Original Card View */
 .personal-card-container {
   background-color: rgba(var(--card-background-rgb), 0.35);
   backdrop-filter: blur(10px);
@@ -264,13 +262,13 @@
   font-family: var(--font-family-poetic), var(--font-family-fallback);
   font-size: clamp(1.1em, 2.6vw, 1.2em);
   font-weight: 300;
-  line-height: 1.95;
+  line-height: 1.85; 
   color: rgba(var(--text-color-poetic-rgb), 0.94);
   text-align: left;
   hyphens: auto;
   white-space: pre-line;
   text-shadow: 0 1.2px 3.5px rgba(var(--background-color-rgb), 0.65);
-  letter-spacing: 0.15px;
+  letter-spacing: 0.2px; 
   margin-bottom: 0.8rem;
 }
 .personal-card-about-view .bio-text:last-child {
@@ -280,16 +278,16 @@
 .personal-card-about-view .bio-text .bio-name-highlight {
     font-weight: 500;
     color: var(--highlight-color-poetic);
-    text-shadow: 0 0 6px rgba(var(--highlight-color-poetic-rgb),0.35),
-                 0 0 2px rgba(var(--highlight-color-poetic-rgb),0.2);
     background: linear-gradient(to top, rgba(var(--highlight-color-poetic-rgb),0.05) 0%, rgba(var(--highlight-color-poetic-rgb),0.12) 100%);
     padding: 0.05em 0.2em;
     border-radius: 4px;
+    animation: bioHighlightPulse 3.5s infinite ease-in-out; 
+    display: inline-block; 
 }
 
 
 /* --- GitHub, TikTok, YouTube Stats Styles (API and Images) --- */
-.social-stats-container { /* Generic container for GitHub, TikTok, YouTube */
+.social-stats-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -406,11 +404,9 @@
     width: 100%;
     margin-bottom: 1.2rem;
 }
-/* Specific grid for TikTok if it needs 3 columns on wider screens */
 .social-stats-grid.tiktok-grid {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
 }
-/* Specific grid for YouTube if it needs 2 columns on wider screens */
 .social-stats-grid.youtube-grid {
      grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
 }
@@ -643,7 +639,7 @@
 
   .social-stats-grid.tiktok-grid,
   .social-stats-grid.youtube-grid {
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Allow more items per row on medium */
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
   }
 }
 
@@ -698,4 +694,18 @@
     .social-media-links-container { grid-template-columns: 1fr; gap: 0.9rem; }
     .social-media-link { font-size: 0.95em; padding: 0.8rem 1.1rem; gap: 0.7rem;}
     .social-icon-wrapper { width: 20px; height: 20px;}
+}
+
+@keyframes bioHighlightPulse {
+    0%, 100% {
+        text-shadow: 0 0 6px rgba(var(--highlight-color-poetic-rgb),0.35),
+                     0 0 2px rgba(var(--highlight-color-poetic-rgb),0.2);
+        filter: brightness(1.0); 
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(var(--highlight-color-poetic-rgb),0.5),
+                     0 0 4px rgba(var(--highlight-color-poetic-rgb),0.3),
+                     0 0 16px rgba(var(--highlight-color-poetic-rgb),0.2);
+        filter: brightness(1.08); 
+    }
 }

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, Variants, AnimatePresence } from 'framer-motion';
-import './styles/PersistentUIContainer.css'; // Tạo file CSS này
+import './styles/PersistentUIContainer.css';
 import flourishImage from '../assets/flourish.png';
 import PersonalCard from './PersonalCard';
 import Gallery from './Gallery';
 
-// Import particle riêng biệt - chỉ khi poeticStars được sử dụng
-import Particles, { initParticlesEngine as initPoeticParticlesEngine } from "@tsparticles/react"; // Alias để tránh xung đột
-import type { ISourceOptions as PoeticISourceOptions, Engine as PoeticEngine } from "@tsparticles/engine"; // Alias
+
+import Particles, { initParticlesEngine as initPoeticParticlesEngine } from "@tsparticles/react";
+import type { ISourceOptions as PoeticISourceOptions, Engine as PoeticEngine } from "@tsparticles/engine"; 
 import { loadEmittersPlugin } from "@tsparticles/plugin-emitters";
 import { loadExternalTrailInteraction } from "@tsparticles/interaction-external-trail";
 import { loadCircleShape } from "@tsparticles/shape-circle";
@@ -74,7 +74,6 @@ const translations = {
   aboutButton: { vi: "Về tôi", en: "About Me", ja: "私について" },
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
   backButton: { vi: "Quay lại", en: "Back", ja: "戻る" },
-  // Example for cardData, assuming it might also need to be translated or handled by this component's logic
   cardName: { vi: "Rin", en: "Rin", ja: "リン" },
   cardTitle: { vi: "Sinh viên IT | An Ninh Mạng", en: "IT Student | Cyber Security", ja: "IT学生 | サイバーセキュリティ"}
 };
@@ -88,9 +87,9 @@ interface PersistentUIContainerProps {
   onBackToCardIntro: () => void;
   cardData: { 
     avatarUrl: string; 
-    name: string; // Assume name in cardData is a key or default, actual display handled by translations here
-    title: string; // Same as name
-    githubUsername?: string; // Added githubUsername to cardData type
+    name: string; 
+    title: string; 
+    githubUsername?: string;
   };
 }
 

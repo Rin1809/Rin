@@ -6,7 +6,7 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { ISourceOptions, Engine } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 
-// -- START OF PARTICLESC_CONFIG --
+// --  PARTICLESC_CONFIG --
 const particlesOptions: ISourceOptions = {
     fpsLimit: 60,
     interactivity: { events: { onClick: { enable: false }, onHover: { enable: false }, resize: { enable: true } }, modes: {} },
@@ -38,25 +38,17 @@ const particlesOptions: ISourceOptions = {
     },
     detectRetina: true,
 };
-// -- END OF PARTICLESC_CONFIG --
 
-
-// -- START OF CONFIG_VARIABLES --
 const YOUR_AVATAR_URL_FOR_INTRO = "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128";
 const YOUR_NAME_FOR_INTRO = "よこそう！！";
 
 const PERSONAL_CARD_DATA = {
     avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
-    // name: "Rin", // Will be handled by LanguageSelector's translations
-    // title: "IT Students | Cyber Security", // Will be handled by LanguageSelector's translations
-    githubUsername: "Rin1809" // <<< ADD YOUR GITHUB USERNAME HERE
+    githubUsername: "Rin1809" // <<<  GITHUB USERNAMe
 };
 
 type IntroStage = 'cat' | 'yourName' | 'languageSelection';
-// -- END OF CONFIG_VARIABLES --
 
-
-// -- START OF CONTENT_AREA_COMPONENT --
 interface ContentAreaProps {
     currentStage: IntroStage;
     isFadingOutProp: boolean;
@@ -103,10 +95,6 @@ const ContentArea: React.FC<ContentAreaProps> = React.memo(({ currentStage, isFa
     );
 });
 ContentArea.displayName = 'ContentArea';
-// -- END OF CONTENT_AREA_COMPONENT --
-
-
-// -- START OF APP_COMPONENT --
 function App() {
     const [particlesInitialized, setParticlesInitialized] = useState(false);
     const [currentIntroStage, setCurrentIntroStage] = useState<IntroStage>('cat');
@@ -169,7 +157,6 @@ function App() {
 
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
         setSelectedLanguage(language);
-        // App.tsx không cần thay đổi stage nữa. LanguageSelector sẽ quản lý các view nội bộ của nó.
     };
 
     const memoizedParticles = useMemo(() => {
@@ -192,12 +179,10 @@ function App() {
             {currentIntroStage === 'languageSelection' ? (
                 <LanguageSelector 
                     onLanguageSelected={handleLanguageSelectedInSelector}
-                    // cardName={PERSONAL_CARD_DATA.name} // Removed
-                    // cardTitle={PERSONAL_CARD_DATA.title} // Removed
                     cardAvatarUrl={PERSONAL_CARD_DATA.avatarUrl}
-                    githubUsername={PERSONAL_CARD_DATA.githubUsername} // Pass username
+                    githubUsername={PERSONAL_CARD_DATA.githubUsername}
                     initialSelectedLanguage={selectedLanguage}
-                    yourNameForIntro={YOUR_NAME_FOR_INTRO} // Truyền tên cho footer
+                    yourNameForIntro={YOUR_NAME_FOR_INTRO} 
                 />
             ) : (
                 // Các stage khác sẽ được render bởi ContentArea
@@ -211,6 +196,6 @@ function App() {
         </div>
     );
 }
-// -- END OF APP_COMPONENT --
+
 
 export default App;
