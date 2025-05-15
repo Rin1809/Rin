@@ -179,6 +179,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             default: return "Information";
         }
     };
+    
 
     const bioPart1 = personalCardTranslations.introBio.part1[currentLang].replace(personalCardTranslations.introBio.namePlaceholder, name);
     const bioPart2 = personalCardTranslations.introBio.part2[currentLang];
