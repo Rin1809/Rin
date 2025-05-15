@@ -288,8 +288,8 @@
 }
 
 
-/* --- GitHub Stats Styles (API and Images) --- */
-.github-stats-container, .github-stats-image-container, .discord-presence-container {
+/* --- GitHub, TikTok, YouTube Stats Styles (API and Images) --- */
+.social-stats-container { /* Generic container for GitHub, TikTok, YouTube */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -299,8 +299,15 @@
     box-sizing: border-box;
 }
 
+
 .github-stats-image-container, .discord-presence-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 1.2rem;
+    width: 100%;
+    color: var(--text-color-poetic);
+    box-sizing: border-box;
 }
 .github-stats-image-container.grid-2x2 {
     display: grid;
@@ -354,7 +361,7 @@
 }
 
 
-.github-user-header {
+.social-user-header {
     display: flex;
     align-items: center;
     gap: 1.8rem;
@@ -364,7 +371,7 @@
     border-bottom: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.18);
 }
 
-.github-avatar {
+.social-avatar {
     width: 75px;
     height: 75px;
     border-radius: 50%;
@@ -372,35 +379,42 @@
     border: 3px solid rgba(var(--highlight-color-poetic-rgb), 0.65);
     box-shadow: 0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.35);
     flex-shrink: 0;
+    background-color: rgba(var(--card-background-rgb), 0.2);
 }
 
-.github-user-info { flex-grow: 1; min-width: 0;}
-.github-user-info h3 {
+.social-user-info { flex-grow: 1; min-width: 0;}
+.social-user-info h3 {
     font-size: clamp(1.3em, 3.2vw, 1.5em);
     font-weight: 500;
     color: var(--highlight-color-poetic);
     margin: 0 0 0.3rem 0;
     text-shadow: 0 0 7px rgba(var(--highlight-color-poetic-rgb), 0.28);
 }
-.github-bio {
+.social-bio {
     font-size: clamp(0.88em, 2.1vw, 0.92em);
     line-height: 1.7;
     color: var(--subtext-color-poetic);
     margin: 0;
     text-align: left;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: pre-line;
 }
 
-.github-stats-grid {
+.social-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 1.2rem;
     width: 100%;
     margin-bottom: 1.2rem;
 }
+/* Specific grid for TikTok if it needs 3 columns on wider screens */
+.social-stats-grid.tiktok-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+}
+/* Specific grid for YouTube if it needs 2 columns on wider screens */
+.social-stats-grid.youtube-grid {
+     grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+}
+
 
 .stat-item {
     display: flex;
@@ -415,14 +429,22 @@
                 inset 0 0 6px rgba(var(--background-color-rgb), 0.12);
     min-height: 95px;
     text-align: center;
+    overflow-wrap: break-word; /* Ensure long text wraps */
 }
+
 .stat-value {
     font-size: clamp(1.7em, 5.2vw, 2em);
     font-weight: 400;
     color: var(--highlight-color-poetic);
     line-height: 1.1;
     text-shadow: 0 0 8px rgba(var(--highlight-color-poetic-rgb), 0.38);
+    word-break: break-all;
 }
+.stat-value.textual-stat {
+    font-size: clamp(1em, 2.8vw, 1.2em);
+    font-weight: 300;
+}
+
 .stat-label {
     font-size: clamp(0.82em, 2.1vw, 0.92em);
     color: var(--subtext-color-poetic);
@@ -430,7 +452,7 @@
     line-height: 1.2;
 }
 
-.github-profile-link {
+.social-profile-link {
     display: inline-block;
     padding: 0.75rem 1.6rem;
     background: linear-gradient(140deg,
@@ -444,8 +466,9 @@
     border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.28);
     transition: all 0.25s ease-out;
     box-shadow: 0 2.5px 6px rgba(var(--background-color-rgb), 0.22);
+    margin-top: 0.5rem;
 }
-.github-profile-link:hover {
+.social-profile-link:hover {
      background: linear-gradient(140deg,
         rgba(var(--highlight-color-poetic-rgb), 0.22),
         rgba(var(--primary-color-rgb), 0.18)
@@ -614,9 +637,14 @@
      max-height: 68vh;
   }
   .sub-section-inner-padding { padding: 1rem 1.2rem; }
-  .github-avatar { width: 65px; height: 65px; }
+  .social-avatar { width: 65px; height: 65px; }
   .stat-item { min-height: 85px; }
   .social-media-links-container { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+
+  .social-stats-grid.tiktok-grid,
+  .social-stats-grid.youtube-grid {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Allow more items per row on medium */
+  }
 }
 
 @media (max-width: 480px) {
@@ -651,12 +679,18 @@
     .sub-section-inner-padding { padding: 0.8rem 1rem; }
     .personal-card-about-view .bio-text { line-height: 1.85; font-size: clamp(1em, 2.4vw, 1.1em); }
 
-    .github-user-header { flex-direction: column; align-items: center; text-align: center; gap: 0.9rem; }
-    .github-avatar { width: 60px; height: 60px; }
+    .social-user-header { flex-direction: column; align-items: center; text-align: center; gap: 0.9rem; }
+    .social-avatar { width: 60px; height: 60px; }
 
-    .github-stats-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+    .social-stats-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+     /* Ensure TikTok and YouTube also stack to 1 column on smallest screens */
+    .social-stats-grid.tiktok-grid,
+    .social-stats-grid.youtube-grid {
+        grid-template-columns: 1fr;
+    }
+
     .stat-item { min-height: 75px; }
-    .github-profile-link { font-size: 0.9em; padding: 0.65rem 1.3rem; }
+    .social-profile-link { font-size: 0.9em; padding: 0.65rem 1.3rem; }
 
     .github-stats-image-container.grid-2x2 { grid-template-columns: 1fr; }
     .discord-presence-image { width: 100%; max-width: 300px; }

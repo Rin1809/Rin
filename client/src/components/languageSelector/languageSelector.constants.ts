@@ -556,28 +556,6 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
 export const aboutNavIconLeft = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 export const aboutNavIconRight = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
-export const githubSectionTranslations = { // Renamed or use a more general name like 'aboutSubSectionTitles'
-  title: { vi: "Thống kê GitHub", en: "GitHub Statistics", ja: "GitHub統計" },
-  followers: { vi: "Người theo dõi", en: "Followers", ja: "フォロワー" },
-  publicRepos: { vi: "Kho lưu trữ", en: "Public Repos", ja: "公開リポジトリ" },
-  profileLink: { vi: "Xem trên GitHub", en: "View on GitHub", ja: "GitHubで表示" },
-  titlePart2: { vi: "Thống kê GitHub II", en: "GitHub Statistics II", ja: "GitHub統計 II" },
-  titlePart3: { vi: "Thống kê GitHub III", en: "GitHub Statistics III", ja: "GitHub統計 III" },
-  discordPresenceTitle: { vi: "Trạng thái Discord", en: "Discord Presence", ja: "Discordステータス"},
-};
-
-// For LanguageSelector's card intro preview
-export const languageSelectorPreviewTranslations = {
-  aboutSnippetTitle: { vi: "Giới thiệu sơ lược", en: "About Me Snippet", ja: "自己紹介（概要）" },
-  gallerySneakPeekTitle: { vi: "Xem trước bộ sưu tập", en: "Gallery Sneak Peek", ja: "ギャラリー予告編" },
-  aboutSnippetContent: {
-    vi: "Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?",
-    en: "Hi! I'm Rin,... well, just Rin, that's it? What were you expecting?",
-    ja: "こんにちは！リンです。えっと、リンです、それだけ？何を期待してたの？"
-  },
-  galleryPreviewAlt: { vi: "Xem trước bộ sưu tập {index}", en: "Gallery preview {index}", ja: "ギャラリープレビュー {index}" }
-};
-
 // For PersonalCard component (about section)
 export const personalCardTranslations = {
   sectionTitles: {
@@ -586,10 +564,12 @@ export const personalCardTranslations = {
     githubStatsIi: { vi: "Thống kê GitHub II", en: "GitHub Statistics II", ja: "GitHub統計 II" },
     githubStatsIii: { vi: "Thống kê GitHub III", en: "GitHub Statistics III", ja: "GitHub統計 III" },
     discordPresence: { vi: "Trạng thái Discord", en: "Discord Presence", ja: "Discordステータス" },
-    socials: { vi: "Mạng xã hội", en: "Social Media", ja: "ソーシャルメディア" } // Added
+    socials: { vi: "Mạng xã hội", en: "Social Media", ja: "ソーシャルメディア" },
+    tiktokStats: { vi: "Thống kê TikTok", en: "TikTok Statistics", ja: "TikTok統計" },
+    youtubeStats: { vi: "Thống kê YouTube", en: "YouTube Statistics", ja: "YouTube統計" },
   },
   introBio: {
-    namePlaceholder: "{name}",
+    namePlaceholder: "{name}", // Main name for the card (e.g., Rin)
     part1: {
       vi: `Chào ! Mình là <strong>{name}</strong>, đang theo học ngành An Ninh Mạng.`,
       en: `Hi! I'm <strong>{name}</strong>, currently studying Cyber Security.`,
@@ -617,9 +597,9 @@ export const personalCardTranslations = {
     }
   },
   loadingText: {
-    vi: "Đang dệt những vì sao từ GitHub...",
-    en: "Weaving stars from GitHub...",
-    ja: "GitHubから星を紡いでいます..."
+    vi: "Đang dệt những vì sao từ vũ trụ...",
+    en: "Weaving stars from the cosmos...",
+    ja: "宇宙から星を紡いでいます..."
   },
   errorTextPrefix: {
     vi: "Lỗi: ",
@@ -631,13 +611,45 @@ export const personalCardTranslations = {
     en: "No bio provided.",
     ja: "紹介文はありません。"
   },
-  socialLinks: { // Added
+  socialLinks: {
     github: { vi: "Ghé thăm GitHub", en: "Visit GitHub", ja: "GitHubを見る" },
     tiktok: { vi: "Xem TikTok", en: "Watch TikTok", ja: "TikTokを見る" },
     discordProfile: { vi: "Hồ sơ Discord", en: "Discord Profile", ja: "Discordプロフィール" },
     discordServer: { vi: "Máy chủ Discord", en: "Discord Server", ja: "Discordサーバー" },
     youtube: { vi: "Kênh YouTube", en: "YouTube Channel", ja: "YouTubeチャンネル" }
+  },
+  githubLabels: { // Kept for consistency if needed for GitHub API section specifically
+    followers: { vi: "Người theo dõi", en: "Followers", ja: "フォロワー" },
+    publicRepos: { vi: "Kho lưu trữ", en: "Public Repos", ja: "公開リポジトリ" },
+    profileLink: { vi: "Xem trên GitHub", en: "View on GitHub", ja: "GitHubで表示" },
+  },
+  tiktokLabels: {
+    name: { vi: "Tên TikTok", en: "TikTok Name", ja: "TikTok名" },
+    following: { vi: "Đang theo dõi", en: "Following", ja: "フォロー中" },
+    followers: { vi: "Người theo dõi", en: "Followers", ja: "フォロワー" },
+    likes: { vi: "Lượt thích", en: "Likes", ja: "いいね" },
+    description: { vi: "Mô tả", en: "Description", ja: "説明" },
+    profileLink: { vi: "Xem trên TikTok", en: "View on TikTok", ja: "TikTokで表示" },
+  },
+  youtubeLabels: {
+    name: { vi: "Tên YouTube", en: "YouTube Name", ja: "YouTube名" },
+    subscribers: { vi: "Người đăng ký", en: "Subscribers", ja: "チャンネル登録者" },
+    joinedDate: { vi: "Ngày tham gia", en: "Joined Date", ja: "参加日" },
+    description: { vi: "Mô tả kênh", en: "Channel Description", ja: "チャンネル概要" },
+    profileLink: { vi: "Xem trên YouTube", en: "View on YouTube", ja: "YouTubeで表示" },
   }
+};
+
+// For LanguageSelector's card intro preview
+export const languageSelectorPreviewTranslations = {
+  aboutSnippetTitle: { vi: "Giới thiệu sơ lược", en: "About Me Snippet", ja: "自己紹介（概要）" },
+  gallerySneakPeekTitle: { vi: "Xem trước bộ sưu tập", en: "Gallery Sneak Peek", ja: "ギャラリー予告編" },
+  aboutSnippetContent: {
+    vi: "Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?",
+    en: "Hi! I'm Rin,... well, just Rin, that's it? What were you expecting?",
+    ja: "こんにちは！リンです。えっと、リンです、それだけ？何を期待してたの？"
+  },
+  galleryPreviewAlt: { vi: "Xem trước bộ sưu tập {index}", en: "Gallery preview {index}", ja: "ギャラリープレビュー {index}" }
 };
 
 // For Gallery component
