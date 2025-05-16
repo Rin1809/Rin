@@ -45,6 +45,7 @@
 
 /* Bìa sách (div.book-core) */
 .book-core {
+  min-width: 165%;
   width: 175%; /* Rộng hơn một chút để vừa với các màn hình lớn hơn */
   max-width: 1050px; /* Giới hạn kích thước tối đa */
   height: 75vh; /* Cao hơn */

@@ -28,6 +28,7 @@
   --error-color: #f38ba8;
   --error-color-rgb: 243, 139, 168;
   --success-color: #a6e3a1;
+  --success-color-rgb: 166, 227, 161; /* Thêm var cho success */
   --info-color: #89b4fa;
   --info-color-rgb: 137, 180, 250;
   --subtext-color: #a6adc8;
@@ -56,14 +57,25 @@
   --text-color-poetic: #e6e6e6;
   --text-color-poetic-rgb: 230, 230, 230;
   --subtext-color-poetic: #c0c0c0;
+  --subtext-color-poetic-rgb: 192,192,192; /* Thêm var này */
   --highlight-color-poetic: #D8BFD8;
   --highlight-color-poetic-rgb: 216, 191, 216;
   --background-overlay-poetic: rgba(30, 30, 46, 0.9);
   --card-hover-bg-poetic: rgba(255, 255, 255, 0.04);
 }
 
+/* CHẶN CUỘN TRANG CHÍNH */
+html, body {
+  overflow: hidden; /* Ẩn thanh cuộn */
+  height: 100%;     /* Đảm bảo html, body chiếm full viewport */
+  margin: 0;        /* Reset margin */
+  padding: 0;       /* Reset padding */
+}
+/* END CHẶN CUỘN */
+
+
 body {
-  margin: 0;
+  /* margin: 0; Bỏ vì đã set ở trên */
   font-family: var(--font-family-primary), var(--font-family-fallback);
   font-weight: 300; 
   -webkit-font-smoothing: antialiased;
@@ -81,30 +93,30 @@ body {
   background-attachment: fixed;
   color: var(--text-color);
   line-height: 1.6;
-  overflow-x: hidden;
+  /* overflow-x: hidden; Bỏ vì đã set overflow: hidden ở trên */
   position: relative;
-  min-height: 100vh;
+  min-height: 100vh; /* Đảm bảo body tối thiểu bằng viewport */
 }
 
 #tsparticles-background-stable {
-  position: fixed !important;
+  position: fixed !important; /* Quan trọng */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
-  pointer-events: none;
+  z-index: 0; /* Nằm dưới cùng */
+  pointer-events: none; /* Ko bắt event */
 }
 
 .AppWrapper {
-  position: relative;
+  position: relative; /* Ko cần fixed nếu body đã fixed */
   min-height: 100vh;
   width: 100vw;
-  height: 100vh;
+  height: 100vh; /* AppWrapper chiếm full viewport */
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: hidden; /* AppWrapper cũng ẩn scroll nếu có */
 }
 
 .App {
@@ -112,11 +124,11 @@ body {
   max-width: 900px;
   margin: 0 auto;
   padding: 1rem 2rem;
-  min-height: 100vh;
+  /* min-height: 100vh; Bỏ vì AppWrapper đã xử lý chiều cao */
   display: flex;
   flex-direction: column;
   position: relative;
-  z-index: 1;
+  z-index: 1; /* Nằm trên background particles */
 }
 
 .AppContainer {
@@ -148,7 +160,7 @@ body {
   pointer-events: none;
   min-height: 150px;
   box-sizing: border-box;
-  position: absolute;
+  position: absolute; /* Để căn giữa tuyệt đối trong AppWrapper */
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%) scale(0.9);
@@ -165,6 +177,7 @@ body {
   pointer-events: none;
 }
 
+/* Glow effect cho cat và text intro */
 .intro-stage.cat-stage.visible .cat-icon {
   text-shadow: 0 0 var(--glow-blur-base) var(--glow-color-rgba-strong),
                0 0 var(--glow-blur-wide) var(--glow-color-rgba-wide);
@@ -179,6 +192,7 @@ body {
   text-shadow: 0 0 var(--glow-blur-base) var(--glow-color-rgba-strong),
                0 0 var(--glow-blur-wide) var(--glow-color-rgba-wide);
 }
+/* End glow */
 
 .cat-stage { flex-direction: column; }
 .cat-icon {
@@ -187,7 +201,7 @@ body {
   animation: catBob 1.2s ease-in-out infinite alternate;
   margin-bottom: 0.5rem;
   transition: text-shadow 0.3s ease-out, filter 0.3s ease-out;
-  font-family: sans-serif;
+  font-family: sans-serif; /* Font mặc định cho icon mèo */
 }
 .ellipsis {
   font-size: 2rem;
@@ -225,6 +239,7 @@ body {
   transition: text-shadow 0.3s ease-out, opacity var(--wow-text-slide-duration) ease-out, transform var(--wow-text-slide-duration) ease-out;
 }
 
+/* Anim cho màn "WOW" */
 .intro-stage.server-stage-wow.visible .server-avatar-wow {
   animation: wowAvatarAppearBounce var(--wow-avatar-appear-duration) cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards,
              wowAvatarSlideLeft var(--wow-total-duration) ease-in-out forwards var(--wow-avatar-move-delay);
@@ -235,7 +250,7 @@ body {
 .intro-stage.server-stage-wow.hiding .server-avatar-wow { animation: wowAvatarSlideCenter var(--wow-hide-duration) ease-in forwards; }
 .intro-stage.server-stage-wow.hiding .server-name-wow { animation: wowTextSlideIn var(--wow-hide-duration) ease-in forwards; }
 
-
+/* Keyframes cho anim WOW */
 @keyframes wowAvatarAppearBounce {
   0% { opacity: 0; transform: translate(0,0) scale(0.7) rotate(-10deg); filter: none; }
   60% { opacity: 1; transform: translate(0,0) scale(1.1) rotate(5deg); filter: drop-shadow(0 0 var(--glow-blur-base) var(--glow-color));}
@@ -262,13 +277,10 @@ body {
                       0 0 var(--glow-blur-wide) var(--glow-color-rgba-wide); }
   to { opacity: 0; transform: translate(0px,0) scale(0.9); text-shadow: none; }
 }
+/* End anim WOW */
 
-.main-content {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  opacity: 0;
+.main-content { /* Không dùng nữa */
+  /* opacity: 0;
   transform: translateY(30px);
   transition: opacity var(--content-fade-in-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94),
               transform var(--content-fade-in-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -276,7 +288,7 @@ body {
   position: relative;
   z-index: 2;
   padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-bottom: 2rem; */
 }
 
 
