@@ -8,7 +8,7 @@ import {
 } from './languageSelector/languageSelector.constants';
 import type { GuestbookEntry } from '../data/guestbook.data';
 
-// Icon Components (giữ nguyên từ trước)
+// Icon Components 
 const IconFeatherPen = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20.7 3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/>
@@ -33,7 +33,7 @@ const IconInkSplatterCancel = () => (
   </svg>
 );
 
-// Props Interface (giữ nguyên)
+// Props Interface
 interface GuestbookProps {
   language: 'vi' | 'en' | 'ja';
   onBack: () => void;
@@ -81,15 +81,15 @@ const TypewriterContainerVariants = (stagger: number): Variants => ({
 
 const TypewriterMessage: React.FC<TypewriterMessageProps> = React.memo(({
   fullMessage,
-  className = "entry-message", // Sẽ được áp dụng cho div wrapper mới
+  className = "entry-message", 
   staggerDuration = 0.045,
 }) => {
   const characters = useMemo(() => fullMessage.split(''), [fullMessage]);
   const animationKey = useMemo(() => fullMessage, [fullMessage]);
 
   return (
-    <div className={className}> {/* Outer div gets styling like .random-quote-message-enhanced or .entry-message */}
-      <motion.p // This motion.p is a standard paragraph, not a flex container
+    <div className={className}> 
+      <motion.p 
         key={animationKey}
         variants={TypewriterContainerVariants(staggerDuration)}
         initial="hidden"
@@ -97,10 +97,10 @@ const TypewriterMessage: React.FC<TypewriterMessageProps> = React.memo(({
         style={{
           margin: 0,
           padding: 0,
-          whiteSpace: 'normal',      // Đảm bảo ngắt dòng tự nhiên tại khoảng trắng
-          overflowWrap: 'break-word', // Cho phép ngắt từ nếu từ quá dài
-          wordWrap: 'break-word',     // Tương tự overflowWrap, cho trình duyệt cũ
-          hyphens: 'none',            // Vô hiệu hóa gạch nối tự động
+          whiteSpace: 'normal',      
+          overflowWrap: 'break-word', 
+          wordWrap: 'break-word',     
+          hyphens: 'none',            
         }}
       >
         {characters.map((char, index) => (
@@ -108,11 +108,11 @@ const TypewriterMessage: React.FC<TypewriterMessageProps> = React.memo(({
             key={`${char}-${index}-${animationKey}`}
             variants={TypewriterCharacterVariants}
             style={{
-              display: 'inline', // Characters are now inline, browser handles word wrapping
-              minWidth: char === ' ' ? '0.25em' : undefined // Ensure spaces have some width
+              display: 'inline',
+              minWidth: char === ' ' ? '0.25em' : undefined
             }}
           >
-            {char === ' ' ? '\u00A0' : char} {/* Non-breaking space for visual consistency */}
+            {char === ' ' ? '\u00A0' : char}
           </motion.span>
         ))}
       </motion.p>
@@ -120,10 +120,10 @@ const TypewriterMessage: React.FC<TypewriterMessageProps> = React.memo(({
   );
 });
 TypewriterMessage.displayName = 'TypewriterMessage';
-// --- KẾT THÚC Component con ---
 
 
-// --- VARIANTS (giữ nguyên từ trước) ---
+
+// --- VARIANTS  ---
 const bookCoreVariants = {
   hidden: { opacity: 0, y: 60, scale: 0.9, filter: "blur(10px) saturate(0.5)" },
   visible: {
@@ -409,7 +409,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                                     >
                                         <TypewriterMessage
                                             fullMessage={entry.message}
-                                            className="entry-message" // Class for normal entries
+                                            className="entry-message"
                                             staggerDuration={0.045}
                                         />
                                     </motion.blockquote>

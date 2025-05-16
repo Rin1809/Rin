@@ -7,7 +7,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
     fpsLimit: 120,
     particles: {
         number: {
-            value: 500, // Keep value as per original file
+            value: 500, 
             density: { enable: true },
         },
         color: { value: ["#FFFFFF", "#F0E68C", "#ADD8E6", "#FFDAB9"] },
@@ -23,7 +23,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
         links: { enable: false },
         move: {
             enable: true,
-            speed: 0.4, // Keep speed as per original file
+            speed: 0.4, 
             direction: "none",
             random: true,
             straight: false,
@@ -70,7 +70,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
         {
             name: "leftShootingStarsAlternateY",
             direction: "right",
-            rate: { quantity: 5, delay: 0.9 }, // Keep quantity as per original
+            rate: { quantity: 5, delay: 0.9 },
             position: { x: 0, y: 30 },
             particles: {
                 move: {
@@ -90,7 +90,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
          {
             name: "leftShootingStarsHighY",
             direction: "right",
-            rate: { quantity: 5, delay: 1.3 }, // Keep quantity as per original
+            rate: { quantity: 5, delay: 1.3 },
             position: { x: 0, y: 75 },
             particles: {
                 move: {
@@ -132,7 +132,7 @@ export const buttonVariants: Variants = {
   initial: {
     opacity: 0,
     y: 20,
-    scale: 1, // Keep scale as per original file
+    scale: 1,
     boxShadow: "0 4px 15px -5px rgba(var(--highlight-color-poetic-rgb), 0.05)",
     borderColor: "rgba(var(--text-color-poetic-rgb), 0.1)",
     backgroundColor: "transparent"
@@ -147,7 +147,7 @@ export const buttonVariants: Variants = {
     }
   }),
   hover: {
-    scale: 1.03, // Keep scale as per original file
+    scale: 1.03, 
     y: -8,
     backgroundColor: "rgba(var(--highlight-color-poetic-rgb), 0.08)",
     borderColor: "rgba(var(--highlight-color-poetic-rgb), 0.35)",
@@ -155,12 +155,12 @@ export const buttonVariants: Variants = {
     transition: {
       type: "spring",
       stiffness: 350,
-      damping: 22, // Keep damping as per original file
+      damping: 22,
       duration: 0.3
     }
   },
   tap: {
-    scale: 0.97, // Keep scale as per original file
+    scale: 0.97,
     y: -3,
     transition: {
       type: "spring",
@@ -168,7 +168,7 @@ export const buttonVariants: Variants = {
       damping: 25
     }
   },
-  exit: { // Add exit as per original file
+  exit: { 
     opacity: 0,
     y: 20,
     scale: 0.9,
@@ -196,8 +196,8 @@ export const iconVariants: Variants = {
     textShadow: "none"
   },
   hover: {
-    scale: 1.2, // Keep scale as per original file
-    rotate: -5, // Keep rotate as per original file
+    scale: 1.2, 
+    rotate: -5,
     y: -5,
     textShadow: "0 3px 10px rgba(var(--highlight-color-poetic-rgb), 0.2)",
     transition: {
@@ -236,7 +236,7 @@ export const contentItemVariants = (delay: number): Variants => ({
       ease: [0.23, 1, 0.32, 1]
     }
   },
-  exit: { // Add exit as per original file
+  exit: { 
     opacity: 0,
     y: -20,
     transition: {
@@ -270,7 +270,7 @@ export const titleVariants = (delay: number): Variants => ({
       textShadow: { duration: 3, repeat: Infinity, repeatType: "mirror", ease: "easeInOut", delay: delay + 0.5 }
     }
   },
-  exit: { // Add exit as per original file
+  exit: { 
     opacity: 0,
     y: -20,
     textShadow: titleInitialTextShadow,
@@ -326,7 +326,7 @@ export const dividerVariants = (delay: number): Variants => ({
     opacity: 1,
     transition: { duration: 0.8, delay: delay, ease: "easeOut" }
   },
-  exit: { // Add exit as per original file
+  exit: {
       opacity: 0,
       transition: { duration: 0.2, ease: "easeIn"}
   }
@@ -335,13 +335,13 @@ export const dividerVariants = (delay: number): Variants => ({
 export const dividerVerticalVariants = (delay: number): Variants => ({
   hidden: { ...dividerVariants(delay).hidden, scaleY: 0 },
   visible: { ...dividerVariants(delay).visible, scaleY: 1 },
-  exit: { ...dividerVariants(delay).exit, scaleY: 0} // Add exit as per original file
+  exit: { ...dividerVariants(delay).exit, scaleY: 0} 
 });
 
 export const dividerHorizontalVariants = (delay: number): Variants => ({
   hidden: { ...dividerVariants(delay).hidden, scaleX: 0 },
   visible: { ...dividerVariants(delay).visible, scaleX: 1 },
-  exit: { ...dividerVariants(delay).exit, scaleX: 0} // Add exit as per original file
+  exit: { ...dividerVariants(delay).exit, scaleX: 0} 
 });
 
 export const cardIntroTranslations = {
@@ -440,8 +440,8 @@ export const sparkleVariants: Variants = {
   animate: (i: number) => ({
     opacity: [0, 0.3 + Math.random() * 0.4, 0],
     scale: [0, 0.6 + Math.random() * 0.6, 0],
-    x: Math.random() * 100 - 50, // Keep x as per original file
-    y: Math.random() * 80 - 40, // Keep y as per original file
+    x: Math.random() * 100 - 50, 
+    y: Math.random() * 80 - 40, 
     rotate: Math.random() * 360,
     transition: {
       duration: 2 + Math.random() * 2,
@@ -466,8 +466,8 @@ export const cardIntroHeaderVariants: Variants = {
     visible: {
       opacity: 1, y: 0, scale: 1,
       transition: {
-        duration: 0.7, delay: 0, // Keep delay as per original file
-        staggerChildren: 0 // Keep staggerChildren as per original file
+        duration: 0.7, delay: 0, 
+        staggerChildren: 0 
       }
     },
     exit: { opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.25, ease: "easeIn" } }
@@ -483,7 +483,7 @@ export const previewContainerVariants: Variants = {
     transition: {
       type: "spring",
       stiffness: 260,
-      damping: 28, // Keep damping as per original file
+      damping: 28, 
       when: "beforeChildren",
       staggerChildren: 0.07
     }
@@ -496,7 +496,7 @@ export const previewContainerVariants: Variants = {
     transition: {
       type: "spring",
       stiffness: 300,
-      damping: 30, // Keep damping as per original file
+      damping: 30,
       when: "afterChildren",
       staggerChildren: 0.05,
       staggerDirection: -1
@@ -511,12 +511,12 @@ export const previewContainerVariants: Variants = {
 
 export const previewContentItemVariants: Variants = {
   hidden: { opacity: 0, y: 10 },
-  visible: { // This was "hidden", correcting to "visible" as per typical framer-motion use
+  visible: { 
     opacity: 1,
     y: 0,
     transition: { type: "spring", stiffness: 300, damping: 20 }
   },
-  exit: { // Added an exit state to match similar variants
+  exit: { 
     opacity: 0,
     y: 8,
     transition: { type: "spring", stiffness: 320, damping: 20 }
@@ -541,9 +541,9 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
         filter: "blur(0px) saturate(1) brightness(1)",
         transition: {
             type: "spring",
-            stiffness: 130, // Keep stiffness as per original file
+            stiffness: 130, 
             damping: 20,
-            mass: 1, // Keep mass as per original file
+            mass: 1, 
             delay,
             opacity: { duration: 0.5, ease: "circOut", delay },
             scale: { type: "spring", stiffness: 130, damping: 20, delay },
@@ -555,7 +555,7 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
         scale: 0.7,
         filter: "blur(12px) saturate(0.5)",
         transition: {
-            duration: 0.35, // Keep duration as per original file
+            duration: 0.35, 
             ease: "anticipate",
             opacity: { duration: 0.3, ease: "easeIn"},
         }
@@ -714,7 +714,6 @@ export const guestbookViewTranslations = {
   },
   entryBy: { vi: "Lời nhắn từ", en: "A thought from", ja: "からのメッセージ" },
   entryDatePrefix: { vi: "Vào lúc", en: "On", ja: "記録日：" },
-  // THÊM CÁC KEY DỊCH MỚI
   validationError: {
     vi: "Tên và cảm nghĩ không được để trống bạn ơi!",
     en: "Name and message cannot be empty, friend!",
@@ -746,7 +745,7 @@ export const guestbookViewContainerVariants = (delay: number = 0.1): Variants =>
     },
     exit: {
         opacity: 0, scale: 0.9, y: 30, filter: "blur(5px)",
-        transition: { duration: 0.3, ease: "anticipate" } // ease "anticipate" tạo hiệu ứng hơi "lùi" lại trước khi biến mất
+        transition: { duration: 0.3, ease: "anticipate" } 
     }
 });
 

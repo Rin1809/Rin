@@ -274,7 +274,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
         if (prevHeightRef.current !== newHeightValue || forceMeasure) {
             // Ưu tiên spring cho placeholder để tạo cảm giác mượt khi nó init chiều cao
-            // --- ĐIỀU CHỈNH Ở ĐÂY ---
             const transitionType: "spring" | "tween" = // Ép kiểu hoặc đảm bảo là 'spring'/'tween'
               (currentAboutSubSection === 'placeholder' && prevHeightRef.current === null)
                 ? "spring" // Ví dụ: luôn dùng spring
