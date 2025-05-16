@@ -2,8 +2,8 @@
 
 /* Container & Title */
 .spotify-playlists-container.spotify-carousel-mode {
-  padding: clamp(1rem, 3vh, 2rem) clamp(0.5rem, 2vw, 1rem);
-  color: var(--text-color, #cdd6f4);
+  padding: clamp(1rem, 3vh, 1.8rem) clamp(0.5rem, 2vw, 1rem);
+  color: var(--text-color-poetic, #e6e6e6); /* Poetic text color */
   max-width: 1000px; 
   width: 100%;     
   margin: 0 auto; 
@@ -13,29 +13,35 @@
   flex-grow: 1; 
   overflow: hidden; 
   height: 100%; 
+  background: /* Soft radial gradient background */
+    radial-gradient(ellipse at 15% 85%, rgba(var(--secondary-color-rgb), 0.03), transparent 50%),
+    radial-gradient(ellipse at 85% 20%, rgba(var(--primary-color-rgb), 0.04), transparent 50%);
 }
 
 .spotify-playlists-title {
-    font-size: clamp(1.8em, 4vw, 2.2em);
+    font-size: clamp(1.8em, 4vw, 2.3em); /* Slightly larger and more responsive */
     font-weight: 400;
     text-align: center;
-    margin: 0 auto 1.5rem auto; 
-    background: linear-gradient(
+    margin: 0 auto clamp(1.5rem, 4vh, 2rem) auto; /* Responsive margin */
+    background: linear-gradient( /* Adjusted gradient for more "poetic" feel */
         120deg, 
-        var(--secondary-color, #f5c2e7) 20%, 
-        var(--highlight-color-poetic, #D8BFD8) 50%, 
-        var(--primary-color, #ffaaaa) 80%
+        var(--secondary-color, #f5c2e7) 15%, 
+        var(--highlight-color-poetic, #D8BFD8) 45%, 
+        var(--primary-color, #ffaaaa) 75%
     );
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     background-size: 280% auto; 
-    animation: galleryTitleFlow 12s linear infinite alternate; /* Ref App.css */
-    text-shadow: 0 2px 3px rgba(0,0,0,0.12), 
-                 0 0 20px rgba(var(--highlight-color-poetic-rgb), 0.4), 
-                 0 0 38px rgba(var(--secondary-color-rgb), 0.3);
-    letter-spacing: 1px;
+    animation: galleryTitleFlow 12s ease-in-out infinite alternate; /* Ref App.css, adjusted timing */
+    text-shadow: /* Enhanced text shadow for depth and glow */
+      0 1.5px 2.5px rgba(var(--background-color-rgb),0.15), 
+      0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.45), 
+      0 0 30px rgba(var(--secondary-color-rgb), 0.3),
+      0 0 45px rgba(var(--primary-color-rgb), 0.2);
+    letter-spacing: 1.2px; /* Increased spacing */
     flex-shrink: 0; 
+    line-height: 1.3;
 }
 
 /* Carousel Styles */
@@ -44,19 +50,19 @@
   align-items: center;
   justify-content: space-between; 
   width: 100%;
-  min-height: 380px; 
+  min-height: 390px; /* Adjusted for iframe height + padding */
   position: relative; 
   flex-grow: 1; 
   margin-bottom: 1rem; 
 }
 
 .spotify-carousel-nav {
-  background: rgba(var(--card-background-rgb, 30, 30, 46), 0.32); 
-  color: rgba(var(--text-color-rgb, 205, 214, 244), 0.7); 
-  border: 1.5px solid rgba(var(--border-color-rgb),0.28); 
+  background: rgba(var(--card-background-rgb, 30, 30, 46), 0.45); /* Slightly more opaque */
+  color: rgba(var(--text-color-poetic-rgb, 230, 230, 230), 0.75); 
+  border: 1.5px solid rgba(var(--border-color-rgb),0.2); /* Softer border */
   border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  width: 46px; /* Slightly larger */
+  height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,10 +70,13 @@
   z-index: 5; 
   transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
   flex-shrink: 0;
-  margin: 0 0.5rem; 
+  margin: 0 0.4rem; /* Adjusted margin */
+  box-shadow: 0 2px 8px rgba(var(--background-color-rgb),0.15);
 }
 .spotify-carousel-nav:hover {
-  box-shadow: 0 0 14px -3px rgba(var(--primary-color-rgb), 0.55);
+  box-shadow: 0 0 16px -2px rgba(var(--primary-color-rgb), 0.6), /* Stronger glow */
+              0 3px 10px rgba(var(--background-color-rgb),0.2);
+  border-color: rgba(var(--primary-color-rgb),0.3);
 }
 
 .spotify-carousel-stage {
@@ -76,33 +85,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1600px; 
+  perspective: 1700px; /* Increased perspective */
   overflow: hidden; 
-  min-height: 380px;
-  max-height: 75vh; 
+  min-height: 390px;
+  max-height: 78vh; 
   transform-style: preserve-3d;
 }
 
 .spotify-playlist-item {
   position: absolute; 
-  width: clamp(280px, 60%, 320px); 
-  height: 382px; 
+  width: clamp(280px, 58%, 320px); /* Adjusted width clamp */
+  height: 382px; /* Standard Spotify embed height */
   display: flex; 
   align-items: center;
   justify-content: center;
-  border-radius: 16px; 
+  border-radius: 18px; /* Softer radius */
   overflow: hidden; 
-  background-color: rgba(var(--card-background-rgb, 30,30,46), 0.35); 
-  border: 1.5px solid rgba(var(--border-color-rgb, 69, 71, 90), 0.18);  
+  background-color: rgba(var(--card-background-rgb, 30,30,46), 0.25); 
+  border: 1px solid rgba(var(--border-color-rgb, 69, 71, 90), 0.15);  
   will-change: transform, opacity, filter, z-index, box-shadow; 
   padding: 0; 
 }
 .spotify-playlist-item.prev-item,
 .spotify-playlist-item.next-item {
     cursor: pointer;
+    /* Filter will be applied by variants */
 }
 .spotify-playlist-item.main-item {
     cursor: default; 
+    /* Box shadow and filter will be applied by variants */
 }
 
 .spotify-playlist-item iframe {
@@ -110,8 +121,8 @@
   width: 100%; 
   height: 100%; 
   user-select: none;
-  border-radius: 12px; 
-  border: none;
+  border-radius: 16px; /* Match item radius for inner content */
+  border: none; /* Spotify embed has its own border sometimes */
 }
 
 /* Overlay cho item chính */
@@ -120,39 +131,50 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(var(--card-background-rgb), 0.9) 20%, transparent 100%);
-    padding: 1.5rem 1rem 0.8rem 1rem;
+    background: linear-gradient(to top, rgba(var(--card-background-rgb), 0.95) 15%, rgba(var(--card-background-rgb), 0.75) 60%, transparent 100%); /* Darker, taller gradient */
+    padding: 2rem 1.2rem 1rem 1.2rem; /* More padding */
     color: var(--text-color-poetic);
     text-align: center;
     opacity: 0; 
-    transition: opacity 0.3s ease-in-out;
+    transform: translateY(15px); /* Start slightly lower */
+    transition: opacity 0.35s ease-out, transform 0.35s ease-out;
     pointer-events: none; 
-    border-bottom-left-radius: 12px; /* Match iframe radius */
-    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 16px; 
+    border-bottom-right-radius: 16px;
+    z-index: 1; 
 }
 .spotify-playlist-item.main-item:hover .main-item-info-overlay {
     opacity: 1;
-    pointer-events: auto; /* Cho phép click link */
+    transform: translateY(0);
+    pointer-events: auto; 
 }
 .main-item-info-overlay h3 {
-    font-size: 1em;
-    margin: 0 0 0.3rem 0;
+    font-size: 1.05em; /* Slightly larger */
+    margin: 0 0 0.4rem 0;
     font-weight: 500;
+    color: var(--highlight-color-poetic); /* Highlight color for name */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .main-item-info-overlay a {
-    font-size: 0.85em;
-    color: var(--highlight-color-poetic);
+    font-size: 0.9em; /* Slightly larger */
+    color: var(--primary-color); /* Primary color for link */
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 0.3em;
+    gap: 0.4em; /* More gap */
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, text-decoration-color 0.2s ease;
+    text-decoration-line: underline;
+    text-decoration-color: transparent;
 }
 .main-item-info-overlay a:hover {
-    text-decoration: underline;
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    text-decoration-color: var(--primary-color); 
 }
 .main-item-info-overlay a svg {
-    width: 1em;
-    height: 1em;
+    width: 1.1em;
+    height: 1.1em;
 }
 
 
@@ -160,20 +182,21 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 0.8rem; 
+    padding-top: 0.9rem; 
     flex-shrink: 0;
-    min-height: 2em; 
+    min-height: 2.2em; 
 }
 .spotify-carousel-counter {
-    font-size: 1em; 
-    color: var(--subtext-color, #a6adc8);
+    font-size: 1.05em; 
+    color: var(--subtext-color-poetic); /* Poetic subtext color */
     font-weight: 300;
-    background-color: rgba(var(--card-background-rgb), 0.4); 
-    padding: 0.3rem 0.8rem; 
-    border-radius: 20px; 
+    background-color: rgba(var(--card-background-rgb), 0.55); /* More opaque background */
+    padding: 0.35rem 0.9rem; 
+    border-radius: 22px; 
     margin: 0;
     line-height: 1.2;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+    box-shadow: 0 1.5px 4px rgba(var(--background-color-rgb),0.12); 
+    border: 1px solid rgba(var(--border-color-rgb), 0.1);
 }
 
 /* Status Messages */
@@ -182,27 +205,35 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 2.5rem 1rem; 
     text-align: center;
     color: var(--subtext-color-poetic);
-    font-size: 1.1em;
-    min-height: 200px;
+    font-size: 1.15em; 
+    min-height: 250px;
     flex-grow: 1; 
+    line-height: 1.6;
 }
 .spotify-playlists-status-container .spinner { 
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
+    border: 4px solid rgba(var(--highlight-color-poetic-rgb), 0.25);
+    border-left-color: var(--highlight-color-poetic);
+    width: 40px; height: 40px;
 }
 .spotify-playlists-status-container.error-message {
     color: var(--error-color);
+    font-weight: 400; 
 }
-.spotify-playlists-status-container.no-playlists-message {
+.spotify-playlists-status-container.error-message .status-icon {
+    color: var(--error-color);
+}
+.spotify-playlists-status-container.no-playlists-message .status-icon {
     color: var(--subtext-color-poetic);
 }
 .status-icon { 
-    width: 48px;
-    height: 48px;
-    margin-bottom: 1rem;
-    opacity: 0.7;
+    width: 52px; 
+    height: 52px;
+    margin-bottom: 1.2rem;
+    opacity: 0.65; 
 }
 
 /* Responsive */
@@ -211,20 +242,20 @@
     padding: clamp(1rem, 2vh, 1.5rem) clamp(0.3rem, 1.5vw, 0.8rem); 
   }
   .spotify-playlists-title { 
-    font-size: clamp(1.6em, 3.5vw, 2em); 
-    margin-bottom: 1.2rem; 
+    font-size: clamp(1.7em, 3.5vw, 2.1em); 
+    margin-bottom: clamp(1.2rem, 3vh, 1.8rem); 
   }
-  .spotify-carousel-wrapper { min-height: 360px; } 
-  .spotify-carousel-stage { min-height: 360px; max-height: 70vh; } 
-  .spotify-playlist-item { width: clamp(260px, 55%, 300px); height: 370px; }
-  .spotify-carousel-nav { width: 40px; height: 40px; margin: 0 0.3rem;}
-  .spotify-carousel-nav svg { width: 24px; height: 24px;}
+  .spotify-carousel-wrapper { min-height: 380px; } 
+  .spotify-carousel-stage { min-height: 380px; max-height: 70vh; } 
+  .spotify-playlist-item { width: clamp(260px, 58%, 310px); height: 370px; } 
+  .spotify-carousel-nav { width: 42px; height: 42px; margin: 0 0.2rem;} 
+  .spotify-carousel-nav svg { width: 22px; height: 22px;}
 }
 
 @media (max-width: 480px) {
   .spotify-playlists-title { 
-    font-size: clamp(1.4em, 3vw, 1.8em); 
-    margin-bottom: 1rem; 
+    font-size: clamp(1.5em, 3vw, 1.9em); 
+    margin-bottom: clamp(1rem, 2.5vh, 1.5rem); 
   }
   .spotify-carousel-wrapper { 
     flex-wrap: wrap; 
@@ -234,16 +265,26 @@
   }
   .spotify-carousel-stage {
     width: 100%; 
-    max-height: 60vh; 
-    min-height: 380px; 
+    max-height: 65vh; 
+    min-height: 390px;
     order: 1; 
-    perspective: 1200px; 
+    perspective: 1300px; 
   }
-  .spotify-playlist-item { width: clamp(250px, 80%, 290px); height: 370px; }  
+  .spotify-playlist-item { width: clamp(250px, 85%, 300px); height: 380px; } 
   
-  .spotify-carousel-wrapper > .spotify-carousel-nav.prev { order: 2; margin: 0.5rem 0.2rem 0.5rem 0; }
-  .spotify-carousel-wrapper > .spotify-carousel-nav.next { order: 3; margin: 0.5rem 0 0.5rem 0.2rem; }
+  .spotify-carousel-wrapper > .spotify-carousel-nav {
+    margin: 0.6rem 0.25rem; 
+    width: 40px; height: 40px;
+  }
+  .spotify-carousel-wrapper > .spotify-carousel-nav.prev { order: 2; }
+  .spotify-carousel-wrapper > .spotify-carousel-nav.next { order: 3; }
   
-  .spotify-carousel-footer { width: 100%; order: 4; padding-top: 0.5rem;} 
-  .spotify-carousel-counter { font-size: 0.95em; }
+  .spotify-carousel-footer { width: 100%; order: 4; padding-top: 0.6rem;} 
+  .spotify-carousel-counter { font-size: 1em; } 
+
+  .main-item-info-overlay {
+      padding: 1.5rem 1rem 0.8rem 1rem; 
+  }
+  .main-item-info-overlay h3 { font-size: 1em; }
+  .main-item-info-overlay a { font-size: 0.85em; }
 }
