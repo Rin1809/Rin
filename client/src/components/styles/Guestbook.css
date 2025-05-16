@@ -35,117 +35,125 @@
 
 /* Guestbook Container (div.book-core) Styling - "Khung" của cuốn sổ */
 .book-core {
-  width: 165%;
-  height: 100%;
-  max-height: calc(65vh - 1px); /* Giữ nguyên hoặc điều chỉnh nếu cần thêm không gian */
+  width: 165%; /* Rộng hơn một chút để vừa vặn hơn */
+  max-width: 980px; /* Tăng max-width */
+  height: 70vh; /* Chiều cao tương đối với viewport, điều chỉnh nếu cần */
+  max-height: 750px; /* Giới hạn chiều cao tối đa */
+  min-height: 450px; /* Đảm bảo đủ không gian */
   display: flex;
   flex-direction: column;
-  background-color: transparent; /* Nền sẽ do .book-pages-wrapper */
-  border-radius: 50px; /* Giữ bo góc này cho hiệu ứng 'ruột sách' */
-  box-shadow: 0 18px 55px rgba(var(--background-color-rgb, 12, 14, 26), 0.45), /* Shadow sâu hơn */
+  background-color: transparent; 
+  border-radius: 18px; /* Bo góc ngoài của "bìa sổ" */
+  box-shadow: 0 18px 55px rgba(var(--background-color-rgb, 12, 14, 26), 0.45),
               0 8px 22px rgba(var(--background-color-rgb, 12, 14, 26), 0.3),
-              inset 0 0 15px rgba(var(--paper-bg-rgb), 0.05); /* Inner shadow nhẹ */
-  overflow: hidden; /* Giữ để bo góc hoạt động */
-  position: relative; /* Cho ::before, ::after */
+              inset 0 0 15px rgba(var(--paper-bg-rgb), 0.05);
+  overflow: hidden; 
+  position: relative;
+  padding: 2px; /* Padding nhỏ cho "bìa" */
+  /* Tạo hiệu ứng bìa sách với gradient và border */
+  border: 3px solid var(--book-spine-color);
+  background: linear-gradient(145deg, 
+    rgba(var(--paper-bg-rgb),0.05), /* Màu nền trong suốt rất nhẹ cho "bìa" */
+    rgba(var(--book-spine-color),0.08)
+  );
 }
-
-
 
 /* Tiêu đề của Guestbook */
 .guestbook-title {
-  font-size: clamp(1.9em, 4.5vw, 2.4em); /* Giữ nguyên clamp, khá tốt */
-  font-weight: 400; /* Giữ, font Playwrite đẹp ở weight này */
+  font-size: clamp(1.9em, 4.5vw, 2.4em); 
+  font-weight: 400; 
   text-align: center;
   margin: clamp(1.5rem, 3vh, 2rem) auto clamp(1.2rem, 2.5vh, 1.8rem) auto;
   color: var(--guestbook-highlight);
   text-shadow: 0 0 25px rgba(var(--guestbook-highlight-rgb), 0.5),
                0 0 10px rgba(var(--guestbook-highlight-rgb), 0.35),
                0 2.5px 4px rgba(var(--background-color-rgb, 12,14,26), 0.25);
-  letter-spacing: 2px; /* Tăng nhẹ để thoáng hơn */
+  letter-spacing: 2px; 
   line-height: 1.35;
-  padding: 0 1rem; /* Để title không sát viền khi hẹp */
-  position: relative; /* Đảm bảo title nằm trên các hiệu ứng background nếu có */
+  padding: 0 1rem; 
+  position: relative; 
   z-index: 1;
+  flex-shrink: 0; /* Ngăn title bị co lại */
 }
 
 /* Wrapper cho 2 trang sách */
 .book-pages-wrapper {
   display: flex;
-  flex-grow: 1; /* Quan trọng để chiếm hết không gian còn lại */
-  width: 100%; /* Chiếm toàn bộ chiều rộng book-core */
-  height: calc(100% - 50px); /* Chiều cao ví dụ, cần trừ đi phần title đã chiếm */
-  gap: 0; /* Không có khoảng cách giữa các trang */
-  perspective: 2500px; /* Tăng perspective cho hiệu ứng 3D tốt hơn (nếu có anim lật trang sau này) */
-  padding: 0 2px; /* Khoảng hở rất nhỏ ở giữa, đủ để lộ gáy sách */
+  flex-grow: 1; 
+  width: 100%; 
+  height: calc(100% - 70px); /* Điều chỉnh nếu title cao/thấp hơn */
+  gap: 0; 
+  perspective: 2500px; 
+  padding: 0 3px; /* Khoảng hở nhỏ hơn, đủ thấy "gáy" */
   position: relative;
-  z-index: 1; /* Nằm trên các lớp ::before, ::after của .book-core */
+  z-index: 1;
 }
 
-/* Gáy sách giữa - làm nổi bật hơn */
+/* Gáy sách giữa */
 .book-pages-wrapper::before {
     content: '';
     position: absolute;
-    top: -5px; /* Hơi chờm ra ngoài mép giấy */
-    bottom: -5px;
+    top: -8px; /* Hơi chờm ra ngoài mép giấy một chút */
+    bottom: -8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 22px; /* Độ rộng của gáy sách */
-    background:
-      linear-gradient(to right, /* Tạo độ bóng và chiều sâu cho gáy */
-        rgba(0,0,0,0.18) 0%,
-        rgba(0,0,0,0.03) 30%,
-        rgba(0,0,0,0.01) 50%,
-        rgba(0,0,0,0.03) 70%,
-        rgba(0,0,0,0.18) 100%
+    width: 25px; 
+    background: 
+      linear-gradient(to right, 
+        rgba(0,0,0,0.22) 0%, /* Shadow tối hơn ở mép gáy */
+        rgba(0,0,0,0.04) 30%,
+        rgba(0,0,0,0.015) 50%,
+        rgba(0,0,0,0.04) 70%,
+        rgba(0,0,0,0.22) 100%
       );
-    border-left: 1.5px solid rgba(0,0,0,0.08); /* Viền nhẹ */
-    border-right: 1.5px solid rgba(0,0,0,0.08);
-    z-index: 2; /* Nằm trên các trang giấy */
+    border-left: 1.8px solid rgba(0,0,0,0.1); 
+    border-right: 1.8px solid rgba(0,0,0,0.1);
+    z-index: 2; 
     pointer-events: none;
-    border-radius: 3px; /* Bo tròn nhẹ cho gáy */
-    box-shadow: 0 0 5px rgba(0,0,0,0.05) inset; /* Inner shadow cho gáy */
+    border-radius: 4px; 
+    box-shadow: 0 0 8px rgba(0,0,0,0.08) inset; 
 }
 
 /* Style chung cho mỗi trang sách */
 .book-page {
-  flex: 1; /* Chia đôi không gian */
+  flex: 1; 
   background-color: var(--paper-bg);
   color: var(--paper-text-color);
-  padding: 0; /* Padding sẽ nằm trong .page-content-scrollable */
+  padding: 0; 
   box-sizing: border-box;
-  overflow: hidden; /* Để scrollbar hoạt động đúng */
+  overflow: hidden; 
   position: relative;
-  display: flex; /* Để .page-content-scrollable có thể flex-grow */
+  display: flex; 
   flex-direction: column;
 }
 .book-page.page-left {
-  border-top-left-radius: 8px; /* Bo góc trong của trang */
-  border-bottom-left-radius: 8px;
-  padding-right: 5px; /* Khoảng trống nhỏ sát gáy */
-  box-shadow: -3px 0 10px rgba(0,0,0,0.12) inset; /* Đổ bóng vào trong từ gáy */
+  border-top-left-radius: 10px; 
+  border-bottom-left-radius: 10px;
+  padding-right: 6px; /* Khoảng trống rộng hơn chút cho hiệu ứng trang */
+  box-shadow: -4px 0 12px rgba(0,0,0,0.15) inset; 
 }
 .book-page.page-right {
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-  padding-left: 5px;
-  box-shadow: 3px 0 10px rgba(0,0,0,0.12) inset;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding-left: 6px;
+  box-shadow: 4px 0 12px rgba(0,0,0,0.15) inset;
 }
 
 /* Khu vực nội dung có thể cuộn của mỗi trang */
 .page-content-scrollable {
-  flex-grow: 1; /* Chiếm hết không gian còn lại trong .book-page */
+  flex-grow: 1; 
   overflow-y: auto;
-  padding: clamp(1rem, 2.5vw, 1.8rem) clamp(1.2rem, 3vw, 2rem); /* Responsive padding */
+  padding: clamp(1rem, 2.5vw, 1.8rem) clamp(1.2rem, 3vw, 2rem); 
   scrollbar-width: thin;
   scrollbar-color: var(--guestbook-scrollbar-thumb) var(--guestbook-scrollbar-track);
 }
 .page-content-scrollable::-webkit-scrollbar { width: 9px; }
-.page-content-scrollable::-webkit-scrollbar-track { background: var(--guestbook-scrollbar-track); border-radius: 8px; }
+.page-content-scrollable::-webkit-scrollbar-track { background: var(--guestbook-scrollbar-track); border-radius: 8px; margin: 4px 0; }
 .page-content-scrollable::-webkit-scrollbar-thumb {
   background-color: var(--guestbook-scrollbar-thumb);
   border-radius: 8px;
-  border: 2.5px solid transparent; /* Tạo khoảng cách giữa thumb và track */
-  background-clip: content-box;
+  border: 2.5px solid var(--paper-bg); /* Màu nền của trang cho border thumb */
+  background-clip: padding-box; /* Cho border hiển thị đúng */
 }
 .page-content-scrollable::-webkit-scrollbar-thumb:hover {
   background-color: rgba(var(--guestbook-highlight-rgb), 0.6);
@@ -160,24 +168,26 @@
   gap: clamp(1.2rem, 2.5vh, 1.5rem);
   padding: clamp(1.5rem, 3vh, 2rem) clamp(1rem, 2.5vw, 1.5rem);
   text-align: center;
-  border-radius: 18px; /* Bo tròn mềm mại hơn */
-  background-color: rgba(var(--paper-bg-rgb), 0.6); /* Nền hơi trong suốt */
+  border-radius: 18px; 
+  background-color: rgba(var(--paper-bg-rgb), 0.6); 
   border: 1.5px dashed rgba(var(--paper-border-rgb), 0.7);
-  min-height: 200px; /* Đảm bảo có không gian ngay cả khi nội dung ít */
+  min-height: 220px; 
   color: var(--paper-text-color);
+  font-family: var(--font-family-primary), cursive; /* Font poetic cho prompt */
 }
 .guestbook-write-prompt p {
   font-size: clamp(1em, 2.2vw, 1.15em);
   color: var(--paper-text-color);
-  opacity: 0.9; /* Không quá đậm */
-  font-weight: 300; /* Giữ nguyên */
+  opacity: 0.9; 
+  font-weight: 300; 
   margin: 0;
   max-width: 95%;
   line-height: 1.7;
 }
-.guestbook-write-prompt p strong { /* Nhấn mạnh tên Rin hoặc các từ khóa */
+.guestbook-write-prompt p strong { 
   font-weight: 500;
   color: var(--guestbook-primary-action);
+  text-shadow: 0 0 5px rgba(var(--guestbook-primary-action-rgb), 0.3);
 }
 
 
@@ -186,28 +196,29 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.8em; /* Khoảng cách giữa icon và text */
-  padding: 0.8rem 1.8rem; /* Điều chỉnh padding */
-  border-radius: 30px; /* Bo tròn hoàn toàn */
+  gap: 0.8em; 
+  padding: 0.8rem 1.8rem; 
+  border-radius: 30px; 
   font-family: inherit;
-  font-size: clamp(0.95em, 2vw, 1.05em); /* Responsive font size */
+  font-size: clamp(0.95em, 2vw, 1.05em); 
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), /* Fast & bouncy */
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), 
               box-shadow 0.25s cubic-bezier(0.23, 1, 0.32, 1),
               filter 0.25s cubic-bezier(0.23, 1, 0.32, 1),
               background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
-  text-shadow: 0 1px 2px rgba(var(--paper-bg-rgb), 0.3); /* Shadow cho chữ */
+  text-shadow: 0 1px 2px rgba(var(--paper-bg-rgb), 0.3); 
   position: relative;
-  overflow: hidden; /* Cho các hiệu ứng ::before, ::after nếu có */
+  overflow: hidden; 
 }
 .poetic-button svg, .poetic-button-subtle svg, .poetic-button-primary svg {
-  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Anim icon khi hover */
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+  stroke-width: 1.9; /* Hơi mảnh hơn mặc định */
 }
 .poetic-button:hover:not(:disabled) svg,
 .poetic-button-subtle:hover:not(:disabled) svg,
 .poetic-button-primary:hover:not(:disabled) svg {
-  transform: rotate(7deg) scale(1.1); /* Icon hơi nghiêng và phóng to */
+  transform: rotate(7deg) scale(1.1); 
 }
 
 
@@ -216,10 +227,10 @@
   border: 2px solid transparent;
   border-image-slice: 1;
   border-image-source: linear-gradient(140deg,
-    rgba(var(--paper-text-rgb), 0.7), /* Viền có màu text của giấy */
-    rgba(var(--guestbook-primary-action-rgb), 0.5) /* Và màu primary action */
+    rgba(var(--paper-text-rgb), 0.7), 
+    rgba(var(--guestbook-primary-action-rgb), 0.5) 
   );
-  background: linear-gradient(140deg, /* Nền gradient nhẹ nhàng */
+  background: linear-gradient(140deg, 
     rgba(var(--guestbook-primary-action-rgb), 0.15),
     rgba(var(--guestbook-secondary-action-rgb), 0.12)
   );
@@ -227,14 +238,15 @@
   box-shadow: 0 6px 22px -6px rgba(var(--guestbook-primary-action-rgb),0.28);
 }
 .guestbook-write-button.poetic-button:hover:not(:disabled) {
-  filter: brightness(1.15); /* Sáng hơn khi hover */
-  box-shadow: 0 9px 28px -6px rgba(var(--guestbook-highlight-rgb),0.38), /* Shadow lớn hơn */
-              0 0 18px rgba(var(--guestbook-highlight-rgb),0.22) inset; /* Inner glow */
+  filter: brightness(1.15); 
+  box-shadow: 0 9px 28px -6px rgba(var(--guestbook-highlight-rgb),0.38), 
+              0 0 18px rgba(var(--guestbook-highlight-rgb),0.22) inset; 
 }
-.guestbook-write-button.poetic-button:hover svg {
-  animation: featherPulse 1.5s infinite ease-in-out; /* Anim icon bút */
+.guestbook-write-button.poetic-button:hover:not(:disabled) .IconFeatherPen svg, /* Target icon SVG specific class if exists */
+.guestbook-write-button.poetic-button:hover:not(:disabled) svg { /* Hoặc target SVG chung */
+  animation: featherPulse 1.5s infinite ease-in-out; 
 }
-@keyframes featherPulse { /* Anim cho icon bút lông */
+@keyframes featherPulse { 
   0%, 100% { transform: scale(1) rotate(7deg); filter: drop-shadow(0 0 3px rgba(var(--guestbook-highlight-rgb), 0.3)); }
   50% { transform: scale(1.15) rotate(5deg); filter: drop-shadow(0 0 7px rgba(var(--guestbook-highlight-rgb), 0.5)); }
 }
@@ -245,10 +257,10 @@
   flex-direction: column;
   gap: clamp(1.3rem, 2.5vh, 1.6rem);
   padding: clamp(1.2rem, 2.5vw, 1.8rem) clamp(1rem, 2.5vw, 1.5rem);
-  background-color: rgba(var(--paper-bg-rgb), 0.55); /* Hơi trong hơn prompt */
+  background-color: rgba(var(--paper-bg-rgb), 0.55); 
   border-radius: 18px;
   border: 1.5px solid rgba(var(--paper-border-rgb), 0.6);
-  box-shadow: 0 6px 18px rgba(var(--paper-text-rgb),0.08), /* Shadow nhẹ */
+  box-shadow: 0 6px 18px rgba(var(--paper-text-rgb),0.08), 
               inset 0 0 10px rgba(var(--paper-text-rgb),0.05);
   color: var(--paper-text-color);
 }
@@ -257,61 +269,57 @@
     font-weight: 500;
     color: var(--paper-text-color);
     opacity: 0.9;
-    margin: 0 0 0.9rem 0; /* Khoảng cách với form group đầu tiên */
-    text-align: left; /* Hoặc center tùy ý */
+    margin: 0 0 0.9rem 0; 
+    text-align: left; 
     padding-bottom: 0.65rem;
-    border-bottom: 1.5px solid rgba(var(--paper-border-rgb),0.6); /* Phân cách nhẹ */
+    border-bottom: 1.5px solid rgba(var(--paper-border-rgb),0.6); 
 }
 
 .form-group { display: flex; flex-direction: column; gap: 0.65rem; text-align: left;}
 .form-group label {
   font-size: clamp(0.85em, 1.8vw, 0.95em);
-  font-weight: 400; /* Normal weight cho label */
+  font-weight: 400; 
   color: rgba(var(--paper-text-rgb), 0.9);
-  padding-left: 0.3rem; /* Căn lề nhẹ cho label */
+  padding-left: 0.3rem; 
   letter-spacing: 0.25px;
 }
 
-/* Input và Textarea styling */
-.form-group input,
+.form-group input[type="text"],
 .form-group textarea {
-  padding: 0.95rem 1.15rem; /* Padding thoải mái */
-  border-radius: 12px; /* Bo góc vừa phải */
-  border: 2.5px solid rgba(var(--paper-border-rgb), 0.8); /* Viền đậm hơn một chút */
-  background-color: rgba(var(--paper-bg-rgb), 0.9); /* Gần giống màu giấy */
+  padding: 0.95rem 1.15rem; 
+  border-radius: 12px; 
+  border: 2.5px solid rgba(var(--paper-border-rgb), 0.8); 
+  background-color: rgba(var(--paper-bg-rgb), 0.9); 
   color: var(--paper-text-color);
-  font-family: inherit; /* Giữ font chung */
-  font-size: 0.95em; /* Hơi nhỏ hơn text bình thường */
+  font-family: var(--font-family-primary), cursive; 
+  font-size: 0.95em; 
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease;
   outline: none;
   line-height: 1.5;
 }
-.form-group input::placeholder,
+.form-group input[type="text"]::placeholder,
 .form-group textarea::placeholder {
-  color: rgba(var(--paper-text-rgb), 0.6); /* Màu placeholder nhạt */
+  color: rgba(var(--paper-text-rgb), 0.6); 
   font-style: italic;
   font-weight: 300;
 }
 .form-group textarea { resize: vertical; min-height: 100px; }
-/* Styling cho focus đã được handle bởi whileFocus trong TSX, CSS này chỉ để tham khảo nếu k dùng motion */
-/* .form-group input:focus, .form-group textarea:focus { ... } */
 
 
-/* Container cho feedback (lỗi/thành công) */
 .form-feedback-container {
-    min-height: 2.6em; /* Đủ không gian cho 1 dòng feedback */
+    min-height: 2.6em; 
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: -0.55rem; /* Hơi kéo lên để sát với input cuối */
+    margin-top: -0.55rem; 
 }
 .submit-feedback {
   font-size: clamp(0.85em, 1.8vw, 0.95em);
   padding: 0.75rem 1.15rem;
-  border-radius: 10px; /* Bo góc mềm */
+  border-radius: 10px; 
   text-align: center;
-  font-weight: 500; /* Chữ đậm vừa */
-  border-width: 2px; /* Viền rõ ràng */
+  font-weight: 500; 
+  border-width: 2px; 
   border-style: solid;
   letter-spacing: 0.2px;
 }
@@ -319,63 +327,59 @@
   background-color: rgba(var(--error-color-rgb), 0.15);
   color: var(--error-color);
   border-color: rgba(var(--error-color-rgb), 0.4);
-  text-shadow: 0 0 7px rgba(var(--error-color-rgb), 0.22); /* Text shadow cho lỗi */
+  text-shadow: 0 0 7px rgba(var(--error-color-rgb), 0.22); 
 }
 .submit-feedback.success {
-  background-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.2); /* Màu từ App.css */
+  background-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.2); 
   color: var(--success-color, #a6e3a1);
   border-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.45);
   text-shadow: 0 0 7px rgba(var(--success-color-rgb, 166, 227, 161), 0.28);
 }
 
-/* Nút actions của form (Submit, Cancel) */
 .form-actions {
     display: flex;
     gap: 1.1rem;
-    margin-top: 0.9rem; /* Khoảng cách với phần feedback */
-    justify-content: flex-start; /* Hoặc flex-end tùy ý */
+    margin-top: 0.9rem; 
+    justify-content: flex-start; 
 }
 
-/* Nút Submit chính */
 .guestbook-submit-button.poetic-button-primary {
-  padding: 0.85rem 1.7rem; /* Padding lớn hơn cho nút chính */
+  padding: 0.85rem 1.7rem; 
   background: linear-gradient(145deg, var(--guestbook-primary-action) 0%, var(--guestbook-highlight) 100%);
-  color: var(--paper-bg); /* Chữ màu giấy để nổi bật trên nền gradient */
+  color: var(--paper-bg); 
   font-weight: 500;
-  border: none; /* Không cần border khi đã có gradient mạnh */
-  box-shadow: 0 5px 18px -4px rgba(var(--guestbook-primary-action-rgb),0.35), /* Shadow nổi */
+  border: none; 
+  box-shadow: 0 5px 18px -4px rgba(var(--guestbook-primary-action-rgb),0.35), 
               0 3px 8px rgba(var(--guestbook-highlight-rgb),0.25),
-              inset 0 -2px 3px rgba(0,0,0,0.1); /* Inner shadow cho chiều sâu */
-  flex-grow: 1; /* Cho nút submit chiếm không gian còn lại nếu cần */
-  min-width: 140px; /* Độ rộng tối thiểu */
+              inset 0 -2px 3px rgba(0,0,0,0.1); 
+  flex-grow: 1; 
+  min-width: 140px; 
 }
 .guestbook-submit-button.poetic-button-primary:disabled {
-    opacity: 0.65; /* Mờ đi khi disabled */
+    opacity: 0.65; 
     cursor: not-allowed;
-    filter: saturate(0.5) brightness(0.9); /* Giảm màu và độ sáng */
+    filter: saturate(0.5) brightness(0.9); 
 }
-/* Spinner cho nút submit */
 .button-spinner {
   width: 1.25em;
   height: 1.25em;
-  border: 3px solid rgba(var(--paper-bg-rgb), 0.7); /* Viền spinner */
-  border-top-color: var(--paper-bg); /* Màu chính của spinner */
+  border: 3px solid rgba(var(--paper-bg-rgb), 0.7); 
+  border-top-color: var(--paper-bg); 
   animation: buttonSpin 0.9s linear infinite;
   border-radius: 50%;
 }
 @keyframes buttonSpin { to { transform: rotate(360deg); } }
 
-/* Nút Cancel - tinh tế hơn */
 .guestbook-cancel-button.poetic-button-subtle {
-  border: 2px solid rgba(var(--paper-text-rgb), 0.4); /* Viền màu text nhạt */
-  background-color: transparent; /* Nền trong suốt */
-  color: var(--paper-text-color); /* Chữ màu text */
-  font-size: clamp(0.9em, 1.9vw, 1em); /* Font nhỏ hơn nút chính */
+  border: 2px solid rgba(var(--paper-text-rgb), 0.4); 
+  background-color: transparent; 
+  color: var(--paper-text-color); 
+  font-size: clamp(0.9em, 1.9vw, 1em); 
   font-weight: 400;
-  box-shadow: 0 2.5px 6px rgba(var(--paper-text-rgb),0.07); /* Shadow rất nhẹ */
+  box-shadow: 0 2.5px 6px rgba(var(--paper-text-rgb),0.07); 
 }
 .guestbook-cancel-button.poetic-button-subtle:hover:not(:disabled) {
-  background-color: rgba(var(--paper-text-rgb), 0.08); /* Nền hơi tối khi hover */
+  background-color: rgba(var(--paper-text-rgb), 0.08); 
   border-color: rgba(var(--paper-text-rgb), 0.6);
   color: var(--paper-text-color);
 }
@@ -384,102 +388,95 @@
     cursor: not-allowed;
 }
 
-/* Danh sách các mục lưu bút */
 .guestbook-entries-list-wrapper {
     display: flex;
     flex-direction: column;
-    gap: clamp(1.5rem, 3vh, 1.8rem); /* Khoảng cách giữa các entry */
+    gap: clamp(1.5rem, 3vh, 1.8rem); 
 }
 
-/* Style cho mỗi entry */
 .guestbook-entry {
-  background-color: var(--paper-bg); /* Nền màu giấy */
-  padding: clamp(1.3rem, 3vw, 1.7rem) clamp(1.5rem, 3.5vw, 1.9rem); /* Padding cho entry */
-  border-radius: 14px; /* Bo góc mềm mại */
-  border: 1.5px solid var(--paper-border); /* Viền giấy */
-  box-shadow: 4px 4px 12px rgba(var(--paper-text-rgb), 0.12), /* Shadow tạo độ nổi */
+  background-color: var(--paper-bg); 
+  padding: clamp(1.3rem, 3vw, 1.7rem) clamp(1.5rem, 3.5vw, 1.9rem); 
+  border-radius: 14px; 
+  border: 1.5px solid var(--paper-border); 
+  box-shadow: 4px 4px 12px rgba(var(--paper-text-rgb), 0.12), 
               2px 2px 5px rgba(var(--paper-text-rgb), 0.08),
-              inset 0 0 10px rgba(255,255,255,0.25); /* Inner shadow tạo độ lõm cho giấy */
+              inset 0 0 10px rgba(255,255,255,0.25); 
   text-align: left;
-  overflow-wrap: break-word; /* Xử lý chữ dài */
-  position: relative; /* Cho "dog-ear" */
+  overflow-wrap: break-word; 
+  position: relative; 
   color: var(--paper-text-color);
 }
-/* Hiệu ứng "dog-ear" - góc giấy bị gấp */
 .guestbook-entry::after {
   content: "";
   position: absolute;
-  top: -1.5px; /* Điều chỉnh để sát viền */
+  top: -1.5px; 
   right: -1.5px;
-  width: 38px; /* Kích thước dog-ear */
+  width: 38px; 
   height: 38px;
   background: linear-gradient(135deg,
-    transparent 48%, /* Phần trong suốt */
-    rgba(var(--paper-border-rgb), 0.5) 48.5%, /* Đường gấp nhẹ */
-    rgba(var(--paper-border-rgb), 0.35) 55%, /* Phần tối hơn của gấp */
-    var(--paper-bg) 68% /* Màu giấy của phần gấp */
+    transparent 48%, 
+    rgba(var(--paper-border-rgb), 0.5) 48.5%, 
+    rgba(var(--paper-border-rgb), 0.35) 55%, 
+    var(--paper-bg) 68% 
   );
-  border-bottom-left-radius: 10px; /* Bo tròn góc dưới của dog-ear */
-  filter: drop-shadow(-1.5px 1.5px 1.5px rgba(0,0,0,0.1)); /* Đổ bóng cho dog-ear */
-  pointer-events: none; /* Không tương tác */
+  border-bottom-left-radius: 10px; 
+  filter: drop-shadow(-1.5px 1.5px 1.5px rgba(0,0,0,0.1)); 
+  pointer-events: none; 
 }
 
-/* Wrapper cho nội dung message và dấu quote */
 .entry-message-wrapper {
-    margin: 0 0 1.1rem 0; /* Khoảng cách với meta */
+    margin: 0 0 1.1rem 0; 
     padding: 0;
-    border: none; /* Không cần border ở đây */
-    position: relative; /* Cho dấu quote */
+    border: none; 
+    position: relative; 
 }
-/* Dấu quote mở đầu message */
 .entry-message-wrapper::before {
   content: '“';
-  font-family: 'Georgia', 'Times New Roman', serif; /* Font serif cho quote */
-  font-size: 3em; /* Kích thước lớn cho quote */
-  color: rgba(var(--paper-text-rgb), 0.3); /* Màu quote nhạt */
+  font-family: 'Georgia', 'Times New Roman', serif; 
+  font-size: 3em; 
+  color: rgba(var(--paper-text-rgb), 0.3); 
   position: absolute;
-  left: -0.15em; /* Hơi lùi ra ngoài */
-  top: -0.4em;  /* Hơi nhô lên trên */
+  left: -0.15em; 
+  top: -0.4em;  
   line-height: 0.8;
   opacity: 0.9;
   pointer-events: none;
-  font-style: italic; /* Nghiêng cho quote */
+  font-style: italic; 
 }
 
 .entry-message {
-  font-family: var(--font-family-primary), 'cursive'; /* Font "viết tay" */
+  font-family: var(--font-family-primary), 'cursive'; 
   font-size: clamp(1em, 2.2vw, 1.15em);
-  line-height: 1.75; /* Giãn dòng cho dễ đọc */
+  line-height: 1.75; 
   color: var(--paper-text-color);
   margin: 0;
-  padding-left: 0.9em; /* Để message không đè lên quote */
-  white-space: pre-wrap; /* Giữ nguyên các xuống dòng trong message */
-  font-style: normal; /* Chữ message bình thường */
-  font-weight: 400; /* Weight cho font viết tay */
+  padding-left: 0.9em; 
+  white-space: pre-wrap; 
+  font-style: normal; 
+  font-weight: 400; 
 }
-/* Phần metadata của entry (tên, thời gian) */
 .entry-meta {
-  font-size: clamp(0.8em, 1.8vw, 0.9em); /* Font nhỏ hơn message */
+  font-size: clamp(0.8em, 1.8vw, 0.9em); 
   color: rgba(var(--paper-text-rgb), 0.8);
   display: flex;
-  flex-direction: row; /* Xếp ngang */
-  justify-content: space-between; /* Tên bên trái, ngày bên phải */
+  flex-direction: row; 
+  justify-content: space-between; 
   align-items: center;
-  flex-wrap: wrap; /* Xuống dòng nếu không đủ chỗ */
+  flex-wrap: wrap; 
   gap: 0.5rem;
   opacity: 0.9;
   padding-top: 0.9rem;
-  border-top: 1.5px dashed rgba(var(--paper-border-rgb), 0.7); /* Phân cách với message */
-  margin-top: 0.65rem; /* Khoảng cách với message */
+  border-top: 1.5px dashed rgba(var(--paper-border-rgb), 0.7); 
+  margin-top: 0.65rem; 
 }
-.entry-author strong { /* Nhấn mạnh tên tác giả */
+.entry-author strong { 
   font-weight: 500;
-  color: var(--paper-text-color); /* Màu chữ đậm hơn */
+  color: var(--paper-text-color); 
   letter-spacing: 0.4px;
 }
-.entry-timestamp { font-style: italic; } /* Thời gian nghiêng */
+.entry-timestamp { font-style: italic; } 
 
-/* Thông báo khi chưa có entry nào */
 .no-entries-message {
   text-align: center;
   font-style: italic;
@@ -497,71 +494,79 @@
   justify-content: center;
 }
 
-/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 1024px) { /* Tăng điểm breakpoint cho tablet lớn */
+  .book-core { 
+    width: 95%; 
+    height: auto; /* Chiều cao tự động hơn */
+    max-height: 85vh; 
+    min-height: 400px;
+  }
+  .guestbook-title { margin-bottom: clamp(1rem, 2vh, 1.2rem); }
+}
+
 @media (max-width: 768px) {
-  .book-core { max-height: calc(88vh - 70px); } /* Tăng chiều cao tối đa một chút */
-  .book-core::before, .book-core::after { height: 20px; } /* Mép sách mỏng hơn */
+  .book-core { max-height: calc(88vh - 70px); padding: 1px;}
+  .book-core::before, .book-core::after { display: none; } /* Bỏ mép sách giả */
 
   .guestbook-title { margin: clamp(1.2rem, 2.5vh, 1.8rem) auto clamp(1rem, 2vh, 1.5rem) auto; }
   .page-content-scrollable { padding: clamp(0.8rem, 2vw, 1.5rem) clamp(1rem, 2.5vw, 1.8rem); }
 
-  /* Stack nút trong form trên mobile */
   .form-actions {
-    flex-direction: column-reverse; /* Nút Cancel lên trên, Submit xuống dưới */
+    flex-direction: column-reverse; 
     gap: 0.9rem;
   }
-  .form-actions > button { width: 100%; } /* Các nút chiếm full width */
+  .form-actions > button { width: 100%; } 
 }
 
-/* Khi màn hình rất hẹp, các trang sách sẽ xếp chồng lên nhau */
-@media (max-width: 600px) {
+@media (max-width: 640px) { /* Breakpoint cho mobile nhỏ hơn */
     .book-core {
-        max-height: calc(90vh - 50px); /* Tăng thêm chút nữa */
-        padding-bottom: 10px; /* Thêm padding đáy cho book-core */
+        width: 98%; /* Chiếm gần hết */
+        max-height: calc(90vh - 40px); /* Thêm chút không gian nếu keyboard hiện */
+        border-radius: 12px; /* Giảm bo góc bìa */
+        padding: 1.5px;
+        border-width: 2px;
     }
-    .book-core::before, .book-core::after { height: 18px; left:3%; right:3%;} /* Mép sách mỏng hơn */
-
     .book-pages-wrapper {
-        flex-direction: column; /* Xếp chồng các trang */
-        height: auto; /* Chiều cao tự động theo nội dung */
-        padding: 0; /* Reset padding của wrapper */
-        perspective: none; /* Không cần perspective khi xếp chồng */
+        flex-direction: column; 
+        height: auto; 
+        padding: 0; 
+        perspective: none; 
     }
-    .book-pages-wrapper::before { /* Ẩn gáy sách */
-      display: none;
-    }
+    .book-pages-wrapper::before { display: none; }
 
     .book-page {
-        flex-basis: auto; /* Chiều cao tự động */
-        min-height: 300px; /* Chiều cao tối thiểu cho mỗi trang */
-        max-height: 48vh; /* Giới hạn chiều cao tối đa mỗi trang */
+        flex-basis: auto; 
+        min-height: 320px; /* Tăng nhẹ min-height */
+        max-height: 48vh; 
     }
     .book-page.page-left {
-        border-radius: 8px; /* Bo tròn tất cả các góc khi xếp chồng */
-        margin-bottom: 1rem; /* Khoảng cách giữa 2 trang */
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Shadow cho trang trên */
-        padding-right: 0; /* Reset padding */
+        border-radius: 10px; 
+        margin-bottom: 0.8rem; 
+        box-shadow: 0 3px 10px rgba(0,0,0,0.12); 
+        padding-right: 0; 
     }
     .book-page.page-right {
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.12);
         padding-left: 0;
     }
     .page-content-scrollable {
-        /* Có thể thay đổi màu scrollbar track cho hợp hơn */
         --guestbook-scrollbar-track: rgba(var(--paper-bg-rgb), 0.6);
     }
 
     .guestbook-form-title { border-bottom: none; text-align: center; margin-bottom: 0.7rem; }
     .entry-meta { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
-    .guestbook-entry::after { width: 32px; height: 32px; } /* Dog-ear nhỏ hơn */
-    .entry-message-wrapper::before { font-size: 2.7em; } /* Quote nhỏ hơn */
+    .guestbook-entry::after { width: 32px; height: 32px; } 
+    .entry-message-wrapper::before { font-size: 2.7em; } 
 }
 
 @media (max-width: 480px) {
-  .book-page { min-height: 250px; max-height: 50vh; } /* Điều chỉnh lại chiều cao */
+  .book-page { min-height: 280px; max-height: 50vh; } 
   .poetic-button, .poetic-button-subtle, .poetic-button-primary {
-     padding: 0.7rem 1.5rem; /* Padding nhỏ hơn cho nút */
-     font-size: clamp(0.9em, 1.9vw, 1em); /* Font nhỏ hơn cho nút */
+     padding: 0.7rem 1.5rem; 
+     font-size: clamp(0.9em, 1.9vw, 1em); 
   }
+  .form-group textarea { min-height: 80px; }
+  .guestbook-entry { padding: clamp(1rem, 2.5vw, 1.5rem) clamp(1.2rem, 3vw, 1.6rem); }
+  .entry-message-wrapper::before { font-size: 2.5em; top: -0.3em; }
 }

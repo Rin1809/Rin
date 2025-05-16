@@ -133,7 +133,7 @@ const bookPagesWrapperVariants = { // Variants cho wrapper 2 trang sách
 
 
 // Guestbook Component
-const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) => { // Thêm onBack
+const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) => {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -141,7 +141,6 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'read' | 'write'>('read');
 
-  // Logic handleSubmit (giữ nguyên, có thể tối ưu thông báo lỗi nếu muốn)
    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !message.trim()) {
@@ -159,20 +158,18 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       setSubmitSuccess(language === 'vi' ? 'Cảm ơn bạn đã chia sẻ!' : language === 'en' ? 'Thank you for sharing!' : 'ご感想ありがとうございます！');
       setTimeout(() => {
         setSubmitSuccess(null);
-        setViewMode('read'); // Quay lại view 'read' sau khi thành công
-      }, 3500); // Thời gian hiển thị thông báo thành công
-    } catch (error: any) { // Bắt lỗi cụ thể hơn nếu có từ onAddEntry
+        setViewMode('read'); 
+      }, 3500); 
+    } catch (error: any) { 
       console.error("Lỗi gửi entry Guestbook.tsx:", error);
       let userErrorMessage = language === 'vi' ? 'Gửi thất bại, vui lòng thử lại.' : language === 'en' ? 'Submission failed, please try again.' : '送信に失敗しました。もう一度お試しください。';
-      // Kiểm tra nếu lỗi từ server có message cụ thể
-      if (error && typeof error.message === 'string' && error.message.startsWith('Failed to submit:')) { // Giả sử server trả lỗi có prefix này
+      if (error && typeof error.message === 'string' && error.message.startsWith('Failed to submit:')) {
          userErrorMessage = `${userErrorMessage} (${error.message.replace('Failed to submit: ', '')})`;
       } else if (error && typeof error.message === 'string') {
-        // Nếu có message nhưng không phải format cụ thể, thì dùng message đó
         userErrorMessage = error.message;
       }
       setSubmitError(userErrorMessage);
-      setTimeout(() => setSubmitError(null), 5000); // Thời gian hiển thị thông báo lỗi
+      setTimeout(() => setSubmitError(null), 5000); 
     } finally {
       setIsSubmitting(false);
     }
@@ -181,58 +178,53 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
 
   const handleCancelWrite = () => {
     setViewMode('read');
-    setName(''); // Xóa input
-    setMessage(''); // Xóa input
-    setSubmitError(null); // Xóa lỗi
-    setSubmitSuccess(null); // Xóa thông báo thành công
+    setName(''); 
+    setMessage(''); 
+    setSubmitError(null); 
+    setSubmitSuccess(null); 
   }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
-        // Trả về chuỗi tùy theo ngôn ngữ nếu ngày không hợp lệ
         return language === 'vi' ? 'Không rõ TG' : language === 'en' ? 'Unknown time' : '時刻不明';
     }
     const options: Intl.DateTimeFormatOptions = {
         year: 'numeric', month: 'long', day: 'numeric',
-        hour: '2-digit', minute: '2-digit', hour12: language === 'en' // format 12h cho tiếng Anh
+        hour: '2-digit', minute: '2-digit', hour12: language === 'en' 
     };
     return new Intl.DateTimeFormat(language, options).format(date);
   };
 
-  // Sắp xếp entries mới nhất lên đầu
   const displayedEntries = [...entries].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   return (
     <motion.div
-      className="book-core" // Container chính của cuốn sổ
+      className="book-core" 
       variants={bookCoreVariants}
       initial="hidden"
       animate="visible"
       exit="exit"
     >
-        {/* Tiêu đề "Sổ Lưu Bút Cảm Xúc" */}
         <motion.h2
             className="guestbook-title"
-            variants={guestbookItemVariants} // Dùng chung item variant
-            initial="hidden" animate="visible" exit="hidden" // Ẩn khi exit
+            variants={guestbookItemVariants} 
+            initial="hidden" animate="visible" exit="hidden" 
         >
             {t.title[language]}
         </motion.h2>
 
-        {/* Wrapper cho hai trang sách */}
         <motion.div
             className="book-pages-wrapper"
             variants={bookPagesWrapperVariants}
             initial="hidden" animate="visible" exit="exit"
         >
-            {/* Trang Trái: Prompt hoặc Form */}
             <div className="book-page page-left">
                 <div className="page-content-scrollable left-page-scroll">
-                    <AnimatePresence mode="wait"> {/* Cho phép anim exit/enter mượt mà */}
+                    <AnimatePresence mode="wait"> 
                     {viewMode === 'read' && (
                         <motion.div
-                            key="read-prompt" // Key để AnimatePresence nhận diện
+                            key="read-prompt" 
                             className="guestbook-write-prompt"
                             variants={guestbookInteractiveSectionVariants}
                             initial="hidden" animate="visible" exit="exit"
@@ -241,9 +233,9 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                             <motion.button
                                 className="guestbook-write-button poetic-button"
                                 onClick={() => setViewMode('write')}
-                                variants={writePromptButtonVariants} // Variants riêng cho nút này
+                                variants={writePromptButtonVariants} 
                                 initial="initial" animate="animate" exit="exit"
-                                whileHover={{ // Hiệu ứng hover nâng cấp cho nút "để lại lời nhắn"
+                                whileHover={{ 
                                     scale: 1.08, y: -6, rotate: -5,
                                     boxShadow: "0 12px 32px -8px rgba(var(--guestbook-highlight-rgb),0.45), 0 0 20px rgba(var(--guestbook-highlight-rgb),0.3) inset"
                                 }}
@@ -267,22 +259,22 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                             <motion.h3 className="guestbook-form-title" variants={guestbookItemVariants}>{t.formTitle[language]}</motion.h3>
                             <motion.div className="form-group" variants={guestbookItemVariants}>
                             <label htmlFor="guestName">{t.nameLabel[language]}</label>
-                            <motion.input // Sử dụng motion.input
+                            <motion.input 
                                 type="text" id="guestName" value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder={t.namePlaceholder[language]}
                                 disabled={isSubmitting} maxLength={100}
-                                whileFocus={{ // Hiệu ứng khi focus
-                                    borderColor: "var(--guestbook-highlight)", // Hoặc var(--guestbook-primary-action)
+                                whileFocus={{ 
+                                    borderColor: "var(--guestbook-highlight)", 
                                     boxShadow: "0 0 12px 3px rgba(var(--guestbook-highlight-rgb),0.3), inset 0 1px 3px rgba(0,0,0,0.1)",
                                     scale: 1.015
                                 }}
-                                transition={{type:"spring", stiffness:320, damping:16}} // Spring cho focus
+                                transition={{type:"spring", stiffness:320, damping:16}} 
                             />
                             </motion.div>
                             <motion.div className="form-group" variants={guestbookItemVariants}>
                             <label htmlFor="guestMessage">{t.messageLabel[language]}</label>
-                            <motion.textarea // Sử dụng motion.textarea
+                            <motion.textarea 
                                 id="guestMessage" value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 placeholder={t.messagePlaceholder[language]}
@@ -295,7 +287,6 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                                 transition={{type:"spring", stiffness:320, damping:16}}
                             />
                             </motion.div>
-                            {/* Feedback Messages Container */}
                             <div className="form-feedback-container">
                             <AnimatePresence mode="wait">
                                 {submitError && (
@@ -312,29 +303,28 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                                 )}
                             </AnimatePresence>
                             </div>
-                            {/* Form Actions: Submit, Cancel */}
                             <motion.div className="form-actions" variants={guestbookItemVariants}>
                                 <motion.button
-                                    type="button" // QUAN TRỌNG: type="button" cho nút cancel
+                                    type="button" 
                                     className="guestbook-cancel-button poetic-button-subtle"
                                     onClick={handleCancelWrite}
                                     disabled={isSubmitting}
-                                    whileHover={{ scale: 1.06, filter: "brightness(0.95)", borderColor: "rgba(var(--guestbook-subtext-rgb),0.6)" }} // Nâng cấp hover
+                                    whileHover={{ scale: 1.06, filter: "brightness(0.95)", borderColor: "rgba(var(--guestbook-subtext-rgb),0.6)" }} 
                                     whileTap={{ scale: 0.97 }}
                                     transition={{ type: "spring", stiffness: 360, damping: 20 }}
                                 >
-                                    <IconInkSplatterCancel /> {/* Icon cancel */}
+                                    <IconInkSplatterCancel /> 
                                     <span>{t.cancelButton[language]}</span>
                                 </motion.button>
                                 <motion.button
                                     type="submit"
                                     className="guestbook-submit-button poetic-button-primary"
                                     disabled={isSubmitting}
-                                    whileHover={{ scale: 1.04, y: -3.5, filter: "brightness(1.15) saturate(1.1)", boxShadow:"0 7px 22px -4px rgba(var(--guestbook-highlight-rgb),0.42), 0 3px 10px rgba(var(--guestbook-primary-action-rgb),0.3)"}} // Hover nổi bật
+                                    whileHover={{ scale: 1.04, y: -3.5, filter: "brightness(1.15) saturate(1.1)", boxShadow:"0 7px 22px -4px rgba(var(--guestbook-highlight-rgb),0.42), 0 3px 10px rgba(var(--guestbook-primary-action-rgb),0.3)"}} 
                                     whileTap={{ scale: 0.98, y: -1, filter: "brightness(0.92)" }}
                                     transition={{ type: "spring", stiffness: 360, damping: 16 }}
                                 >
-                                    {isSubmitting ? ( // Hiển thị spinner khi submitting
+                                    {isSubmitting ? ( 
                                     <>
                                         <span className="button-spinner"></span>
                                         {t.submittingText[language]}
@@ -348,7 +338,6 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                 </div>
             </div>
 
-            {/* Trang Phải: Danh sách Entries */}
             <div className="book-page page-right">
                 <div className="page-content-scrollable right-page-scroll">
                     <div className="guestbook-entries-list-wrapper">
@@ -356,17 +345,16 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                     <AnimatePresence>
                         {displayedEntries.map((entry, index) => (
                         <motion.div
-                            key={entry.id || `entry-${index}`} // Sử dụng ID từ DB
+                            key={entry.id || `entry-${index}`} 
                             className="guestbook-entry"
-                            custom={index} // Pass index cho stagger
+                            custom={index} 
                             variants={entryCardVariants}
                             initial="initial"
                             animate="animate"
-                            exit="exit" // Mặc dù ít khi dùng exit ở đây trừ khi xóa entry
-                            whileHover="whileHover" // Sử dụng whileHover từ variant
-                            layout // Cho phép anim vị trí khi list thay đổi
+                            exit="exit" 
+                            whileHover="whileHover" 
+                            layout 
                         >
-                            {/* Nội dung entry */}
                             <blockquote className="entry-message-wrapper">
                                 <p className="entry-message">{entry.message}</p>
                             </blockquote>
@@ -374,7 +362,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                             <span className="entry-author">
                                 {t.entryBy[language]} <strong>{entry.name}</strong>
                             </span>
-                            {entry.timestamp && ( // Kiểm tra timestamp tồn tại
+                            {entry.timestamp && ( 
                                 <span className="entry-timestamp">
                                 {t.entryDatePrefix[language]} {formatDate(entry.timestamp)}
                                 </span>
@@ -388,7 +376,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                         className="no-entries-message"
                         variants={guestbookItemVariants}
                         initial="hidden"
-                        animate={{...guestbookItemVariants.visible, transition: {...guestbookItemVariants.visible.transition, delay: (viewMode === 'read' ? 0.45 : 0.18) } }} // delay dựa trên viewMode
+                        animate={{...guestbookItemVariants.visible, transition: {...guestbookItemVariants.visible.transition, delay: (viewMode === 'read' ? 0.45 : 0.18) } }} 
                         exit="hidden"
                     >
                         {t.noEntries[language]}
@@ -398,7 +386,6 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                 </div>
             </div>
         </motion.div>
-        {/* Không có nút Back ở đây vì Guestbook là 1 component con, nút back nên do component cha quản lý */}
     </motion.div>
   );
 };

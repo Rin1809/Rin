@@ -699,29 +699,30 @@ export const guestbookViewTranslations = {
   submitButton: { vi: "Gửi Cảm Nghĩ", en: "Post Your Thought", ja: "感想を投稿する" },
   submittingText: { vi: "Đang gửi...", en: "Submitting...", ja: "送信中。。。" },
   
-  promptWrite: {
+  promptWrite: { // Thêm / Xác nhận
     vi: "Bạn muốn chia sẻ đôi dòng tâm tình với Rin hong? ✨ <br/>Cảm ơn vì đã ghé thăm, ghi lại sự hiện diện của bạn tại đây nhé!",
     en: "Want to share some thoughts with Rin? ✨ <br/>Thanks for visiting, feel free to leave your mark!",
     ja: "リンに何か思いを伝えたいですか？ ✨ <br/>ご訪問ありがとうございます。あなたの足跡をここに記しませんか。"
   },
-  writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" },
-  cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" },
+  writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" }, // Thêm / Xác nhận
+  cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" }, // Thêm / Xác nhận
 
   noEntries: {
     vi: "Chưa có ai để lại cảm nghĩ. Hãy là người đầu tiên chia sẻ nhé!",
     en: "No thoughts have been shared yet. Be the first one!",
     ja: "まだ感想はありません。最初の想いを綴りませんか？"
   },
-  entryBy: { vi: "Lời nhắn từ", en: "A thought from", ja: "からのメッセージ" }, 
-  entryDatePrefix: { vi: "Vào lúc", en: "On", ja: "記録日：" }
+  entryBy: { vi: "Lời nhắn từ", en: "A thought from", ja: "からのメッセージ" },  // Thêm / Xác nhận
+  entryDatePrefix: { vi: "Vào lúc", en: "On", ja: "記録日：" } // Thêm / Xác nhận
 };
+
 
 export const guestbookViewContainerVariants = (delay: number = 0.1): Variants => ({
     hidden: { opacity: 0, scale: 0.85, y: 50, filter: "blur(8px)" },
     visible: {
         opacity: 1, scale: 1, y: 0, filter: "blur(0px)",
         transition: {
-            type: "spring", stiffness: 160, damping: 22, mass: 1, // Keep mass as per original file
+            type: "spring", stiffness: 160, damping: 22, mass: 1,
             delay,
             opacity: { duration: 0.6, ease: "easeOut", delay },
             filter: { duration: 0.5, ease: "easeOut", delay: delay + 0.1 }
@@ -729,7 +730,7 @@ export const guestbookViewContainerVariants = (delay: number = 0.1): Variants =>
     },
     exit: {
         opacity: 0, scale: 0.9, y: 30, filter: "blur(5px)",
-        transition: { duration: 0.3, ease: "anticipate" }
+        transition: { duration: 0.3, ease: "anticipate" } // ease "anticipate" tạo hiệu ứng hơi "lùi" lại trước khi biến mất
     }
 });
 
