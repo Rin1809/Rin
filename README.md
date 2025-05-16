@@ -1,0 +1,1 @@
+https://rinn.work.gd/
