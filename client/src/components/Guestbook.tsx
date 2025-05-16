@@ -1,5 +1,5 @@
 // client/src/components/Guestbook.tsx
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import './styles/Guestbook.css';
 import { guestbookViewTranslations as t } from './languageSelector/languageSelector.constants';
