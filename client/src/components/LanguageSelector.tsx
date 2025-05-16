@@ -167,7 +167,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const cardIntroDivider2Delay=cardIntroTaglineDisplayDelay+0.4, cardIntroActionsDelay=cardIntroDivider2Delay+0.1;
   const cardIntroButtonBaseDelay=0.1, headerContentBlockDelay=0.05;
 
-  const fetchGuestbookEntries = useCallback(async () => { /* Giữ nguyên logic fetch */
+  const fetchGuestbookEntries = useCallback(async () => { 
       if (!isMountedRef.current) return;
       setGuestbookLoading(true); setGuestbookError(null);
       try {
