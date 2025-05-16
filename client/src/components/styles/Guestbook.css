@@ -103,7 +103,7 @@
 .book-pages-wrapper::before {
     content: '';
     position: absolute;
-    top: -15px; /* Hơi chờm ra ngoài nhiều hơn */
+    top: 0px; /* Hơi chờm ra ngoài nhiều hơn */
     bottom: -15px;
     left: 50%;
     transform: translateX(-50%);
@@ -111,7 +111,7 @@
     background: linear-gradient(to right, 
         rgba(0,0,0,0.65) 0%, /* Bóng đổ mạnh ở mép gáy */
         rgba(var(--book-spine-color-rgb), 0.45) 8%, 
-        rgba(var(--book-spine-color-rgb), 0.7) 25%, 
+        rgba(var(--book-spine-color-rgb), 0.7) 8%, 
         rgba(var(--book-spine-color-rgb), 0.95) 40%, /* Phần gáy tối hơn */
         rgba(var(--book-spine-color-rgb), 1) 50%,   /* Phần giữa gáy sáng nhất (highlight) */
         rgba(var(--book-spine-color-rgb), 0.95) 60%,
@@ -124,8 +124,8 @@
     border-radius: 12px / 70px; /* Cong gáy sách (elliptical) mạnh hơn */
     box-shadow: 
       0 0 30px rgba(0,0,0,0.55), 
-      inset 2px 0 2.5px rgba(255,255,255,0.18), 
-      inset -2px 0 2.5px rgba(0,0,0,0.3); 
+      inset 2px 0 2.5px rgba(255, 255, 255, 0.473), 
+      inset -2px 0 2.5px rgba(255, 255, 255, 0.473); 
 }
 
 /* Style chung cho mỗi trang sách - Nâng cấp hiệu ứng độ dày và cong */
