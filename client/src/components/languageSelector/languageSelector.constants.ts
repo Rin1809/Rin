@@ -776,14 +776,15 @@ export const spotifyViewContainerVariants = (delay: number = 0.1): Variants => (
 });
 
 export const spotifyPlaylistsTranslations = {
-    title: { vi: "Danh Sách Nhạc Spotify", en: "Spotify Playlists", ja: "Spotifyプレイリスト" },
-    loading: { vi: "Đang tải playlists...", en: "Loading playlists...", ja: "プレイリストを読み込み中..." },
-    error: { vi: "Không thể tải playlists. Vui lòng thử lại sau.", en: "Could not load playlists. Please try again later.", ja: "プレイリストを読み込めませんでした。後でもう一度お試しください。" },
-    noPlaylists: { vi: "Không tìm thấy playlist nào.", en: "No playlists found.", ja: "プレイリストが見つかりませんでした。" },
-    externalLink: { vi: "Mở trên Spotify", en: "Open on Spotify", ja: "Spotifyで開く" },
+    title: { vi: "Giai Điệu Cùng Rin ✨", en: "Tunes with Rin ✨", ja: "リンとのメロディー ✨" }, 
+    loading: { vi: "Đang tìm kiếm những nốt nhạc...", en: "Searching for the notes...", ja: "音符を探しています..." }, 
+    error: { vi: "Hmm, có vẻ như dây đàn bị đứt rồi. Thử lại sau nhé!", en: "Hmm, looks like a string broke. Try again later!", ja: "うーん、弦が切れたみたい。後でまた試してね！" }, // Text lỗi mới
+    noPlaylists: { vi: "Kho nhạc của Rin tạm thời im lặng... 🤫", en: "Rin's music library is temporarily quiet... 🤫", ja: "リンの音楽ライブラリは一時的に静かです。。。🤫" }, // Text khi không có playlist
+    externalLink: { vi: "Nghe trên Spotify", en: "Listen on Spotify", ja: "Spotifyで聴く" }, 
     navPrev: { vi: "Playlist trước", en: "Previous playlist", ja: "前のプレイリスト" },
     navNext: { vi: "Playlist kế", en: "Next playlist", ja: "次のプレイリスト" },
 };
+
 
 
 export const guestbookIconFeatherPen = `<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.7 3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/><path d="m17.6 6.7 3.1-3.1"/><path d="M2.6 20.1C5.9 19.4 10 18 13 15c2-2 3.3-4.2 4-6.3.4-1.1.6-2.3.5-3.5S17 3.2 16 3.3c-1 .1-2.3.7-3.7 2s-3 3.1-4.2 4.6c-1.9 2.4-3.8 4.6-5.3 6.8"/><path d="M10.7 11.3 2.6 20.1"/><path d="m19.2 5.2.4.4"/></svg>`;

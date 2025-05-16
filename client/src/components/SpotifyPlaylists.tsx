@@ -44,28 +44,28 @@ const springTransitionCarousel = { type: "spring", stiffness: 260, damping: 26, 
 
 const carouselItemVariants: Variants = {
     enter: (custom: { direction: number; role: 'main' | 'prev' | 'next' }) => ({
-        x: custom.direction > 0 ? "100%" : "-100%",
+        x: custom.direction > 0 ? "100%" : "-100%", // Slide từ bên nào
         opacity: 0,
-        scale: 0.65, 
+        scale: 0.65, // Thu nhỏ khi vào
         zIndex: 1,
-        rotateY: custom.direction > 0 ? -25 : 25,
-        filter: "blur(1.5px) brightness(0.9)"
+        rotateY: custom.direction > 0 ? -25 : 25, // Xoay 3D
+        filter: "blur(1.5px) brightness(0.9)" // Hiệu ứng mờ và tối
     }),
     center: (custom: { role: 'main' | 'prev' | 'next'; direction: number }) => ({
-        x: custom.role === "main" ? "0%" : (custom.role === "prev" ? "-60%" : "60%"), 
-        scale: custom.role === "main" ? 1 : 0.75, 
-        rotateY: custom.role === "main" ? 0 : (custom.role === "prev" ? 18 : -18), 
-        z: custom.role === "main" ? 0 : -120, 
-        opacity: custom.role === "main" ? 1 : 0.55, 
-        zIndex: custom.role === "main" ? 2 : 1,
-        filter: custom.role === "main" ? "blur(0px) brightness(1.0)" : "blur(1.5px) brightness(0.8)", 
-        boxShadow: custom.role === "main"
+        x: custom.role === "main" ? "0%" : (custom.role === "prev" ? "-60%" : "60%"), // Vị trí item phụ
+        scale: custom.role === "main" ? 1 : 0.75, // Kích thước item phụ
+        rotateY: custom.role === "main" ? 0 : (custom.role === "prev" ? 18 : -18), // Xoay item phụ
+        z: custom.role === "main" ? 0 : -120, // Đẩy item phụ ra sau
+        opacity: custom.role === "main" ? 1 : 0.55, // Độ mờ item phụ
+        zIndex: custom.role === "main" ? 2 : 1, // Item chính nổi lên
+        filter: custom.role === "main" ? "blur(0px) brightness(1.0)" : "blur(1.5px) brightness(0.8)", // Item phụ mờ hơn
+        boxShadow: custom.role === "main" // Bóng đổ cho item chính
             ? "0 18px 50px -15px rgba(var(--highlight-color-poetic-rgb), 0.5), 0 0 3px 3px rgba(var(--highlight-color-poetic-rgb), 0.35)"
             : "0 8px 20px -8px rgba(0, 0, 0, 0.45)",
         transition: springTransitionCarousel
     }),
     exit: (custom: { direction: number; role: 'main' | 'prev' | 'next' }) => ({
-        x: custom.direction < 0 ? "100%" : "-100%",
+        x: custom.direction < 0 ? "100%" : "-100%", // Slide ra
         opacity: 0,
         scale: 0.65,
         zIndex: 0,
@@ -90,23 +90,25 @@ const SpotifyPlaylists: React.FC<SpotifyPlaylistsProps> = ({
     error,
 }) => {
     const [selectedPlaylistIndex, setSelectedPlaylistIndex] = useState<number | null>(null);
-    const [slideDirection, setSlideDirection] = useState(0);
+    const [slideDirection, setSlideDirection] = useState(0); // 1: next, -1: prev
 
     const totalPlaylists = playlists.length;
 
+    // K.tạo index or reset
     useEffect(() => {
         if (totalPlaylists > 0 && selectedPlaylistIndex === null) {
-            setSelectedPlaylistIndex(0); 
+            setSelectedPlaylistIndex(0); // Chọn pl.list đầu
         }
         if (totalPlaylists === 0 && selectedPlaylistIndex !== null) {
-            setSelectedPlaylistIndex(null); 
+            setSelectedPlaylistIndex(null); // Reset nếu k có pl.list
         }
     }, [totalPlaylists, selectedPlaylistIndex]);
 
+    // Đổi pl.list
     const changePlaylist = useCallback((direction: 'next' | 'prev') => {
         if (selectedPlaylistIndex === null || totalPlaylists <= 1) return;
         
-        setSlideDirection(direction === 'next' ? 1 : -1); 
+        setSlideDirection(direction === 'next' ? 1 : -1); // Hướng slide
 
         let newIndex: number;
         if (direction === 'next') {
@@ -117,23 +119,27 @@ const SpotifyPlaylists: React.FC<SpotifyPlaylistsProps> = ({
         setSelectedPlaylistIndex(newIndex);
     }, [selectedPlaylistIndex, totalPlaylists]);
 
+    // Tính index cho item prev, curr, next
     const { prevPlaylistIndex, currentPlaylistIndex, nextPlaylistIndex } = useMemo(() => {
         if (selectedPlaylistIndex === null || totalPlaylists === 0) {
             return { prevPlaylistIndex: null, currentPlaylistIndex: null, nextPlaylistIndex: null };
         }
         const current = selectedPlaylistIndex;
+        // Chỉ show item phụ nếu có >= 2 pl.list
         const prev = totalPlaylists > 1 ? (current - 1 + totalPlaylists) % totalPlaylists : null;
         const next = totalPlaylists > 1 ? (current + 1) % totalPlaylists : null;
         return { prevPlaylistIndex: prev, currentPlaylistIndex: current, nextPlaylistIndex: next };
     }, [selectedPlaylistIndex, totalPlaylists]);
 
+    // X.lý click item phụ
     const handleSidePlaylistClick = (index: number | null) => {
         if (index === null || index === currentPlaylistIndex || selectedPlaylistIndex === null) return;
         const diff = index - selectedPlaylistIndex;
         let direction = 0;
-        if (index === prevPlaylistIndex) direction = -1;
-        else if (index === nextPlaylistIndex) direction = 1;
-        else { 
+        // X.định hướng slide
+        if (index === prevPlaylistIndex) direction = -1; // Click trái -> prev
+        else if (index === nextPlaylistIndex) direction = 1; // Click phải -> next
+        else { // T.hợp đặc biệt
             if (Math.abs(diff) <= totalPlaylists / 2) direction = diff > 0 ? 1 : -1; 
             else direction = diff > 0 ? -1 : 1; 
         }
@@ -180,9 +186,11 @@ const SpotifyPlaylists: React.FC<SpotifyPlaylistsProps> = ({
                 {t.title[language]}
             </motion.h2>
 
+            {/* Render carousel nếu có pl.list & index hợp lệ */}
             {currentPlaylistIndex !== null && totalPlaylists > 0 ? (
                 <>
                     <div className="spotify-carousel-wrapper">
+                        {/* Nút Prev (show nếu > 1 pl.list) */}
                         {totalPlaylists > 1 && (
                             <motion.button
                                 className="spotify-carousel-nav prev" onClick={() => changePlaylist('prev')}
@@ -194,27 +202,31 @@ const SpotifyPlaylists: React.FC<SpotifyPlaylistsProps> = ({
 
                         <div className="spotify-carousel-stage">
                             <AnimatePresence custom={{ direction: slideDirection }} initial={false} mode="popLayout">
+                                {/* Item Trước (nếu có) */}
                                 {totalPlaylists > 1 && prevPlaylistIndex !== null &&
+                                // Đ.kiện show item phụ: > 2 item, hoặc 2 item & item chính là item 2
                                 (totalPlaylists > 2 || (totalPlaylists === 2 && currentPlaylistIndex === 1 )) &&
                                     <motion.div
                                         key={"carousel_prev_" + playlists[prevPlaylistIndex].id} 
-                                        className="spotify-playlist-item prev-item"
+                                        className="spotify-playlist-item prev-item" // Thêm class để phân biệt
                                         custom={{ role: 'prev', direction: slideDirection }} variants={carouselItemVariants}
                                         initial="enter" animate="center" exit="exit"
                                         onClick={() => handleSidePlaylistClick(prevPlaylistIndex)}
                                     >
                                        <iframe
                                             title={playlists[prevPlaylistIndex].name}
-                                            src={`https://open.spotify.com/embed/playlist/${playlists[prevPlaylistIndex].id}?utm_source=generator&theme=0`}
-                                            width="100%" height="352" allowFullScreen={false}
+                                            src={`https://open.spotify.com/embed/playlist/${playlists[prevPlaylistIndex].id}?utm_source=generator&theme=0`} // theme=0 là dark theme
+                                            width="100%" height="352" // Chiều cao chuẩn Spotify
+                                            allowFullScreen={false} // Tắt fullscreen trong iframe
                                             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"
                                         ></iframe>
                                     </motion.div>
                                 }
-                                {currentPlaylistIndex !== null && ( 
+                                {/* Item Chính */}
+                                {currentPlaylistIndex !== null && ( // Đ.bảo currentPlaylistIndex k null
                                   <motion.div
                                       key={"carousel_main_" + playlists[currentPlaylistIndex].id} 
-                                      className="spotify-playlist-item main-item"
+                                      className="spotify-playlist-item main-item" // Thêm class
                                       custom={{ role: 'main', direction: slideDirection }} variants={carouselItemVariants}
                                       initial="enter" animate="center" exit="exit"
                                   >
@@ -224,6 +236,7 @@ const SpotifyPlaylists: React.FC<SpotifyPlaylistsProps> = ({
                                           width="100%" height="352" allowFullScreen={false}
                                           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"
                                       ></iframe>
+                                      {/* Overlay t.tin cho item chính */}
                                       <motion.div 
                                         className="main-item-info-overlay"
                                         initial={{ opacity: 0, y: 20 }}
@@ -233,16 +246,19 @@ const SpotifyPlaylists: React.FC<SpotifyPlaylistsProps> = ({
                                           <h3>{playlists[currentPlaylistIndex].name}</h3>
                                           <a href={playlists[currentPlaylistIndex].externalUrl} target="_blank" rel="noopener noreferrer">
                                             {t.externalLink[language]}
+                                            {/* Icon nhỏ mở tab mới */}
                                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h12c1.11 0 2-.89 2-2V14h-2v4H4V6h6zm7-4L8.5 8.5l1.42 1.42L18 1.83V5h2V0z"></path></svg>
                                           </a>
                                       </motion.div>
                                   </motion.div>
                                 )}
+                                {/* Item Sau (nếu có) */}
                                 {totalPlaylists > 1 && nextPlaylistIndex !== null &&
+                                // Đ.kiện show item phụ: > 2 item, hoặc 2 item & item chính là item đầu
                                 (totalPlaylists > 2 || (totalPlaylists === 2 && currentPlaylistIndex === 0)) &&
                                     <motion.div
                                         key={"carousel_next_" + playlists[nextPlaylistIndex].id} 
-                                        className="spotify-playlist-item next-item"
+                                        className="spotify-playlist-item next-item" // Thêm class
                                         custom={{ role: 'next', direction: slideDirection }} variants={carouselItemVariants}
                                         initial="enter" animate="center" exit="exit"
                                         onClick={() => handleSidePlaylistClick(nextPlaylistIndex)}
@@ -258,6 +274,7 @@ const SpotifyPlaylists: React.FC<SpotifyPlaylistsProps> = ({
                             </AnimatePresence>
                         </div>
 
+                        {/* Nút Next (show nếu > 1 pl.list) */}
                         {totalPlaylists > 1 && (
                             <motion.button
                                 className="spotify-carousel-nav next" onClick={() => changePlaylist('next')}

@@ -2,28 +2,28 @@
 
 /* Container & Title */
 .spotify-playlists-container.spotify-carousel-mode {
-  padding: clamp(1rem, 3vh, 1.8rem) clamp(0.5rem, 2vw, 1rem);
-  color: var(--text-color-poetic, #e6e6e6); /* Poetic text color */
+  padding: clamp(1rem, 3vh, 1.8rem) clamp(0.5rem, 2vw, 1rem); /* K.đệm linh hoạt */
+  color: var(--text-color-poetic, #e6e6e6); /* Màu text poetic */
   max-width: 1000px; 
   width: 100%;     
-  margin: 0 auto; 
+  margin: 0 auto; /* Căn giữa */
   font-family: var(--font-family-primary, "Playwrite DK Loopet", cursive), var(--font-family-fallback, sans-serif);
   display: flex; 
   flex-direction: column;
-  flex-grow: 1; 
-  overflow: hidden; 
-  height: 100%; 
-  background: /* Soft radial gradient background */
+  flex-grow: 1; /* Co giãn theo c.cao */
+  overflow: hidden; /* Tránh scroll */
+  height: 100%; /* Chiếm hết k.gian */
+  background: /* Gradient nền nhẹ */
     radial-gradient(ellipse at 15% 85%, rgba(var(--secondary-color-rgb), 0.03), transparent 50%),
     radial-gradient(ellipse at 85% 20%, rgba(var(--primary-color-rgb), 0.04), transparent 50%);
 }
 
 .spotify-playlists-title {
-    font-size: clamp(1.8em, 4vw, 2.3em); /* Slightly larger and more responsive */
+    font-size: clamp(1.8em, 4vw, 2.3em); /* Size t.đề linh hoạt */
     font-weight: 400;
     text-align: center;
-    margin: 0 auto clamp(1.5rem, 4vh, 2rem) auto; /* Responsive margin */
-    background: linear-gradient( /* Adjusted gradient for more "poetic" feel */
+    margin: 0 auto clamp(1.5rem, 4vh, 2rem) auto; /* K.cách dưới */
+    background: linear-gradient( /* Gradient cho t.đề */
         120deg, 
         var(--secondary-color, #f5c2e7) 15%, 
         var(--highlight-color-poetic, #D8BFD8) 45%, 
@@ -32,15 +32,15 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-size: 280% auto; 
-    animation: galleryTitleFlow 12s ease-in-out infinite alternate; /* Ref App.css, adjusted timing */
-    text-shadow: /* Enhanced text shadow for depth and glow */
+    background-size: 280% auto; /* Tăng size gradient */
+    animation: galleryTitleFlow 12s ease-in-out infinite alternate; /* Anim từ App.css */
+    text-shadow: /* Bóng đổ & glow */
       0 1.5px 2.5px rgba(var(--background-color-rgb),0.15), 
       0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.45), 
       0 0 30px rgba(var(--secondary-color-rgb), 0.3),
       0 0 45px rgba(var(--primary-color-rgb), 0.2);
-    letter-spacing: 1.2px; /* Increased spacing */
-    flex-shrink: 0; 
+    letter-spacing: 1.2px; /* K.cách chữ */
+    flex-shrink: 0; /* Ngăn co */
     line-height: 1.3;
 }
 
@@ -50,18 +50,18 @@
   align-items: center;
   justify-content: space-between; 
   width: 100%;
-  min-height: 390px; /* Adjusted for iframe height + padding */
+  min-height: 390px; /* C.cao min cho iframe + padding */
   position: relative; 
-  flex-grow: 1; 
-  margin-bottom: 1rem; 
+  flex-grow: 1; /* Co giãn */
+  margin-bottom: 1rem; /* K.cách với counter */
 }
 
 .spotify-carousel-nav {
-  background: rgba(var(--card-background-rgb, 30, 30, 46), 0.45); /* Slightly more opaque */
+  background: rgba(var(--card-background-rgb, 30, 30, 46), 0.45); /* Nền mờ hơn */
   color: rgba(var(--text-color-poetic-rgb, 230, 230, 230), 0.75); 
-  border: 1.5px solid rgba(var(--border-color-rgb),0.2); /* Softer border */
+  border: 1.5px solid rgba(var(--border-color-rgb),0.2); /* Viền mềm */
   border-radius: 50%;
-  width: 46px; /* Slightly larger */
+  width: 46px; /* Size nút */
   height: 46px;
   display: flex;
   align-items: center;
@@ -70,11 +70,11 @@
   z-index: 5; 
   transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
   flex-shrink: 0;
-  margin: 0 0.4rem; /* Adjusted margin */
+  margin: 0 0.4rem; /* K.cách nút */
   box-shadow: 0 2px 8px rgba(var(--background-color-rgb),0.15);
 }
 .spotify-carousel-nav:hover {
-  box-shadow: 0 0 16px -2px rgba(var(--primary-color-rgb), 0.6), /* Stronger glow */
+  box-shadow: 0 0 16px -2px rgba(var(--primary-color-rgb), 0.6), /* Glow mạnh khi hover */
               0 3px 10px rgba(var(--background-color-rgb),0.2);
   border-color: rgba(var(--primary-color-rgb),0.3);
 }
@@ -85,95 +85,95 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1700px; /* Increased perspective */
+  perspective: 1700px; /* Tăng perspective */
   overflow: hidden; 
-  min-height: 390px;
-  max-height: 78vh; 
+  min-height: 390px; /* Đ.bảo đủ k.gian iframe */
+  max-height: 78vh; /* Max c.cao */
   transform-style: preserve-3d;
 }
 
 .spotify-playlist-item {
   position: absolute; 
-  width: clamp(280px, 58%, 320px); /* Adjusted width clamp */
-  height: 382px; /* Standard Spotify embed height */
+  width: clamp(280px, 58%, 320px); /* Size item linh hoạt */
+  height: 382px; /* C.cao Spotify embed */
   display: flex; 
   align-items: center;
   justify-content: center;
-  border-radius: 18px; /* Softer radius */
+  border-radius: 18px; /* Bo góc */
   overflow: hidden; 
-  background-color: rgba(var(--card-background-rgb, 30,30,46), 0.25); 
-  border: 1px solid rgba(var(--border-color-rgb, 69, 71, 90), 0.15);  
-  will-change: transform, opacity, filter, z-index, box-shadow; 
-  padding: 0; 
+  background-color: rgba(var(--card-background-rgb, 30,30,46), 0.25); /* Nền mờ */
+  border: 1px solid rgba(var(--border-color-rgb, 69, 71, 90), 0.15);  /* Viền mờ */
+  will-change: transform, opacity, filter, z-index, box-shadow; /* Tối ưu anim */
+  padding: 0; /* Bỏ padding */
 }
 .spotify-playlist-item.prev-item,
 .spotify-playlist-item.next-item {
     cursor: pointer;
-    /* Filter will be applied by variants */
+    /* Filter bởi variants */
 }
 .spotify-playlist-item.main-item {
-    cursor: default; 
-    /* Box shadow and filter will be applied by variants */
+    cursor: default; /* Item chính k trỏ chuột */
+    /* Box shadow & filter bởi variants */
 }
 
 .spotify-playlist-item iframe {
   display: block;
   width: 100%; 
   height: 100%; 
-  user-select: none;
-  border-radius: 16px; /* Match item radius for inner content */
-  border: none; /* Spotify embed has its own border sometimes */
+  user-select: none; /* Ngăn chọn text iframe */
+  border-radius: 16px; /* Bo góc iframe */
+  border: none; /* Bỏ viền iframe */
 }
 
-/* Overlay cho item chính */
+/* Overlay t.tin item chính */
 .main-item-info-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(var(--card-background-rgb), 0.95) 15%, rgba(var(--card-background-rgb), 0.75) 60%, transparent 100%); /* Darker, taller gradient */
-    padding: 2rem 1.2rem 1rem 1.2rem; /* More padding */
+    background: linear-gradient(to top, rgba(var(--card-background-rgb), 0.95) 15%, rgba(var(--card-background-rgb), 0.75) 60%, transparent 100%); /* Gradient đậm, cao */
+    padding: 2rem 1.2rem 1rem 1.2rem; /* Tăng padding */
     color: var(--text-color-poetic);
     text-align: center;
-    opacity: 0; 
-    transform: translateY(15px); /* Start slightly lower */
-    transition: opacity 0.35s ease-out, transform 0.35s ease-out;
-    pointer-events: none; 
-    border-bottom-left-radius: 16px; 
+    opacity: 0; /* Mặc định ẩn */
+    transform: translateY(15px); /* Dịch xuống */
+    transition: opacity 0.35s ease-out, transform 0.35s ease-out; /* Hiệu ứng mượt */
+    pointer-events: none; /* K bắt event khi ẩn */
+    border-bottom-left-radius: 16px; /* Bo góc dưới */
     border-bottom-right-radius: 16px;
-    z-index: 1; 
+    z-index: 1; /* Trên iframe */
 }
 .spotify-playlist-item.main-item:hover .main-item-info-overlay {
-    opacity: 1;
+    opacity: 1; /* Hiện khi hover item chính */
     transform: translateY(0);
-    pointer-events: auto; 
+    pointer-events: auto; /* Bắt event khi hiện */
 }
 .main-item-info-overlay h3 {
-    font-size: 1.05em; /* Slightly larger */
+    font-size: 1.05em; /* Size tên pl.list */
     margin: 0 0 0.4rem 0;
     font-weight: 500;
-    color: var(--highlight-color-poetic); /* Highlight color for name */
+    color: var(--highlight-color-poetic); /* Màu highlight tên */
     text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .main-item-info-overlay a {
-    font-size: 0.9em; /* Slightly larger */
-    color: var(--primary-color); /* Primary color for link */
+    font-size: 0.9em; /* Size link */
+    color: var(--primary-color); /* Màu primary link */
     text-decoration: none;
-    display: inline-flex;
+    display: inline-flex; /* Icon & text thẳng hàng */
     align-items: center;
-    gap: 0.4em; /* More gap */
+    gap: 0.4em; /* K.cách text & icon */
     padding: 0.2rem 0.5rem;
     border-radius: 6px;
     transition: background-color 0.2s ease, text-decoration-color 0.2s ease;
-    text-decoration-line: underline;
-    text-decoration-color: transparent;
+    text-decoration-line: underline; /* Luôn gạch chân */
+    text-decoration-color: transparent; /* Gạch chân ẩn */
 }
 .main-item-info-overlay a:hover {
-    background-color: rgba(var(--primary-color-rgb), 0.1);
-    text-decoration-color: var(--primary-color); 
+    background-color: rgba(var(--primary-color-rgb), 0.1); /* Nền nhẹ hover */
+    text-decoration-color: var(--primary-color); /* Hiện gạch chân hover */
 }
 .main-item-info-overlay a svg {
-    width: 1.1em;
+    width: 1.1em; /* Size icon */
     height: 1.1em;
 }
 
@@ -182,46 +182,46 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 0.9rem; 
+    padding-top: 0.9rem; /* K.cách với carousel */
     flex-shrink: 0;
-    min-height: 2.2em; 
+    min-height: 2.2em; /* Đ.bảo k.gian counter */
 }
 .spotify-carousel-counter {
     font-size: 1.05em; 
-    color: var(--subtext-color-poetic); /* Poetic subtext color */
+    color: var(--subtext-color-poetic); /* Màu subtext poetic */
     font-weight: 300;
-    background-color: rgba(var(--card-background-rgb), 0.55); /* More opaque background */
+    background-color: rgba(var(--card-background-rgb), 0.55); /* Nền mờ hơn */
     padding: 0.35rem 0.9rem; 
-    border-radius: 22px; 
+    border-radius: 22px; /* Bo tròn counter */
     margin: 0;
     line-height: 1.2;
-    box-shadow: 0 1.5px 4px rgba(var(--background-color-rgb),0.12); 
-    border: 1px solid rgba(var(--border-color-rgb), 0.1);
+    box-shadow: 0 1.5px 4px rgba(var(--background-color-rgb),0.12); /* Bóng đổ nhẹ */
+    border: 1px solid rgba(var(--border-color-rgb), 0.1); /* Viền mờ */
 }
 
-/* Status Messages */
+/* Status Messages (Loading, Error, No Playlists) */
 .spotify-playlists-status-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2.5rem 1rem; 
+    padding: 2.5rem 1rem; /* Padding lớn */
     text-align: center;
     color: var(--subtext-color-poetic);
-    font-size: 1.15em; 
+    font-size: 1.15em; /* Font lớn */
     min-height: 250px;
-    flex-grow: 1; 
+    flex-grow: 1; /* Chiếm hết k.gian nếu là content duy nhất */
     line-height: 1.6;
 }
-.spotify-playlists-status-container .spinner { 
+.spotify-playlists-status-container .spinner { /* Spinner loading */
     margin-bottom: 1.2rem;
     border: 4px solid rgba(var(--highlight-color-poetic-rgb), 0.25);
     border-left-color: var(--highlight-color-poetic);
     width: 40px; height: 40px;
 }
-.spotify-playlists-status-container.error-message {
+.spotify-playlists-status-container.error-message { /* Màu error */
     color: var(--error-color);
-    font-weight: 400; 
+    font-weight: 400; /* Chữ đậm */
 }
 .spotify-playlists-status-container.error-message .status-icon {
     color: var(--error-color);
@@ -229,26 +229,26 @@
 .spotify-playlists-status-container.no-playlists-message .status-icon {
     color: var(--subtext-color-poetic);
 }
-.status-icon { 
+.status-icon { /* Icon error, no pl.lists */
     width: 52px; 
     height: 52px;
     margin-bottom: 1.2rem;
-    opacity: 0.65; 
+    opacity: 0.65; /* Hơi mờ */
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .spotify-playlists-container.spotify-carousel-mode { 
-    padding: clamp(1rem, 2vh, 1.5rem) clamp(0.3rem, 1.5vw, 0.8rem); 
+    padding: clamp(1rem, 2vh, 1.5rem) clamp(0.3rem, 1.5vw, 0.8rem); /* Giảm padding */
   }
   .spotify-playlists-title { 
     font-size: clamp(1.7em, 3.5vw, 2.1em); 
     margin-bottom: clamp(1.2rem, 3vh, 1.8rem); 
   }
-  .spotify-carousel-wrapper { min-height: 380px; } 
-  .spotify-carousel-stage { min-height: 380px; max-height: 70vh; } 
-  .spotify-playlist-item { width: clamp(260px, 58%, 310px); height: 370px; } 
-  .spotify-carousel-nav { width: 42px; height: 42px; margin: 0 0.2rem;} 
+  .spotify-carousel-wrapper { min-height: 380px; } /* Giảm min c.cao */
+  .spotify-carousel-stage { min-height: 380px; max-height: 70vh; } /* Giảm max c.cao */
+  .spotify-playlist-item { width: clamp(260px, 58%, 310px); height: 370px; } /* Item nhỏ hơn */
+  .spotify-carousel-nav { width: 42px; height: 42px; margin: 0 0.2rem;} /* Nút nhỏ hơn */
   .spotify-carousel-nav svg { width: 22px; height: 22px;}
 }
 
@@ -257,33 +257,34 @@
     font-size: clamp(1.5em, 3vw, 1.9em); 
     margin-bottom: clamp(1rem, 2.5vh, 1.5rem); 
   }
-  .spotify-carousel-wrapper { 
+  .spotify-carousel-wrapper { /* Carousel xếp chồng mobile */
     flex-wrap: wrap; 
     justify-content: center; 
-    min-height: auto; 
+    min-height: auto; /* C.cao auto */
     margin-bottom: 0.5rem;
   }
   .spotify-carousel-stage {
     width: 100%; 
     max-height: 65vh; 
-    min-height: 390px;
-    order: 1; 
-    perspective: 1300px; 
+    min-height: 390px; /* Đ.bảo iframe đủ cao */
+    order: 1; /* Stage lên đầu */
+    perspective: 1300px; /* Giảm perspective */
   }
-  .spotify-playlist-item { width: clamp(250px, 85%, 300px); height: 380px; } 
+  .spotify-playlist-item { width: clamp(250px, 85%, 300px); height: 380px; } /* Item chiếm gần hết width */
   
-  .spotify-carousel-wrapper > .spotify-carousel-nav {
+  .spotify-carousel-wrapper > .spotify-carousel-nav { /* Nút nav dưới stage */
     margin: 0.6rem 0.25rem; 
     width: 40px; height: 40px;
   }
   .spotify-carousel-wrapper > .spotify-carousel-nav.prev { order: 2; }
   .spotify-carousel-wrapper > .spotify-carousel-nav.next { order: 3; }
   
-  .spotify-carousel-footer { width: 100%; order: 4; padding-top: 0.6rem;} 
+  .spotify-carousel-footer { width: 100%; order: 4; padding-top: 0.6rem;} /* Footer dưới nút */
   .spotify-carousel-counter { font-size: 1em; } 
 
+  /* Overlay mobile */
   .main-item-info-overlay {
-      padding: 1.5rem 1rem 0.8rem 1rem; 
+      padding: 1.5rem 1rem 0.8rem 1rem; /* Giảm padding */
   }
   .main-item-info-overlay h3 { font-size: 1em; }
   .main-item-info-overlay a { font-size: 0.85em; }
