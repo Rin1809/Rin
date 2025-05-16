@@ -1,5 +1,5 @@
 // client/src/components/Guestbook.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import './styles/Guestbook.css';
 import { guestbookViewTranslations as t } from './languageSelector/languageSelector.constants';
@@ -37,54 +37,81 @@ interface GuestbookProps {
   onAddEntry: (name: string, message: string, lang: 'vi' | 'en' | 'ja') => Promise<void>;
 }
 
-// --- Component con cho hiệu ứng Typewriter ---
+// --- Component con cho hiệu ứng Typewriter (ĐÃ SỬA LẦN 2) ---
 interface TypewriterMessageProps {
   fullMessage: string;
-  speed?: number; // ms / char
   className?: string;
+  staggerDuration?: number;
 }
 
-const TypewriterMessage: React.FC<TypewriterMessageProps> = ({ fullMessage, speed = 55, className = "entry-message" }) => { // Tăng speed lên 55ms, type chậm hơn -> mượt hơn
-  const [textLength, setTextLength] = useState(0);
-  const intervalRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    setTextLength(0); // Reset khi fullMessage đổi
-
-    if (intervalRef.current) { // Clear interval cũ
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
+const TypewriterCharacterVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 8,         // Dịch xuống nhiều hơn chút
+    scaleX: 0.6,  // Co mạnh hơn chút
+    filter: "blur(2.5px)", // Blur hơn chút
+    transformOrigin: 'left center' // q.trọng
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scaleX: 1,
+    filter: "blur(0px)",
+    transition: {
+      type: "spring", // dùng spring
+      damping: 22,     // giảm độ nảy, tăng độ "mềm"
+      stiffness: 120,  // giảm độ cứng, cho chuyển động "lười" hơn
+      mass: 0.8,       // giảm khối lượng cho nhẹ nhàng
+      // duration: 0.5, // bỏ duration khi dùng spring
     }
-
-    if (fullMessage && fullMessage.length > 0) { // Chỉ chạy nếu có nội dung
-      intervalRef.current = window.setInterval(() => {
-        setTextLength((prevLength) => {
-          if (prevLength < fullMessage.length) {
-            return prevLength + 1;
-          } else {
-            if (intervalRef.current) clearInterval(intervalRef.current); // Dừng
-            return prevLength;
-          }
-        });
-      }, speed);
-    }
-
-    return () => { // Cleanup
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [fullMessage, speed]);
-
-  const displayedText = fullMessage ? fullMessage.substring(0, textLength) : '';
-
-  return <p className={className}>{displayedText}</p>;
+  }
 };
+
+const TypewriterContainerVariants = (stagger: number): Variants => ({
+  hidden: {}, // ko cần anim
+  visible: {
+    transition: {
+      staggerChildren: stagger, // stagger từ props
+    }
+  }
+});
+
+const TypewriterMessage: React.FC<TypewriterMessageProps> = React.memo(({
+  fullMessage,
+  className = "entry-message",
+  staggerDuration = 0.038, // tăng nhẹ stagger (chậm hơn) -> 38ms/char
+}) => {
+  const characters = useMemo(() => fullMessage.split(''), [fullMessage]);
+  const animationKey = useMemo(() => fullMessage, [fullMessage]); // key để re-anim
+
+  return (
+    <motion.p
+      key={animationKey} // force re-render and re-animate
+      className={className} // class css style font
+      variants={TypewriterContainerVariants(staggerDuration)}
+      initial="hidden"
+      animate="visible"
+      style={{ display: 'flex', flexWrap: 'wrap', overflow: 'hidden' }} // flex để span inline & wrap
+    >
+      {characters.map((char, index) => (
+        <motion.span
+          key={`${char}-${index}-${animationKey}`} // key unique
+          variants={TypewriterCharacterVariants}
+          style={{ display: 'inline-block', minWidth: char === ' ' ? '0.25em' : 'auto' }} // space có width min
+        >
+          {/* non-breaking space cho ký tự cách */}
+          {char === ' ' ? '\u00A0' : char}
+        </motion.span>
+      ))}
+    </motion.p>
+  );
+});
+TypewriterMessage.displayName = 'TypewriterMessage';
 // --- KẾT THÚC Component con ---
 
 
 // --- VARIANTS ---
-const bookCoreVariants = { 
+const bookCoreVariants = { // các variant khác giữ nguyên
   hidden: { opacity: 0, y: 60, scale: 0.9, filter: "blur(10px) saturate(0.5)" },
   visible: {
     opacity: 1, y: 0, scale: 1, filter: "blur(0px) saturate(1)",
@@ -92,7 +119,7 @@ const bookCoreVariants = {
   },
   exit: { opacity: 0, y: 45, scale: 0.92, filter: "blur(8px) saturate(0.65)", transition: { duration: 0.35, ease: [0.6, 0.05, 0.25, 0.95] } }
 };
-const guestbookInteractiveSectionVariants = { 
+const guestbookInteractiveSectionVariants = {
   hidden: { opacity: 0, y: 18, filter: "blur(1.5px)" },
   visible: {
     opacity: 1, y: 0, filter: "blur(0px)",
@@ -103,55 +130,57 @@ const guestbookInteractiveSectionVariants = {
     transition: { opacity: { duration: 0.18, ease: "easeIn" }, filter: { duration: 0.13 }, when: "afterChildren" }
   }
 };
-const guestbookItemVariants = { 
+const guestbookItemVariants = {
   hidden: { opacity: 0, y: 13, filter: "blur(2px)" },
   visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 220, damping: 19, mass: 0.85 } },
-  exit: { opacity: 0, y: -9, filter: "blur(1.5px)", transition: { duration: 0.13 }} 
+  exit: { opacity: 0, y: -9, filter: "blur(1.5px)", transition: { duration: 0.13 }}
 };
-const entryCardVariants = { 
+const entryCardVariants = {
   initial: { opacity: 0, y: 50, x: 0, scale: 0.9, rotate: 0, filter: "blur(5px) saturate(0.6) brightness(0.85)" },
-  animate: (i: number) => ({ 
+  animate: (i: number) => ({
     opacity: 1, y: 0, x:0, scale: 1, rotate:0, filter: "blur(0px) saturate(1) brightness(1)",
     transition: { type: "spring", stiffness: 150, damping: 22, mass: 0.75, delay: i * 0.09 + 0.2, }
   }),
   exit: { opacity: 0, scale: 0.94, y: -20, x: 5, rotate: 0.8, filter: "blur(4px) saturate(0.75)", transition: { duration: 0.22, ease:"circIn" } },
 };
 
-const messageWrapperVariants: Variants = {
+const messageWrapperVariants: Variants = { // wrapper của message
     hidden: {
         opacity: 0,
         height: 0,
-        marginTop: "0rem", 
-        filter: "blur(2px)",
-        transition: { duration: 0.25, ease: [0.6, -0.05, 0.73, 0.05] }
+        marginTop: "0rem",
+        transition: { // anim children (typewriter) xong mới tới wrapper
+            when: "afterChildren",
+            duration: 0.2,      // tổng time exit cho wrapper
+            ease: "easeOut"
+        }
     },
     visible: {
-        opacity: 1,
-        height: "auto",
+        opacity: 1, // wrapper hiện nhanh
+        height: "auto", // height mở từ từ
         marginTop: "1.1rem",
-        filter: "blur(0px)",
-        transition: {
-            height: { type: "spring", stiffness: 220, damping: 25, mass: 0.7, delay: 0.05 },
-            marginTop: { type: "spring", stiffness: 220, damping: 25, mass: 0.7, delay: 0.05 },
-            opacity: { duration: 0.15, ease: "linear", delay: 0.05 },
-            filter: { duration: 0.1, ease: "linear", delay: 0.1 }
+        transition: { // wrapper anim trc, rồi tới children
+            when: "beforeChildren",
+            opacity: { duration: 0.2, ease: "easeOut", delay: 0.05 },
+            height: { type: "spring", stiffness: 200, damping: 26, mass: 0.8, delay: 0.05 },
+            marginTop: { type: "spring", stiffness: 200, damping: 26, mass: 0.8, delay: 0.05 },
         }
     },
 };
 
-const feedbackMessageVariants = { 
+const feedbackMessageVariants = {
   initial: { opacity: 0, y: 15, height: 0, marginTop: 0, marginBottom: 0, filter:"blur(2px) saturate(0.5)" },
   animate: { opacity: 1, y: 0, height: 'auto', filter:"blur(0px) saturate(1)", marginTop: '0.4rem', marginBottom: '0.6rem', transition: { type: "spring", stiffness: 200, damping: 18, mass: 0.9 } },
   exit: { opacity: 0, y: -10, height: 0, filter:"blur(2px) saturate(0.5)", marginTop: 0, marginBottom: 0, transition: { duration: 0.25, ease: [0.6, 0.05, 0.25, 0.95] } }
 };
-const writePromptButtonVariants = { 
-    initial: { opacity: 0, scale: 0.82, y: 10, rotate:3.5 }, 
+const writePromptButtonVariants = {
+    initial: { opacity: 0, scale: 0.82, y: 10, rotate:3.5 },
     animate: { opacity: 1, scale: 1, y: 0, rotate:0, transition: { type: "spring", stiffness: 210, damping: 14, delay: 0.18 } },
     exit: { opacity: 0, scale: 0.87, y: 7, rotate: -2, transition: { duration: 0.13, ease:"easeIn" } }
 };
-const bookPagesWrapperVariants = { 
-  hidden: { opacity: 0 }, 
-  visible: { opacity: 1, transition: { delay: 0.05, staggerChildren: 0.08, when: "beforeChildren" } }, 
+const bookPagesWrapperVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { delay: 0.05, staggerChildren: 0.08, when: "beforeChildren" } },
   exit: { opacity: 0 }
 };
 
@@ -164,12 +193,12 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'read' | 'write'>('read');
-  const [hoveredEntryId, setHoveredEntryId] = useState<string | number | null>(null); 
+  const [hoveredEntryId, setHoveredEntryId] = useState<string | number | null>(null);
 
-   const handleSubmit = async (e: React.FormEvent) => { 
+   const handleSubmit = async (e: React.FormEvent) => { // logic submit giữ nguyên
     e.preventDefault();
     if (!name.trim() || !message.trim()) {
-      setSubmitError(language === 'vi' ? 'Tên và cảm nghĩ không được để trống!' : language === 'en' ? 'Name and message cannot be empty!' : 'お名前とメッセージは必須です！');
+      setSubmitError(language === 'vi' ? 'Tên và cảm nghĩ k dc trống!' : language === 'en' ? 'Name & msg cannot be empty!' : 'お名前とメッセージは必須です！');
       setTimeout(() => setSubmitError(null), 4000);
       return;
     }
@@ -183,33 +212,33 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       setSubmitSuccess(language === 'vi' ? 'Cảm ơn bạn đã chia sẻ!' : language === 'en' ? 'Thank you for sharing!' : 'ご感想ありがとうございます！');
       setTimeout(() => {
         setSubmitSuccess(null);
-        setViewMode('read'); 
-      }, 3500); 
-    } catch (error: any) { 
+        setViewMode('read');
+      }, 3500);
+    } catch (error: any) {
       console.error("Lỗi gửi entry Guestbook.tsx:", error);
-      let userErrorMessage = language === 'vi' ? 'Gửi thất bại, vui lòng thử lại.' : language === 'en' ? 'Submission failed, please try again.' : '送信に失敗しました。もう一度お試しください。';
+      let userErrorMessage = language === 'vi' ? 'Gửi thất bại, thử lại.' : language === 'en' ? 'Submit failed, try again.' : '送信に失敗しました。もう一度お試しください。';
       if (error && typeof error.message === 'string' && error.message.startsWith('Failed to submit:')) {
          userErrorMessage = `${userErrorMessage} (${error.message.replace('Failed to submit: ', '')})`;
       } else if (error && typeof error.message === 'string') {
         userErrorMessage = error.message;
       }
       setSubmitError(userErrorMessage);
-      setTimeout(() => setSubmitError(null), 5000); 
+      setTimeout(() => setSubmitError(null), 5000);
     } finally {
       setIsSubmitting(false);
     }
   };
-  const handleCancelWrite = () => { 
+  const handleCancelWrite = () => { // logic hủy giữ nguyên
     setViewMode('read');
-    setName(''); 
-    setMessage(''); 
-    setSubmitError(null); 
-    setSubmitSuccess(null); 
+    setName('');
+    setMessage('');
+    setSubmitError(null);
+    setSubmitSuccess(null);
   }
-  const formatDate = (dateString: string) => { 
+  const formatDate = (dateString: string) => { // logic format date giữ nguyên
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
-        return language === 'vi' ? 'Không rõ TG' : language === 'en' ? 'Unknown time' : '時刻不明';
+        return language === 'vi' ? 'K rõ TG' : language === 'en' ? 'Unknown time' : '時刻不明';
     }
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: language === 'en'  };
     return new Intl.DateTimeFormat(language, options).format(date);
@@ -222,7 +251,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
         <motion.div className="book-pages-wrapper" variants={bookPagesWrapperVariants} initial="hidden" animate="visible" exit="exit" >
             <div className="book-page page-left">
                 <div className="page-content-scrollable left-page-scroll">
-                    <AnimatePresence mode="wait"> 
+                    <AnimatePresence mode="wait">
                     {viewMode === 'read' && (
                         <motion.div key="read-prompt" className="guestbook-write-prompt" variants={guestbookInteractiveSectionVariants} initial="hidden" animate="visible" exit="exit" >
                             <motion.p variants={guestbookItemVariants} dangerouslySetInnerHTML={{ __html: t.promptWrite[language] }} />
@@ -269,16 +298,16 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                     <AnimatePresence>
                         {displayedEntries.map((entry, index) => (
                         <motion.div
-                            key={entry.id || `entry-${index}`} 
+                            key={entry.id || `entry-${index}`}
                             className="guestbook-entry"
-                            custom={index} 
+                            custom={index}
                             variants={entryCardVariants}
                             initial="initial"
                             animate="animate"
-                            exit="exit" 
+                            exit="exit"
                             onMouseEnter={() => setHoveredEntryId(entry.id)}
                             onMouseLeave={() => setHoveredEntryId(null)}
-                            layout 
+                            layout
                         >
                             <div className="entry-meta">
                                 <span className="entry-author"> {t.entryBy[language]} <strong>{entry.name}</strong> </span>
@@ -287,12 +316,12 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                             <AnimatePresence mode="wait">
                                 {hoveredEntryId === entry.id && (
                                      <motion.blockquote
-                                        key={`message-content-${entry.id}`} 
-                                        className="entry-message-wrapper" 
-                                        variants={messageWrapperVariants}
+                                        key={`message-content-${entry.id}-${language}`} // thêm lang vào key
+                                        className="entry-message-wrapper"
+                                        variants={messageWrapperVariants} // wrapper của message
                                         initial="hidden"
                                         animate="visible"
-                                        exit="hidden" 
+                                        exit="hidden"
                                     >
                                         <TypewriterMessage fullMessage={entry.message} />
                                     </motion.blockquote>

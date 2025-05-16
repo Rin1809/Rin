@@ -2,16 +2,16 @@
 
 /* Root vars paper theme & poetic highlights (KHÔNG ĐỔI) */
 :root {
-  --paper-bg: #fbf1e7; 
+  --paper-bg: #fbf1e7;
   --paper-bg-rgb: 251, 241, 231;
-  --paper-border: #c8b8a2; 
+  --paper-border: #c8b8a2;
   --paper-border-rgb: 200, 184, 162;
-  --paper-text-color: #4d3a27; 
+  --paper-text-color: #4d3a27;
   --paper-text-rgb: 77, 58, 39;
-  
-  --book-spine-color: #75614b; 
+
+  --book-spine-color: #75614b;
   --book-spine-color-rgb: 117, 97, 75;
-  --book-cover-edge-curve: 40px; 
+  --book-cover-edge-curve: 40px;
 
   --guestbook-highlight: var(--highlight-color-poetic, #D8BFD8);
   --guestbook-highlight-rgb: var(--highlight-color-poetic-rgb, 216, 191, 216);
@@ -25,62 +25,62 @@
   --guestbook-subtext: var(--subtext-color-poetic, #c0c0c0);
   --guestbook-subtext-rgb: var(--subtext-color-poetic-rgb, 192,192,192);
 
-  --guestbook-card-bg: rgba(var(--card-background-rgb, 30, 30, 46), 0.9); 
+  --guestbook-card-bg: rgba(var(--card-background-rgb, 30, 30, 46), 0.9);
   --guestbook-card-bg-lighter: rgba(var(--card-background-rgb, 30, 30, 46), 0.75);
 
   --guestbook-scrollbar-thumb: rgba(var(--guestbook-highlight-rgb), 0.45);
   --guestbook-scrollbar-track: rgba(var(--paper-bg-rgb), 0.1);
 
-  --paper-edge-color-1: #fdf8f2; 
-  --paper-edge-color-2: #f9f1e9; 
-  --paper-edge-color-3: #f5eadf; 
-  --paper-edge-color-4: #f1e3d6; 
-  --paper-edge-color-5: #ecdccb; 
-  --paper-edge-color-6: #e5d4c1; 
-  --paper-edge-color-7: #dfccb7; 
-  --paper-edge-shadow: rgba(77, 58, 39, 0.1); 
+  --paper-edge-color-1: #fdf8f2;
+  --paper-edge-color-2: #f9f1e9;
+  --paper-edge-color-3: #f5eadf;
+  --paper-edge-color-4: #f1e3d6;
+  --paper-edge-color-5: #ecdccb;
+  --paper-edge-color-6: #e5d4c1;
+  --paper-edge-color-7: #dfccb7;
+  --paper-edge-shadow: rgba(77, 58, 39, 0.1);
 }
 
 /* Bìa sách (div.book-core) (KHÔNG ĐỔI) */
 .book-core {
-  width: 175%; 
-  max-width: 1050px; 
-  height: 75vh; 
-  max-height: 800px; 
-  min-height: 500px; 
+  width: 175%;
+  max-width: 1050px;
+  height: 75vh;
+  max-height: 800px;
+  min-height: 500px;
   display: flex;
   flex-direction: column;
-  background-color: transparent; 
-  border-radius: 30px; 
-  box-shadow: 
-    0 35px 70px -25px rgba(var(--background-color-rgb), 0.65), 
-    0 15px 30px -12px rgba(var(--background-color-rgb), 0.45),  
-    inset 0 1px 3px rgba(255,255,255,0.07), 
+  background-color: transparent;
+  border-radius: 30px;
+  box-shadow:
+    0 35px 70px -25px rgba(var(--background-color-rgb), 0.65),
+    0 15px 30px -12px rgba(var(--background-color-rgb), 0.45),
+    inset 0 1px 3px rgba(255,255,255,0.07),
     inset 0 0 35px rgba(var(--paper-bg-rgb), 0.05);
-  overflow: hidden; 
+  overflow: hidden;
   position: relative;
-  padding: 6px; 
-  border: 8px solid var(--book-spine-color); 
-  background: linear-gradient(145deg, 
-    rgba(var(--book-spine-color-rgb),0.2), 
+  padding: 6px;
+  border: 8px solid var(--book-spine-color);
+  background: linear-gradient(145deg,
+    rgba(var(--book-spine-color-rgb),0.2),
     rgba(var(--book-spine-color-rgb),0.3)
   );
 }
 
 /* Tiêu đề của Guestbook (KHÔNG ĐỔI) */
 .guestbook-title {
-  font-size: clamp(1.9em, 4.5vw, 2.4em); 
-  font-weight: 400; 
+  font-size: clamp(1.9em, 4.5vw, 2.4em);
+  font-weight: 400;
   text-align: center;
   margin: clamp(1.5rem, 3vh, 2rem) auto clamp(1.2rem, 2.5vh, 1.8rem) auto;
   color: var(--guestbook-highlight);
   text-shadow: 0 0 25px rgba(var(--guestbook-highlight-rgb), 0.5),
                0 0 10px rgba(var(--guestbook-highlight-rgb), 0.35),
                0 2.5px 4px rgba(var(--background-color-rgb, 12,14,26), 0.25);
-  letter-spacing: 2px; 
+  letter-spacing: 2px;
   line-height: 1.35;
-  padding: 0 1rem; 
-  position: relative; 
+  padding: 0 1rem;
+  position: relative;
   z-index: 1;
   flex-shrink: 0;
 }
@@ -88,12 +88,12 @@
 /* Wrapper cho 2 trang sách (KHÔNG ĐỔI) */
 .book-pages-wrapper {
   display: flex;
-  flex-grow: 1; 
-  width: 100%; 
-  height: calc(100% - 70px); 
-  gap: 0; 
-  perspective: 3500px; 
-  padding: 0 11px; 
+  flex-grow: 1;
+  width: 100%;
+  height: calc(100% - 70px);
+  gap: 0;
+  perspective: 3500px;
+  padding: 0 11px;
   position: relative;
   z-index: 1;
 }
@@ -102,55 +102,55 @@
 .book-pages-wrapper::before {
     content: '';
     position: absolute;
-    top: 18px; 
+    top: 18px;
     bottom: -15px;
     left: 50%;
     transform: translateX(-50%);
-    width: 48px; 
-    background: linear-gradient(to right, 
-        rgba(0,0,0,0.65) 0%, 
-        rgba(var(--book-spine-color-rgb), 0.45) 8%, 
-        rgba(var(--book-spine-color-rgb), 0.7) 8%, 
-        rgba(var(--book-spine-color-rgb), 0.95) 40%, 
-        rgba(var(--book-spine-color-rgb), 1) 50%,   
+    width: 48px;
+    background: linear-gradient(to right,
+        rgba(0,0,0,0.65) 0%,
+        rgba(var(--book-spine-color-rgb), 0.45) 8%,
+        rgba(var(--book-spine-color-rgb), 0.7) 8%,
+        rgba(var(--book-spine-color-rgb), 0.95) 40%,
+        rgba(var(--book-spine-color-rgb), 1) 50%,
         rgba(var(--book-spine-color-rgb), 0.95) 60%,
         rgba(var(--book-spine-color-rgb), 0.7) 75%,
         rgba(var(--book-spine-color-rgb), 0.45) 92%,
         rgba(0,0,0,0.65) 100%
       );
-    z-index: 2; 
+    z-index: 2;
     pointer-events: none;
-    border-radius: 12px / 70px; 
-    box-shadow: 
-      0 0 30px rgba(0,0,0,0.55), 
-      inset 2px 0 2.5px rgba(255, 255, 255, 0.473), 
-      inset -2px 0 2.5px rgba(255,255,255,0.473); 
+    border-radius: 12px / 70px;
+    box-shadow:
+      0 0 30px rgba(0,0,0,0.55),
+      inset 2px 0 2.5px rgba(255, 255, 255, 0.473),
+      inset -2px 0 2.5px rgba(255,255,255,0.473);
 }
 
 /* Style chung cho mỗi trang sách (KHÔNG ĐỔI) */
 .book-page {
-  flex: 1; 
-  background-color: var(--paper-bg); 
+  flex: 1;
+  background-color: var(--paper-bg);
   color: var(--paper-text-color);
-  padding: 0; 
+  padding: 0;
   box-sizing: border-box;
-  overflow: hidden; 
+  overflow: hidden;
   position: relative;
-  display: flex; 
+  display: flex;
   flex-direction: column;
   background-image: linear-gradient(to right, rgba(0,0,0,0.015) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.015) 100%);
 }
-.book-page.page-right { 
+.book-page.page-right {
     background-image: linear-gradient(to left, rgba(0,0,0,0.015) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.015) 100%);
 }
 
 .book-page.page-left {
-  border-top-right-radius: 40px; 
-  border-top-left-radius: 20px; 
+  border-top-right-radius: 40px;
+  border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
-  padding-right: 10px; 
+  padding-right: 10px;
   box-shadow:
-    4px 0 4px -1.5px var(--paper-edge-shadow), 
+    4px 0 4px -1.5px var(--paper-edge-shadow),
     -2px 0 0 var(--paper-edge-color-7),
     -4px 0 0 var(--paper-edge-color-6),
     -6px 0 0 var(--paper-edge-color-5),
@@ -158,7 +158,7 @@
     -10px 0 0 var(--paper-edge-color-3),
     -12px 0 0 var(--paper-edge-color-2),
     -14px 0 0 var(--paper-edge-color-1),
-    -16px 3px 15px rgba(0,0,0,0.22); 
+    -16px 3px 15px rgba(0,0,0,0.22);
 }
 .book-page.page-right {
   border-top-left-radius: 40px;
@@ -166,7 +166,7 @@
   border-bottom-right-radius: 20px;
   padding-left: 10px;
   box-shadow:
-    -4px 0 4px -1.5px var(--paper-edge-shadow), 
+    -4px 0 4px -1.5px var(--paper-edge-shadow),
     2px 0 0 var(--paper-edge-color-7),
     4px 0 0 var(--paper-edge-color-6),
     6px 0 0 var(--paper-edge-color-5),
@@ -180,9 +180,9 @@
 
 /* Khu vực nội dung có thể cuộn của mỗi trang (KHÔNG ĐỔI) */
 .page-content-scrollable {
-  flex-grow: 1; 
+  flex-grow: 1;
   overflow-y: auto;
-  padding: clamp(1rem, 2.5vw, 1.8rem) clamp(1.2rem, 3vw, 2rem); 
+  padding: clamp(1rem, 2.5vw, 1.8rem) clamp(1.2rem, 3vw, 2rem);
   scrollbar-width: thin;
   scrollbar-color: var(--guestbook-scrollbar-thumb) var(--guestbook-scrollbar-track);
 }
@@ -191,8 +191,8 @@
 .page-content-scrollable::-webkit-scrollbar-thumb {
   background-color: var(--guestbook-scrollbar-thumb);
   border-radius: 8px;
-  border: 2.5px solid var(--paper-bg); 
-  background-clip: padding-box; 
+  border: 2.5px solid var(--paper-bg);
+  background-clip: padding-box;
 }
 .page-content-scrollable::-webkit-scrollbar-thumb:hover {
   background-color: rgba(var(--guestbook-highlight-rgb), 0.6);
@@ -207,23 +207,23 @@
   gap: clamp(1.2rem, 2.5vh, 1.5rem);
   padding: clamp(1.5rem, 3vh, 2rem) clamp(1rem, 2.5vw, 1.5rem);
   text-align: center;
-  border-radius: 18px; 
-  background-color: rgba(var(--paper-bg-rgb), 0.6); 
+  border-radius: 18px;
+  background-color: rgba(var(--paper-bg-rgb), 0.6);
   border: 1.5px dashed rgba(var(--paper-border-rgb), 0.7);
-  min-height: 220px; 
+  min-height: 220px;
   color: var(--paper-text-color);
-  font-family: var(--font-family-primary), cursive; 
+  font-family: var(--font-family-primary), cursive;
 }
 .guestbook-write-prompt p {
   font-size: clamp(1em, 2.2vw, 1.15em);
   color: var(--paper-text-color);
-  opacity: 0.9; 
-  font-weight: 300; 
+  opacity: 0.9;
+  font-weight: 300;
   margin: 0;
   max-width: 95%;
   line-height: 1.7;
 }
-.guestbook-write-prompt p strong { 
+.guestbook-write-prompt p strong {
   font-weight: 500;
   color: var(--guestbook-primary-action);
   text-shadow: 0 0 5px rgba(var(--guestbook-primary-action-rgb), 0.3);
@@ -235,29 +235,29 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.8em; 
-  padding: 0.8rem 1.8rem; 
-  border-radius: 30px; 
+  gap: 0.8em;
+  padding: 0.8rem 1.8rem;
+  border-radius: 30px;
   font-family: inherit;
-  font-size: clamp(0.95em, 2vw, 1.05em); 
+  font-size: clamp(0.95em, 2vw, 1.05em);
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), 
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1),
               box-shadow 0.25s cubic-bezier(0.23, 1, 0.32, 1),
               filter 0.25s cubic-bezier(0.23, 1, 0.32, 1),
               background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
-  text-shadow: 0 1px 2px rgba(var(--paper-bg-rgb), 0.3); 
+  text-shadow: 0 1px 2px rgba(var(--paper-bg-rgb), 0.3);
   position: relative;
-  overflow: hidden; 
+  overflow: hidden;
 }
 .poetic-button svg, .poetic-button-subtle svg, .poetic-button-primary svg {
-  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-  stroke-width: 1.9; 
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  stroke-width: 1.9;
 }
 .poetic-button:hover:not(:disabled) svg,
 .poetic-button-subtle:hover:not(:disabled) svg,
 .poetic-button-primary:hover:not(:disabled) svg {
-  transform: rotate(7deg) scale(1.1); 
+  transform: rotate(7deg) scale(1.1);
 }
 
 
@@ -266,10 +266,10 @@
   border: 2px solid transparent;
   border-image-slice: 1;
   border-image-source: linear-gradient(140deg,
-    rgba(var(--paper-text-rgb), 0.7), 
-    rgba(var(--guestbook-primary-action-rgb), 0.5) 
+    rgba(var(--paper-text-rgb), 0.7),
+    rgba(var(--guestbook-primary-action-rgb), 0.5)
   );
-  background: linear-gradient(140deg, 
+  background: linear-gradient(140deg,
     rgba(var(--guestbook-primary-action-rgb), 0.15),
     rgba(var(--guestbook-secondary-action-rgb), 0.12)
   );
@@ -277,15 +277,15 @@
   box-shadow: 0 6px 22px -6px rgba(var(--guestbook-primary-action-rgb),0.28);
 }
 .guestbook-write-button.poetic-button:hover:not(:disabled) {
-  filter: brightness(1.15); 
-  box-shadow: 0 9px 28px -6px rgba(var(--guestbook-highlight-rgb),0.38), 
-              0 0 18px rgba(var(--guestbook-highlight-rgb),0.22) inset; 
+  filter: brightness(1.15);
+  box-shadow: 0 9px 28px -6px rgba(var(--guestbook-highlight-rgb),0.38),
+              0 0 18px rgba(var(--guestbook-highlight-rgb),0.22) inset;
 }
-.guestbook-write-button.poetic-button:hover:not(:disabled) .IconFeatherPen svg, 
-.guestbook-write-button.poetic-button:hover:not(:disabled) svg { 
-  animation: featherPulse 1.5s infinite ease-in-out; 
+.guestbook-write-button.poetic-button:hover:not(:disabled) .IconFeatherPen svg,
+.guestbook-write-button.poetic-button:hover:not(:disabled) svg {
+  animation: featherPulse 1.5s infinite ease-in-out;
 }
-@keyframes featherPulse { 
+@keyframes featherPulse {
   0%, 100% { transform: scale(1) rotate(7deg); filter: drop-shadow(0 0 3px rgba(var(--guestbook-highlight-rgb), 0.3)); }
   50% { transform: scale(1.15) rotate(5deg); filter: drop-shadow(0 0 7px rgba(var(--guestbook-highlight-rgb), 0.5)); }
 }
@@ -296,10 +296,10 @@
   flex-direction: column;
   gap: clamp(1.3rem, 2.5vh, 1.6rem);
   padding: clamp(1.2rem, 2.5vw, 1.8rem) clamp(1rem, 2.5vw, 1.5rem);
-  background-color: rgba(var(--paper-bg-rgb), 0.55); 
+  background-color: rgba(var(--paper-bg-rgb), 0.55);
   border-radius: 18px;
   border: 1.5px solid rgba(var(--paper-border-rgb), 0.6);
-  box-shadow: 0 6px 18px rgba(var(--paper-text-rgb),0.08), 
+  box-shadow: 0 6px 18px rgba(var(--paper-text-rgb),0.08),
               inset 0 0 10px rgba(var(--paper-text-rgb),0.05);
   color: var(--paper-text-color);
 }
@@ -308,37 +308,37 @@
     font-weight: 500;
     color: var(--paper-text-color);
     opacity: 0.9;
-    margin: 0 0 0.9rem 0; 
-    text-align: left; 
+    margin: 0 0 0.9rem 0;
+    text-align: left;
     padding-bottom: 0.65rem;
-    border-bottom: 1.5px solid rgba(var(--paper-border-rgb),0.6); 
+    border-bottom: 1.5px solid rgba(var(--paper-border-rgb),0.6);
 }
 
 .form-group { display: flex; flex-direction: column; gap: 0.65rem; text-align: left;}
 .form-group label {
   font-size: clamp(0.85em, 1.8vw, 0.95em);
-  font-weight: 400; 
+  font-weight: 400;
   color: rgba(var(--paper-text-rgb), 0.9);
-  padding-left: 0.3rem; 
+  padding-left: 0.3rem;
   letter-spacing: 0.25px;
 }
 
 .form-group input[type="text"],
 .form-group textarea {
-  padding: 0.95rem 1.15rem; 
-  border-radius: 12px; 
-  border: 2.5px solid rgba(var(--paper-border-rgb), 0.8); 
-  background-color: rgba(var(--paper-bg-rgb), 0.9); 
+  padding: 0.95rem 1.15rem;
+  border-radius: 12px;
+  border: 2.5px solid rgba(var(--paper-border-rgb), 0.8);
+  background-color: rgba(var(--paper-bg-rgb), 0.9);
   color: var(--paper-text-color);
-  font-family: var(--font-family-primary), cursive; 
-  font-size: 0.95em; 
+  font-family: var(--font-family-primary), cursive;
+  font-size: 0.95em;
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease;
   outline: none;
   line-height: 1.5;
 }
 .form-group input[type="text"]::placeholder,
 .form-group textarea::placeholder {
-  color: rgba(var(--paper-text-rgb), 0.6); 
+  color: rgba(var(--paper-text-rgb), 0.6);
   font-style: italic;
   font-weight: 300;
 }
@@ -346,19 +346,19 @@
 
 
 .form-feedback-container {
-    min-height: 2.6em; 
+    min-height: 2.6em;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: -0.55rem; 
+    margin-top: -0.55rem;
 }
 .submit-feedback {
   font-size: clamp(0.85em, 1.8vw, 0.95em);
   padding: 0.75rem 1.15rem;
-  border-radius: 10px; 
+  border-radius: 10px;
   text-align: center;
-  font-weight: 500; 
-  border-width: 2px; 
+  font-weight: 500;
+  border-width: 2px;
   border-style: solid;
   letter-spacing: 0.2px;
 }
@@ -366,10 +366,10 @@
   background-color: rgba(var(--error-color-rgb), 0.15);
   color: var(--error-color);
   border-color: rgba(var(--error-color-rgb), 0.4);
-  text-shadow: 0 0 7px rgba(var(--error-color-rgb), 0.22); 
+  text-shadow: 0 0 7px rgba(var(--error-color-rgb), 0.22);
 }
 .submit-feedback.success {
-  background-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.2); 
+  background-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.2);
   color: var(--success-color, #a6e3a1);
   border-color: rgba(var(--success-color-rgb, 166, 227, 161), 0.45);
   text-shadow: 0 0 7px rgba(var(--success-color-rgb, 166, 227, 161), 0.28);
@@ -378,47 +378,47 @@
 .form-actions {
     display: flex;
     gap: 1.1rem;
-    margin-top: 0.9rem; 
-    justify-content: flex-start; 
+    margin-top: 0.9rem;
+    justify-content: flex-start;
 }
 
 .guestbook-submit-button.poetic-button-primary {
-  padding: 0.85rem 1.7rem; 
+  padding: 0.85rem 1.7rem;
   background: linear-gradient(145deg, var(--guestbook-primary-action) 0%, var(--guestbook-highlight) 100%);
-  color: var(--paper-bg); 
+  color: var(--paper-bg);
   font-weight: 500;
-  border: none; 
-  box-shadow: 0 5px 18px -4px rgba(var(--guestbook-primary-action-rgb),0.35), 
+  border: none;
+  box-shadow: 0 5px 18px -4px rgba(var(--guestbook-primary-action-rgb),0.35),
               0 3px 8px rgba(var(--guestbook-highlight-rgb),0.25),
-              inset 0 -2px 3px rgba(0,0,0,0.1); 
-  flex-grow: 1; 
-  min-width: 140px; 
+              inset 0 -2px 3px rgba(0,0,0,0.1);
+  flex-grow: 1;
+  min-width: 140px;
 }
 .guestbook-submit-button.poetic-button-primary:disabled {
-    opacity: 0.65; 
+    opacity: 0.65;
     cursor: not-allowed;
-    filter: saturate(0.5) brightness(0.9); 
+    filter: saturate(0.5) brightness(0.9);
 }
 .button-spinner {
   width: 1.25em;
   height: 1.25em;
-  border: 3px solid rgba(var(--paper-bg-rgb), 0.7); 
-  border-top-color: var(--paper-bg); 
+  border: 3px solid rgba(var(--paper-bg-rgb), 0.7);
+  border-top-color: var(--paper-bg);
   animation: buttonSpin 0.9s linear infinite;
   border-radius: 50%;
 }
 @keyframes buttonSpin { to { transform: rotate(360deg); } }
 
 .guestbook-cancel-button.poetic-button-subtle {
-  border: 2px solid rgba(var(--paper-text-rgb), 0.4); 
-  background-color: transparent; 
-  color: var(--paper-text-color); 
-  font-size: clamp(0.9em, 1.9vw, 1em); 
+  border: 2px solid rgba(var(--paper-text-rgb), 0.4);
+  background-color: transparent;
+  color: var(--paper-text-color);
+  font-size: clamp(0.9em, 1.9vw, 1em);
   font-weight: 400;
-  box-shadow: 0 2.5px 6px rgba(var(--paper-text-rgb),0.07); 
+  box-shadow: 0 2.5px 6px rgba(var(--paper-text-rgb),0.07);
 }
 .guestbook-cancel-button.poetic-button-subtle:hover:not(:disabled) {
-  background-color: rgba(var(--paper-text-rgb), 0.08); 
+  background-color: rgba(var(--paper-text-rgb), 0.08);
   border-color: rgba(var(--paper-text-rgb), 0.6);
   color: var(--paper-text-color);
 }
@@ -430,27 +430,27 @@
 .guestbook-entries-list-wrapper {
     display: flex;
     flex-direction: column;
-    gap: clamp(1.5rem, 3vh, 1.8rem); 
+    gap: clamp(1.5rem, 3vh, 1.8rem);
 }
 
 .guestbook-entry {
-  background-color: var(--paper-bg); 
-  padding: clamp(1.3rem, 3vw, 1.7rem) clamp(1.5rem, 3.5vw, 1.9rem); 
-  border-radius: 14px; 
-  border: 1.5px solid var(--paper-border); 
-  box-shadow: 4px 4px 12px rgba(var(--paper-text-rgb), 0.12), 
+  background-color: var(--paper-bg);
+  padding: clamp(1.3rem, 3vw, 1.7rem) clamp(1.5rem, 3.5vw, 1.9rem);
+  border-radius: 14px;
+  border: 1.5px solid var(--paper-border);
+  box-shadow: 4px 4px 12px rgba(var(--paper-text-rgb), 0.12),
               2px 2px 5px rgba(var(--paper-text-rgb), 0.08),
-              inset 0 0 10px rgba(255,255,255,0.25); 
+              inset 0 0 10px rgba(255,255,255,0.25);
   text-align: left;
-  overflow-wrap: break-word; 
-  position: relative; 
+  overflow-wrap: break-word;
+  position: relative;
   color: var(--paper-text-color);
-  cursor: default; 
+  cursor: default;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 .guestbook-entry:hover {
     transform: translateY(-5px) scale(1.01);
-    box-shadow: 6px 8px 20px rgba(var(--paper-text-rgb), 0.18), 
+    box-shadow: 6px 8px 20px rgba(var(--paper-text-rgb), 0.18),
                 3px 4px 10px rgba(var(--paper-text-rgb), 0.12),
                 inset 0 0 15px rgba(var(--guestbook-highlight-rgb),0.1);
 }
@@ -459,72 +459,72 @@
 .guestbook-entry::after {
   content: "";
   position: absolute;
-  top: -1.5px; 
+  top: -1.5px;
   right: -1.5px;
-  width: 38px; 
+  width: 38px;
   height: 38px;
   background: linear-gradient(135deg,
-    transparent 48%, 
-    rgba(var(--paper-border-rgb), 0.5) 48.5%, 
-    rgba(var(--paper-border-rgb), 0.35) 55%, 
-    var(--paper-bg) 68% 
+    transparent 48%,
+    rgba(var(--paper-border-rgb), 0.5) 48.5%,
+    rgba(var(--paper-border-rgb), 0.35) 55%,
+    var(--paper-bg) 68%
   );
-  border-bottom-left-radius: 10px; 
-  filter: drop-shadow(-1.5px 1.5px 1.5px rgba(0,0,0,0.1)); 
-  pointer-events: none; 
+  border-bottom-left-radius: 10px;
+  filter: drop-shadow(-1.5px 1.5px 1.5px rgba(0,0,0,0.1));
+  pointer-events: none;
 }
 
 .entry-message-wrapper {
-  margin: 0; 
+  margin: 0;
   padding: 0;
-  border: none; 
-  position: relative; 
-  overflow: hidden; 
+  border: none;
+  position: relative;
+  overflow: hidden; /* Cho phép children anim bên trong */
 }
-.entry-message-wrapper::before { 
+.entry-message-wrapper::before {
   content: '“';
-  font-family: 'Georgia', 'Times New Roman', serif; 
-  font-size: 3em; 
-  color: rgba(var(--paper-text-rgb), 0.3); 
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 3em;
+  color: rgba(var(--paper-text-rgb), 0.3);
   position: absolute;
-  left: -0.15em; 
-  top: -0.4em;  
+  left: -0.15em; /* Điều chỉnh để dấu ngoặc kép đẹp hơn */
+  top: -0.4em;
   line-height: 0.8;
   opacity: 0.9;
   pointer-events: none;
-  font-style: italic; 
+  font-style: italic;
 }
 
-.entry-message {
-  font-family: var(--font-family-primary), var(--font-family-fallback); /* SỬA FONT */
+.entry-message { /* CSS class cho <p> của TypewriterMessage */
+  font-family: var(--font-family-primary), var(--font-family-fallback);
   font-size: clamp(1em, 2.2vw, 1.15em);
-  line-height: 1.75; 
+  line-height: 1.75;
   color: var(--paper-text-color);
   margin: 0;
-  padding-left: 0.9em; 
-  white-space: pre-wrap; 
-  font-style: normal; 
-  font-weight: 400; 
-  min-height: 1.75em; 
+  /* padding-left: 0.9em; BỎ padding-left vì TypewriterMessage dùng flex */
+  white-space: pre-wrap; /* Quan trọng cho \u00A0 và xuống dòng */
+  font-style: normal;
+  font-weight: 400;
+  min-height: 1.75em; /* Giữ lại để có không gian ban đầu */
 }
 
 .entry-meta {
-  font-size: clamp(0.8em, 1.8vw, 0.9em); 
+  font-size: clamp(0.8em, 1.8vw, 0.9em);
   color: rgba(var(--paper-text-rgb), 0.8);
   display: flex;
-  flex-direction: row; 
-  justify-content: space-between; 
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   gap: 0.5rem;
   opacity: 0.9;
 }
-.entry-author strong { 
+.entry-author strong {
   font-weight: 500;
-  color: var(--paper-text-color); 
+  color: var(--paper-text-color);
   letter-spacing: 0.4px;
 }
-.entry-timestamp { font-style: italic; } 
+.entry-timestamp { font-style: italic; }
 
 .no-entries-message {
   text-align: center;
@@ -543,24 +543,24 @@
   justify-content: center;
 }
 
-@media (max-width: 1024px) { 
-  .book-core { 
-    width: 95%; 
-    height: auto; 
-    max-height: 85vh; 
+@media (max-width: 1024px) {
+  .book-core {
+    width: 95%;
+    height: auto;
+    max-height: 85vh;
     min-height: 400px;
-    border-width: 6px; 
+    border-width: 6px;
     border-radius: 25px;
   }
   .guestbook-title { margin-bottom: clamp(1rem, 2vh, 1.2rem); }
 }
 
-@media (max-width: 768px) { 
-  .book-core { 
-    max-height: calc(88vh - 70px); 
-    padding: 4px; 
-    border-width: 5px; 
-    border-radius: 22px; 
+@media (max-width: 768px) {
+  .book-core {
+    max-height: calc(88vh - 70px);
+    padding: 4px;
+    border-width: 5px;
+    border-radius: 22px;
   }
 
   .guestbook-title { margin: clamp(1.2rem, 2.5vh, 1.8rem) auto clamp(1rem, 2vh, 1.5rem) auto; }
@@ -575,7 +575,7 @@
       -2.5px 0 0 var(--paper-edge-color-4),
       -4px 0 0 var(--paper-edge-color-3),
       -5.5px 0 0 var(--paper-edge-color-1),
-      -7px 1.5px 10px rgba(0,0,0,0.18); 
+      -7px 1.5px 10px rgba(0,0,0,0.18);
   }
   .book-page.page-right {
     border-top-right-radius: 15px; border-bottom-right-radius: 15px;
@@ -590,46 +590,46 @@
   }
 
   .form-actions {
-    flex-direction: column-reverse; 
+    flex-direction: column-reverse;
     gap: 0.9rem;
   }
-  .form-actions > button { width: 100%; } 
+  .form-actions > button { width: 100%; }
 }
 
-@media (max-width: 640px) {  
+@media (max-width: 640px) {
     .book-core {
-        width: 98%; 
-        max-height: calc(90vh - 40px); 
-        border-radius: 18px; 
+        width: 98%;
+        max-height: calc(90vh - 40px);
+        border-radius: 18px;
         padding: 3px;
-        border-width: 4.5px; 
+        border-width: 4.5px;
     }
     .book-pages-wrapper {
-        flex-direction: column; 
-        height: auto; 
-        padding: 0; 
-        perspective: none; 
+        flex-direction: column;
+        height: auto;
+        padding: 0;
+        perspective: none;
     }
-    .book-pages-wrapper::before { display: none; } 
+    .book-pages-wrapper::before { display: none; }
 
     .book-page {
-        flex-basis: auto; 
-        min-height: 320px; 
-        max-height: 48vh; 
+        flex-basis: auto;
+        min-height: 320px;
+        max-height: 48vh;
     }
     .book-page.page-left {
-        border-radius: 14px; 
-        margin-bottom: 0.8rem; 
-        padding-right: 0; 
-        box-shadow: 
-            0 1.5px 0 0 var(--paper-edge-color-3), 
+        border-radius: 14px;
+        margin-bottom: 0.8rem;
+        padding-right: 0;
+        box-shadow:
+            0 1.5px 0 0 var(--paper-edge-color-3),
             0 3px 0 0 var(--paper-edge-color-5),
-            0 5px 6px rgba(0,0,0,0.12); 
+            0 5px 6px rgba(0,0,0,0.12);
     }
     .book-page.page-right {
         border-radius: 14px;
         padding-left: 0;
-        box-shadow: 
+        box-shadow:
             0 1.5px 0 0 var(--paper-edge-color-3),
             0 3px 0 0 var(--paper-edge-color-5),
             0 5px 6px rgba(0,0,0,0.12);
@@ -640,15 +640,15 @@
 
     .guestbook-form-title { border-bottom: none; text-align: center; margin-bottom: 0.7rem; }
     .entry-meta { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
-    .guestbook-entry::after { width: 32px; height: 32px; } 
-    .entry-message-wrapper::before { font-size: 2.7em; } 
+    .guestbook-entry::after { width: 32px; height: 32px; }
+    .entry-message-wrapper::before { font-size: 2.7em; }
 }
 
-@media (max-width: 480px) { 
-  .book-page { min-height: 280px; max-height: 50vh; } 
+@media (max-width: 480px) {
+  .book-page { min-height: 280px; max-height: 50vh; }
   .poetic-button, .poetic-button-subtle, .poetic-button-primary {
-     padding: 0.7rem 1.5rem; 
-     font-size: clamp(0.9em, 1.9vw, 1em); 
+     padding: 0.7rem 1.5rem;
+     font-size: clamp(0.9em, 1.9vw, 1em);
   }
   .form-group textarea { min-height: 80px; }
   .guestbook-entry { padding: clamp(1rem, 2.5vw, 1.5rem) clamp(1.2rem, 3vw, 1.6rem); }
