@@ -94,7 +94,7 @@
   height: calc(100% - 70px); 
   gap: 0; 
   perspective: 3500px; /* Tăng perspective */
-  padding: 0 6px; /* Khoảng hở cho gáy sách */
+  padding: 0 11px; /* Khoảng hở cho gáy sách */
   position: relative;
   z-index: 1;
 }
@@ -103,7 +103,7 @@
 .book-pages-wrapper::before {
     content: '';
     position: absolute;
-    top: 0px; /* Hơi chờm ra ngoài nhiều hơn */
+    top: 18px; /* Hơi chờm ra ngoài nhiều hơn */
     bottom: -15px;
     left: 50%;
     transform: translateX(-50%);
@@ -125,7 +125,7 @@
     box-shadow: 
       0 0 30px rgba(0,0,0,0.55), 
       inset 2px 0 2.5px rgba(255, 255, 255, 0.473), 
-      inset -2px 0 2.5px rgba(255, 255, 255, 0.473); 
+      inset -2px 0 2.5px rgba(255,255,255,0.473); 
 }
 
 /* Style chung cho mỗi trang sách - Nâng cấp hiệu ứng độ dày và cong */
@@ -149,6 +149,7 @@
 
 /* Bo góc cong hơn cho trang giấy */
 .book-page.page-left {
+  border-top-right-radius: 40px; 
   border-top-left-radius: 20px; 
   border-bottom-left-radius: 20px;
   padding-right: 10px; /* Khoảng trống cho hiệu ứng gáy */
@@ -169,6 +170,7 @@
     -16px 3px 15px rgba(0,0,0,0.22); 
 }
 .book-page.page-right {
+  border-top-left-radius: 40px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   padding-left: 10px;
