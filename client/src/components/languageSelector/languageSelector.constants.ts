@@ -7,7 +7,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
     fpsLimit: 120,
     particles: {
         number: {
-            value: 500, 
+            value: 500,
             density: { enable: true },
         },
         color: { value: ["#FFFFFF", "#F0E68C", "#ADD8E6", "#FFDAB9"] },
@@ -23,7 +23,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
         links: { enable: false },
         move: {
             enable: true,
-            speed: 0.4, 
+            speed: 0.4,
             direction: "none",
             random: true,
             straight: false,
@@ -141,13 +141,13 @@ export const buttonVariants: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1.0, 
+      duration: 1.0,
       delay: delay,
       ease: [0.23, 1, 0.32, 1]
     }
   }),
   hover: {
-    scale: 1.03, 
+    scale: 1.03,
     y: -8,
     backgroundColor: "rgba(var(--highlight-color-poetic-rgb), 0.08)",
     borderColor: "rgba(var(--highlight-color-poetic-rgb), 0.35)",
@@ -168,7 +168,7 @@ export const buttonVariants: Variants = {
       damping: 25
     }
   },
-  exit: { 
+  exit: {
     opacity: 0,
     y: 20,
     scale: 0.9,
@@ -196,7 +196,7 @@ export const iconVariants: Variants = {
     textShadow: "none"
   },
   hover: {
-    scale: 1.2, 
+    scale: 1.2,
     rotate: -5,
     y: -5,
     textShadow: "0 3px 10px rgba(var(--highlight-color-poetic-rgb), 0.2)",
@@ -236,7 +236,7 @@ export const contentItemVariants = (delay: number): Variants => ({
       ease: [0.23, 1, 0.32, 1]
     }
   },
-  exit: { 
+  exit: {
     opacity: 0,
     y: -20,
     transition: {
@@ -270,7 +270,7 @@ export const titleVariants = (delay: number): Variants => ({
       textShadow: { duration: 3, repeat: Infinity, repeatType: "mirror", ease: "easeInOut", delay: delay + 0.5 }
     }
   },
-  exit: { 
+  exit: {
     opacity: 0,
     y: -20,
     textShadow: titleInitialTextShadow,
@@ -335,19 +335,20 @@ export const dividerVariants = (delay: number): Variants => ({
 export const dividerVerticalVariants = (delay: number): Variants => ({
   hidden: { ...dividerVariants(delay).hidden, scaleY: 0 },
   visible: { ...dividerVariants(delay).visible, scaleY: 1 },
-  exit: { ...dividerVariants(delay).exit, scaleY: 0} 
+  exit: { ...dividerVariants(delay).exit, scaleY: 0}
 });
 
 export const dividerHorizontalVariants = (delay: number): Variants => ({
   hidden: { ...dividerVariants(delay).hidden, scaleX: 0 },
   visible: { ...dividerVariants(delay).visible, scaleX: 1 },
-  exit: { ...dividerVariants(delay).exit, scaleX: 0} 
+  exit: { ...dividerVariants(delay).exit, scaleX: 0}
 });
 
 export const cardIntroTranslations = {
   aboutButton: { vi: "Về tôi", en: "About Me", ja: "私について" },
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
   guestbookButton: { vi: "Sổ Lưu Bút", en: "Guestbook", ja: "感想ノート" },
+  spotifyButton: { vi: "Playlist Nhạc", en: "Music Playlists", ja: "音楽プレイリスト" },
   introTagline: {
       vi: "Chào mừng đến với thế giới của tui !",
       en: "Welcome to my world!",
@@ -356,6 +357,7 @@ export const cardIntroTranslations = {
   aboutIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   galleryIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
   guestbookIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`,
+  spotifyIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`,
   backButton: { vi: "Quay Lại", en: "Back", ja: "戻る" },
 };
 
@@ -394,7 +396,7 @@ export const cardIntroButtonVariants: Variants = {
     transition: { type: "spring", stiffness: 250, damping: 14 }
   },
   tap: {
-    scale: 0.92, // Keep scale as per original file
+    scale: 0.92,
     y: -3,
     backgroundColor: "rgba(var(--highlight-color-poetic-rgb), 0.3)",
     boxShadow: `
@@ -440,8 +442,8 @@ export const sparkleVariants: Variants = {
   animate: (i: number) => ({
     opacity: [0, 0.3 + Math.random() * 0.4, 0],
     scale: [0, 0.6 + Math.random() * 0.6, 0],
-    x: Math.random() * 100 - 50, 
-    y: Math.random() * 80 - 40, 
+    x: Math.random() * 100 - 50,
+    y: Math.random() * 80 - 40,
     rotate: Math.random() * 360,
     transition: {
       duration: 2 + Math.random() * 2,
@@ -466,8 +468,8 @@ export const cardIntroHeaderVariants: Variants = {
     visible: {
       opacity: 1, y: 0, scale: 1,
       transition: {
-        duration: 0.7, delay: 0, 
-        staggerChildren: 0 
+        duration: 0.7, delay: 0,
+        staggerChildren: 0
       }
     },
     exit: { opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.25, ease: "easeIn" } }
@@ -483,7 +485,7 @@ export const previewContainerVariants: Variants = {
     transition: {
       type: "spring",
       stiffness: 260,
-      damping: 28, 
+      damping: 28,
       when: "beforeChildren",
       staggerChildren: 0.07
     }
@@ -511,12 +513,12 @@ export const previewContainerVariants: Variants = {
 
 export const previewContentItemVariants: Variants = {
   hidden: { opacity: 0, y: 10 },
-  visible: { 
+  visible: {
     opacity: 1,
     y: 0,
     transition: { type: "spring", stiffness: 300, damping: 20 }
   },
-  exit: { 
+  exit: {
     opacity: 0,
     y: 8,
     transition: { type: "spring", stiffness: 320, damping: 20 }
@@ -527,6 +529,7 @@ export const previewIcons = {
   about: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   gallery: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
   guestbook: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`,
+  spotify: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`,
 };
 
 export const galleryViewVariants = (delay: number = 0.1): Variants => ({
@@ -541,9 +544,9 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
         filter: "blur(0px) saturate(1) brightness(1)",
         transition: {
             type: "spring",
-            stiffness: 130, 
+            stiffness: 130,
             damping: 20,
-            mass: 1, 
+            mass: 1,
             delay,
             opacity: { duration: 0.5, ease: "circOut", delay },
             scale: { type: "spring", stiffness: 130, damping: 20, delay },
@@ -555,7 +558,7 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
         scale: 0.7,
         filter: "blur(12px) saturate(0.5)",
         transition: {
-            duration: 0.35, 
+            duration: 0.35,
             ease: "anticipate",
             opacity: { duration: 0.3, ease: "easeIn"},
         }
@@ -652,16 +655,22 @@ export const languageSelectorPreviewTranslations = {
   aboutSnippetTitle: { vi: "Giới thiệu sơ lược", en: "About Me Snippet", ja: "自己紹介（概要）" },
   gallerySneakPeekTitle: { vi: "Xem trước bộ sưu tập", en: "Gallery Sneak Peek", ja: "ギャラリー予告編" },
   guestbookSneakPeekTitle: { vi: "Góc Cảm Xúc", en: "Corner of Feelings", ja: "思いのコーナー" },
+  spotifySneakPeekTitle: { vi: "Giai Điệu Yêu Thích", en: "Favorite Tunes", ja: "お気に入りメロディー" },
   aboutSnippetContent: {
     vi: "Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?",
     en: "Hi! I'm Rin,... well, just Rin, that's it? What were you expecting?",
     ja: "こんにちは！リンです。えっと、リンです、それだけ？何を期待してたの？"
   },
   galleryPreviewAlt: { vi: "Xem trước bộ sưu tập {index}", en: "Gallery preview {index}", ja: "ギャラリープレビュー {index}" },
-  guestbookSnippetContent: { 
+  guestbookSnippetContent: {
     vi: "Những dòng nhắn gửi, khoảnh khắc được sẻ chia và lưu giữ...",
     en: "Shared moments, treasured words, all kept here...",
     ja: "共有された瞬間、大切な言葉、すべてここに保管されています。。。"
+  },
+  spotifyPreviewContent: {
+    vi: "Chìm đắm trong những giai điệu tuyệt vời từ Spotify...",
+    en: "Immerse yourself in wonderful melodies from Spotify...",
+    ja: "Spotifyの素晴らしいメロディーに浸ってください。。。"
   }
 };
 
@@ -683,7 +692,7 @@ export const galleryTranslations = {
 export const cardDisplayInfo = {
     name: { vi: "Rin", en: "Rin", ja: "リン" },
     title: {
-        vi: "Sinh viên IT | An Ninh Mạng",
+        vi: "Sinh viên CNTT | An Ninh Mạng",
         en: "IT Student | Cyber Security",
         ja: "情報技術学生 | サイバーセキュリティ"
     }
@@ -698,7 +707,7 @@ export const guestbookViewTranslations = {
   messagePlaceholder: { vi: "Nơi này thật đẹp và bình yên...", en: "This place is beautiful and peaceful...", ja: "この場所は美しくて穏やかですね。。。" },
   submitButton: { vi: "Gửi Cảm Nghĩ", en: "Post Your Thought", ja: "感想を投稿する" },
   submittingText: { vi: "Đang gửi...", en: "Submitting...", ja: "送信中。。。" },
-  
+
   promptWrite: {
     vi: "Bạn muốn chia sẻ đôi dòng tâm tình với Rin hong? ✨ <br/>Cảm ơn vì đã ghé thăm, ghi lại sự hiện diện của bạn tại đây nhé!",
     en: "Want to share some thoughts with Rin? ✨ <br/>Thanks for visiting, feel free to leave your mark!",
@@ -745,9 +754,35 @@ export const guestbookViewContainerVariants = (delay: number = 0.1): Variants =>
     },
     exit: {
         opacity: 0, scale: 0.9, y: 30, filter: "blur(5px)",
-        transition: { duration: 0.3, ease: "anticipate" } 
+        transition: { duration: 0.3, ease: "anticipate" }
     }
 });
+
+export const spotifyViewContainerVariants = (delay: number = 0.1): Variants => ({
+    hidden: { opacity: 0, scale: 0.88, y: 45, filter: "blur(10px) saturate(0.6)" },
+    visible: {
+        opacity: 1, scale: 1, y: 0, filter: "blur(0px) saturate(1)",
+        transition: {
+            type: "spring", stiffness: 150, damping: 24, mass: 0.95,
+            delay,
+            opacity: { duration: 0.55, ease: "circOut", delay },
+            filter: { duration: 0.45, ease: "easeOut", delay: delay + 0.1 }
+        }
+    },
+    exit: {
+        opacity: 0, scale: 0.9, y: 35, filter: "blur(7px) saturate(0.7)",
+        transition: { duration: 0.32, ease: "anticipate" }
+    }
+});
+
+export const spotifyPlaylistsTranslations = {
+    title: { vi: "Danh Sách Nhạc Spotify", en: "Spotify Playlists", ja: "Spotifyプレイリスト" },
+    loading: { vi: "Đang tải playlists...", en: "Loading playlists...", ja: "プレイリストを読み込み中..." },
+    error: { vi: "Không thể tải playlists. Vui lòng thử lại sau.", en: "Could not load playlists. Please try again later.", ja: "プレイリストを読み込めませんでした。後でもう一度お試しください。" },
+    noPlaylists: { vi: "Không tìm thấy playlist nào.", en: "No playlists found.", ja: "プレイリストが見つかりませんでした。" },
+    externalLink: { vi: "Mở trên Spotify", en: "Open on Spotify", ja: "Spotifyで開く" }
+};
+
 
 export const guestbookIconFeatherPen = `<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.7 3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/><path d="m17.6 6.7 3.1-3.1"/><path d="M2.6 20.1C5.9 19.4 10 18 13 15c2-2 3.3-4.2 4-6.3.4-1.1.6-2.3.5-3.5S17 3.2 16 3.3c-1 .1-2.3.7-3.7 2s-3 3.1-4.2 4.6c-1.9 2.4-3.8 4.6-5.3 6.8"/><path d="M10.7 11.3 2.6 20.1"/><path d="m19.2 5.2.4.4"/></svg>`;
 export const guestbookIconInkSplatterCancel = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5C6 20 4 17 4 12A8 8 0 0 1 12 4c5 0 7 2.5 7.5 7.5"/><path d="m18 18-5.5-5.5"/><path d="m12.5 18-5.5-5.5"/><path d="M4.5 10C5.7 9.3 6.5 8.2 7 7"/><path d="M7.5 3.5C9 4.2 10.8 5.1 11.5 6.5"/><circle cx="14" cy="5.5" r="0.5" fill="currentColor"/><circle cx="9" cy="3.5" r="0.5" fill="currentColor"/><circle cx="4.5" cy="6" r="0.5" fill="currentColor"/><circle cx="20.5" cy="11" r="0.5" fill="currentColor"/></svg>`;

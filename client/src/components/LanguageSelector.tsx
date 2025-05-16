@@ -7,6 +7,7 @@ import flourishImage from '../assets/flourish.png';
 import PersonalCard from './PersonalCard';
 import Gallery from './Gallery';
 import Guestbook from './Guestbook';
+import SpotifyPlaylists from './SpotifyPlaylists';
 import type { GuestbookEntry } from '../data/guestbook.data';
 
 import { initParticlesEngine } from "@tsparticles/react";
@@ -21,7 +22,7 @@ import LangButton from './languageSelector/LangButton';
 import {
     poeticStarsOptionsDefinition,
     translations,
-    cardIntroTranslations,
+    cardIntroTranslations, // Đảm bảo đã import
     contentItemVariants,
     titleVariants,
     flourishVariantsDefinition,
@@ -42,6 +43,7 @@ import {
     cardDisplayInfo,
     galleryViewVariants,
     guestbookViewContainerVariants,
+    spotifyViewContainerVariants,
     SHARED_FLOURISH_SPRING_TRANSITION,
     aboutNavIconLeft,
 } from './languageSelector/languageSelector.constants';
@@ -55,13 +57,13 @@ interface LanguageSelectorProps {
   githubUsername: string;
 }
 
-type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook';
+type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const getFlourishLayoutPropsForView = (view: SelectorView) => {
     let scale = 1;
-    if (view === 'about' || view === 'gallery' || view === 'guestbook') scale = 0.85;
+    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists'].includes(view)) scale = 0.85;
     return { scale };
 };
 
@@ -74,6 +76,13 @@ const initialMountDivider2Delay = initialMountButton2Delay + 0.1;
 const initialMountButton3Delay = initialMountDivider2Delay + 0.2;
 const initialMountFooterNoteDelay = initialMountButton3Delay + 0.4;
 
+// Kiểu cho các text key của nút chính (không phải back button)
+type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton';
+// Kiểu cho icon key (đây là string chứa SVG)
+type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg';
+// Kiểu cho header preview type
+type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists';
+
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     onLanguageSelected, cardAvatarUrl, initialSelectedLanguage,
@@ -85,10 +94,15 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const [displayTextLanguage, setDisplayTextLanguage] = useState<'vi' | 'en' | 'ja'>(initialSelectedLanguage || 'vi');
   const [isInitialMount, setIsInitialMount] = useState(true);
   const [isButtonHovered, setIsButtonHovered] = useState<string | null>(null);
-  const [headerPreviewType, setHeaderPreviewType] = useState<'about' | 'gallery' | 'guestbook' | null>(null);
+  const [headerPreviewType, setHeaderPreviewType] = useState<HeaderPreviewType | null>(null);
+
   const [guestbookEntries, setGuestbookEntries] = useState<GuestbookEntry[]>([]);
   const [guestbookLoading, setGuestbookLoading] = useState<boolean>(true);
   const [_guestbookError, setGuestbookError] = useState<string | null>(null);
+
+  const [spotifyPlaylists, setSpotifyPlaylists] = useState<any[]>([]);
+  const [spotifyLoading, setSpotifyLoading] = useState<boolean>(false);
+  const [spotifyError, setSpotifyError] = useState<string | null>(null);
 
   const topFlourishVisualControls = useAnimation();
   const bottomFlourishVisualControls = useAnimation();
@@ -144,6 +158,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     const baseScale = getFlourishLayoutPropsForView(currentView).scale;
     ctrls.start((vars.hover as (custom: {baseScale:number})=>any)({baseScale}));
   }, [currentView]);
+
   const handleFlourishHoverEnd = useCallback(async (ctrls: any, vars: any, loopDef: any) => {
     const baseScale = getFlourishLayoutPropsForView(currentView).scale;
     await ctrls.start({ ...(vars.visibleBase as object), scale: baseScale, transition: { type: "spring", stiffness: 280, damping: 35, mass: 1 } });
@@ -156,9 +171,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const handleMouseLeaveLangBtn = () => {};
   const langForTextDisplayInOptionsView = displayTextLanguage;
   const footerText = `ᓚᘏᗢ ${yourNameForIntro} | ${new Date().getFullYear()}`;
-  const showFooter = ['cardIntro', 'about', 'gallery', 'guestbook'].includes(currentView);
+  const showFooter = ['cardIntro', 'about', 'gallery', 'guestbook', 'spotifyPlaylists'].includes(currentView);
+
   const getFlourishWrapperStyle = (view: SelectorView, isTop: boolean) => {
-    let mV = "1rem"; if (['about', 'gallery', 'guestbook'].includes(view)) mV = "0.5rem";
+    let mV = "1rem"; if (['about', 'gallery', 'guestbook', 'spotifyPlaylists'].includes(view)) mV = "0.5rem";
     return isTop ? { marginBottom: mV } : { marginTop: mV };
   };
 
@@ -167,7 +183,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const cardIntroDivider2Delay=cardIntroTaglineDisplayDelay+0.4, cardIntroActionsDelay=cardIntroDivider2Delay+0.1;
   const cardIntroButtonBaseDelay=0.1, headerContentBlockDelay=0.05;
 
-  const fetchGuestbookEntries = useCallback(async () => { 
+  const fetchGuestbookEntries = useCallback(async () => {
       if (!isMountedRef.current) return;
       setGuestbookLoading(true); setGuestbookError(null);
       try {
@@ -177,8 +193,36 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       } catch (e: any) { console.error("Lỗi fetch GBook:", e); if (isMountedRef.current) setGuestbookError(e.message || 'Lỗi tải GBook.'); }
       finally { if (isMountedRef.current) setGuestbookLoading(false); }
   }, []);
-  useEffect(() => { if (currentView === 'guestbook' || (currentView === 'cardIntro' && headerPreviewType === 'guestbook')) fetchGuestbookEntries(); }, [fetchGuestbookEntries, currentView, headerPreviewType]);
-  const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi'|'en'|'ja'): Promise<void> => { /* Giữ nguyên logic add */
+
+  const fetchSpotifyPlaylists = useCallback(async () => {
+    if (!isMountedRef.current) return;
+    setSpotifyLoading(true); setSpotifyError(null);
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/spotify/playlists`);
+        if (!res.ok) {
+            let msg = `HTTP error! status: ${res.status}`;
+            try { const errData = await res.json(); msg = errData.error || msg; } catch (e) {}
+            throw new Error(msg);
+        }
+        if (isMountedRef.current) setSpotifyPlaylists(await res.json());
+    } catch (e: any) {
+        console.error("Lỗi fetch Spotify Playlists:", e);
+        if (isMountedRef.current) setSpotifyError(e.message || 'Lỗi tải Spotify playlists.');
+    } finally {
+        if (isMountedRef.current) setSpotifyLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentView === 'guestbook' || (currentView === 'cardIntro' && headerPreviewType === 'guestbook')) {
+        fetchGuestbookEntries();
+    }
+    if (currentView === 'spotifyPlaylists' || (currentView === 'cardIntro' && headerPreviewType === 'spotifyPlaylists')) {
+        fetchSpotifyPlaylists();
+    }
+  }, [fetchGuestbookEntries, fetchSpotifyPlaylists, currentView, headerPreviewType]);
+
+  const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi'|'en'|'ja'): Promise<void> => {
       const payload = { name, message, language: lang };
       try {
           const res = await fetch(`${API_BASE_URL}/api/guestbook`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -187,8 +231,20 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       } catch (e: any) { console.error("Lỗi gửi GBook từ LangSel:", e); throw e; }
   };
 
-  // Key cho PersonalCard, thay đổi khi view='about' và currentLanguage thay đổi.
   const personalCardRenderKey = `pc-${currentView}-${currentLanguage}`;
+
+  // Cấu hình nút với kiểu chặt chẽ
+  const cardIntroActionButtons: {
+    type: HeaderPreviewType; // Dùng HeaderPreviewType vì type này cũng là view name
+    iconKey: CardIntroIconKey;
+    textKey: MainCardIntroButtonTextKey;
+  }[] = [
+    { type: 'about', iconKey: 'aboutIconSvg', textKey: 'aboutButton'},
+    { type: 'gallery', iconKey: 'galleryIconSvg', textKey: 'galleryButton'},
+    { type: 'guestbook', iconKey: 'guestbookIconSvg', textKey: 'guestbookButton'},
+    { type: 'spotifyPlaylists', iconKey: 'spotifyIconSvg', textKey: 'spotifyButton'},
+  ];
+
 
   return (
     <motion.div className="language-selector-poetic-overlay" variants={overlayEntryExitVariants} initial="hidden" animate="visible" exit="exit">
@@ -222,13 +278,26 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                     <motion.div className="card-intro-header-swappable-content" layout transition={layoutTransition}>
                       <AnimatePresence mode="wait">
                         {headerPreviewType?(<motion.div key={`header-preview-${headerPreviewType}`} className="header-preview-container" variants={previewContainerVariants} initial="initial" animate="animate" exit="exit" whileHover="hover">
-                            <motion.h4 className="header-preview-title" variants={contentItemVariants(0)}>{headerPreviewType==='about'?languageSelectorPreviewTranslations.aboutSnippetTitle[currentLanguage]:headerPreviewType==='gallery'?languageSelectorPreviewTranslations.gallerySneakPeekTitle[currentLanguage]:languageSelectorPreviewTranslations.guestbookSneakPeekTitle[currentLanguage]}</motion.h4>
+                            <motion.h4 className="header-preview-title" variants={contentItemVariants(0)}>
+                                {headerPreviewType==='about'?languageSelectorPreviewTranslations.aboutSnippetTitle[currentLanguage]
+                                :headerPreviewType==='gallery'?languageSelectorPreviewTranslations.gallerySneakPeekTitle[currentLanguage]
+                                :headerPreviewType==='guestbook'?languageSelectorPreviewTranslations.guestbookSneakPeekTitle[currentLanguage]
+                                :headerPreviewType==='spotifyPlaylists'?languageSelectorPreviewTranslations.spotifySneakPeekTitle[currentLanguage]
+                                : ''}
+                            </motion.h4>
                             <motion.div className="header-preview-block-content" variants={contentItemVariants(0.1)} initial="hidden" animate="visible" exit="exit">
-                                <span className="header-preview-icon" dangerouslySetInnerHTML={{__html:headerPreviewType==='about'?previewIcons.about:headerPreviewType==='gallery'?previewIcons.gallery:previewIcons.guestbook}} />
+                                <span className="header-preview-icon" dangerouslySetInnerHTML={{__html:
+                                    headerPreviewType==='about'?previewIcons.about
+                                    :headerPreviewType==='gallery'?previewIcons.gallery
+                                    :headerPreviewType==='guestbook'?previewIcons.guestbook
+                                    :headerPreviewType==='spotifyPlaylists'?previewIcons.spotify
+                                    : ''
+                                }} />
                                 <div className="header-preview-actual-content">
                                   {headerPreviewType==='about' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.aboutSnippetContent[currentLanguage]}</p>)}
                                   {headerPreviewType==='gallery' && (<div className="header-preview-images-enhanced">{(localImages.length>0?localImages.slice(0,4):[]).map((img,idx)=>(<motion.img key={`preview-${idx}`} variants={contentItemVariants(0.1+idx*0.08)} src={img} alt={languageSelectorPreviewTranslations.galleryPreviewAlt[currentLanguage].replace("{index}",String(idx+1))} />))}</div>)}
                                   {headerPreviewType==='guestbook' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.guestbookSnippetContent[currentLanguage]}</p>)}
+                                  {headerPreviewType==='spotifyPlaylists' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.spotifyPreviewContent[currentLanguage]}</p>)}
                                 </div>
                             </motion.div>
                         </motion.div>):(<motion.div key="header-details" className="header-details-block" variants={contentItemVariants(headerContentBlockDelay)} initial="hidden" animate="visible" exit="exit">
@@ -241,10 +310,30 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 </motion.div>
                 <motion.div className="poetic-divider poetic-divider-horizontal card-intro-second-divider" variants={dividerHorizontalVariants(cardIntroDivider2Delay)} initial="hidden" animate="visible" exit="exit" layout transition={layoutTransition}><div className="divider-line"></div></motion.div>
                 <motion.div className="card-intro-actions" variants={contentItemVariants(cardIntroActionsDelay)} initial="hidden" animate="visible" exit="exit" layout transition={layoutTransition}>
-                    {(['about','gallery','guestbook'] as const).map((type,idx)=>(<motion.button key={type} className="card-intro-button" onClick={type==='about'?()=>setCurrentView('about'):type==='gallery'?()=>setCurrentView('gallery'):()=>setCurrentView('guestbook')} variants={cardIntroButtonVariants} initial="initial" animate="animate" exit="exit" custom={cardIntroButtonBaseDelay+idx*0.1} whileHover="hover" whileTap="tap" onMouseEnter={()=>{setIsButtonHovered(type);setHeaderPreviewType(type);}} onMouseLeave={()=>{setIsButtonHovered(null);setHeaderPreviewType(null);}}>
-                        <motion.span className="button-icon-svg" variants={cardIntroButtonIconVariants} animate={isButtonHovered===type?"hover":"rest"} dangerouslySetInnerHTML={{__html:type==='about'?cardIntroTranslations.aboutIconSvg:type==='gallery'?cardIntroTranslations.galleryIconSvg:cardIntroTranslations.guestbookIconSvg}} />
-                        <span className="button-text">{type==='about'?cardIntroTranslations.aboutButton[currentLanguage]:type==='gallery'?cardIntroTranslations.galleryButton[currentLanguage]:cardIntroTranslations.guestbookButton[currentLanguage]}</span><span className="button-shine-effect"></span>
-                    </motion.button>))}
+                    {cardIntroActionButtons.map((btn, idx) => (
+                        <motion.button
+                            key={btn.type}
+                            className="card-intro-button"
+                            onClick={() => setCurrentView(btn.type)}
+                            variants={cardIntroButtonVariants}
+                            initial="initial" animate="animate" exit="exit"
+                            custom={cardIntroButtonBaseDelay + idx * 0.1}
+                            whileHover="hover" whileTap="tap"
+                            onMouseEnter={() => { setIsButtonHovered(btn.type); setHeaderPreviewType(btn.type); }}
+                            onMouseLeave={() => { setIsButtonHovered(null); setHeaderPreviewType(null); }}
+                        >
+                            <motion.span
+                                className="button-icon-svg"
+                                variants={cardIntroButtonIconVariants}
+                                animate={isButtonHovered === btn.type ? "hover" : "rest"}
+                                dangerouslySetInnerHTML={{ __html: cardIntroTranslations[btn.iconKey] as string }}
+                            />
+                            <span className="button-text">
+                                {cardIntroTranslations[btn.textKey][currentLanguage]}
+                            </span>
+                            <span className="button-shine-effect"></span>
+                        </motion.button>
+                    ))}
                 </motion.div>
           </motion.div> )}
           {currentView === 'about' && ( <motion.div key={`about-view-${currentLanguage}`} className="content-section card-content-display" variants={galleryViewVariants(0.05)} initial="hidden" animate="visible" exit="exit">
@@ -262,6 +351,34 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                    <span className="button-icon-svg" dangerouslySetInnerHTML={{__html:aboutNavIconLeft}} /> <span className="button-text">{cardIntroTranslations.backButton[currentLanguage]}</span>
                 </motion.button>
           </motion.div> )}
+          {currentView === 'spotifyPlaylists' && (
+            <motion.div
+                key="spotify-playlists-content"
+                className="content-section card-content-display spotify-playlists-view-wrapper"
+                variants={spotifyViewContainerVariants(0.05)}
+                initial="hidden" animate="visible" exit="exit"
+            >
+                <SpotifyPlaylists
+                    language={currentLanguage}
+                    playlists={spotifyPlaylists}
+                    isLoading={spotifyLoading}
+                    error={spotifyError}
+                />
+                 <motion.button
+                    className="card-view-back-button"
+                    onClick={() => setCurrentView('cardIntro')}
+                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] } }}
+                    exit={{ opacity: 0, y: 20, scale: 0.95, transition: { duration: 0.25, ease: "easeIn" } }}
+                    whileHover={{ scale: 1.08, y: -4, boxShadow: "0 8px 20px -5px rgba(var(--primary-color-rgb),0.35)", backgroundColor: "rgba(var(--primary-color-rgb),0.1)" }}
+                    whileTap={{ scale: 0.96, y: -1 }}
+                    transition={{type:"spring", stiffness: 300, damping: 15}}
+                >
+                    <span className="button-icon-svg" dangerouslySetInnerHTML={{ __html: aboutNavIconLeft }} />
+                    <span className="button-text">{cardIntroTranslations.backButton[currentLanguage]}</span>
+                </motion.button>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
       <motion.div layout style={getFlourishWrapperStyle(currentView, false)} transition={SHARED_FLOURISH_SPRING_TRANSITION} className="flourish-wrapper">

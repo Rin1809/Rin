@@ -12,7 +12,7 @@
   backdrop-filter: blur(18px) saturate(130%);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
   z-index: 1000;
-  padding: 0.5rem; /* Giảm padding tổng thể để có thêm không gian */
+  padding: 0.5rem;
   overflow: hidden;
   font-family: var(--font-family-poetic), var(--font-family-fallback);
 }
@@ -65,7 +65,7 @@
   text-align: center;
   color: var(--text-color-poetic);
   max-width: 600px;
-  min-height: 380px; /* Giảm min-height một chút */
+  min-height: 380px;
   width: 100%;
   position: relative;
   z-index: 1;
@@ -695,7 +695,7 @@
 
 .card-content-display {
   width: 100%;
-  max-width: 95%; /* Tăng max-width cho content display */
+  max-width: 95%;
   padding: 0rem 0;
   display: flex;
   flex-direction: column;
@@ -703,7 +703,7 @@
   gap: 1.5rem;
 }
 
-.gallery-view-wrapper, .guestbook-view-wrapper {
+.gallery-view-wrapper, .guestbook-view-wrapper, .spotify-playlists-view-wrapper {
   width: 100%;
   max-width: 100%;
   display: flex;
@@ -716,11 +716,17 @@
     max-width: 1000px;
     box-sizing: border-box;
 }
-.guestbook-view-wrapper > .guestbook-container {
+.guestbook-view-wrapper > .book-core { /* Target book-core instead of guestbook-container */
     width: 100%;
-    max-width: 980px; /* << ĐỒNG BỘ VỚI Guestbook.css */
+    max-width: 1050px; /* Matching Guestbook.css max-width */
     box-sizing: border-box;
 }
+.spotify-playlists-view-wrapper > .spotify-playlists-scroll-wrapper { /* Target child */
+    width: 100%;
+    max-width: 1150px; /* Matching SpotifyPlaylists.css max-width */
+    box-sizing: border-box;
+}
+
 
 .card-view-back-button {
   display: flex;
@@ -772,7 +778,7 @@
 
 @media (max-width: 768px) {
   .card-content-display {
-      max-width: 100%; /* Cho phép content con tự quyết định max-width */
+      max-width: 100%;
   }
   .card-view-back-button { font-size: 1em; padding: 0.6rem 1.4rem; }
   .card-view-back-button .button-icon-svg { width: 20px; height: 20px; }
@@ -785,10 +791,10 @@
 
 .language-selector-footer {
   position: absolute;
-  bottom: 0.5rem; /* Giảm bottom để đỡ chiếm không gian */
+  bottom: 0.5rem;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.85em; /* Giảm font-size footer */
+  font-size: 0.85em;
   color: var(--subtext-color-poetic);
   padding: 0.4rem 0.8rem;
   background-color: rgba(var(--card-background-rgb), 0.5);
@@ -802,13 +808,13 @@
 
 @media (max-width: 600px) {
   .card-content-display {
-    max-width: 98%; /* Cho phép content con tự quyết định max-width */
+    max-width: 98%;
     gap: 1rem;
   }
 
   .language-selector-footer {
-    font-size: 0.8em; /* Giảm nữa */
-    bottom: 0.25rem; /* Sát hơn */
+    font-size: 0.8em;
+    bottom: 0.25rem;
     padding: 0.3rem 0.6rem;
   }
 }
