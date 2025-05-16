@@ -2,13 +2,13 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import './styles/Guestbook.css';
-import { 
+import {
     guestbookViewTranslations as t,
     randomPoeticQuotes
 } from './languageSelector/languageSelector.constants';
 import type { GuestbookEntry } from '../data/guestbook.data';
 
-// Icon Components (giữ nguyên)
+// Icon Components (giữ nguyên từ trước)
 const IconFeatherPen = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20.7 3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/>
@@ -32,10 +32,11 @@ const IconInkSplatterCancel = () => (
     <circle cx="20.5" cy="11" r="0.5" fill="currentColor"/>
   </svg>
 );
+
 // Props Interface (giữ nguyên)
 interface GuestbookProps {
   language: 'vi' | 'en' | 'ja';
-  onBack: () => void; 
+  onBack: () => void;
   entries: GuestbookEntry[];
   onAddEntry: (name: string, message: string, lang: 'vi' | 'en' | 'ja') => Promise<void>;
 }
@@ -50,10 +51,10 @@ interface TypewriterMessageProps {
 const TypewriterCharacterVariants: Variants = {
   hidden: {
     opacity: 0,
-    y: 8,        
-    scaleX: 0.6, 
-    filter: "blur(2.5px)", 
-    transformOrigin: 'left center' 
+    y: 8,
+    scaleX: 0.6,
+    filter: "blur(2.5px)",
+    transformOrigin: 'left center'
   },
   visible: {
     opacity: 1,
@@ -61,58 +62,69 @@ const TypewriterCharacterVariants: Variants = {
     scaleX: 1,
     filter: "blur(0px)",
     transition: {
-      type: "spring", 
-      damping: 22,    
-      stiffness: 120, 
-      mass: 0.8,      
+      type: "spring",
+      damping: 22,
+      stiffness: 120,
+      mass: 0.8,
     }
   }
 };
 
 const TypewriterContainerVariants = (stagger: number): Variants => ({
-  hidden: {}, 
+  hidden: {},
   visible: {
     transition: {
-      staggerChildren: stagger, 
+      staggerChildren: stagger,
     }
   }
 });
 
 const TypewriterMessage: React.FC<TypewriterMessageProps> = React.memo(({
   fullMessage,
-  className = "entry-message",
-  staggerDuration = 0.038, 
+  className = "entry-message", // Sẽ được áp dụng cho div wrapper mới
+  staggerDuration = 0.045,
 }) => {
   const characters = useMemo(() => fullMessage.split(''), [fullMessage]);
-  const animationKey = useMemo(() => fullMessage, [fullMessage]); 
+  const animationKey = useMemo(() => fullMessage, [fullMessage]);
 
   return (
-    <motion.p
-      key={animationKey} 
-      className={className} 
-      variants={TypewriterContainerVariants(staggerDuration)}
-      initial="hidden"
-      animate="visible"
-      style={{ display: 'flex', flexWrap: 'wrap', overflow: 'hidden' }} 
-    >
-      {characters.map((char, index) => (
-        <motion.span
-          key={`${char}-${index}-${animationKey}`} 
-          variants={TypewriterCharacterVariants}
-          style={{ display: 'inline-block', minWidth: char === ' ' ? '0.25em' : 'auto' }} 
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </motion.span>
-      ))}
-    </motion.p>
+    <div className={className}> {/* Outer div gets styling like .random-quote-message-enhanced or .entry-message */}
+      <motion.p // This motion.p is a standard paragraph, not a flex container
+        key={animationKey}
+        variants={TypewriterContainerVariants(staggerDuration)}
+        initial="hidden"
+        animate="visible"
+        style={{
+          margin: 0,
+          padding: 0,
+          whiteSpace: 'normal',      // Đảm bảo ngắt dòng tự nhiên tại khoảng trắng
+          overflowWrap: 'break-word', // Cho phép ngắt từ nếu từ quá dài
+          wordWrap: 'break-word',     // Tương tự overflowWrap, cho trình duyệt cũ
+          hyphens: 'none',            // Vô hiệu hóa gạch nối tự động
+        }}
+      >
+        {characters.map((char, index) => (
+          <motion.span
+            key={`${char}-${index}-${animationKey}`}
+            variants={TypewriterCharacterVariants}
+            style={{
+              display: 'inline', // Characters are now inline, browser handles word wrapping
+              minWidth: char === ' ' ? '0.25em' : undefined // Ensure spaces have some width
+            }}
+          >
+            {char === ' ' ? '\u00A0' : char} {/* Non-breaking space for visual consistency */}
+          </motion.span>
+        ))}
+      </motion.p>
+    </div>
   );
 });
 TypewriterMessage.displayName = 'TypewriterMessage';
 // --- KẾT THÚC Component con ---
 
 
-// --- VARIANTS ---
-const bookCoreVariants = { 
+// --- VARIANTS (giữ nguyên từ trước) ---
+const bookCoreVariants = {
   hidden: { opacity: 0, y: 60, scale: 0.9, filter: "blur(10px) saturate(0.5)" },
   visible: {
     opacity: 1, y: 0, scale: 1, filter: "blur(0px) saturate(1)",
@@ -120,16 +132,16 @@ const bookCoreVariants = {
   },
   exit: { opacity: 0, y: 45, scale: 0.92, filter: "blur(8px) saturate(0.65)", transition: { duration: 0.35, ease: [0.6, 0.05, 0.25, 0.95] } }
 };
-const guestbookInteractiveSectionVariants = { // Áp dụng cho cả group prompt+quote
+const guestbookInteractiveSectionVariants = {
   hidden: { opacity: 0, y: 18, filter: "blur(1.5px)" },
   visible: {
     opacity: 1, y: 0, filter: "blur(0px)",
-    transition: { 
-        opacity: { duration: 0.3, ease: "easeOut" }, 
-        y: { type: "spring", stiffness: 190, damping: 17, delay: 0.04 }, 
-        filter: { duration: 0.2, delay: 0.08 }, 
-        staggerChildren: 0.1, // Tăng nhẹ stagger cho các item bên trong (prompt, quote wrapper)
-        when: "beforeChildren" 
+    transition: {
+        opacity: { duration: 0.3, ease: "easeOut" },
+        y: { type: "spring", stiffness: 190, damping: 17, delay: 0.04 },
+        filter: { duration: 0.2, delay: 0.08 },
+        staggerChildren: 0.1,
+        when: "beforeChildren"
     }
   },
   exit: {
@@ -137,7 +149,7 @@ const guestbookInteractiveSectionVariants = { // Áp dụng cho cả group promp
     transition: { opacity: { duration: 0.18, ease: "easeIn" }, filter: { duration: 0.13 }, when: "afterChildren" }
   }
 };
-const guestbookItemVariants = { // Dùng cho prompt, quote wrapper, form title, form groups, form actions
+const guestbookItemVariants = {
   hidden: { opacity: 0, y: 13, filter: "blur(2px)" },
   visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 220, damping: 19, mass: 0.85 } },
   exit: { opacity: 0, y: -9, filter: "blur(1.5px)", transition: { duration: 0.13 }}
@@ -151,22 +163,23 @@ const entryCardVariants = {
   exit: { opacity: 0, scale: 0.94, y: -20, x: 5, rotate: 0.8, filter: "blur(4px) saturate(0.75)", transition: { duration: 0.22, ease:"circIn" } },
 };
 
-const messageWrapperVariants: Variants = { 
+const messageWrapperVariants: Variants = {
     hidden: {
         opacity: 0,
         height: 0,
         marginTop: "0rem",
-        transition: { 
+        transition: {
             when: "afterChildren",
-            duration: 0.2,      
-            ease: "easeOut"
+            opacity: { duration: 0.15, ease: "easeOut" },
+            height: { duration: 0.2, ease: "easeOut"},
+            marginTop: {duration: 0.2, ease: "easeOut"}
         }
     },
     visible: {
-        opacity: 1, 
-        height: "auto", 
+        opacity: 1,
+        height: "auto",
         marginTop: "1.1rem",
-        transition: { 
+        transition: {
             when: "beforeChildren",
             opacity: { duration: 0.2, ease: "easeOut", delay: 0.05 },
             height: { type: "spring", stiffness: 200, damping: 26, mass: 0.8, delay: 0.05 },
@@ -201,8 +214,8 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'read' | 'write'>('read');
   const [hoveredEntryId, setHoveredEntryId] = useState<string | number | null>(null);
-  const [currentRandomQuote, setCurrentRandomQuote] = useState<string>(''); 
-  const randomQuoteIntervalIdRef = useRef<number | null>(null); 
+  const [currentRandomQuote, setCurrentRandomQuote] = useState<string>('');
+  const randomQuoteIntervalIdRef = useRef<number | null>(null);
 
    // Effect cho quote ngẫu nhiên
    useEffect(() => {
@@ -211,15 +224,15 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       const selectNewQuote = () => {
         const randomIndex = Math.floor(Math.random() * quotesForLang.length);
         const rawQuote = quotesForLang[randomIndex];
-        setCurrentRandomQuote(`"${rawQuote}"`); // Thêm dấu ""
+        setCurrentRandomQuote(`"${rawQuote}"`);
       };
 
-      selectNewQuote(); 
+      selectNewQuote();
 
       if (randomQuoteIntervalIdRef.current) {
         clearInterval(randomQuoteIntervalIdRef.current);
       }
-      randomQuoteIntervalIdRef.current = window.setInterval(selectNewQuote, 2000); // Đổi quote mỗi 2 giây
+      randomQuoteIntervalIdRef.current = window.setInterval(selectNewQuote, 2500);
 
       return () => {
         if (randomQuoteIntervalIdRef.current) {
@@ -232,15 +245,15 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
         clearInterval(randomQuoteIntervalIdRef.current);
         randomQuoteIntervalIdRef.current = null;
       }
-      setCurrentRandomQuote(''); 
+      setCurrentRandomQuote('');
     }
-  }, [viewMode, language]); 
+  }, [viewMode, language]);
 
 
-   const handleSubmit = async (e: React.FormEvent) => { 
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !message.trim()) {
-      setSubmitError(language === 'vi' ? 'Tên và cảm nghĩ k dc trống!' : language === 'en' ? 'Name & msg cannot be empty!' : 'お名前とメッセージは必須です！');
+      setSubmitError(t.validationError[language] || 'Tên và cảm nghĩ k dc trống!');
       setTimeout(() => setSubmitError(null), 4000);
       return;
     }
@@ -251,14 +264,14 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       await onAddEntry(name.trim(), message.trim(), language);
       setName('');
       setMessage('');
-      setSubmitSuccess(language === 'vi' ? 'Cảm ơn bạn đã chia sẻ!' : language === 'en' ? 'Thank you for sharing!' : 'ご感想ありがとうございます！');
+      setSubmitSuccess(t.submitSuccess[language] || 'Cảm ơn bạn đã chia sẻ!');
       setTimeout(() => {
         setSubmitSuccess(null);
         setViewMode('read');
       }, 3500);
     } catch (error: any) {
       console.error("Lỗi gửi entry Guestbook.tsx:", error);
-      let userErrorMessage = language === 'vi' ? 'Gửi thất bại, thử lại.' : language === 'en' ? 'Submit failed, try again.' : '送信に失敗しました。もう一度お試しください。';
+      let userErrorMessage = t.submitError[language] || 'Gửi thất bại, thử lại.';
       if (error && typeof error.message === 'string' && error.message.startsWith('Failed to submit:')) {
          userErrorMessage = `${userErrorMessage} (${error.message.replace('Failed to submit: ', '')})`;
       } else if (error && typeof error.message === 'string') {
@@ -270,14 +283,14 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       setIsSubmitting(false);
     }
   };
-  const handleCancelWrite = () => { 
+  const handleCancelWrite = () => {
     setViewMode('read');
     setName('');
     setMessage('');
     setSubmitError(null);
     setSubmitSuccess(null);
   }
-  const formatDate = (dateString: string) => { 
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
         return language === 'vi' ? 'K rõ TG' : language === 'en' ? 'Unknown time' : '時刻不明';
@@ -295,12 +308,12 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                 <div className="page-content-scrollable left-page-scroll">
                     <AnimatePresence mode="wait">
                     {viewMode === 'read' && (
-                        <motion.div 
-                            key="read-mode-left-page-content" 
-                            className="guestbook-left-content-read-mode" 
-                            variants={guestbookInteractiveSectionVariants} 
-                            initial="hidden" 
-                            animate="visible" 
+                        <motion.div
+                            key="read-mode-left-page-content"
+                            className="guestbook-left-content-read-mode"
+                            variants={guestbookInteractiveSectionVariants}
+                            initial="hidden"
+                            animate="visible"
                             exit="exit"
                         >
                             <motion.div className="guestbook-write-prompt" variants={guestbookItemVariants} >
@@ -312,19 +325,21 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
 
                             {currentRandomQuote && (
                                 <motion.div
-                                    key="random-quote-wrapper" 
-                                    className="guestbook-random-quote-wrapper" 
-                                    variants={guestbookItemVariants} 
-                                    initial="hidden" // Sẽ được parent stagger
+                                    key="random-quote-wrapper"
+                                    className="guestbook-random-quote-wrapper"
+                                    variants={guestbookItemVariants}
+                                    initial="hidden"
                                     animate="visible"
                                     exit="exit"
                                 >
-                                    <TypewriterMessage
-                                        key={currentRandomQuote + language} 
-                                        fullMessage={currentRandomQuote} 
-                                        className="random-quote-message-enhanced" 
-                                        staggerDuration={0.035} 
-                                    />
+                                    <AnimatePresence mode="wait">
+                                        <TypewriterMessage
+                                            key={currentRandomQuote + language}
+                                            fullMessage={currentRandomQuote}
+                                            className="random-quote-message-enhanced"
+                                            staggerDuration={0.045}
+                                        />
+                                    </AnimatePresence>
                                 </motion.div>
                             )}
                         </motion.div>
@@ -385,14 +400,18 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                             <AnimatePresence mode="wait">
                                 {hoveredEntryId === entry.id && (
                                      <motion.blockquote
-                                        key={`message-content-${entry.id}-${language}`} 
+                                        key={`message-content-${entry.id}-${language}`}
                                         className="entry-message-wrapper"
-                                        variants={messageWrapperVariants} 
+                                        variants={messageWrapperVariants}
                                         initial="hidden"
                                         animate="visible"
                                         exit="hidden"
                                     >
-                                        <TypewriterMessage fullMessage={entry.message} />
+                                        <TypewriterMessage
+                                            fullMessage={entry.message}
+                                            className="entry-message" // Class for normal entries
+                                            staggerDuration={0.045}
+                                        />
                                     </motion.blockquote>
                                 )}
                             </AnimatePresence>

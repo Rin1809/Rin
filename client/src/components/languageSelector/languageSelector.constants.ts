@@ -699,21 +699,37 @@ export const guestbookViewTranslations = {
   submitButton: { vi: "Gửi Cảm Nghĩ", en: "Post Your Thought", ja: "感想を投稿する" },
   submittingText: { vi: "Đang gửi...", en: "Submitting...", ja: "送信中。。。" },
   
-  promptWrite: { // Thêm / Xác nhận
+  promptWrite: {
     vi: "Bạn muốn chia sẻ đôi dòng tâm tình với Rin hong? ✨ <br/>Cảm ơn vì đã ghé thăm, ghi lại sự hiện diện của bạn tại đây nhé!",
     en: "Want to share some thoughts with Rin? ✨ <br/>Thanks for visiting, feel free to leave your mark!",
     ja: "リンに何か思いを伝えたいですか？ ✨ <br/>ご訪問ありがとうございます。あなたの足跡をここに記しませんか。"
   },
-  writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" }, // Thêm / Xác nhận
-  cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" }, // Thêm / Xác nhận
+  writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" },
+  cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" },
 
   noEntries: {
     vi: "Chưa có ai để lại cảm nghĩ. Hãy là người đầu tiên chia sẻ nhé!",
     en: "No thoughts have been shared yet. Be the first one!",
     ja: "まだ感想はありません。最初の想いを綴りませんか？"
   },
-  entryBy: { vi: "Lời nhắn từ", en: "A thought from", ja: "からのメッセージ" },  // Thêm / Xác nhận
-  entryDatePrefix: { vi: "Vào lúc", en: "On", ja: "記録日：" } // Thêm / Xác nhận
+  entryBy: { vi: "Lời nhắn từ", en: "A thought from", ja: "からのメッセージ" },
+  entryDatePrefix: { vi: "Vào lúc", en: "On", ja: "記録日：" },
+  // THÊM CÁC KEY DỊCH MỚI
+  validationError: {
+    vi: "Tên và cảm nghĩ không được để trống bạn ơi!",
+    en: "Name and message cannot be empty, friend!",
+    ja: "お名前とメッセージは必須です！"
+  },
+  submitSuccess: {
+    vi: "Lời nhắn của bạn đã được gửi đi. Cảm ơn nhé! ♡",
+    en: "Your message has been sent. Thank you! ♡",
+    ja: "メッセージが送信されました。ありがとうございます！♡"
+  },
+  submitError: {
+    vi: "Oops! Có lỗi xảy ra khi gửi. Bạn thử lại sau nha.",
+    en: "Oops! An error occurred while sending. Please try again later.",
+    ja: "おっと！送信中にエラーが発生しました。後でもう一度お試しください。"
+  }
 };
 
 
