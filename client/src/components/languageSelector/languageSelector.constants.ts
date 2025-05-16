@@ -780,7 +780,9 @@ export const spotifyPlaylistsTranslations = {
     loading: { vi: "Đang tải playlists...", en: "Loading playlists...", ja: "プレイリストを読み込み中..." },
     error: { vi: "Không thể tải playlists. Vui lòng thử lại sau.", en: "Could not load playlists. Please try again later.", ja: "プレイリストを読み込めませんでした。後でもう一度お試しください。" },
     noPlaylists: { vi: "Không tìm thấy playlist nào.", en: "No playlists found.", ja: "プレイリストが見つかりませんでした。" },
-    externalLink: { vi: "Mở trên Spotify", en: "Open on Spotify", ja: "Spotifyで開く" }
+    externalLink: { vi: "Mở trên Spotify", en: "Open on Spotify", ja: "Spotifyで開く" },
+    navPrev: { vi: "Playlist trước", en: "Previous playlist", ja: "前のプレイリスト" },
+    navNext: { vi: "Playlist kế", en: "Next playlist", ja: "次のプレイリスト" },
 };
 
 

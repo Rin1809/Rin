@@ -28,7 +28,7 @@
   --error-color: #f38ba8;
   --error-color-rgb: 243, 139, 168;
   --success-color: #a6e3a1;
-  --success-color-rgb: 166, 227, 161; /* Thêm var cho success */
+  --success-color-rgb: 166, 227, 161; 
   --info-color: #89b4fa;
   --info-color-rgb: 137, 180, 250;
   --subtext-color: #a6adc8;
@@ -57,7 +57,7 @@
   --text-color-poetic: #e6e6e6;
   --text-color-poetic-rgb: 230, 230, 230;
   --subtext-color-poetic: #c0c0c0;
-  --subtext-color-poetic-rgb: 192,192,192; /* Thêm var này */
+  --subtext-color-poetic-rgb: 192,192,192; 
   --highlight-color-poetic: #D8BFD8;
   --highlight-color-poetic-rgb: 216, 191, 216;
   --background-overlay-poetic: rgba(30, 30, 46, 0.9);
@@ -71,11 +71,10 @@ html, body {
   margin: 0;        /* Reset margin */
   padding: 0;       /* Reset padding */
 }
-/* END CHẶN CUỘN */
+
 
 
 body {
-  /* margin: 0; Bỏ vì đã set ở trên */
   font-family: var(--font-family-primary), var(--font-family-fallback);
   font-weight: 300; 
   -webkit-font-smoothing: antialiased;
@@ -93,13 +92,12 @@ body {
   background-attachment: fixed;
   color: var(--text-color);
   line-height: 1.6;
-  /* overflow-x: hidden; Bỏ vì đã set overflow: hidden ở trên */
   position: relative;
-  min-height: 100vh; /* Đảm bảo body tối thiểu bằng viewport */
+  min-height: 100vh; 
 }
 
 #tsparticles-background-stable {
-  position: fixed !important; /* Quan trọng */
+  position: fixed !important; 
   top: 0;
   left: 0;
   width: 100%;
@@ -277,19 +275,7 @@ body {
                       0 0 var(--glow-blur-wide) var(--glow-color-rgba-wide); }
   to { opacity: 0; transform: translate(0px,0) scale(0.9); text-shadow: none; }
 }
-/* End anim WOW */
 
-.main-content { /* Không dùng nữa */
-  /* opacity: 0;
-  transform: translateY(30px);
-  transition: opacity var(--content-fade-in-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform var(--content-fade-in-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  pointer-events: none;
-  position: relative;
-  z-index: 2;
-  padding-top: 2rem;
-  padding-bottom: 2rem; */
-}
 
 
 @media (max-width: 768px) {

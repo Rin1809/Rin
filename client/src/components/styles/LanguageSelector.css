@@ -7,13 +7,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Giữ căn giữa tổng thể */
+  justify-content: center;
   background-color: rgba(var(--card-background-rgb, 25, 25, 38), 0.94);
   backdrop-filter: blur(18px) saturate(130%);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
   z-index: 1000;
-  padding: 0.5rem; /* Giữ padding nhỏ ở overlay */
-  overflow-y: auto; /* CHO PHÉP SCROLL TOÀN BỘ OVERLAY NẾU NỘI DUNG DÀI */
+  padding: 0.5rem;
+  overflow: hidden;   
   font-family: var(--font-family-poetic), var(--font-family-fallback);
 }
 
@@ -774,9 +774,7 @@
 }
 
 @media (max-width: 768px) {
-  .card-content-display {
-      /* max-width: 100%; */ /* Đã bỏ ở trên */
-  }
+
   .card-view-back-button { font-size: 1em; padding: 0.6rem 1.4rem; }
   .card-view-back-button .button-icon-svg { width: 20px; height: 20px; }
 }
@@ -805,7 +803,6 @@
 
 @media (max-width: 600px) {
   .card-content-display {
-    /* max-width: 98%; */ /* Đã bỏ */
     gap: 1rem; 
   }
 
