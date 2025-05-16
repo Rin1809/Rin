@@ -683,7 +683,7 @@ export const galleryTranslations = {
 export const cardDisplayInfo = {
     name: { vi: "Rin", en: "Rin", ja: "リン" },
     title: {
-        vi: "Sinh viên IT | An Ninh Mạng",
+        vi: "Sinh viên CNTT | An Ninh Mạng",
         en: "IT Student | Cyber Security",
         ja: "情報技術学生 | サイバーセキュリティ"
     }
