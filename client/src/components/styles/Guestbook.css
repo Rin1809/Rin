@@ -1,17 +1,17 @@
 /* client/src/components/styles/Guestbook.css */
 
-/* Root vars paper theme & poetic highlights */
+/* Root vars paper theme & poetic highlights (KHÔNG ĐỔI) */
 :root {
-  --paper-bg: #fbf1e7; /* Màu nền giấy chính, ấm hơn 1 chút */
+  --paper-bg: #fbf1e7; 
   --paper-bg-rgb: 251, 241, 231;
-  --paper-border: #c8b8a2; /* Viền giấy */
+  --paper-border: #c8b8a2; 
   --paper-border-rgb: 200, 184, 162;
-  --paper-text-color: #4d3a27; /* Màu chữ trên giấy, đậm hơn */
+  --paper-text-color: #4d3a27; 
   --paper-text-rgb: 77, 58, 39;
   
-  --book-spine-color: #75614b; /* Gáy sách, nâu đất hơn */
+  --book-spine-color: #75614b; 
   --book-spine-color-rgb: 117, 97, 75;
-  --book-cover-edge-curve: 40px; /* Tăng độ cong cho bìa */
+  --book-cover-edge-curve: 40px; 
 
   --guestbook-highlight: var(--highlight-color-poetic, #D8BFD8);
   --guestbook-highlight-rgb: var(--highlight-color-poetic-rgb, 216, 191, 216);
@@ -31,20 +31,19 @@
   --guestbook-scrollbar-thumb: rgba(var(--guestbook-highlight-rgb), 0.45);
   --guestbook-scrollbar-track: rgba(var(--paper-bg-rgb), 0.1);
 
-  /* Màu cho hiệu ứng mép giấy (từ sáng đến tối dần & ngả vàng/nâu rõ rệt) */
-  --paper-edge-color-1: #fdf8f2; /* Rất sáng, gần trắng tinh khiết */
-  --paper-edge-color-2: #f9f1e9; /* Ngả kem nhẹ */
-  --paper-edge-color-3: #f5eadf; /* Kem đậm hơn */
-  --paper-edge-color-4: #f1e3d6; /* Bắt đầu có chút nâu */
-  --paper-edge-color-5: #ecdccb; /* Nâu nhạt hơn */
-  --paper-edge-color-6: #e5d4c1; /* Thêm một lớp nữa cho dày hơn */
-  --paper-edge-color-7: #dfccb7; /* Lớp thứ 7 */
-  --paper-edge-shadow: rgba(77, 58, 39, 0.1); /* Bóng đổ giữa các lớp giấy, dùng màu text với alpha thấp hơn */
+  --paper-edge-color-1: #fdf8f2; 
+  --paper-edge-color-2: #f9f1e9; 
+  --paper-edge-color-3: #f5eadf; 
+  --paper-edge-color-4: #f1e3d6; 
+  --paper-edge-color-5: #ecdccb; 
+  --paper-edge-color-6: #e5d4c1; 
+  --paper-edge-color-7: #dfccb7; 
+  --paper-edge-shadow: rgba(77, 58, 39, 0.1); 
 }
 
-/* Bìa sách (div.book-core) */
+/* Bìa sách (div.book-core) (KHÔNG ĐỔI) */
 .book-core {
-  width: 175%; /* Rộng hơn để có không gian cho hiệu ứng 3D */
+  width: 175%; 
   max-width: 1050px; 
   height: 75vh; 
   max-height: 800px; 
@@ -52,7 +51,7 @@
   display: flex;
   flex-direction: column;
   background-color: transparent; 
-  border-radius: 30px; /* Bo góc bìa sách rõ hơn, cong hơn */
+  border-radius: 30px; 
   box-shadow: 
     0 35px 70px -25px rgba(var(--background-color-rgb), 0.65), 
     0 15px 30px -12px rgba(var(--background-color-rgb), 0.45),  
@@ -60,15 +59,15 @@
     inset 0 0 35px rgba(var(--paper-bg-rgb), 0.05);
   overflow: hidden; 
   position: relative;
-  padding: 6px; /* Padding cho border dày của bìa */
-  border: 8px solid var(--book-spine-color); /* Viền bìa dày hơn đáng kể */
+  padding: 6px; 
+  border: 8px solid var(--book-spine-color); 
   background: linear-gradient(145deg, 
     rgba(var(--book-spine-color-rgb),0.2), 
     rgba(var(--book-spine-color-rgb),0.3)
   );
 }
 
-/* Tiêu đề của Guestbook */
+/* Tiêu đề của Guestbook (KHÔNG ĐỔI) */
 .guestbook-title {
   font-size: clamp(1.9em, 4.5vw, 2.4em); 
   font-weight: 400; 
@@ -86,34 +85,34 @@
   flex-shrink: 0;
 }
 
-/* Wrapper cho 2 trang sách */
+/* Wrapper cho 2 trang sách (KHÔNG ĐỔI) */
 .book-pages-wrapper {
   display: flex;
   flex-grow: 1; 
   width: 100%; 
   height: calc(100% - 70px); 
   gap: 0; 
-  perspective: 3500px; /* Tăng perspective */
-  padding: 0 11px; /* Khoảng hở cho gáy sách */
+  perspective: 3500px; 
+  padding: 0 11px; 
   position: relative;
   z-index: 1;
 }
 
-/* Gáy sách giữa - Nâng cấp độ cong và 3D */
+/* Gáy sách giữa (KHÔNG ĐỔI) */
 .book-pages-wrapper::before {
     content: '';
     position: absolute;
-    top: 18px; /* Hơi chờm ra ngoài nhiều hơn */
+    top: 18px; 
     bottom: -15px;
     left: 50%;
     transform: translateX(-50%);
-    width: 48px; /* Gáy sách rộng và nổi bật hơn */
+    width: 48px; 
     background: linear-gradient(to right, 
-        rgba(0,0,0,0.65) 0%, /* Bóng đổ mạnh ở mép gáy */
+        rgba(0,0,0,0.65) 0%, 
         rgba(var(--book-spine-color-rgb), 0.45) 8%, 
         rgba(var(--book-spine-color-rgb), 0.7) 8%, 
-        rgba(var(--book-spine-color-rgb), 0.95) 40%, /* Phần gáy tối hơn */
-        rgba(var(--book-spine-color-rgb), 1) 50%,   /* Phần giữa gáy sáng nhất (highlight) */
+        rgba(var(--book-spine-color-rgb), 0.95) 40%, 
+        rgba(var(--book-spine-color-rgb), 1) 50%,   
         rgba(var(--book-spine-color-rgb), 0.95) 60%,
         rgba(var(--book-spine-color-rgb), 0.7) 75%,
         rgba(var(--book-spine-color-rgb), 0.45) 92%,
@@ -121,14 +120,14 @@
       );
     z-index: 2; 
     pointer-events: none;
-    border-radius: 12px / 70px; /* Cong gáy sách (elliptical) mạnh hơn */
+    border-radius: 12px / 70px; 
     box-shadow: 
       0 0 30px rgba(0,0,0,0.55), 
       inset 2px 0 2.5px rgba(255, 255, 255, 0.473), 
       inset -2px 0 2.5px rgba(255,255,255,0.473); 
 }
 
-/* Style chung cho mỗi trang sách - Nâng cấp hiệu ứng độ dày và cong */
+/* Style chung cho mỗi trang sách (KHÔNG ĐỔI) */
 .book-page {
   flex: 1; 
   background-color: var(--paper-bg); 
@@ -139,26 +138,19 @@
   position: relative;
   display: flex; 
   flex-direction: column;
-  /* Gradient mạnh hơn trên bề mặt trang để tạo cảm giác cong rõ hơn */
   background-image: linear-gradient(to right, rgba(0,0,0,0.015) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.015) 100%);
 }
 .book-page.page-right { 
     background-image: linear-gradient(to left, rgba(0,0,0,0.015) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.015) 100%);
 }
 
-
-/* Bo góc cong hơn cho trang giấy */
 .book-page.page-left {
   border-top-right-radius: 40px; 
   border-top-left-radius: 20px; 
   border-bottom-left-radius: 20px;
-  padding-right: 10px; /* Khoảng trống cho hiệu ứng gáy */
-  /* Hiệu ứng nhiều lớp giấy cho trang TRÁI - Dày hơn */
+  padding-right: 10px; 
   box-shadow:
-    /* Các lớp giấy bên dưới, tăng offset và thêm lớp */
-    /* Bóng đổ nhẹ giữa các lớp */
-    4px 0 4px -1.5px var(--paper-edge-shadow), /* Cong nhẹ gần gáy */
-    /* Các lớp giấy */
+    4px 0 4px -1.5px var(--paper-edge-shadow), 
     -2px 0 0 var(--paper-edge-color-7),
     -4px 0 0 var(--paper-edge-color-6),
     -6px 0 0 var(--paper-edge-color-5),
@@ -166,7 +158,6 @@
     -10px 0 0 var(--paper-edge-color-3),
     -12px 0 0 var(--paper-edge-color-2),
     -14px 0 0 var(--paper-edge-color-1),
-    /* Bóng đổ tổng thể của chồng giấy */
     -16px 3px 15px rgba(0,0,0,0.22); 
 }
 .book-page.page-right {
@@ -174,9 +165,8 @@
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   padding-left: 10px;
-  /* Hiệu ứng nhiều lớp giấy cho trang PHẢI - Dày hơn */
   box-shadow:
-    -4px 0 4px -1.5px var(--paper-edge-shadow), /* Cong nhẹ gần gáy */
+    -4px 0 4px -1.5px var(--paper-edge-shadow), 
     2px 0 0 var(--paper-edge-color-7),
     4px 0 0 var(--paper-edge-color-6),
     6px 0 0 var(--paper-edge-color-5),
@@ -188,7 +178,7 @@
 }
 
 
-/* Khu vực nội dung có thể cuộn của mỗi trang */
+/* Khu vực nội dung có thể cuộn của mỗi trang (KHÔNG ĐỔI) */
 .page-content-scrollable {
   flex-grow: 1; 
   overflow-y: auto;
@@ -208,7 +198,7 @@
   background-color: rgba(var(--guestbook-highlight-rgb), 0.6);
 }
 
-/* Prompt để viết lời nhắn */
+/* Prompt để viết lời nhắn (KHÔNG ĐỔI) */
 .guestbook-write-prompt {
   display: flex;
   flex-direction: column;
@@ -240,7 +230,7 @@
 }
 
 
-/* Nút bấm "Poetic" chung */
+/* Nút bấm "Poetic" chung (KHÔNG ĐỔI) */
 .poetic-button, .poetic-button-subtle, .poetic-button-primary {
   display: inline-flex;
   align-items: center;
@@ -271,7 +261,7 @@
 }
 
 
-/* Nút "Để lại lời nhắn" */
+/* Nút "Để lại lời nhắn" (KHÔNG ĐỔI) */
 .guestbook-write-button.poetic-button {
   border: 2px solid transparent;
   border-image-slice: 1;
@@ -300,7 +290,7 @@
   50% { transform: scale(1.15) rotate(5deg); filter: drop-shadow(0 0 7px rgba(var(--guestbook-highlight-rgb), 0.5)); }
 }
 
-/* Form nhập liệu */
+/* Form nhập liệu (KHÔNG ĐỔI) */
 .guestbook-form {
   display: flex;
   flex-direction: column;
@@ -455,7 +445,17 @@
   overflow-wrap: break-word; 
   position: relative; 
   color: var(--paper-text-color);
+  cursor: default; 
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
+.guestbook-entry:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 6px 8px 20px rgba(var(--paper-text-rgb), 0.18), 
+                3px 4px 10px rgba(var(--paper-text-rgb), 0.12),
+                inset 0 0 15px rgba(var(--guestbook-highlight-rgb),0.1);
+}
+
+
 .guestbook-entry::after {
   content: "";
   position: absolute;
@@ -475,12 +475,13 @@
 }
 
 .entry-message-wrapper {
-    margin: 0 0 1.1rem 0; 
-    padding: 0;
-    border: none; 
-    position: relative; 
+  margin: 0; 
+  padding: 0;
+  border: none; 
+  position: relative; 
+  overflow: hidden; 
 }
-.entry-message-wrapper::before {
+.entry-message-wrapper::before { 
   content: '“';
   font-family: 'Georgia', 'Times New Roman', serif; 
   font-size: 3em; 
@@ -495,7 +496,7 @@
 }
 
 .entry-message {
-  font-family: var(--font-family-primary), 'cursive'; 
+  font-family: var(--font-family-primary), var(--font-family-fallback); /* SỬA FONT */
   font-size: clamp(1em, 2.2vw, 1.15em);
   line-height: 1.75; 
   color: var(--paper-text-color);
@@ -504,7 +505,9 @@
   white-space: pre-wrap; 
   font-style: normal; 
   font-weight: 400; 
+  min-height: 1.75em; 
 }
+
 .entry-meta {
   font-size: clamp(0.8em, 1.8vw, 0.9em); 
   color: rgba(var(--paper-text-rgb), 0.8);
@@ -515,9 +518,6 @@
   flex-wrap: wrap; 
   gap: 0.5rem;
   opacity: 0.9;
-  padding-top: 0.9rem;
-  border-top: 1.5px dashed rgba(var(--paper-border-rgb), 0.7); 
-  margin-top: 0.65rem; 
 }
 .entry-author strong { 
   font-weight: 500;
@@ -543,19 +543,19 @@
   justify-content: center;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1024px) { 
   .book-core { 
     width: 95%; 
     height: auto; 
     max-height: 85vh; 
     min-height: 400px;
-    border-width: 6px; /* Giảm độ dày bìa 1 chút cho tablet */
+    border-width: 6px; 
     border-radius: 25px;
   }
   .guestbook-title { margin-bottom: clamp(1rem, 2vh, 1.2rem); }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px) { 
   .book-core { 
     max-height: calc(88vh - 70px); 
     padding: 4px; 
@@ -566,7 +566,6 @@
   .guestbook-title { margin: clamp(1.2rem, 2.5vh, 1.8rem) auto clamp(1rem, 2vh, 1.5rem) auto; }
   .page-content-scrollable { padding: clamp(0.8rem, 2vw, 1.5rem) clamp(1rem, 2.5vw, 1.8rem); }
 
-  /* Hiệu ứng giấy cho tablet, giảm số lớp */
   .book-page.page-left {
     border-top-left-radius: 15px; border-bottom-left-radius: 15px;
     padding-right: 8px;
@@ -597,13 +596,13 @@
   .form-actions > button { width: 100%; } 
 }
 
-@media (max-width: 640px) { 
+@media (max-width: 640px) {  
     .book-core {
         width: 98%; 
         max-height: calc(90vh - 40px); 
-        border-radius: 18px; /* Giảm bo góc bìa */
+        border-radius: 18px; 
         padding: 3px;
-        border-width: 4.5px; /* Bìa mỏng hơn */
+        border-width: 4.5px; 
     }
     .book-pages-wrapper {
         flex-direction: column; 
@@ -645,7 +644,7 @@
     .entry-message-wrapper::before { font-size: 2.7em; } 
 }
 
-@media (max-width: 480px) {
+@media (max-width: 480px) { 
   .book-page { min-height: 280px; max-height: 50vh; } 
   .poetic-button, .poetic-button-subtle, .poetic-button-primary {
      padding: 0.7rem 1.5rem; 
