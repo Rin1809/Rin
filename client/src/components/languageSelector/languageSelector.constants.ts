@@ -736,3 +736,43 @@ export const guestbookViewContainerVariants = (delay: number = 0.1): Variants =>
 
 export const guestbookIconFeatherPen = `<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.7 3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/><path d="m17.6 6.7 3.1-3.1"/><path d="M2.6 20.1C5.9 19.4 10 18 13 15c2-2 3.3-4.2 4-6.3.4-1.1.6-2.3.5-3.5S17 3.2 16 3.3c-1 .1-2.3.7-3.7 2s-3 3.1-4.2 4.6c-1.9 2.4-3.8 4.6-5.3 6.8"/><path d="M10.7 11.3 2.6 20.1"/><path d="m19.2 5.2.4.4"/></svg>`;
 export const guestbookIconInkSplatterCancel = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5C6 20 4 17 4 12A8 8 0 0 1 12 4c5 0 7 2.5 7.5 7.5"/><path d="m18 18-5.5-5.5"/><path d="m12.5 18-5.5-5.5"/><path d="M4.5 10C5.7 9.3 6.5 8.2 7 7"/><path d="M7.5 3.5C9 4.2 10.8 5.1 11.5 6.5"/><circle cx="14" cy="5.5" r="0.5" fill="currentColor"/><circle cx="9" cy="3.5" r="0.5" fill="currentColor"/><circle cx="4.5" cy="6" r="0.5" fill="currentColor"/><circle cx="20.5" cy="11" r="0.5" fill="currentColor"/></svg>`;
+
+// TIN NHẮN NGẪU NHIÊN CHO GUESTBOOK LEFT PANE
+export const randomPoeticQuotes = {
+  vi: [
+    "Những vì sao kể chuyện ngàn năm...",
+    "Trong giấc mơ, ta bay giữa ngân hà.",
+    "Phép thuật ẩn mình trong từng hơi thở.",
+    "Vần thơ nhẹ như cánh bướm đêm.",
+    "Ảo mộng dệt nên từ ánh trăng.",
+    "Nơi cuối trời, có một khu vườn bí mật.",
+    "Lời thì thầm của gió qua kẽ lá.",
+    "Bụi tiên lấp lánh trên con đường mòn.",
+    "Hãy để trí tưởng tượng dẫn lối.",
+    "Một chút mơ mộng cho ngày thêm xinh."
+  ],
+  en: [
+    "Stars whisper tales of ancient times...",
+    "In dreams, we soar through galaxies.",
+    "Magic hides in every breath.",
+    "Verses as light as a night butterfly's wing.",
+    "Illusions woven from moonlight.",
+    "At world's end, a secret garden lies.",
+    "The wind's whisper through the leaves.",
+    "Fairy dust glitters on the path.",
+    "Let your imagination guide you.",
+    "A little daydream for a brighter day."
+  ],
+  ja: [
+    "星々は古の物語を囁く。。。" ,
+    "夢の中で、銀河を飛び交う。",
+    "魔法はあらゆる息吹に潜んでいる。",
+    "夜の蝶の羽のように軽い詩。",
+    "月光から織り成される幻想。",
+    "世界の果てに、秘密の庭がある。",
+    "木の葉を通り抜ける風のささやき。",
+    "妖精の粉が小道で輝いている。",
+    "想像力に導かれよう。",
+    "少しの空想が、一日を彩る。"
+  ],
+};

@@ -198,6 +198,13 @@
   background-color: rgba(var(--guestbook-highlight-rgb), 0.6);
 }
 
+/* Wrapper cho nội dung bên trái khi ở chế độ đọc */
+.guestbook-left-content-read-mode {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.2rem, 2.5vh, 1.5rem); 
+}
+
 /* Prompt để viết lời nhắn (KHÔNG ĐỔI) */
 .guestbook-write-prompt {
   display: flex;
@@ -227,6 +234,32 @@
   font-weight: 500;
   color: var(--guestbook-primary-action);
   text-shadow: 0 0 5px rgba(var(--guestbook-primary-action-rgb), 0.3);
+}
+
+/* Khu vực hiển thị quote ngẫu nhiên (MỚI - NÂNG CẤP) */
+.guestbook-random-quote-wrapper {
+  margin-top: 80px;
+  width: 100%; 
+  display: flex;
+  justify-content: center; 
+  padding: clamp(0.5rem, 1vh, 1rem) 0; /* Padding trên dưới */
+  min-height: 3em; /* Đảm bảo có không gian */
+}
+
+.random-quote-message-enhanced { /* Class cho <p> của TypewriterMessage */
+  font-family: var(--font-family-primary), var(--font-family-fallback);
+  font-size: clamp(1.1em, 2.3vw, 1.25em); /* Rõ hơn */
+  line-height: 1.7;
+  color: rgba(var(--paper-text-rgb), 0.95); /* Rõ hơn */
+  font-style: italic; 
+  font-weight: 400; /* Đậm hơn */
+  text-align: center; 
+  max-width: 85%; 
+  margin: 0 auto; 
+  white-space: pre-wrap; 
+  position: relative; 
+  z-index: 1;
+  text-shadow: 0 1px 1px rgba(var(--paper-bg-rgb), 0.5); 
 }
 
 
@@ -479,7 +512,7 @@
   padding: 0;
   border: none;
   position: relative;
-  overflow: hidden; /* Cho phép children anim bên trong */
+  overflow: hidden; 
 }
 .entry-message-wrapper::before {
   content: '“';
@@ -487,7 +520,7 @@
   font-size: 3em;
   color: rgba(var(--paper-text-rgb), 0.3);
   position: absolute;
-  left: -0.15em; /* Điều chỉnh để dấu ngoặc kép đẹp hơn */
+  left: -0.15em; 
   top: -0.4em;
   line-height: 0.8;
   opacity: 0.9;
@@ -501,11 +534,10 @@
   line-height: 1.75;
   color: var(--paper-text-color);
   margin: 0;
-  /* padding-left: 0.9em; BỎ padding-left vì TypewriterMessage dùng flex */
-  white-space: pre-wrap; /* Quan trọng cho \u00A0 và xuống dòng */
+  white-space: pre-wrap; 
   font-style: normal;
   font-weight: 400;
-  min-height: 1.75em; /* Giữ lại để có không gian ban đầu */
+  min-height: 1.75em; 
 }
 
 .entry-meta {
@@ -594,6 +626,10 @@
     gap: 0.9rem;
   }
   .form-actions > button { width: 100%; }
+
+  .random-quote-message-enhanced {
+    font-size: clamp(0.95em, 2vw, 1.15em); /* Hơi nhỏ hơn trên mobile */
+  }
 }
 
 @media (max-width: 640px) {
@@ -653,4 +689,9 @@
   .form-group textarea { min-height: 80px; }
   .guestbook-entry { padding: clamp(1rem, 2.5vw, 1.5rem) clamp(1.2rem, 3vw, 1.6rem); }
   .entry-message-wrapper::before { font-size: 2.5em; top: -0.3em; }
+
+  .random-quote-message-enhanced {
+    font-size: clamp(0.9em, 1.9vw, 1.05em); /* Nhỏ hơn nữa */
+    max-width: 90%;
+  }
 }
