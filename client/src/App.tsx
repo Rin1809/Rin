@@ -1,3 +1,4 @@
+// rin-personal-card/client/src/App.tsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import LanguageSelector from './components/LanguageSelector';
 import './components/styles/App.css';
@@ -108,7 +109,7 @@ function App() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isSpotifyViewActive, setIsSpotifyViewActive] = useState(false);
     const [hasIntroFinishedForMusic, setHasIntroFinishedForMusic] = useState(false);
-    const [canTryPlayMusic, setCanTryPlayMusic] = useState(false); // Cờ cho phép thử play
+    const [canTryPlayMusic, setCanTryPlayMusic] = useState(false);
 
     useEffect(() => {
         initParticlesEngine(async (engine: Engine) => {
@@ -122,10 +123,9 @@ function App() {
 
     // QL intro stages & đánh dấu khi intro xong cho nhạc
     useEffect(() => {
-        // Đặt flag khi intro "yourName" kết thúc -> chuyển sang "languageSelection"
         if (currentIntroStage === 'languageSelection' && !hasIntroFinishedForMusic) {
             setHasIntroFinishedForMusic(true);
-            setCanTryPlayMusic(true); // Cho phép thử play lần đầu
+            setCanTryPlayMusic(true);
         }
 
         if (currentIntroStage !== 'cat' && currentIntroStage !== 'yourName') {
@@ -156,7 +156,7 @@ function App() {
             }, yourNameDisplayTime); 
 
             fade2TimerId = window.setTimeout(() => {
-                setCurrentIntroStage('languageSelection'); // Chuyển stage ở đây
+                setCurrentIntroStage('languageSelection');
                 setIsStageFadingOut(false);
             }, yourNameDisplayTime + fadeDuration); 
         }
@@ -175,20 +175,19 @@ function App() {
         const audioElement = audioRef.current;
         if (!audioElement) return;
 
-        if (isSpotifyViewActive) { // Nếu Spotify đang active -> dừng nhạc nền
+        if (isSpotifyViewActive) {
             if (!audioElement.paused) {
                 audioElement.pause();
             }
-        } else if (hasIntroFinishedForMusic && canTryPlayMusic) { // Intro đã xong và đc phép thử play
+        } else if (hasIntroFinishedForMusic && canTryPlayMusic) {
             if (audioElement.paused) {
                 audioElement.play().then(() => {
-                    setCanTryPlayMusic(false); // Đã thử play, tắt cờ
+                    setCanTryPlayMusic(false);
                 }).catch(_error => {
-                    // Lỗi autoplay, user cần tương tác
-                    // Cờ canTryPlayMusic sẽ đc bật lại khi user chọn ngôn ngữ
+                    // Lỗi autoplay
                 });
             } else {
-                 setCanTryPlayMusic(false); // Nhạc đã phát rồi, tắt cờ
+                 setCanTryPlayMusic(false);
             }
         }
     }, [isSpotifyViewActive, hasIntroFinishedForMusic, canTryPlayMusic]);
@@ -196,12 +195,36 @@ function App() {
 
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
         setSelectedLanguage(language);
-        // Khi user tương tác (chọn ngôn ngữ), nếu nhạc chưa phát và intro đã xong
-        // thì cho phép thử play lại.
         if (audioRef.current && audioRef.current.paused && hasIntroFinishedForMusic && !isSpotifyViewActive) {
             setCanTryPlayMusic(true);
         }
     };
+
+    // Thông báo truy cập web
+    useEffect(() => {
+        const notifyBackendOfVisit = async () => {
+            try {
+                // Dùng đường dẫn tương đối, Vite proxy sẽ xử lý
+                await fetch('/api/notify-visit', { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    // Ko cần body, backend tự lấy IP
+                });
+                console.log("TBáo visit đã gửi tới backend.");
+            } catch (error) {
+                console.error("Lỗi gửi tbáo visit:", error);
+            }
+        };
+
+        // Chỉ chạy ở production env
+        if (import.meta.env.PROD) {
+            notifyBackendOfVisit();
+        } else {
+            console.log("Bỏ qua tbáo visit ở dev env.");
+        }
+    }, []); // Chạy 1 lần khi app mount
 
     const memoizedParticles = useMemo(() => {
         if (!particlesInitialized) {
@@ -218,7 +241,6 @@ function App() {
 
     return (
         <div className="AppWrapper">
-            {/* Thẻ audio cho nhạc nền */}
             <audio ref={audioRef} src={backgroundMusicMP3} loop />
             
             {memoizedParticles} 
@@ -229,7 +251,7 @@ function App() {
                     githubUsername={PERSONAL_CARD_DATA.githubUsername}
                     initialSelectedLanguage={selectedLanguage}
                     yourNameForIntro={YOUR_NAME_FOR_INTRO}
-                    onSpotifyViewChange={setIsSpotifyViewActive} // Callback cho App biết Spotify view active
+                    onSpotifyViewChange={setIsSpotifyViewActive}
                 />
             ) : (
                 <ContentArea
