@@ -105,7 +105,6 @@ function App() {
     const [isStageFadingOut, setIsStageFadingOut] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState<'vi' | 'en' | 'ja' | null>(null);
 
-    // State nhạc
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isSpotifyViewActive, setIsSpotifyViewActive] = useState(false);
     const [hasIntroFinishedForMusic, setHasIntroFinishedForMusic] = useState(false);
@@ -121,7 +120,6 @@ function App() {
         });
     }, []);
 
-    // QL intro stages & đánh dấu khi intro xong cho nhạc
     useEffect(() => {
         if (currentIntroStage === 'languageSelection' && !hasIntroFinishedForMusic) {
             setHasIntroFinishedForMusic(true);
@@ -169,8 +167,6 @@ function App() {
         };
     }, [currentIntroStage, hasIntroFinishedForMusic]);
 
-
-    // QL nhạc nền
     useEffect(() => {
         const audioElement = audioRef.current;
         if (!audioElement) return;
@@ -192,7 +188,6 @@ function App() {
         }
     }, [isSpotifyViewActive, hasIntroFinishedForMusic, canTryPlayMusic]);
 
-
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
         setSelectedLanguage(language);
         if (audioRef.current && audioRef.current.paused && hasIntroFinishedForMusic && !isSpotifyViewActive) {
@@ -200,31 +195,42 @@ function App() {
         }
     };
 
-    // Thông báo truy cập web
+    // Tbáo visit
     useEffect(() => {
         const notifyBackendOfVisit = async () => {
+            // Q.TRỌNG: Lấy base URL từ biến môi trường
+            const VITE_API_BASE_URL_FROM_ENV = import.meta.env.VITE_API_BASE_URL;
+            if (!VITE_API_BASE_URL_FROM_ENV) {
+                console.error("LỖI: VITE_API_BASE_URL chưa được cấu hình trong .env của client!");
+                return;
+            }
+            
+            const apiUrl = `${VITE_API_BASE_URL_FROM_ENV}/api/notify-visit`;
+            console.log(`[NOTIFY VISIT] Chuẩn bị gửi request tới: ${apiUrl}`); // Log để ktra URL
+
             try {
-                // Dùng đường dẫn tương đối, Vite proxy sẽ xử lý
-                await fetch('/api/notify-visit', { 
+                await fetch(apiUrl, { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    // Ko cần body, backend tự lấy IP
                 });
-                console.log("TBáo visit đã gửi tới backend.");
+                console.log(`[NOTIFY VISIT] Tbáo visit đã gửi thành công tới: ${apiUrl}`);
             } catch (error) {
-                console.error("Lỗi gửi tbáo visit:", error);
+                console.error(`[NOTIFY VISIT] Lỗi gửi tbáo visit tới ${apiUrl}:`, error);
             }
         };
 
-        // Chỉ chạy ở production env
         if (import.meta.env.PROD) {
+            console.log("[APP MODE] Production mode. Sẽ gửi tbáo visit.");
             notifyBackendOfVisit();
         } else {
-            console.log("Bỏ qua tbáo visit ở dev env.");
+            console.log("[APP MODE] Development mode. Bỏ qua tbáo visit.");
+            // Để test ở local nếu VITE_API_BASE_URL trỏ đúng backend local
+            // console.log("[DEV TEST] Đang thử gửi tbáo visit...");
+            // notifyBackendOfVisit();
         }
-    }, []); // Chạy 1 lần khi app mount
+    }, []); 
 
     const memoizedParticles = useMemo(() => {
         if (!particlesInitialized) {
