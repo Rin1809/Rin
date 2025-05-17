@@ -108,7 +108,6 @@ function App() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isSpotifyViewActive, setIsSpotifyViewActive] = useState(false);
     const [hasIntroFinishedForMusic, setHasIntroFinishedForMusic] = useState(false);
-    const [canTryPlayMusic, setCanTryPlayMusic] = useState(false);
 
     useEffect(() => {
         initParticlesEngine(async (engine: Engine) => {
@@ -123,7 +122,6 @@ function App() {
     useEffect(() => {
         if (currentIntroStage === 'languageSelection' && !hasIntroFinishedForMusic) {
             setHasIntroFinishedForMusic(true);
-            setCanTryPlayMusic(true);
         }
 
         if (currentIntroStage !== 'cat' && currentIntroStage !== 'yourName') {
@@ -167,38 +165,45 @@ function App() {
         };
     }, [currentIntroStage, hasIntroFinishedForMusic]);
 
+    // useEffect chính để xử lý nhạc
     useEffect(() => {
         const audioElement = audioRef.current;
         if (!audioElement) return;
 
-        if (isSpotifyViewActive) {
+        // Điều kiện chính để phát nhạc:
+        // 1. Intro phải xong.
+        // 2. Không đang ở view Spotify.
+        // 3. Nhạc đang bị pause.
+        // 4. Đã chọn ngôn ngữ (selectedLanguage không null) - đây là điểm mới để kích hoạt khi chọn ngôn ngữ
+        const shouldPlayMusic = hasIntroFinishedForMusic && 
+                                !isSpotifyViewActive && 
+                                audioElement.paused &&
+                                selectedLanguage !== null;
+
+        if (isSpotifyViewActive) { // Ưu tiên dừng nhạc nếu vào Spotify
             if (!audioElement.paused) {
                 audioElement.pause();
+                console.log("Music paused due to Spotify view active.");
             }
-        } else if (hasIntroFinishedForMusic && canTryPlayMusic) {
-            if (audioElement.paused) {
-                audioElement.play().then(() => {
-                    setCanTryPlayMusic(false);
-                }).catch(_error => {
-                    // Lỗi autoplay
-                });
-            } else {
-                 setCanTryPlayMusic(false);
-            }
+        } else if (shouldPlayMusic) { // Nếu không ở Spotify và đủ điều kiện phát
+            console.log("Attempting to play music...");
+            audioElement.play().then(() => {
+                console.log("Music playback started successfully.");
+            }).catch(error => {
+                console.warn("Autoplay prevented or error during playback:", error.name, error.message);
+                // Trình duyệt có thể yêu cầu tương tác rõ ràng hơn nữa.
+                // Lần tương tác tiếp theo (ví dụ thoát Spotify) sẽ thử lại.
+            });
         }
-    }, [isSpotifyViewActive, hasIntroFinishedForMusic, canTryPlayMusic]);
+    }, [isSpotifyViewActive, hasIntroFinishedForMusic, selectedLanguage, currentIntroStage]); 
 
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
-        setSelectedLanguage(language);
-        if (audioRef.current && audioRef.current.paused && hasIntroFinishedForMusic && !isSpotifyViewActive) {
-            setCanTryPlayMusic(true);
-        }
+        setSelectedLanguage(language); 
     };
 
     // Tbáo visit
     useEffect(() => {
         const notifyBackendOfVisit = async () => {
-            // Q.TRỌNG: Lấy base URL từ biến môi trường
             const VITE_API_BASE_URL_FROM_ENV = import.meta.env.VITE_API_BASE_URL;
             if (!VITE_API_BASE_URL_FROM_ENV) {
                 console.error("LỖI: VITE_API_BASE_URL chưa được cấu hình trong .env của client!");
@@ -206,8 +211,6 @@ function App() {
             }
             
             const apiUrl = `${VITE_API_BASE_URL_FROM_ENV}/api/notify-visit`;
-            console.log(`[NOTIFY VISIT] Chuẩn bị gửi request tới: ${apiUrl}`); // Log để ktra URL
-
             try {
                 await fetch(apiUrl, { 
                     method: 'POST',
@@ -215,20 +218,13 @@ function App() {
                         'Content-Type': 'application/json',
                     },
                 });
-                console.log(`[NOTIFY VISIT] Tbáo visit đã gửi thành công tới: ${apiUrl}`);
             } catch (error) {
                 console.error(`[NOTIFY VISIT] Lỗi gửi tbáo visit tới ${apiUrl}:`, error);
             }
         };
 
         if (import.meta.env.PROD) {
-            console.log("[APP MODE] Production mode. Sẽ gửi tbáo visit.");
             notifyBackendOfVisit();
-        } else {
-            console.log("[APP MODE] Development mode. Bỏ qua tbáo visit.");
-            // Để test ở local nếu VITE_API_BASE_URL trỏ đúng backend local
-            // console.log("[DEV TEST] Đang thử gửi tbáo visit...");
-            // notifyBackendOfVisit();
         }
     }, []); 
 
@@ -270,6 +266,5 @@ function App() {
         </div>
     );
 }
-
 
 export default App;
