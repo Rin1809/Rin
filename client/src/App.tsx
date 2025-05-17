@@ -6,8 +6,8 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { ISourceOptions, Engine } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 
-// file nhạc nền
-import backgroundMusicMP3 from './assets/audio/background_music.mp3'; // <-- THAY ĐỔI TÊN FILE NẾU CẦN
+// Nhạc nền
+import backgroundMusicMP3 from './assets/audio/background_music.mp3';
 
 // --  PARTICLESC_CONFIG --
 const particlesOptions: ISourceOptions = {
@@ -102,13 +102,13 @@ function App() {
     const [particlesInitialized, setParticlesInitialized] = useState(false);
     const [currentIntroStage, setCurrentIntroStage] = useState<IntroStage>('cat');
     const [isStageFadingOut, setIsStageFadingOut] = useState(false);
-    const [_activeUserName, _setActiveUserName] = useState<string | null>(YOUR_NAME_FOR_INTRO);
     const [selectedLanguage, setSelectedLanguage] = useState<'vi' | 'en' | 'ja' | null>(null);
 
-    // State cho nhạc nền
+    // State nhạc
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isSpotifyViewActive, setIsSpotifyViewActive] = useState(false);
     const [hasIntroFinishedForMusic, setHasIntroFinishedForMusic] = useState(false);
+    const [canTryPlayMusic, setCanTryPlayMusic] = useState(false); // Cờ cho phép thử play
 
     useEffect(() => {
         initParticlesEngine(async (engine: Engine) => {
@@ -116,15 +116,19 @@ function App() {
         }).then(() => {
             setParticlesInitialized(true);
         }).catch(error => {
-            console.error("Error initializing particles engine:", error);
+            console.error("Lỗi init particles:", error);
         });
     }, []);
 
+    // QL intro stages & đánh dấu khi intro xong cho nhạc
     useEffect(() => {
+        // Đặt flag khi intro "yourName" kết thúc -> chuyển sang "languageSelection"
+        if (currentIntroStage === 'languageSelection' && !hasIntroFinishedForMusic) {
+            setHasIntroFinishedForMusic(true);
+            setCanTryPlayMusic(true); // Cho phép thử play lần đầu
+        }
+
         if (currentIntroStage !== 'cat' && currentIntroStage !== 'yourName') {
-            if (currentIntroStage === 'languageSelection' && !hasIntroFinishedForMusic) {
-                setHasIntroFinishedForMusic(true); // Đánh dấu intro đã hoàn tất cho nhạc
-            }
             return;
         }
         
@@ -152,7 +156,7 @@ function App() {
             }, yourNameDisplayTime); 
 
             fade2TimerId = window.setTimeout(() => {
-                setCurrentIntroStage('languageSelection');
+                setCurrentIntroStage('languageSelection'); // Chuyển stage ở đây
                 setIsStageFadingOut(false);
             }, yourNameDisplayTime + fadeDuration); 
         }
@@ -163,30 +167,40 @@ function App() {
             if (stage2TimerId) window.clearTimeout(stage2TimerId);
             if (fade2TimerId) window.clearTimeout(fade2TimerId);
         };
-    }, [currentIntroStage, hasIntroFinishedForMusic]); 
+    }, [currentIntroStage, hasIntroFinishedForMusic]);
 
-    // Effect để quản lý nhạc nền
+
+    // QL nhạc nền
     useEffect(() => {
         const audioElement = audioRef.current;
-        if (!audioElement || !hasIntroFinishedForMusic) return;
+        if (!audioElement) return;
 
-        if (isSpotifyViewActive) {
+        if (isSpotifyViewActive) { // Nếu Spotify đang active -> dừng nhạc nền
             if (!audioElement.paused) {
                 audioElement.pause();
             }
-        } else {
+        } else if (hasIntroFinishedForMusic && canTryPlayMusic) { // Intro đã xong và đc phép thử play
             if (audioElement.paused) {
-                audioElement.play().catch(error => {
-                    console.warn("Không thể tự động phát nhạc nền:", error);
-                
+                audioElement.play().then(() => {
+                    setCanTryPlayMusic(false); // Đã thử play, tắt cờ
+                }).catch(_error => {
+                    // Lỗi autoplay, user cần tương tác
+                    // Cờ canTryPlayMusic sẽ đc bật lại khi user chọn ngôn ngữ
                 });
+            } else {
+                 setCanTryPlayMusic(false); // Nhạc đã phát rồi, tắt cờ
             }
         }
-    }, [isSpotifyViewActive, hasIntroFinishedForMusic]);
+    }, [isSpotifyViewActive, hasIntroFinishedForMusic, canTryPlayMusic]);
 
 
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
         setSelectedLanguage(language);
+        // Khi user tương tác (chọn ngôn ngữ), nếu nhạc chưa phát và intro đã xong
+        // thì cho phép thử play lại.
+        if (audioRef.current && audioRef.current.paused && hasIntroFinishedForMusic && !isSpotifyViewActive) {
+            setCanTryPlayMusic(true);
+        }
     };
 
     const memoizedParticles = useMemo(() => {
@@ -204,7 +218,9 @@ function App() {
 
     return (
         <div className="AppWrapper">
-            <audio ref={audioRef} src={backgroundMusicMP3} loop /> 
+            {/* Thẻ audio cho nhạc nền */}
+            <audio ref={audioRef} src={backgroundMusicMP3} loop />
+            
             {memoizedParticles} 
             {currentIntroStage === 'languageSelection' ? (
                 <LanguageSelector 
@@ -213,13 +229,13 @@ function App() {
                     githubUsername={PERSONAL_CARD_DATA.githubUsername}
                     initialSelectedLanguage={selectedLanguage}
                     yourNameForIntro={YOUR_NAME_FOR_INTRO}
-                    onSpotifyViewChange={setIsSpotifyViewActive} 
+                    onSpotifyViewChange={setIsSpotifyViewActive} // Callback cho App biết Spotify view active
                 />
             ) : (
                 <ContentArea
                     currentStage={currentIntroStage}
                     isFadingOutProp={isStageFadingOut}
-                    userName={YOUR_NAME_FOR_INTRO} 
+                    userName={YOUR_NAME_FOR_INTRO}
                     selectedLanguage={selectedLanguage || 'vi'} 
                 />
             )}
