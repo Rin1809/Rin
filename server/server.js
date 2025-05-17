@@ -2,11 +2,11 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import axios from 'axios'; // HTTP client
+import axios from 'axios'; 
 import { pool, initializeDb } from './db.js';
 import dotenv from 'dotenv';
 
-dotenv.config(); // Load .env
+dotenv.config(); 
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -21,7 +21,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// --- Spotify API (giữ nguyên) ---
+// --- Spotify API ---
 let spotifyAccessToken = null;
 let tokenExpiryTime = 0;
 
@@ -75,7 +75,7 @@ initializeDb().then(() => {
 });
 
 
-// === API Routes cho Guestbook (giữ nguyên) ===
+// === API Routes cho Guestbook  ===
 app.get('/api/guestbook', async (req, res) => {
   try {
     const result = await pool.query(
@@ -126,7 +126,7 @@ app.post('/api/guestbook', async (req, res) => {
   }
 });
 
-// === API Route cho Spotify Playlists (giữ nguyên) ===
+// === API Route cho Spotify Playlists  ===
 app.get('/api/spotify/playlists', async (req, res) => {
     try {
         const token = await getSpotifyToken();
