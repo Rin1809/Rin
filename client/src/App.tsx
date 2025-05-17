@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import LanguageSelector from './components/LanguageSelector';
 import './components/styles/App.css';
 
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { ISourceOptions, Engine } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
+
+// file nhạc nền
+import backgroundMusicMP3 from './assets/audio/background_music.mp3'; // <-- THAY ĐỔI TÊN FILE NẾU CẦN
 
 // --  PARTICLESC_CONFIG --
 const particlesOptions: ISourceOptions = {
@@ -44,7 +47,7 @@ const YOUR_NAME_FOR_INTRO = "よこそう！！";
 
 const PERSONAL_CARD_DATA = {
     avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
-    githubUsername: "Rin1809" // <<<  GITHUB USERNAMe
+    githubUsername: "Rin1809"
 };
 
 type IntroStage = 'cat' | 'yourName' | 'languageSelection';
@@ -53,7 +56,7 @@ interface ContentAreaProps {
     currentStage: IntroStage;
     isFadingOutProp: boolean;
     userName: string | null;
-    selectedLanguage: 'vi' | 'en' | 'ja'; // Vẫn giữ để có thể mở rộng sau, dù hiện tại ko dùng trực tiếp cho text
+    selectedLanguage: 'vi' | 'en' | 'ja';
 }
 
 const ContentArea: React.FC<ContentAreaProps> = React.memo(({ currentStage, isFadingOutProp, userName }) => {
@@ -66,7 +69,6 @@ const ContentArea: React.FC<ContentAreaProps> = React.memo(({ currentStage, isFa
     }, [currentStage]);
 
 
-    // ContentArea chỉ render khi currentStage là 'cat' hoặc 'yourName'
     if (currentStage !== 'cat' && currentStage !== 'yourName') return null;
 
     return (
@@ -95,12 +97,18 @@ const ContentArea: React.FC<ContentAreaProps> = React.memo(({ currentStage, isFa
     );
 });
 ContentArea.displayName = 'ContentArea';
+
 function App() {
     const [particlesInitialized, setParticlesInitialized] = useState(false);
     const [currentIntroStage, setCurrentIntroStage] = useState<IntroStage>('cat');
     const [isStageFadingOut, setIsStageFadingOut] = useState(false);
-    const [activeUserName, _setActiveUserName] = useState<string | null>(YOUR_NAME_FOR_INTRO);
+    const [_activeUserName, _setActiveUserName] = useState<string | null>(YOUR_NAME_FOR_INTRO);
     const [selectedLanguage, setSelectedLanguage] = useState<'vi' | 'en' | 'ja' | null>(null);
+
+    // State cho nhạc nền
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [isSpotifyViewActive, setIsSpotifyViewActive] = useState(false);
+    const [hasIntroFinishedForMusic, setHasIntroFinishedForMusic] = useState(false);
 
     useEffect(() => {
         initParticlesEngine(async (engine: Engine) => {
@@ -113,8 +121,10 @@ function App() {
     }, []);
 
     useEffect(() => {
-        // Chỉ chạy timer cho stage 'cat' và 'yourName'
         if (currentIntroStage !== 'cat' && currentIntroStage !== 'yourName') {
+            if (currentIntroStage === 'languageSelection' && !hasIntroFinishedForMusic) {
+                setHasIntroFinishedForMusic(true); // Đánh dấu intro đã hoàn tất cho nhạc
+            }
             return;
         }
         
@@ -153,7 +163,27 @@ function App() {
             if (stage2TimerId) window.clearTimeout(stage2TimerId);
             if (fade2TimerId) window.clearTimeout(fade2TimerId);
         };
-    }, [currentIntroStage]); 
+    }, [currentIntroStage, hasIntroFinishedForMusic]); 
+
+    // Effect để quản lý nhạc nền
+    useEffect(() => {
+        const audioElement = audioRef.current;
+        if (!audioElement || !hasIntroFinishedForMusic) return;
+
+        if (isSpotifyViewActive) {
+            if (!audioElement.paused) {
+                audioElement.pause();
+            }
+        } else {
+            if (audioElement.paused) {
+                audioElement.play().catch(error => {
+                    console.warn("Không thể tự động phát nhạc nền:", error);
+                
+                });
+            }
+        }
+    }, [isSpotifyViewActive, hasIntroFinishedForMusic]);
+
 
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
         setSelectedLanguage(language);
@@ -163,7 +193,6 @@ function App() {
         if (!particlesInitialized) {
             return null;
         }
-        // Đây là background particles chung, luôn hiển thị
         return (
             <Particles
                 key="tsparticles-background-stable"
@@ -175,6 +204,7 @@ function App() {
 
     return (
         <div className="AppWrapper">
+            <audio ref={audioRef} src={backgroundMusicMP3} loop /> 
             {memoizedParticles} 
             {currentIntroStage === 'languageSelection' ? (
                 <LanguageSelector 
@@ -182,20 +212,19 @@ function App() {
                     cardAvatarUrl={PERSONAL_CARD_DATA.avatarUrl}
                     githubUsername={PERSONAL_CARD_DATA.githubUsername}
                     initialSelectedLanguage={selectedLanguage}
-                    yourNameForIntro={YOUR_NAME_FOR_INTRO} 
+                    yourNameForIntro={YOUR_NAME_FOR_INTRO}
+                    onSpotifyViewChange={setIsSpotifyViewActive} 
                 />
             ) : (
-                // Các stage khác sẽ được render bởi ContentArea
                 <ContentArea
                     currentStage={currentIntroStage}
                     isFadingOutProp={isStageFadingOut}
-                    userName={activeUserName}
+                    userName={YOUR_NAME_FOR_INTRO} 
                     selectedLanguage={selectedLanguage || 'vi'} 
                 />
             )}
         </div>
     );
 }
-
 
 export default App;

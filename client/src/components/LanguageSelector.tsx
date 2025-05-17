@@ -7,7 +7,7 @@ import flourishImage from '../assets/flourish.png';
 import PersonalCard from './PersonalCard';
 import Gallery from './Gallery';
 import Guestbook from './Guestbook';
-import SpotifyPlaylists from './SpotifyPlaylists'; // Đã import
+import SpotifyPlaylists from './SpotifyPlaylists';
 import type { GuestbookEntry } from '../data/guestbook.data';
 
 import { initParticlesEngine } from "@tsparticles/react";
@@ -22,7 +22,7 @@ import LangButton from './languageSelector/LangButton';
 import {
     poeticStarsOptionsDefinition,
     translations,
-    cardIntroTranslations, 
+    cardIntroTranslations,
     contentItemVariants,
     titleVariants,
     flourishVariantsDefinition,
@@ -43,7 +43,7 @@ import {
     cardDisplayInfo,
     galleryViewVariants,
     guestbookViewContainerVariants,
-    spotifyViewContainerVariants, // Đã import
+    spotifyViewContainerVariants,
     SHARED_FLOURISH_SPRING_TRANSITION,
     aboutNavIconLeft,
 } from './languageSelector/languageSelector.constants';
@@ -55,6 +55,7 @@ interface LanguageSelectorProps {
   initialSelectedLanguage: 'vi' | 'en' | 'ja' | null;
   yourNameForIntro: string;
   githubUsername: string;
+  onSpotifyViewChange: (isActive: boolean) => void; // <-- Prop mới
 }
 
 type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists';
@@ -84,7 +85,8 @@ type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists';
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     onLanguageSelected, cardAvatarUrl, initialSelectedLanguage,
-    yourNameForIntro, githubUsername
+    yourNameForIntro, githubUsername,
+    onSpotifyViewChange // <-- Destructure prop mới
 }) => {
   const [engineInitialized, setEngineInitialized] = useState(false);
   const [currentView, setCurrentView] = useState<SelectorView>('languageOptions');
@@ -96,9 +98,9 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   const [guestbookEntries, setGuestbookEntries] = useState<GuestbookEntry[]>([]);
   const [guestbookLoading, setGuestbookLoading] = useState<boolean>(true);
-  const [_guestbookError, setGuestbookError] = useState<string | null>(null); // ko dùng trực tiếp
+  const [_guestbookError, setGuestbookError] = useState<string | null>(null);
 
-  const [spotifyPlaylists, setSpotifyPlaylists] = useState<any[]>([]); // Data spotify
+  const [spotifyPlaylists, setSpotifyPlaylists] = useState<any[]>([]);
   const [spotifyLoading, setSpotifyLoading] = useState<boolean>(false);
   const [spotifyError, setSpotifyError] = useState<string | null>(null);
 
@@ -110,7 +112,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const isMountedRef = useRef(true);
   const initInProgressRef = useRef(false);
 
-  useEffect(() => { // Init particles
+  useEffect(() => {
     isMountedRef.current = true;
     if (!engineInitialized && !initInProgressRef.current) {
       initInProgressRef.current = true;
@@ -127,7 +129,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const flourishLoopAnimTop = useMemo(() => createFlourishLoopAnimation(0), []);
   const flourishLoopAnimBottom = useMemo(() => createFlourishLoopAnimation(180), []);
 
-  useEffect(() => { // Anim flourish
+  useEffect(() => {
     if (!isMountedRef.current) return;
     const { scale: targetScale } = getFlourishLayoutPropsForView(currentView);
     const entryDelay = isInitialMount ? 0.1 : 0;
@@ -163,27 +165,34 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (isMountedRef.current) ctrls.start(loopDef);
   }, [currentView]);
 
+  // Effect để thông báo thay đổi view Spotify
+  useEffect(() => {
+    if (isMountedRef.current) {
+      onSpotifyViewChange(currentView === 'spotifyPlaylists');
+    }
+  }, [currentView, onSpotifyViewChange]); 
+
+
   const handleParticlesLoaded = useCallback(async (_container?: Container) => {}, []);
   const handleLanguageButtonClick = (lang: 'vi'|'en'|'ja') => { onLanguageSelected(lang); setCurrentLanguage(lang); setDisplayTextLanguage(lang); setCurrentView('cardIntro'); };
   const handleMouseEnterLangBtn = (lang: 'vi'|'en'|'ja') => setDisplayTextLanguage(lang);
-  const handleMouseLeaveLangBtn = () => {}; // Giữ displayTextLanguage khi đang chọn
-  const langForTextDisplayInOptionsView = displayTextLanguage; // Ngôn ngữ text cho view chọn ngôn ngữ
+  const handleMouseLeaveLangBtn = () => {};
+  const langForTextDisplayInOptionsView = displayTextLanguage;
   const footerText = `ᓚᘏᗢ ${yourNameForIntro} | ${new Date().getFullYear()}`;
   const showFooter = ['cardIntro', 'about', 'gallery', 'guestbook', 'spotifyPlaylists'].includes(currentView);
 
   const getFlourishWrapperStyle = (view: SelectorView, isTop: boolean) => {
-    let mV = "1rem"; // Margin vertical
+    let mV = "1rem";
     if (['about', 'gallery', 'guestbook', 'spotifyPlaylists'].includes(view)) mV = "0.5rem";
     return isTop ? { marginBottom: mV } : { marginTop: mV };
   };
 
-  // Delay cho các anim trong card intro
   const cardIntroAvatarDelay=0, cardIntroDivider1Delay=cardIntroAvatarDelay+0.4, cardIntroNameDisplayDelay=0.05;
   const cardIntroTitleDisplayDelay=cardIntroNameDisplayDelay+0.15, cardIntroTaglineDisplayDelay=cardIntroTitleDisplayDelay+0.15;
   const cardIntroDivider2Delay=cardIntroTaglineDisplayDelay+0.4, cardIntroActionsDelay=cardIntroDivider2Delay+0.1;
   const cardIntroButtonBaseDelay=0.1, headerContentBlockDelay=0.05;
 
-  const fetchGuestbookEntries = useCallback(async () => { // Lấy entry sổ lưu bút
+  const fetchGuestbookEntries = useCallback(async () => {
       if (!isMountedRef.current) return;
       setGuestbookLoading(true); setGuestbookError(null);
       try {
@@ -194,7 +203,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       finally { if (isMountedRef.current) setGuestbookLoading(false); }
   }, []);
 
-  const fetchSpotifyPlaylists = useCallback(async () => { // Lấy playlist Spotify
+  const fetchSpotifyPlaylists = useCallback(async () => {
     if (!isMountedRef.current) return;
     setSpotifyLoading(true); setSpotifyError(null);
     try {
@@ -213,7 +222,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     }
   }, []);
 
-  useEffect(() => { // Fetch data khi view hoặc preview thay đổi
+  useEffect(() => {
     if (currentView === 'guestbook' || (currentView === 'cardIntro' && headerPreviewType === 'guestbook')) {
         fetchGuestbookEntries();
     }
@@ -222,19 +231,19 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     }
   }, [fetchGuestbookEntries, fetchSpotifyPlaylists, currentView, headerPreviewType]);
 
-  const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi'|'en'|'ja'): Promise<void> => { // Thêm entry
+  const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi'|'en'|'ja'): Promise<void> => {
       const payload = { name, message, language: lang };
       try {
           const res = await fetch(`${API_BASE_URL}/api/guestbook`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
           if (!res.ok) { let msg = `Lỗi gửi: ${res.status}`; try { const errD = await res.json(); msg = errD.error || msg; } catch (e) {} throw new Error(msg); }
-          await fetchGuestbookEntries(); // Tải lại entry
+          await fetchGuestbookEntries();
       } catch (e: any) { console.error("Lỗi gửi GBook từ LangSel:", e); throw e; }
   };
 
-  const personalCardRenderKey = `pc-${currentView}-${currentLanguage}`; // Key cho PersonalCard
+  const personalCardRenderKey = `pc-${currentView}-${currentLanguage}`;
 
   const cardIntroActionButtons: {
-    type: HeaderPreviewType; 
+    type: HeaderPreviewType;
     iconKey: CardIntroIconKey;
     textKey: MainCardIntroButtonTextKey;
   }[] = [
@@ -353,17 +362,17 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           {currentView === 'spotifyPlaylists' && (
             <motion.div
                 key="spotify-playlists-content"
-                className="content-section card-content-display spotify-playlists-view-wrapper" 
-                variants={spotifyViewContainerVariants(0.05)} 
+                className="content-section card-content-display spotify-playlists-view-wrapper"
+                variants={spotifyViewContainerVariants(0.05)}
                 initial="hidden" animate="visible" exit="exit"
             >
-                <SpotifyPlaylists 
+                <SpotifyPlaylists
                     language={currentLanguage}
                     playlists={spotifyPlaylists}
                     isLoading={spotifyLoading}
                     error={spotifyError}
                 />
-                 <motion.button 
+                 <motion.button
                     className="card-view-back-button"
                     onClick={() => setCurrentView('cardIntro')}
                     initial={{ opacity: 0, y: 30, scale: 0.9 }}
@@ -387,6 +396,5 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     </motion.div>
   );
 };
-// Lấy ảnh từ glob
 const localImages = Object.values(import.meta.glob('/src/assets/gallery_images/*.{png,jpg,jpeg,gif,svg,webp}',{eager:true,import:'default'})) as string[];
 export default React.memo(LanguageSelector);
