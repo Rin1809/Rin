@@ -7,7 +7,7 @@ import {
     randomPoeticQuotes
 } from './languageSelector/languageSelector.constants';
 import type { GuestbookEntry } from '../data/guestbook.data';
-import { logInteraction } from '../utils/logger'; // IMPORT LOG UTIL
+import { logInteraction } from '../utils/logger'; // LOG UTIL
 
 // Icon Components 
 const IconFeatherPen = () => (
@@ -244,13 +244,20 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
 
    useEffect(() => {
     if (hoveredEntryId !== null && !hasLoggedViewRef.current.has(hoveredEntryId)) {
+      const hoveredEntry = entries.find(entry => entry.id === hoveredEntryId); // tim entry
+      let messageSnippet = "N/A"; 
+      if (hoveredEntry) {
+        const fullMessage = hoveredEntry.message;
+        messageSnippet = fullMessage.substring(0, 30) + (fullMessage.length > 30 ? "..." : ""); // tao snippet
+      }
       logInteraction('guestbook_entry_viewed', { 
         entryId: hoveredEntryId, 
+        messageSnippet: messageSnippet, // Gui snippet
         language: language 
       });
       hasLoggedViewRef.current.add(hoveredEntryId);
     }
-  }, [hoveredEntryId, language]);
+   }, [hoveredEntryId, language, entries]); // Them entries vao deps
 
 
    const handleSubmit = async (e: React.FormEvent) => { 
@@ -265,7 +272,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
     setSubmitSuccess(null);
     try {
       await onAddEntry(name.trim(), message.trim(), language);
-      logInteraction('guestbook_entry_submitted', { // LOG KHI SUBMIT
+      logInteraction('guestbook_entry_submitted', { 
         name: name.trim(), 
         messageSnippet: message.trim().substring(0, 30) + (message.trim().length > 30 ? "..." : ""),
         language: language 
