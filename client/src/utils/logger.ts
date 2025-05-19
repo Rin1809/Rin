@@ -77,4 +77,3 @@ const sendBufferedLogs = () => {
 
 // Gui log khi user roi trang
 window.addEventListener('beforeunload', sendBufferedLogs);
-
