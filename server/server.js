@@ -11,10 +11,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// URL bot Mizuki, sẽ dc set trong .env hoặc Railway cfg
 const MIZUKI_BOT_NOTIFY_URL = process.env.MIZUKI_BOT_NOTIFY_URL; 
-// Secret key để Mizuki xác thực (tùy chọn, nhưng nên có)
 const MIZUKI_SHARED_SECRET = process.env.MIZUKI_SHARED_SECRET || "default_secret_key_for_mizuki";
+const EXCLUDED_IPS_RAW = process.env.EXCLUDED_IPS || ""; // Them bien moi cho server
+const EXCLUDED_IPS_FOR_INTERACTION_LOG = EXCLUDED_IPS_RAW.split(',').map(ip => ip.trim()).filter(ip => ip);
 
 
 app.use(cors());
@@ -55,7 +55,7 @@ async function getSpotifyToken() {
             }
         );
         spotifyAccessToken = response.data.access_token;
-        tokenExpiryTime = Date.now() + (response.data.expires_in * 1000) - 60000; // -60s buffer
+        tokenExpiryTime = Date.now() + (response.data.expires_in * 1000) - 60000; 
         console.log('✨ Spotify Token lấy xong!');
         return spotifyAccessToken;
     } catch (error) {
@@ -65,7 +65,7 @@ async function getSpotifyToken() {
 }
 
 initializeDb().then(() => {
-    app.listen(PORT, '0.0.0.0', () => { // Nghe trên 0.0.0.0 cho Railway
+    app.listen(PORT, '0.0.0.0', () => { 
         console.log(`🚀 Server đang chạy trên port: ${PORT}`);
         console.log(`Backend API: http://localhost:${PORT} (local) / URL Railway.`);
     });
@@ -83,7 +83,7 @@ app.get('/api/guestbook', async (req, res) => {
     );
     const entries = result.rows.map(entry => ({
         ...entry,
-        language: entry.language.toLowerCase() // lower case lang
+        language: entry.language.toLowerCase() 
     }));
     res.status(200).json(entries);
   } catch (error) {
@@ -116,7 +116,7 @@ app.post('/api/guestbook', async (req, res) => {
     );
     const newEntry = {
         ...result.rows[0],
-        language: result.rows[0].language.toLowerCase() // lower case lang
+        language: result.rows[0].language.toLowerCase() 
     };
     console.log("✨ Entry mới:", newEntry);
     res.status(201).json(newEntry);
@@ -159,10 +159,8 @@ app.get('/api/spotify/playlists', async (req, res) => {
     }
 });
 
-
 // Endpoint nhận tbáo visit từ frontend
 app.post('/api/notify-visit', async (req, res) => {
-    // Lấy IP thật của client (q.trọng khi có proxy như Railway)
     const clientIp = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
 
@@ -170,7 +168,6 @@ app.post('/api/notify-visit', async (req, res) => {
 
     if (!MIZUKI_BOT_NOTIFY_URL) {
         console.warn("⚠️ MIZUKI_BOT_NOTIFY_URL chưa dc cfg. Ko thể gửi tbáo.");
-        // Trả về 202 để frontend ko báo lỗi, nhưng server vẫn log
         return res.status(202).json({ message: "Visit logged, notification to bot disabled." });
     }
 
@@ -180,10 +177,8 @@ app.post('/api/notify-visit', async (req, res) => {
     let region = "N/A";
     let isp = "N/A";
 
-    // Chỉ tra GeoIP nếu là IP public
-    if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1")) { 
+    if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_INTERACTION_LOG.includes(clientIp)) { 
         try {
-            // Dịch vụ GeoIP: ip-api.com (có giới hạn free tier)
             const geoResponse = await axios.get(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`);
             if (geoResponse.data && geoResponse.data.status === 'success') {
                 country = geoResponse.data.country || "N/A";
@@ -199,11 +194,14 @@ app.post('/api/notify-visit', async (req, res) => {
             console.error(`[GeoIP] Lỗi gọi API GeoIP cho IP ${clientIp}:`, geoError.message);
             locationInfo = "Lỗi lấy ttin vị trí.";
         }
-    } else {
-        locationInfo = "Truy cập từ Localhost.";
-        country = "Local"; // Đánh dấu là local
+    } else if (EXCLUDED_IPS_FOR_INTERACTION_LOG.includes(clientIp)){ // Check neu IP nam trong list loai tru
+        locationInfo = "IP ngoại lệ, không gửi DM." 
     }
-
+     else {
+        locationInfo = "Truy cập từ Localhost.";
+        country = "Local";
+    }
+    
     const visitData = {
         ip: clientIp || "N/A",
         location: locationInfo,
@@ -212,15 +210,14 @@ app.post('/api/notify-visit', async (req, res) => {
         region: region,
         isp: isp,
         userAgent: userAgent || "N/A",
-        timestamp: new Date().toISOString() // Thời gian server nhận dc
+        timestamp: new Date().toISOString() 
     };
 
     try {
-        // Gửi POST request tới bot Mizuki
         await axios.post(MIZUKI_BOT_NOTIFY_URL, visitData, {
             headers: {
                 'Content-Type': 'application/json',
-                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET // Header bí mật
+                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
             }
         });
         console.log("✅ Tbáo visit đã gửi tới bot Mizuki.");
@@ -231,6 +228,76 @@ app.post('/api/notify-visit', async (req, res) => {
     }
 });
 
+// API ENDPOINT MOI CHO LOG INTERACTION
+app.post('/api/log-interaction', async (req, res) => {
+    const clientIp = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+    const { eventType, eventData, timestamp: clientTimestamp } = req.body;
+
+    // console.log(`[INTERACTION_LOG] Received: ${eventType} from IP: ${clientIp}`, eventData); // Co the comment out
+
+    if (!MIZUKI_BOT_NOTIFY_URL) {
+        console.warn("⚠️ MIZUKI_BOT_NOTIFY_URL chưa dc cfg. Ko thể gửi log tương tác.");
+        return res.status(202).json({ message: "Interaction logged by server, notification to bot disabled." });
+    }
+
+    let locationInfo = "Ko xác định";
+    let country = "N/A";
+    let city = "N/A";
+    let region = "N/A";
+    let isp = "N/A";
+
+    if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_INTERACTION_LOG.includes(clientIp)) { 
+        try {
+            const geoResponse = await axios.get(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`);
+            if (geoResponse.data && geoResponse.data.status === 'success') {
+                country = geoResponse.data.country || "N/A";
+                city = geoResponse.data.city || "N/A";
+                region = geoResponse.data.regionName || "N/A";
+                isp = geoResponse.data.isp || "N/A";
+                locationInfo = `${city}, ${region}, ${country} (ISP: ${isp})`;
+            } else {
+                locationInfo = `Ko lấy dc ttin vị trí (ip-api: ${geoResponse.data.message || 'lỗi ko rõ'})`;
+            }
+        } catch (geoError) {
+            console.error(`[GeoIP INTERACTION] Lỗi gọi API GeoIP cho IP ${clientIp}:`, geoError.message);
+            locationInfo = "Lỗi lấy ttin vị trí.";
+        }
+    } else if (EXCLUDED_IPS_FOR_INTERACTION_LOG.includes(clientIp)){
+        locationInfo = "IP ngoại lệ, không gửi DM log." 
+    } else {
+        locationInfo = "Truy cập từ Localhost.";
+        country = "Local";
+    }
+    
+    const interactionPayload = {
+        ip: clientIp || "N/A",
+        location: locationInfo,
+        country: country,
+        city: city,
+        region: region,
+        isp: isp,
+        userAgent: userAgent || "N/A",
+        clientTimestamp: clientTimestamp, 
+        serverTimestamp: new Date().toISOString(), 
+        eventType,
+        eventData
+    };
+
+    try {
+        await axios.post(`${MIZUKI_BOT_NOTIFY_URL}/log-interaction`, interactionPayload, { // Endpoint moi cua Mizuki
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
+            }
+        });
+        // console.log("✅ Log tương tác đã gửi tới bot Mizuki."); // Co the comment out
+        res.status(200).json({ message: "Interaction logged and notification sent to bot." });
+    } catch (botError) {
+        console.error("🔴 Lỗi gửi log tương tác tới bot Mizuki:", botError.response ? botError.response.data : botError.message);
+        res.status(500).json({ error: "Failed to notify bot of interaction." });
+    }
+});
 
 // Route kiểm tra sức khỏe
 app.get('/health', (req, res) => {
@@ -239,5 +306,5 @@ app.get('/health', (req, res) => {
 
 // Fallback route
 app.use((req, res) => {
-    res.status(404).json({ error: 'Not Found. API paths: /api/guestbook, /api/spotify/playlists, /api/notify-visit' });
+    res.status(404).json({ error: 'Not Found. API paths: /api/guestbook, /api/spotify/playlists, /api/notify-visit, /api/log-interaction' });
 });

@@ -8,6 +8,7 @@ import {
     personalCardTranslations,
     LoadingMessages
 } from './languageSelector/languageSelector.constants';
+import { logInteraction } from '../utils/logger'; // IMPORT LOG UTIL
 
 interface PersonalCardProps {
   style?: React.CSSProperties;
@@ -15,7 +16,7 @@ interface PersonalCardProps {
   section: 'about' | 'all';
   githubUsername?: string;
   language: 'vi' | 'en' | 'ja';
-  personalCardKey?: string; // K.tra thay đổi key để reset
+  personalCardKey?: string; 
 }
 
 type AboutSubSection =
@@ -110,7 +111,7 @@ const parseNumericValue = (valueWithSuffix: string | number): number => {
     if (isNaN(numericPart)) return 0;
     if (cleanedValue.endsWith('K')) numericPart *= 1000;
     else if (cleanedValue.endsWith('M')) numericPart *= 1000000;
-    else if (cleanedValue.endsWith('N')) numericPart *= 1000; // Giả sử N là ngàn
+    else if (cleanedValue.endsWith('N')) numericPart *= 1000; 
     return numericPart;
 };
 
@@ -125,7 +126,7 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
         const upperVal = value.toUpperCase();
         if (upperVal.endsWith('K')) return 'K';
         if (upperVal.endsWith('M')) return 'M';
-        if (upperVal.endsWith('N')) return 'N'; // Giả sử N là ngàn
+        if (upperVal.endsWith('N')) return 'N'; 
         return "";
     }, [value]);
 
@@ -139,19 +140,17 @@ const AnimatedNumberDisplay: React.FC<AnimatedNumberProps> = ({ value }) => {
             damping: 20,
             onUpdate: (latest) => {
                 let displayVal;
-                if (suffix && (latest >= 1000 && targetNumericValue >=1000) ) { // Chỉ hiện suffix nếu cả 2 đều >= 1000
+                if (suffix && (latest >= 1000 && targetNumericValue >=1000) ) { 
                     if (suffix === 'K' || suffix === 'N') {
                         displayVal = (latest / 1000).toFixed(latest % 1000 !== 0 && latest < 10000 ? 1 : 0);
                     } else if (suffix === 'M') {
                          displayVal = (latest / 1000000).toFixed(latest % 1000000 !== 0 && latest < 10000000 ? 1 : 0);
-                    } else { // Trường hợp suffix lạ, hoặc không nên có suffix
+                    } else { 
                          displayVal = Math.round(latest).toString();
                     }
                 } else {
                     displayVal = Math.round(latest).toString();
                 }
-
-                // Giữ dấu phẩy nếu input gốc có
                 if (typeof value === 'string' && value.includes(',')) {
                    displayVal = displayVal.replace('.', ',');
                 }
@@ -173,15 +172,13 @@ interface ParallaxImageProps {
   onImageError?: () => void;
 }
 const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className, wide, onImageLoad, onImageError }) => {
-    const ref = useRef<HTMLDivElement>(null); // Đảm bảo ref có type
+    const ref = useRef<HTMLDivElement>(null); 
     const x = useMotionValue(0);
     const y = useMotionValue(0);
-
-    // Transform cho parallax effect
-    const xTransform = useTransform(x, [-100, 100], [-15, 15]); // Tinh chỉnh giá trị [-15,15] nếu cần
+    const xTransform = useTransform(x, [-100, 100], [-15, 15]); 
     const yTransform = useTransform(y, [-100, 100], [-10, 10]);
 
-    const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => { // Type cho event
+    const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => { 
         if (ref.current) {
             const rect = ref.current.getBoundingClientRect();
             const newX = event.clientX - rect.left - rect.width / 2;
@@ -201,17 +198,17 @@ const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className, wide
             className={`parallax-image-wrapper ${wide ? 'wide-image-wrapper' : ''}`}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            style={{ perspective: 1000 }} // Perspective cho 3D effect
-            whileHover={{ scale:1.03 }} // Nhẹ nhàng scale khi hover wrapper
+            style={{ perspective: 1000 }} 
+            whileHover={{ scale:1.03 }} 
             transition={{type:"spring", stiffness:300, damping:12}}
         >
             <motion.img
                 src={src}
                 alt={alt}
-                className={className} // Class gốc của image
-                style={{ x: xTransform, y: yTransform }} // Apply parallax transform
+                className={className} 
+                style={{ x: xTransform, y: yTransform }} 
                 onLoad={onImageLoad}
-                onError={onImageError || onImageLoad} // Gọi onImageLoad làm fallback nếu onError k có
+                onError={onImageError || onImageLoad} 
             />
         </motion.div>
     );
@@ -221,7 +218,7 @@ const ParallaxImage: React.FC<ParallaxImageProps> = ({ src, alt, className, wide
 const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githubUsername, language, personalCardKey }) => {
   const containerClassName = section === 'about' ? 'personal-card-about-view' : 'personal-card-container';
   const [currentAboutSubSection, setCurrentAboutSubSection] = useState<AboutSubSection>('placeholder');
-  const [slideDirection, setSlideDirection] = useState(0); // -1: prev, 1: next, 0: none
+  const [slideDirection, setSlideDirection] = useState(0); 
   
   const [githubData, setGithubData] = useState<any>(null);
   const [githubLoading, setGithubLoading] = useState<boolean>(false);
@@ -237,15 +234,15 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const [imagesToPreloadNow, setImagesToPreloadNow] = useState<string[]>([]);
   const allPreloadedImagesResolverRef = useRef<(() => void) | null>(null);
 
-  const discordUserId = "873576591693873252"; // ID Discord của bạn
+  const discordUserId = "873576591693873252"; 
   const tiktokData = {
-    avatarUrl: "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/e6ba1da948f191e11a87ab576c7cecad~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=2cdcc406&x-expires=1747814400&x-signature=XA%2Btvki9KUi9SbVUnm1uKznqFZo%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my", // Thay bằng link avatar TikTok của bạn
-    name: "Harumi", // Tên TikTok
+    avatarUrl: "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/e6ba1da948f191e11a87ab576c7cecad~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=2cdcc406&x-expires=1747814400&x-signature=XA%2Btvki9KUi9SbVUnm1uKznqFZo%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my", 
+    name: "Harumi", 
     following: 9,
     followers: "19.2K",
     likes: "714.8K",
-    description: "ᓚᘏᗢ", // Mô tả TikTok
-    profileUrl: "https://www.tiktok.com/@rinrinn1913" // Link profile TikTok
+    description: "ᓚᘏᗢ", 
+    profileUrl: "https://www.tiktok.com/@rinrinn1913" 
   };
   const youtubeData = {
     avatarUrl: "https://yt3.googleusercontent.com/sPwTQORt809qB1fiC2fPj28qFAEtbxSRt471DFZVN9GVEgWX4gfiu_tm1Rm7jOn3QUybLe1XkiQ=s160-c-k-c0x00ffffff-no-rj",
@@ -260,13 +257,12 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const currentContentRef = useRef<HTMLDivElement>(null);
   const contentWrapperOuterRef = useRef<HTMLDivElement>(null);
   const prevHeightRef = useRef<number | 'auto' | null>(null);
+  const prevSubSectionRef = useRef<AboutSubSection>(currentAboutSubSection); // Theo doi sub-section truoc
 
-  // State cho loading content của section con (không phải preloading chung)
   const [isSectionLoadingContent, setIsSectionLoadingContent] = useState(false); 
 
-  const t = useMemo(() => personalCardTranslations, []); // Translations
+  const t = useMemo(() => personalCardTranslations, []); 
 
-  // D.sách các tác vụ preload
   const preloadTasksDefinition = useMemo(() => [
     { 
       id: 'githubFetch', 
@@ -308,20 +304,18 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   ], [githubUsername, discordUserId]);
 
 
-  const handleImagePreloaded = useCallback(() => { // Cho <img /> ẩn của preloading
+  const handleImagePreloaded = useCallback(() => { 
     setImagesToPreloadCount(prev => {
       const newCount = Math.max(0, prev - 1);
       if (newCount === 0 && allPreloadedImagesResolverRef.current) {
         allPreloadedImagesResolverRef.current();
         allPreloadedImagesResolverRef.current = null;
-        // Không setImagesToPreloadNow([]) ở đây nữa để tránh trigger re-render không cần thiết
-        // Nó sẽ được dọn khi task mới bắt đầu hoặc khi preloading kết thúc.
       }
       return newCount;
     });
   }, []);
   
-  const handleImageLoadedOrError = useCallback(() => { // Cho ảnh hiện trong section (non-preloading)
+  const handleImageLoadedOrError = useCallback(() => { 
     setNonPreloadImagesToLoadCount(prevCount => Math.max(0, prevCount - 1));
   }, []);
 
@@ -338,7 +332,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     if (section !== 'about' || !isPreloadingPhaseActive) return;
 
     const processPreloadStep = async (stepIndex: number) => {
-      if (!isMountedRef.current || section !== 'about' || !isPreloadingPhaseActive) return; // Check trước khi làm gì
+      if (!isMountedRef.current || section !== 'about' || !isPreloadingPhaseActive) return; 
 
       if (stepIndex >= preloadTasksDefinition.length) {
         if (isMountedRef.current) setCurrentPreloadMessageKey('loadingFinalizing' as keyof LoadingMessages);
@@ -350,7 +344,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                 setCurrentAboutSubSection('intro'); 
                 setSlideDirection(1);
             }
-        }, 2000); // Delay 2s sau khi "Hoàn tất!"
+        }, 2000); 
         return;
       }
 
@@ -372,7 +366,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             allPreloadedImagesResolverRef.current = resolve;
           });
            if (isMountedRef.current) {
-            setImagesToPreloadNow([]); // Dọn dẹp sau khi load xong task này
+            setImagesToPreloadNow([]); 
           }
         }
       }
@@ -386,7 +380,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
     if (isMountedRef.current) {
         processPreloadStep(currentPreloadStepIndex);
     }
-  // Bổ sung language để khi đổi ngôn ngữ, message loading có thể update (nếu cần)
   }, [isPreloadingPhaseActive, currentPreloadStepIndex, preloadTasksDefinition, section, language]);
 
 
@@ -396,7 +389,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
       setIsPreloadingPhaseActive(true);
       setCurrentPreloadStepIndex(0);
       setPreloadProgress(0);
-      // Đặt message ban đầu ngay khi phase bắt đầu
       setCurrentPreloadMessageKey(preloadTasksDefinition[0]?.messageKey || 'preparing' as keyof LoadingMessages);
       setGithubData(null); 
       setGithubError(null);
@@ -408,12 +400,10 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
           allPreloadedImagesResolverRef.current = null;
       }
       
-      // Đặt chiều cao ban đầu cho content wrapper
       const initialHeightValue = window.innerWidth <= 480 ? '200px' : (window.innerWidth <= 768 ? '220px' : '250px');
       contentWrapperControls.set({ height: initialHeightValue });
       prevHeightRef.current = parseFloat(initialHeightValue);
 
-      // Đo và anim chiều cao sau một khoảng ngắn để đảm bảo DOM đã ổn định
       const placeholderMeasureTimeout = setTimeout(() => {
           if (isMountedRef.current) measureAndAnimateHeight(true);
         }, 50);
@@ -428,19 +418,17 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
   const measureAndAnimateHeight = useCallback((forceMeasure = false) => {
     requestAnimationFrame(() => {
       if (contentWrapperOuterRef.current && currentContentRef.current && isMountedRef.current) {
-        // Không anim height khi preloading chung hoặc section con đang tải, trừ khi force
         if ((isPreloadingPhaseActive || isSectionLoadingContent) && !forceMeasure && currentAboutSubSection !== 'placeholder') {
             return;
         }
         const contentHeight = currentContentRef.current.offsetHeight;
         
-        // Xác định min-height dựa trên trạng thái và kích thước màn hình
         let minHeightForView = 0;
         if (isPreloadingPhaseActive || currentAboutSubSection === 'placeholder') {
             minHeightForView = window.innerWidth <= 480 ? 200 : (window.innerWidth <= 768 ? 220 : 250);
         } else if (currentAboutSubSection === 'intro') {
             minHeightForView = window.innerWidth <= 480 ? 280 : (window.innerWidth <= 768 ? 260 : 220);
-        } // Các section khác có thể cần min-height riêng nếu nội dung quá ngắn
+        } 
         
         const finalHeight = Math.max(contentHeight, minHeightForView);
         const newHeightValue = finalHeight > 0 ? finalHeight : 'auto';
@@ -461,13 +449,12 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
             );
             prevHeightRef.current = newHeightValue;
         } else if (prevHeightRef.current === null && newHeightValue !== 'auto' && typeof newHeightValue === 'number' && newHeightValue > 0) {
-          // Set chiều cao ban đầu nếu chưa có và giá trị hợp lệ
           contentWrapperControls.set({ height: newHeightValue });
           prevHeightRef.current = newHeightValue;
         }
       }
     });
-  }, [currentAboutSubSection, contentWrapperControls, isPreloadingPhaseActive, isSectionLoadingContent, language]); // Thêm language
+  }, [currentAboutSubSection, contentWrapperControls, isPreloadingPhaseActive, isSectionLoadingContent, language]); 
   
   useEffect(() => {
     if (section === 'about' && currentAboutSubSection === 'github' && !githubData && githubUsername && !githubLoading && !isPreloadingPhaseActive) {
@@ -526,12 +513,10 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
   useEffect(() => {
     if (section === 'about' && contentWrapperOuterRef.current && !isPreloadingPhaseActive && isMountedRef.current) {
-        let delayMeasure = 150; // Default delay
+        let delayMeasure = 150; 
         if (currentAboutSubSection === 'intro' && slideDirection !== 0) {
-            // Ước lượng thời gian cho typewriter animation
-            const numBioParas = t.introBio.part5[language] ? 5 : 4; // Số đoạn văn
-            // Thời gian anim của đoạn cuối + tổng thời gian stagger
-            delayMeasure = (numBioParas -1) * 220 + 750 + 100; // 220ms/đoạn, 750ms duration, 100ms buffer
+            const numBioParas = t.introBio.part5[language] ? 5 : 4; 
+            delayMeasure = (numBioParas -1) * 220 + 750 + 100; 
         }
 
         const measureTimeout = setTimeout(() => {
@@ -539,11 +524,22 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
         }, delayMeasure);
 
         if (contentWrapperOuterRef.current && currentAboutSubSection !== 'placeholder') {
-            contentWrapperOuterRef.current.scrollTop = 0; // Reset scroll khi section thay đổi
+            contentWrapperOuterRef.current.scrollTop = 0; 
         }
         return () => clearTimeout(measureTimeout);
     }
   }, [isSectionLoadingContent, section, currentAboutSubSection, language, name, measureAndAnimateHeight, slideDirection, t, isPreloadingPhaseActive]);
+
+   useEffect(() => { // Log khi section thay đổi
+    if (section === 'about' && currentAboutSubSection !== 'placeholder' && currentAboutSubSection !== prevSubSectionRef.current) {
+      logInteraction('about_subsection_viewed', {
+        previousSubSection: prevSubSectionRef.current,
+        currentSubSection: currentAboutSubSection,
+        language: language
+      });
+      prevSubSectionRef.current = currentAboutSubSection; // Cap nhat sau khi log
+    }
+  }, [currentAboutSubSection, section, language]);
 
   const changeSubSection = (direction: 'next' | 'prev') => {
     if (isPreloadingPhaseActive || currentAboutSubSection === 'placeholder') return; 
@@ -560,8 +556,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
     const nextSection = aboutSubSectionsOrderForNav[nextIndexInNavOrder];
     if (currentAboutSubSection !== nextSection) {
-        setCurrentAboutSubSection(nextSection);
-        
+        setCurrentAboutSubSection(nextSection); 
         const imagesForNewSection = 
             nextSection === 'discord-presence' ? [DISCORD_PRESENCE_IMAGE_URL(discordUserId)] :
             nextSection === 'github-stats-ii' && githubUsername ? GITHUB_STATS_II_IMAGE_URLS(githubUsername) :
@@ -595,7 +590,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
     const getSectionTitleText = () => {
         if (isPreloadingPhaseActive || currentAboutSubSection === 'placeholder') {
-             // Message này đã được xử lý ở preload-indicator-container
              return ""; 
         }
         const titleKey = currentAboutSubSection as keyof typeof t.sectionTitles;
@@ -678,8 +672,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
                 {currentAboutSubSection === 'discord-presence' && ( <div className="discord-presence-container sub-section-inner-padding"> <ParallaxImage src={DISCORD_PRESENCE_IMAGE_URL(discordUserId)} alt="Trạng thái Discord" className="discord-presence-image github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}/> </div> )}
                 {currentAboutSubSection === 'github-stats-ii' && githubUsername && ( <div className="github-stats-image-container sub-section-inner-padding"> <ParallaxImage src={GITHUB_STATS_II_IMAGE_URLS(githubUsername)[0]} alt="Chi tiết hồ sơ GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}/> <ParallaxImage src={GITHUB_STATS_II_IMAGE_URLS(githubUsername)[1]} alt="Biểu đồ hoạt động GitHub" className="github-stat-image" wide={true} onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}/> </div> )}
                 {currentAboutSubSection === 'github-stats-iii' && githubUsername && ( <div className="github-stats-image-container grid-2x2 sub-section-inner-padding"> <ParallaxImage src={GITHUB_STATS_III_IMAGE_URLS(githubUsername)[0]} alt="Thời gian hoạt động hiệu quả GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}/> <ParallaxImage src={GITHUB_STATS_III_IMAGE_URLS(githubUsername)[1]} alt="Ngôn ngữ commit nhiều nhất GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}/> <ParallaxImage src={GITHUB_STATS_III_IMAGE_URLS(githubUsername)[2]} alt="Các ngôn ngữ hàng đầu GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}/> <ParallaxImage src={GITHUB_STATS_III_IMAGE_URLS(githubUsername)[3]} alt="Thống kê chuỗi GitHub" className="github-stat-image" onImageLoad={handleImageLoadedOrError} onImageError={handleImageLoadedOrError}/> </div> )}
-                {/* Trường hợp placeholder sau khi preloading, nếu không có section nào khớp */}
-                {currentAboutSubSection === 'placeholder' && !isPreloadingPhaseActive && ( <div className="sub-section-inner-padding placeholder-content-div"> {/* Div trống cho content */} </div>)}
+                {currentAboutSubSection === 'placeholder' && !isPreloadingPhaseActive && ( <div className="sub-section-inner-padding placeholder-content-div"> </div>)}
             </motion.div>
           )}
          </AnimatePresence>
@@ -687,7 +680,6 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
       </motion.div>
     );
   }
-  // Fallback render cho các section khác 'about'
   return (
     <div className={containerClassName} style={style}>
       <p>Original card view for section '{section}'</p>

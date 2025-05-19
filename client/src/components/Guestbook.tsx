@@ -7,6 +7,7 @@ import {
     randomPoeticQuotes
 } from './languageSelector/languageSelector.constants';
 import type { GuestbookEntry } from '../data/guestbook.data';
+import { logInteraction } from '../utils/logger'; // IMPORT LOG UTIL
 
 // Icon Components 
 const IconFeatherPen = () => (
@@ -33,7 +34,6 @@ const IconInkSplatterCancel = () => (
   </svg>
 );
 
-// Props Interface
 interface GuestbookProps {
   language: 'vi' | 'en' | 'ja';
   onBack: () => void;
@@ -41,7 +41,6 @@ interface GuestbookProps {
   onAddEntry: (name: string, message: string, lang: 'vi' | 'en' | 'ja') => Promise<void>;
 }
 
-// --- Component con cho hiệu ứng Typewriter ---
 interface TypewriterMessageProps {
   fullMessage: string;
   className?: string;
@@ -121,9 +120,6 @@ const TypewriterMessage: React.FC<TypewriterMessageProps> = React.memo(({
 });
 TypewriterMessage.displayName = 'TypewriterMessage';
 
-
-
-// --- VARIANTS  ---
 const bookCoreVariants = {
   hidden: { opacity: 0, y: 60, scale: 0.9, filter: "blur(10px) saturate(0.5)" },
   visible: {
@@ -204,12 +200,10 @@ const bookPagesWrapperVariants = {
   exit: { opacity: 0 }
 };
 
-// Consts cho resizable divider
-const MIN_PANE_HEIGHT_PERCENT = 25; // % chiều cao tổng
-const MAX_PANE_HEIGHT_PERCENT = 75; // % chiều cao tổng
-const DIVIDER_HEIGHT = 10; // px, khớp với CSS var
+const MIN_PANE_HEIGHT_PERCENT = 25; 
+const MAX_PANE_HEIGHT_PERCENT = 75; 
+const DIVIDER_HEIGHT = 10; 
 
-// Guestbook Component
 const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) => {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
@@ -220,13 +214,12 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   const [hoveredEntryId, setHoveredEntryId] = useState<string | number | null>(null);
   const [currentRandomQuote, setCurrentRandomQuote] = useState<string>('');
   const randomQuoteIntervalIdRef = useRef<number | null>(null);
-
-  // State cho resizable divider
-  const [leftPaneHeight, setLeftPaneHeight] = useState<number | null>(null); // Chiều cao pane trái (viết)
+  const [leftPaneHeight, setLeftPaneHeight] = useState<number | null>(null); 
   const [isDraggingDivider, setIsDraggingDivider] = useState(false);
   const dragStartY = useRef(0);
   const dragStartLeftPaneHeight = useRef(0);
   const bookPagesWrapperRef = useRef<HTMLDivElement>(null);
+  const hasLoggedViewRef = useRef<Set<string|number>>(new Set());
 
 
    useEffect(() => {
@@ -249,8 +242,18 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
     }
   }, [viewMode, language]);
 
+   useEffect(() => {
+    if (hoveredEntryId !== null && !hasLoggedViewRef.current.has(hoveredEntryId)) {
+      logInteraction('guestbook_entry_viewed', { 
+        entryId: hoveredEntryId, 
+        language: language 
+      });
+      hasLoggedViewRef.current.add(hoveredEntryId);
+    }
+  }, [hoveredEntryId, language]);
 
-   const handleSubmit = async (e: React.FormEvent) => { // Logic submit giữ nguyên
+
+   const handleSubmit = async (e: React.FormEvent) => { 
     e.preventDefault();
     if (!name.trim() || !message.trim()) {
       setSubmitError(t.validationError[language] || 'Tên và cảm nghĩ k dc trống!');
@@ -262,6 +265,11 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
     setSubmitSuccess(null);
     try {
       await onAddEntry(name.trim(), message.trim(), language);
+      logInteraction('guestbook_entry_submitted', { // LOG KHI SUBMIT
+        name: name.trim(), 
+        messageSnippet: message.trim().substring(0, 30) + (message.trim().length > 30 ? "..." : ""),
+        language: language 
+      });
       setName('');
       setMessage('');
       setSubmitSuccess(t.submitSuccess[language] || 'Cảm ơn bạn đã chia sẻ!');
@@ -283,14 +291,14 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       setIsSubmitting(false);
     }
   };
-  const handleCancelWrite = () => { // Logic cancel giữ nguyên
+  const handleCancelWrite = () => { 
     setViewMode('read');
     setName('');
     setMessage('');
     setSubmitError(null);
     setSubmitSuccess(null);
   }
-  const formatDate = (dateString: string) => { // Logic format date giữ nguyên
+  const formatDate = (dateString: string) => { 
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
         return language === 'vi' ? 'K rõ TG' : language === 'en' ? 'Unknown time' : '時刻不明';
@@ -300,9 +308,8 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   };
   const displayedEntries = [...entries].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-  // Xử lý kéo divider
   const handleDividerMouseDown = useCallback((event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    event.preventDefault(); // Ngăn text selection
+    event.preventDefault(); 
     setIsDraggingDivider(true);
     const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
     dragStartY.current = clientY;
@@ -342,20 +349,17 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
     };
   }, [isDraggingDivider]);
 
-  // Khởi tạo chiều cao ban đầu cho divider
   useEffect(() => {
     if (bookPagesWrapperRef.current && leftPaneHeight === null) {
         const wrapperHeight = bookPagesWrapperRef.current.offsetHeight;
-        if (wrapperHeight > 0) { // Đảm bảo có chiều cao để tính
+        if (wrapperHeight > 0) { 
             setLeftPaneHeight(wrapperHeight / 2 - DIVIDER_HEIGHT / 2);
         }
     }
-    // Logic resize (tùy chọn, có thể phức tạp hóa)
     const handleResize = () => {
         if (bookPagesWrapperRef.current) {
             const wrapperHeight = bookPagesWrapperRef.current.offsetHeight;
             if (wrapperHeight > 0) {
-                 // Giữ tỷ lệ hoặc reset về 50/50
                 setLeftPaneHeight(wrapperHeight / 2 - DIVIDER_HEIGHT / 2);
             }
         }
@@ -363,7 +367,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
 
-  }, [leftPaneHeight]); // Chỉ chạy khi leftPaneHeight là null ban đầu
+  }, [leftPaneHeight]); 
   
   const leftPageStyle = leftPaneHeight !== null && window.innerWidth <= 640
     ? { height: `${leftPaneHeight}px`, flexShrink:0, flexBasis: `${leftPaneHeight}px` }
@@ -453,7 +457,6 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                 </div>
             </div>
 
-            {/* Thanh kéo, chỉ hiển thị trên mobile khi layout 1 cột */}
             { window.innerWidth <= 640 && (
                 <motion.div 
                     className="guestbook-page-divider"

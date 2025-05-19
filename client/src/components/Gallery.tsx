@@ -3,8 +3,8 @@ import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import './styles/Gallery.css';
 import { galleryTranslations } from './languageSelector/languageSelector.constants'; 
+import { logInteraction } from '../utils/logger'; // IMPORT LOG UTIL
 
-// --- ICONS ---
 const IconClose = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -38,7 +38,6 @@ const IconExitFullscreen = () => (
     <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 0-2-2h-3M3 16h3a2 2 0 0 0 2-2v-3"/>
   </svg>
 );
-// --- END ICONS ---
 
 const imageModules = import.meta.glob('/src/assets/gallery_images/*.{png,jpg,jpeg,gif,svg,webp}', {
   eager: true,
@@ -104,6 +103,14 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack, language }) => {
     setSelectedImageIndex(index);
     setSlideDirection(0);
     setLightboxOpen(true);
+    // Log khi mo lightbox, cung tinh la xem anh
+    logInteraction('gallery_image_viewed', {
+        imageIndex: index, 
+        totalImages: totalImages,
+        imageUrl: displayImages[index], 
+        language: language,
+        action: 'open_lightbox'
+    });
   };
 
   const closeLightbox = useCallback(() => {
@@ -128,7 +135,15 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack, language }) => {
       newIndex = (selectedImageIndex - 1 + totalImages) % totalImages;
     }
     setSelectedImageIndex(newIndex);
-  }, [selectedImageIndex, totalImages]);
+    // Log khi chuyen anh trong lightbox/carousel
+    logInteraction('gallery_image_viewed', {
+        imageIndex: newIndex, 
+        totalImages: totalImages,
+        imageUrl: displayImages[newIndex],
+        language: language,
+        action: lightboxOpen ? 'lightbox_nav' : 'carousel_nav'
+    });
+  }, [selectedImageIndex, totalImages, displayImages, language, lightboxOpen]);
 
 
   useEffect(() => {
@@ -223,7 +238,7 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack, language }) => {
   const springTransitionCarousel = { type: "spring", stiffness: 260, damping: 26, mass: 0.95 };
   const carouselItemVariants = { 
     enter: (custom: { direction: number; role: 'main' | 'prev' | 'next' }) => ({ x: custom.direction > 0 ? "100%" : "-100%", opacity: 0, scale: 0.5, zIndex: 1, rotateY: custom.direction > 0 ? -20 : 20 }),
-    center: (custom: { role: 'main' | 'prev' | 'next'; direction: number }) => ({ x: custom.role === "main" ? "0%" : (custom.role === "prev" ? "-55%" : "55%"), scale: custom.role === "main" ? 1 : 0.8, rotateY: custom.role === "main" ? 0 : (custom.role === "prev" ? 12 : -12), z: custom.role === "main" ? 0 : -90, opacity: custom.role === "main" ? 1 : 0.6, zIndex: custom.role === "main" ? 2 : 1, filter: custom.role === "main" ? "blur(0px) brightness(1.0)" : "blur(2px) brightness(0.8)", boxShadow: custom.role === "main" ? "0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 0 2px 2px rgba(var(--primary-color-rgb), 0.45)" : "0 6px 15px -6px rgba(0, 0, 0, 0.4)", transition: springTransitionCarousel }),
+    center: (custom: { role: 'main' | 'prev' | 'next'; direction: number }) => ({ x: custom.role === "main" ? "0%" : (custom.role === "prev" ? "-55%" : "55%"), scale: custom.role === "main" ? 1 : 0.8, rotateY: custom.role === "main" ? 0 : (custom.role === "prev" ? 12 : -12), z: custom.role === "main" ? 0 : -90,  opacity: custom.role === "main" ? 1 : 0.6, zIndex: custom.role === "main" ? 2 : 1, filter: custom.role === "main" ? "blur(0px) brightness(1.0)" : "blur(2px) brightness(0.8)", boxShadow: custom.role === "main" ? "0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 0 2px 2px rgba(var(--primary-color-rgb), 0.45)" : "0 6px 15px -6px rgba(0, 0, 0, 0.4)", transition: springTransitionCarousel }),
     exit: (custom: { direction: number; role: 'main' | 'prev' | 'next' }) => ({ x: custom.direction < 0 ? "100%" : "-100%", opacity: 0, scale: 0.5, zIndex: 0, rotateY: custom.direction < 0 ? 20 : -20, transition: { ...springTransitionCarousel, damping: 30, stiffness: 240}})
   };
 
@@ -252,11 +267,19 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack, language }) => {
     if (index === null || index === currentImgIndex || selectedImageIndex === null) return;
     const diff = index - selectedImageIndex;
     let direction = 0;
-    if (index === prevImgIndex) direction = -1;
-    else if (index === nextImgIndex) direction = 1;
+    if (index === prevImgIndex) direction = -1; 
+    else if (index === nextImgIndex) direction = 1; 
     else { if (Math.abs(diff) <= totalImages / 2) direction = diff > 0 ? 1 : -1; else direction = diff > 0 ? -1 : 1; }
     setSlideDirection(direction);
     setSelectedImageIndex(index);
+    // Log khi click vao anh phu ben carousel
+     logInteraction('gallery_image_viewed', {
+        imageIndex: index,
+        totalImages: totalImages,
+        imageUrl: displayImages[index],
+        language: language,
+        action: 'carousel_side_click'
+    });
   };
 
   return (

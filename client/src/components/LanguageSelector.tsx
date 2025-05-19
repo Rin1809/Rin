@@ -47,7 +47,7 @@ import {
     SHARED_FLOURISH_SPRING_TRANSITION,
     aboutNavIconLeft,
 } from './languageSelector/languageSelector.constants';
-
+import { logInteraction } from '../utils/logger'; // IMPORT LOG UTIL
 
 interface LanguageSelectorProps {
   onLanguageSelected: (language: 'vi' | 'en' | 'ja') => void;
@@ -55,7 +55,7 @@ interface LanguageSelectorProps {
   initialSelectedLanguage: 'vi' | 'en' | 'ja' | null;
   yourNameForIntro: string;
   githubUsername: string;
-  onSpotifyViewChange: (isActive: boolean) => void; // <-- Prop mới
+  onSpotifyViewChange: (isActive: boolean) => void; 
 }
 
 type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists';
@@ -68,7 +68,6 @@ const getFlourishLayoutPropsForView = (view: SelectorView) => {
     return { scale };
 };
 
-// Timing cho anim mount ban đầu
 const initialMountTitleDelay = 0.5;
 const initialMountSubtitleDelay = initialMountTitleDelay + 0.3;
 const initialMountButton1Delay = initialMountSubtitleDelay + 0.4;
@@ -86,7 +85,7 @@ type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists';
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     onLanguageSelected, cardAvatarUrl, initialSelectedLanguage,
     yourNameForIntro, githubUsername,
-    onSpotifyViewChange // <-- Destructure prop mới
+    onSpotifyViewChange 
 }) => {
   const [engineInitialized, setEngineInitialized] = useState(false);
   const [currentView, setCurrentView] = useState<SelectorView>('languageOptions');
@@ -111,6 +110,19 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const particleOptions = useMemo(() => engineInitialized ? poeticStarsOptionsDefinition : undefined, [engineInitialized]);
   const isMountedRef = useRef(true);
   const initInProgressRef = useRef(false);
+
+  const prevViewRef = useRef<SelectorView>(currentView); // Track previous view
+
+  useEffect(() => {
+    if (currentView !== prevViewRef.current) {
+      logInteraction('view_changed', { 
+        previousView: prevViewRef.current,
+        currentView: currentView, 
+        language: currentLanguage 
+      });
+      prevViewRef.current = currentView; // Update sau khi log
+    }
+  }, [currentView, currentLanguage]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -165,7 +177,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (isMountedRef.current) ctrls.start(loopDef);
   }, [currentView]);
 
-  // Effect để thông báo thay đổi view Spotify
   useEffect(() => {
     if (isMountedRef.current) {
       onSpotifyViewChange(currentView === 'spotifyPlaylists');
@@ -174,7 +185,13 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
 
   const handleParticlesLoaded = useCallback(async (_container?: Container) => {}, []);
-  const handleLanguageButtonClick = (lang: 'vi'|'en'|'ja') => { onLanguageSelected(lang); setCurrentLanguage(lang); setDisplayTextLanguage(lang); setCurrentView('cardIntro'); };
+  const handleLanguageButtonClick = (lang: 'vi'|'en'|'ja') => { 
+    logInteraction('language_selected', { language: lang }); // LOG KHI CHON NN
+    onLanguageSelected(lang); 
+    setCurrentLanguage(lang); 
+    setDisplayTextLanguage(lang); 
+    setCurrentView('cardIntro');
+  };
   const handleMouseEnterLangBtn = (lang: 'vi'|'en'|'ja') => setDisplayTextLanguage(lang);
   const handleMouseLeaveLangBtn = () => {};
   const langForTextDisplayInOptionsView = displayTextLanguage;
