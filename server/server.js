@@ -10,15 +10,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const MIZUKI_BOT_BASE_URL = process.env.MIZUKI_BOT_NOTIFY_URL;
+const MIZUKI_BOT_BASE_URL = process.env.MIZUKI_BOT_NOTIFY_URL; // Doi ten bien cho ro nghia
 const MIZUKI_SHARED_SECRET = process.env.MIZUKI_SHARED_SECRET || "default_secret_key_for_mizuki";
 const EXCLUDED_IPS_RAW = process.env.EXCLUDED_IPS || "";
 const EXCLUDED_IPS_FOR_LOGGING = EXCLUDED_IPS_RAW.split(',').map(ip => ip.trim()).filter(ip => ip);
 
 
 app.use(cors());
-app.use(bodyParser.json({ limit: '5mb' })); // Tang limit body len chut, de phong buffer log lon
-app.use(bodyParser.urlencoded({ extended: true, limit: '5mb' }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // --- Spotify API ---
 let spotifyAccessToken = null;
@@ -55,6 +55,7 @@ async function getSpotifyToken() {
         );
         spotifyAccessToken = response.data.access_token;
         tokenExpiryTime = Date.now() + (response.data.expires_in * 1000) - 60000; 
+        // console.log('✨ Spotify Token lay xong!'); // comment out
         return spotifyAccessToken;
     } catch (error) {
         console.error('🔴 Loi lay Spotify token:', error.response ? error.response.data : error.message);
@@ -115,6 +116,7 @@ app.post('/api/guestbook', async (req, res) => {
         ...result.rows[0],
         language: result.rows[0].language.toLowerCase() 
     };
+    // console.log("✨ Entry moi:", newEntry); // comment out
     res.status(201).json(newEntry);
   } catch (error) {
     console.error('🔴 Loi them entry guestbook:', error);
@@ -160,7 +162,9 @@ app.post('/api/notify-visit', async (req, res) => {
     const clientIp = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
 
-    if (!MIZUKI_BOT_BASE_URL) { 
+    // console.log(`[VISIT] Luot truy cap tu IP: ${clientIp}, User-Agent: ${userAgent}`); // comment out
+
+    if (!MIZUKI_BOT_BASE_URL) { // Sua ten bien
         console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui tbao.");
         return res.status(202).json({ message: "Visit logged, notification to bot disabled." });
     }
@@ -171,6 +175,7 @@ app.post('/api/notify-visit', async (req, res) => {
     let region = "N/A";
     let isp = "N/A";
 
+    // IP ngoai le se khong tra cuu GeoIP & khong gui DM chi tiet
     if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)) { 
         try {
             const geoResponse = await axios.get(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`);
@@ -206,34 +211,34 @@ app.post('/api/notify-visit', async (req, res) => {
     };
 
     try {
-        await axios.post(`${MIZUKI_BOT_BASE_URL}/notify-visit`, visitData, {
+        await axios.post(`${MIZUKI_BOT_BASE_URL}/notify-visit`, visitData, { // NOI PATH /notify-visit
             headers: {
                 'Content-Type': 'application/json',
                 'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
             }
         });
+        // console.log("✅ Tbao visit da gui toi bot Mizuki."); // comment out
         res.status(200).json({ message: "Notification sent to bot." });
     } catch (botError) {
         console.error("🔴 Loi gui tbao toi bot Mizuki:", botError.response ? botError.response.data : botError.message);
+        console.error("🔴 Chi tiet loi Mizuki (visit):", botError.config ? { url: botError.config.url, method: botError.config.method, data: botError.config.data } : "Khong co config");
         res.status(500).json({ error: "Failed to notify bot." });
     }
 });
 
-// API ENDPOINT MOI CHO BUFFERED LOGS
-app.post('/api/log-session-interactions', async (req, res) => {
+// API ENDPOINT MOI CHO LOG INTERACTION
+app.post('/api/log-interaction', async (req, res) => {
     const clientIp = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
-    const { bufferedLogs, sessionEndTime } = req.body;
+    const { eventType, eventData, timestamp: clientTimestamp } = req.body;
 
-    if (!bufferedLogs || !Array.isArray(bufferedLogs) || bufferedLogs.length === 0) {
-        return res.status(200).json({ message: "Khong co log de xu ly." });
+    // console.log(`[INTERACTION_LOG] Received: ${eventType} from IP: ${clientIp}`, eventData); // comment out
+
+    if (!MIZUKI_BOT_BASE_URL) { // Sua ten bien
+        console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui log tuong tac.");
+        return res.status(202).json({ message: "Interaction logged by server, notification to bot disabled." });
     }
 
-    if (!MIZUKI_BOT_BASE_URL) {
-        console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui session log.");
-        return res.status(202).json({ message: "Session logs da nhan, nhung ko gui cho bot." });
-    }
-    
     let locationInfo = "Ko xac dinh";
     let country = "N/A";
     let city = "N/A";
@@ -253,17 +258,17 @@ app.post('/api/log-session-interactions', async (req, res) => {
                 locationInfo = `Ko lay dc ttin vi tri (ip-api: ${geoResponse.data.message || 'loi ko ro'})`;
             }
         } catch (geoError) {
-            console.error(`[GeoIP SESSION_LOG] Loi goi API GeoIP cho IP ${clientIp}:`, geoError.message);
+            console.error(`[GeoIP INTERACTION] Loi goi API GeoIP cho IP ${clientIp}:`, geoError.message);
             locationInfo = "Loi lay ttin vi tri.";
         }
     } else if (EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)){
-        locationInfo = "IP ngoai le, khong gui DM session log." 
+        locationInfo = "IP ngoai le, khong gui DM log." 
     } else {
         locationInfo = "Truy cap tu Localhost.";
         country = "Local";
     }
-
-    const sessionDataPayload = {
+    
+    const interactionPayload = {
         ip: clientIp || "N/A",
         location: locationInfo,
         country: country,
@@ -271,30 +276,32 @@ app.post('/api/log-session-interactions', async (req, res) => {
         region: region,
         isp: isp,
         userAgent: userAgent || "N/A",
-        sessionEndTime: sessionEndTime || new Date().toISOString(),
-        interactions: bufferedLogs // Day la mang cac log da buffer
+        clientTimestamp: clientTimestamp, 
+        serverTimestamp: new Date().toISOString(), 
+        eventType,
+        eventData
     };
 
     try {
-        // Goi den endpoint LOG INTERACTION cua Mizuki, nhung payload bay gio la ca 1 session
-        await axios.post(`${MIZUKI_BOT_BASE_URL}/log-interaction`, sessionDataPayload, {
+        await axios.post(`${MIZUKI_BOT_BASE_URL}/log-interaction`, interactionPayload, { // NOI PATH /log-interaction
             headers: {
                 'Content-Type': 'application/json',
-                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET
+                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
             }
         });
-        res.status(200).json({ message: "Session logs processed and sent to bot." });
+        // console.log("✅ Log tuong tac da gui toi bot Mizuki."); // comment out
+        res.status(200).json({ message: "Interaction logged and notification sent to bot." });
     } catch (botError) {
-        console.error("🔴 Loi gui session log toi bot Mizuki:", botError.response ? botError.response.data : botError.message);
-        res.status(500).json({ error: "Failed to notify bot of session logs." });
+        console.error("🔴 Loi gui log tuong tac toi bot Mizuki:", botError.response ? botError.response.data : botError.message);
+        console.error("🔴 Chi tiet loi Mizuki (interaction):", botError.config ? { url: botError.config.url, method: botError.config.method, data: botError.config.data } : "Khong co config");
+        res.status(500).json({ error: "Failed to notify bot of interaction." });
     }
 });
-
 
 app.get('/health', (req, res) => {
   res.status(200).send('Server is healthy! Rin cute <3');
 });
 
 app.use((req, res) => {
-    res.status(404).json({ error: 'Not Found. API paths: /api/guestbook, /api/spotify/playlists, /api/notify-visit, /api/log-session-interactions' });
+    res.status(404).json({ error: 'Not Found. API paths: /api/guestbook, /api/spotify/playlists, /api/notify-visit, /api/log-interaction' });
 });
