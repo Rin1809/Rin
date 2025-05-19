@@ -10,37 +10,44 @@ import { loadSlim } from "@tsparticles/slim";
 // Nhạc nền
 import backgroundMusicMP3 from './assets/audio/background_music.mp3';
 
+// Ktra mobile
+const IS_MOBILE_DEVICE = typeof window !== 'undefined' && window.innerWidth < 768;
+
 // --  PARTICLESC_CONFIG --
 const particlesOptions: ISourceOptions = {
-    fpsLimit: 60,
+    fpsLimit: IS_MOBILE_DEVICE ? 30 : 60, // Giam FPS mobile
     interactivity: { events: { onClick: { enable: false }, onHover: { enable: false }, resize: { enable: true } }, modes: {} },
     particles: {
         color: { value: ["#ffffff", "#b4befe", "#a6adc8"] },
         links: { enable: false },
-        move: { enable: true, speed: { min: 0.1, max: 0.5 }, direction: "none", random: true, straight: false, outModes: { default: "out" } },
+        move: {
+            enable: true,
+            speed: { min: IS_MOBILE_DEVICE ? 0.1 : 0.1, max: IS_MOBILE_DEVICE ? 0.3 : 0.5 }, // Giam speed mobile
+            direction: "none", random: true, straight: false, outModes: { default: "out" }
+        },
         number: {
-            density: { enable: true,},
-            value: 60,
+            density: { enable: true },
+            value: IS_MOBILE_DEVICE ? 30 : 60, // Giam so luong mobile
         },
         opacity: {
-            value: { min: 0.1, max: 0.5 },
+            value: { min: 0.1, max: IS_MOBILE_DEVICE ? 0.7 : 0.5 },
             animation: {
-                enable: true,
+                enable: !IS_MOBILE_DEVICE, // Tat anim opacity mobile
                 speed: 1,
                 sync: false,
             }
         },
         shape: { type: "circle" },
         size: {
-            value: { min: 0.4, max: 2 },
+            value: { min: IS_MOBILE_DEVICE ? 0.7 : 0.4, max: IS_MOBILE_DEVICE ? 1.8 : 2 },
             animation: {
-                enable: true,
+                enable: !IS_MOBILE_DEVICE, // Tat anim size mobile
                 speed: 8,
                 sync: false,
             }
         },
     },
-    detectRetina: true,
+    detectRetina: !IS_MOBILE_DEVICE, // Tat retina mobile
 };
 
 const YOUR_AVATAR_URL_FOR_INTRO = "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128";
@@ -128,10 +135,10 @@ function App() {
             return;
         }
         
-        let stage1TimerId: number | null = null; 
-        let fade1TimerId: number | null = null;  
-        let stage2TimerId: number | null = null; 
-        let fade2TimerId: number | null = null;  
+        let stage1TimerId: number | null = null;
+        let fade1TimerId: number | null = null;
+        let stage2TimerId: number | null = null;
+        let fade2TimerId: number | null = null;
 
         const catDisplayTime = 1800;
         const yourNameDisplayTime = 2000;
@@ -149,12 +156,12 @@ function App() {
         } else if (currentIntroStage === 'yourName' && !isStageFadingOut) {
             stage2TimerId = window.setTimeout(() => {
                 setIsStageFadingOut(true);
-            }, yourNameDisplayTime); 
+            }, yourNameDisplayTime);
 
             fade2TimerId = window.setTimeout(() => {
                 setCurrentIntroStage('languageSelection');
                 setIsStageFadingOut(false);
-            }, yourNameDisplayTime + fadeDuration); 
+            }, yourNameDisplayTime + fadeDuration);
         }
 
         return () => {
@@ -165,43 +172,31 @@ function App() {
         };
     }, [currentIntroStage, hasIntroFinishedForMusic]);
 
-    // useEffect chính để xử lý nhạc
     useEffect(() => {
         const audioElement = audioRef.current;
         if (!audioElement) return;
 
-        // Điều kiện chính để phát nhạc:
-        // 1. Intro phải xong.
-        // 2. Không đang ở view Spotify.
-        // 3. Nhạc đang bị pause.
-        // 4. Đã chọn ngôn ngữ (selectedLanguage không null) - đây là điểm mới để kích hoạt khi chọn ngôn ngữ
-        const shouldPlayMusic = hasIntroFinishedForMusic && 
-                                !isSpotifyViewActive && 
+        const shouldPlayMusic = hasIntroFinishedForMusic &&
+                                !isSpotifyViewActive &&
                                 audioElement.paused &&
                                 selectedLanguage !== null;
 
-        if (isSpotifyViewActive) { // Ưu tiên dừng nhạc nếu vào Spotify
+        if (isSpotifyViewActive) {
             if (!audioElement.paused) {
                 audioElement.pause();
-                console.log("Music paused due to Spotify view active.");
             }
-        } else if (shouldPlayMusic) { // Nếu không ở Spotify và đủ điều kiện phát
-            console.log("Attempting to play music...");
+        } else if (shouldPlayMusic) {
             audioElement.play().then(() => {
-                console.log("Music playback started successfully.");
             }).catch(error => {
                 console.warn("Autoplay prevented or error during playback:", error.name, error.message);
-                // Trình duyệt có thể yêu cầu tương tác rõ ràng hơn nữa.
-                // Lần tương tác tiếp theo (ví dụ thoát Spotify) sẽ thử lại.
             });
         }
-    }, [isSpotifyViewActive, hasIntroFinishedForMusic, selectedLanguage, currentIntroStage]); 
+    }, [isSpotifyViewActive, hasIntroFinishedForMusic, selectedLanguage, currentIntroStage]);
 
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
-        setSelectedLanguage(language); 
+        setSelectedLanguage(language);
     };
 
-    // Tbáo visit
     useEffect(() => {
         const notifyBackendOfVisit = async () => {
             const VITE_API_BASE_URL_FROM_ENV = import.meta.env.VITE_API_BASE_URL;
@@ -212,7 +207,7 @@ function App() {
             
             const apiUrl = `${VITE_API_BASE_URL_FROM_ENV}/api/notify-visit`;
             try {
-                await fetch(apiUrl, { 
+                await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -226,7 +221,7 @@ function App() {
         if (import.meta.env.PROD) {
             notifyBackendOfVisit();
         }
-    }, []); 
+    }, []);
 
     const memoizedParticles = useMemo(() => {
         if (!particlesInitialized) {
@@ -236,7 +231,7 @@ function App() {
             <Particles
                 key="tsparticles-background-stable"
                 id="tsparticles-background-stable"
-                options={particlesOptions}
+                options={particlesOptions} // Su dung options da toi uu
             />
         );
     }, [particlesInitialized]);
@@ -245,9 +240,9 @@ function App() {
         <div className="AppWrapper">
             <audio ref={audioRef} src={backgroundMusicMP3} loop />
             
-            {memoizedParticles} 
+            {memoizedParticles}
             {currentIntroStage === 'languageSelection' ? (
-                <LanguageSelector 
+                <LanguageSelector
                     onLanguageSelected={handleLanguageSelectedInSelector}
                     cardAvatarUrl={PERSONAL_CARD_DATA.avatarUrl}
                     githubUsername={PERSONAL_CARD_DATA.githubUsername}
@@ -260,7 +255,7 @@ function App() {
                     currentStage={currentIntroStage}
                     isFadingOutProp={isStageFadingOut}
                     userName={YOUR_NAME_FOR_INTRO}
-                    selectedLanguage={selectedLanguage || 'vi'} 
+                    selectedLanguage={selectedLanguage || 'vi'}
                 />
             )}
         </div>
