@@ -1,5 +1,5 @@
 // client/src/components/Guestbook.tsx
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import './styles/Guestbook.css';
 import {
@@ -204,6 +204,10 @@ const bookPagesWrapperVariants = {
   exit: { opacity: 0 }
 };
 
+// Consts cho resizable divider
+const MIN_PANE_HEIGHT_PERCENT = 25; // % chiều cao tổng
+const MAX_PANE_HEIGHT_PERCENT = 75; // % chiều cao tổng
+const DIVIDER_HEIGHT = 10; // px, khớp với CSS var
 
 // Guestbook Component
 const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) => {
@@ -217,7 +221,14 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   const [currentRandomQuote, setCurrentRandomQuote] = useState<string>('');
   const randomQuoteIntervalIdRef = useRef<number | null>(null);
 
-   // Effect cho quote ngẫu nhiên
+  // State cho resizable divider
+  const [leftPaneHeight, setLeftPaneHeight] = useState<number | null>(null); // Chiều cao pane trái (viết)
+  const [isDraggingDivider, setIsDraggingDivider] = useState(false);
+  const dragStartY = useRef(0);
+  const dragStartLeftPaneHeight = useRef(0);
+  const bookPagesWrapperRef = useRef<HTMLDivElement>(null);
+
+
    useEffect(() => {
     const quotesForLang = randomPoeticQuotes[language];
     if (viewMode === 'read' && quotesForLang && quotesForLang.length > 0) {
@@ -226,31 +237,20 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
         const rawQuote = quotesForLang[randomIndex];
         setCurrentRandomQuote(`"${rawQuote}"`);
       };
-
       selectNewQuote();
-
-      if (randomQuoteIntervalIdRef.current) {
-        clearInterval(randomQuoteIntervalIdRef.current);
-      }
+      if (randomQuoteIntervalIdRef.current) clearInterval(randomQuoteIntervalIdRef.current);
       randomQuoteIntervalIdRef.current = window.setInterval(selectNewQuote, 2500);
-
       return () => {
-        if (randomQuoteIntervalIdRef.current) {
-          clearInterval(randomQuoteIntervalIdRef.current);
-          randomQuoteIntervalIdRef.current = null;
-        }
+        if (randomQuoteIntervalIdRef.current) clearInterval(randomQuoteIntervalIdRef.current);
       };
     } else {
-      if (randomQuoteIntervalIdRef.current) {
-        clearInterval(randomQuoteIntervalIdRef.current);
-        randomQuoteIntervalIdRef.current = null;
-      }
+      if (randomQuoteIntervalIdRef.current) clearInterval(randomQuoteIntervalIdRef.current);
       setCurrentRandomQuote('');
     }
   }, [viewMode, language]);
 
 
-   const handleSubmit = async (e: React.FormEvent) => {
+   const handleSubmit = async (e: React.FormEvent) => { // Logic submit giữ nguyên
     e.preventDefault();
     if (!name.trim() || !message.trim()) {
       setSubmitError(t.validationError[language] || 'Tên và cảm nghĩ k dc trống!');
@@ -283,14 +283,14 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       setIsSubmitting(false);
     }
   };
-  const handleCancelWrite = () => {
+  const handleCancelWrite = () => { // Logic cancel giữ nguyên
     setViewMode('read');
     setName('');
     setMessage('');
     setSubmitError(null);
     setSubmitSuccess(null);
   }
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string) => { // Logic format date giữ nguyên
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
         return language === 'vi' ? 'K rõ TG' : language === 'en' ? 'Unknown time' : '時刻不明';
@@ -300,11 +300,89 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   };
   const displayedEntries = [...entries].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
+  // Xử lý kéo divider
+  const handleDividerMouseDown = useCallback((event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    event.preventDefault(); // Ngăn text selection
+    setIsDraggingDivider(true);
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+    dragStartY.current = clientY;
+    dragStartLeftPaneHeight.current = leftPaneHeight !== null ? leftPaneHeight : (bookPagesWrapperRef.current?.offsetHeight || 0) / 2 - DIVIDER_HEIGHT / 2;
+  }, [leftPaneHeight]);
+
+  useEffect(() => {
+    const handleWindowMouseMove = (event: MouseEvent | TouchEvent) => {
+      if (!isDraggingDivider || !bookPagesWrapperRef.current) return;
+      const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+      const deltaY = clientY - dragStartY.current;
+      const totalHeight = bookPagesWrapperRef.current.offsetHeight - DIVIDER_HEIGHT;
+      const minHeightPx = (MIN_PANE_HEIGHT_PERCENT / 100) * totalHeight;
+      const maxHeightPx = (MAX_PANE_HEIGHT_PERCENT / 100) * totalHeight;
+      
+      let newLeftPaneHeight = dragStartLeftPaneHeight.current + deltaY;
+      newLeftPaneHeight = Math.max(minHeightPx, Math.min(newLeftPaneHeight, maxHeightPx));
+      setLeftPaneHeight(newLeftPaneHeight);
+    };
+
+    const handleWindowMouseUp = () => {
+      setIsDraggingDivider(false);
+    };
+
+    if (isDraggingDivider) {
+      window.addEventListener('mousemove', handleWindowMouseMove);
+      window.addEventListener('touchmove', handleWindowMouseMove, { passive: false });
+      window.addEventListener('mouseup', handleWindowMouseUp);
+      window.addEventListener('touchend', handleWindowMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleWindowMouseMove);
+      window.removeEventListener('touchmove', handleWindowMouseMove);
+      window.removeEventListener('mouseup', handleWindowMouseUp);
+      window.removeEventListener('touchend', handleWindowMouseUp);
+    };
+  }, [isDraggingDivider]);
+
+  // Khởi tạo chiều cao ban đầu cho divider
+  useEffect(() => {
+    if (bookPagesWrapperRef.current && leftPaneHeight === null) {
+        const wrapperHeight = bookPagesWrapperRef.current.offsetHeight;
+        if (wrapperHeight > 0) { // Đảm bảo có chiều cao để tính
+            setLeftPaneHeight(wrapperHeight / 2 - DIVIDER_HEIGHT / 2);
+        }
+    }
+    // Logic resize (tùy chọn, có thể phức tạp hóa)
+    const handleResize = () => {
+        if (bookPagesWrapperRef.current) {
+            const wrapperHeight = bookPagesWrapperRef.current.offsetHeight;
+            if (wrapperHeight > 0) {
+                 // Giữ tỷ lệ hoặc reset về 50/50
+                setLeftPaneHeight(wrapperHeight / 2 - DIVIDER_HEIGHT / 2);
+            }
+        }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+
+  }, [leftPaneHeight]); // Chỉ chạy khi leftPaneHeight là null ban đầu
+  
+  const leftPageStyle = leftPaneHeight !== null && window.innerWidth <= 640
+    ? { height: `${leftPaneHeight}px`, flexShrink:0, flexBasis: `${leftPaneHeight}px` }
+    : {};
+  const rightPageStyle = leftPaneHeight !== null && window.innerWidth <= 640 && bookPagesWrapperRef.current
+    ? { height: `${bookPagesWrapperRef.current.offsetHeight - leftPaneHeight - DIVIDER_HEIGHT}px`, flexShrink:0, flexBasis: `${bookPagesWrapperRef.current.offsetHeight - leftPaneHeight - DIVIDER_HEIGHT}px` }
+    : {};
+
+
   return (
     <motion.div className="book-core" variants={bookCoreVariants} initial="hidden" animate="visible" exit="exit" >
         <motion.h2 className="guestbook-title" variants={guestbookItemVariants} initial="hidden" animate="visible" exit="hidden" > {t.title[language]} </motion.h2>
-        <motion.div className="book-pages-wrapper" variants={bookPagesWrapperVariants} initial="hidden" animate="visible" exit="exit" >
-            <div className="book-page page-left">
+        <motion.div 
+            ref={bookPagesWrapperRef}
+            className="book-pages-wrapper" 
+            variants={bookPagesWrapperVariants} 
+            initial="hidden" animate="visible" exit="exit" 
+        >
+            <div className="book-page page-left" style={leftPageStyle}>
                 <div className="page-content-scrollable left-page-scroll">
                     <AnimatePresence mode="wait">
                     {viewMode === 'read' && (
@@ -375,7 +453,16 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
                 </div>
             </div>
 
-            <div className="book-page page-right">
+            {/* Thanh kéo, chỉ hiển thị trên mobile khi layout 1 cột */}
+            { window.innerWidth <= 640 && (
+                <motion.div 
+                    className="guestbook-page-divider"
+                    onMouseDown={handleDividerMouseDown}
+                    onTouchStart={handleDividerMouseDown}
+                />
+            )}
+
+            <div className="book-page page-right" style={rightPageStyle}>
                 <div className="page-content-scrollable right-page-scroll">
                     <div className="guestbook-entries-list-wrapper">
                     {displayedEntries.length > 0 ? (
