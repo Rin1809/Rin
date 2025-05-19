@@ -8,11 +8,11 @@ interface InteractionData {
 interface BufferedLogEntry {
   eventType: string;
   eventData: InteractionData;
-  clientTimestamp: string; // ts client cho moi event
+  clientTimestamp: string; 
 }
 
 let interactionBuffer: BufferedLogEntry[] = [];
-let beaconSentOnUnload = false; // dam bao gui 1 lan khi unload
+let beaconSentOnUnload = false; 
 
 export const logInteraction = (eventType: string, eventData: InteractionData): void => {
   interactionBuffer.push({
@@ -20,12 +20,15 @@ export const logInteraction = (eventType: string, eventData: InteractionData): v
     eventData,
     clientTimestamp: new Date().toISOString(),
   });
-  // console.log(`[Logger] Buffered: ${eventType}`, JSON.stringify(eventData).substring(0, 100)); // dev
+  console.log(`[Logger] Buffered: ${eventType}`, JSON.stringify(eventData).substring(0, 100)); // Log khi buffer
 };
 
 const sendBufferedInteractions = () => {
+  console.log("[Logger] sendBufferedInteractions called. Beacon sent flag:", beaconSentOnUnload, "Buffer length:", interactionBuffer.length);
+
   if (beaconSentOnUnload || interactionBuffer.length === 0) {
-    return; // da gui hoac buffer rong
+    console.log("[Logger] Skipping send: already sent or buffer empty.");
+    return; 
   }
 
   const payload = {
@@ -34,24 +37,49 @@ const sendBufferedInteractions = () => {
 
   const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
   
-  beaconSentOnUnload = true; // danh dau da co gang gui
-  
+  beaconSentOnUnload = true; 
+  console.log("[Logger] beaconSentOnUnload SET TO TRUE.");
+
+
   if (navigator.sendBeacon) {
+    console.log("[Logger] Attempting navigator.sendBeacon to:", `${API_BASE_URL}/api/log-session-interactions`, "Payload size:", blob.size);
     const success = navigator.sendBeacon(`${API_BASE_URL}/api/log-session-interactions`, blob);
     if (success) {
+        console.log("[Logger] navigator.sendBeacon call returned true (queued).");
         interactionBuffer = []; 
     } else {
-        // console.warn("[Logger] sendBeacon that bai, thu fetch voi keepalive."); // dev
+        console.warn("[Logger] navigator.sendBeacon call returned false. Trying fetch with keepalive.");
         fetch(`${API_BASE_URL}/api/log-session-interactions`, {
             method: 'POST', body: blob, keepalive: true, headers: {'Content-Type': 'application/json'}
-        }).then(() => interactionBuffer = []).catch(() => beaconSentOnUnload = false); // reset neu fetch loi
+        }).then(() => {
+            console.log("[Logger] Fallback fetch (keepalive) succeeded.");
+            interactionBuffer = [];
+        }).catch((err) => {
+            console.error("[Logger] Fallback fetch (keepalive) FAILED:", err);
+            beaconSentOnUnload = false; // Reset de co the thu lai
+        }); 
     }
   } else {
+    console.log("[Logger] navigator.sendBeacon not available. Attempting fetch with keepalive to:", `${API_BASE_URL}/api/log-session-interactions`, "Payload size:", blob.size);
     fetch(`${API_BASE_URL}/api/log-session-interactions`, {
       method: 'POST', body: blob, keepalive: true, headers: {'Content-Type': 'application/json'}
-    }).then(() => interactionBuffer = []).catch(() => beaconSentOnUnload = false);
+    }).then(() => {
+        console.log("[Logger] Fetch (keepalive) as primary method succeeded.");
+        interactionBuffer = [];
+    }).catch((err) => {
+        console.error("[Logger] Fetch (keepalive) as primary method FAILED:", err);
+        beaconSentOnUnload = false;
+    });
   }
 };
 
-window.addEventListener('pagehide', sendBufferedInteractions);
-window.addEventListener('beforeunload', sendBufferedInteractions);
+window.addEventListener('pagehide', (event) => {
+    console.log("[Logger] 'pagehide' event triggered. Persisted:", event.persisted);
+    sendBufferedInteractions();
+});
+window.addEventListener('beforeunload', () => {
+    console.log("[Logger] 'beforeunload' event triggered.");
+    sendBufferedInteractions();
+    
+});
+

@@ -161,7 +161,6 @@ app.post('/api/notify-visit', async (req, res) => {
     const userAgent = req.headers['user-agent'];
 
     if (!MIZUKI_BOT_BASE_URL) { 
-        // console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui tbao."); // dev
         return res.status(202).json({ message: "Visit logged, notification to bot disabled." });
     }
 
@@ -220,79 +219,100 @@ app.post('/api/notify-visit', async (req, res) => {
     }
 });
 
-// ENDPOINT MOI: nhan log session tu client, gui cho Mizuki
 app.post('/api/log-session-interactions', async (req, res) => {
     const clientIp = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress;
-    const userAgent = req.headers['user-agent'];
-    const { interactions } = req.body; 
-
-    if (!MIZUKI_BOT_BASE_URL) {
-        // console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui session log."); // dev
-        return res.status(202).json({ message: "Session interactions logged by server, notification to bot disabled." });
-    }
-
-    if (!interactions || !Array.isArray(interactions) || interactions.length === 0) {
-        return res.status(200).json({ message: "Empty session, nothing to log to bot." });
-    }
-
-    let locationInfo = "Ko xac dinh";
-    let country = "N/A";
-    let city = "N/A";
-    let region = "N/A";
-    let isp = "N/A";
-
-    // ko log ip bi chan
-    if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)) { 
-        try {
-            const geoResponse = await axios.get(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`);
-            if (geoResponse.data && geoResponse.data.status === 'success') {
-                country = geoResponse.data.country || "N/A";
-                city = geoResponse.data.city || "N/A";
-                region = geoResponse.data.regionName || "N/A";
-                isp = geoResponse.data.isp || "N/A";
-                locationInfo = `${city}, ${region}, ${country} (ISP: ${isp})`;
-            } else {
-                locationInfo = `Ko lay dc ttin vi tri (ip-api: ${geoResponse.data.message || 'loi ko ro'})`;
-            }
-        } catch (geoError) {
-            console.error(`[GeoIP SESSION] Loi goi API GeoIP cho IP ${clientIp}:`, geoError.message);
-            locationInfo = "Loi lay ttin vi tri.";
-        }
-    } else if (EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)){
-        locationInfo = "IP ngoai le, khong gui DM session log." 
-    } else {
-        locationInfo = "Truy cap tu Localhost.";
-        country = "Local";
-    }
+    console.log(`[SERVER SESSION LOG] Received request for /api/log-session-interactions from IP: ${clientIp}`);
     
-    const sessionPayload = {
-        ip: clientIp || "N/A",
-        location: locationInfo,
-        country: country,
-        city: city,
-        region: region,
-        isp: isp,
-        userAgent: userAgent || "N/A",
-        sessionStartTime: interactions[0]?.clientTimestamp, // tg bat dau session
-        sessionEndTime: new Date().toISOString(), // tg server nhan log
-        interactions // mang hanh dong
-    };
+    const rawBody = [];
+    req.on('data', chunk => rawBody.push(chunk));
+    req.on('end', async () => {
+        const bodyString = Buffer.concat(rawBody).toString();
+        // console.log("[SERVER SESSION LOG] Raw request body:", bodyString); // Log raw body
 
-    try {
-        await axios.post(`${MIZUKI_BOT_BASE_URL}/log-session-interactions`, sessionPayload, {
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
+        let data;
+        try {
+            data = JSON.parse(bodyString);
+        } catch (parseError) {
+            console.error("[SERVER SESSION LOG] JSON.parse error:", parseError, "Raw body was:", bodyString);
+            return res.status(400).json({ error: "Invalid JSON payload" });
+        }
+
+        const userAgent = req.headers['user-agent'];
+        const { interactions } = data; 
+
+        console.log(`[SERVER SESSION LOG] Parsed interactions count: ${interactions?.length || 0}`);
+
+
+        if (!MIZUKI_BOT_BASE_URL) {
+            console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui session log.");
+            return res.status(202).json({ message: "Session interactions logged by server, notification to bot disabled." });
+        }
+
+        if (!interactions || !Array.isArray(interactions) || interactions.length === 0) {
+            console.log("[SERVER SESSION LOG] Empty session log received from client. Skipping notification to bot.");
+            return res.status(200).json({ message: "Empty session, nothing to log to bot." });
+        }
+
+        let locationInfo = "Ko xac dinh";
+        let country = "N/A";
+        let city = "N/A";
+        let region = "N/A";
+        let isp = "N/A";
+
+        if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)) { 
+            try {
+                const geoResponse = await axios.get(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`);
+                if (geoResponse.data && geoResponse.data.status === 'success') {
+                    country = geoResponse.data.country || "N/A";
+                    city = geoResponse.data.city || "N/A";
+                    region = geoResponse.data.regionName || "N/A";
+                    isp = geoResponse.data.isp || "N/A";
+                    locationInfo = `${city}, ${region}, ${country} (ISP: ${isp})`;
+                } else {
+                    locationInfo = `Ko lay dc ttin vi tri (ip-api: ${geoResponse.data.message || 'loi ko ro'})`;
+                }
+            } catch (geoError) {
+                console.error(`[GeoIP SESSION] Loi goi API GeoIP cho IP ${clientIp}:`, geoError.message);
+                locationInfo = "Loi lay ttin vi tri.";
             }
-        });
-        res.status(200).json({ message: "Session interactions logged and notification sent to bot." });
-    } catch (botError) {
-        console.error("🔴 Loi gui session log toi bot Mizuki:", botError.response ? botError.response.data : botError.message);
-        res.status(500).json({ error: "Failed to notify bot of session interactions." });
-    }
+        } else if (EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)){
+            locationInfo = "IP ngoai le, khong gui DM session log." 
+        } else {
+            locationInfo = "Truy cap tu Localhost.";
+            country = "Local";
+        }
+        
+        const sessionPayload = {
+            ip: clientIp || "N/A",
+            location: locationInfo,
+            country: country,
+            city: city,
+            region: region,
+            isp: isp,
+            userAgent: userAgent || "N/A",
+            sessionStartTime: interactions[0]?.clientTimestamp, 
+            sessionEndTime: new Date().toISOString(), 
+            interactions 
+        };
+        console.log("[SERVER SESSION LOG] Sending payload to Mizuki:", JSON.stringify(sessionPayload, null, 2).substring(0, 500) + "...");
+
+
+        try {
+            await axios.post(`${MIZUKI_BOT_BASE_URL}/log-session-interactions`, sessionPayload, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
+                }
+            });
+            console.log("✅ Session log da gui toi bot Mizuki.");
+            res.status(200).json({ message: "Session interactions logged and notification sent to bot." });
+        } catch (botError) {
+            console.error("🔴 Loi gui session log toi bot Mizuki:", botError.response ? botError.response.data : botError.message);
+            res.status(500).json({ error: "Failed to notify bot of session interactions." });
+        }
+    });
 });
-
-
+    
 app.get('/health', (req, res) => {
   res.status(200).send('Server is healthy! Rin cute <3');
 });
