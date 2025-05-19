@@ -100,7 +100,7 @@
   transition: stroke 0.25s ease;
 }
 
-.about-nav-arrow[style*="pointer-events: none"] { /* Fix: Nav bị vô hiệu hóa */
+.about-nav-arrow[style*="pointer-events: none"] {
   border-color: rgba(var(--highlight-color-poetic-rgb), 0.2) !important;
   color: rgba(var(--highlight-color-poetic-rgb), 0.4) !important;
   box-shadow: 0 1px 3px rgba(var(--background-color-rgb),0.15) !important;
@@ -155,7 +155,7 @@
 .about-sub-section-content-wrapper {
   position: relative;
   width: 100%;
-  max-width: 96%; /* Fix: Cho phép con bên trong xác định kích thước */
+  max-width: 96%;
   overflow-y: auto;
   overflow-x: hidden;
   perspective: 1600px;
@@ -165,25 +165,22 @@
   box-shadow: inset 0 0 18px rgba(var(--background-color-rgb),0.28);
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.65) rgba(var(--card-background-rgb), 0.15);
-  min-height: 200px; /* Fix: Chiều cao tối thiểu cho anim height */
+  /* min-height động dựa trên isPreloadingPhaseActive hoặc placeholder-content-div */
 }
 
 .about-sub-section-content-wrapper::-webkit-scrollbar {
   width: 9px;
 }
-
 .about-sub-section-content-wrapper::-webkit-scrollbar-track {
   background: rgba(var(--card-background-rgb), 0.15);
   border-radius: 10px;
 }
-
 .about-sub-section-content-wrapper::-webkit-scrollbar-thumb {
   background-color: rgba(var(--highlight-color-poetic-rgb), 0.55);
   border-radius: 10px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
-
 .about-sub-section-content-wrapper::-webkit-scrollbar-thumb:hover {
   background-color: rgba(var(--highlight-color-poetic-rgb), 0.75);
 }
@@ -199,24 +196,24 @@
   padding: 1.2rem 1.8rem;
   box-sizing: border-box;
 }
-
-.sub-section-inner-padding.placeholder-content-div { /* Fix: Đảm bảo placeholder có chỗ */
+.sub-section-inner-padding.placeholder-content-div {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
+  min-height: 250px; /* Kich thuoc cho placeholder div (khi preloading xong nhung chua co content) */
+  box-sizing: border-box;
 }
 
 .section-loading-overlay {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0; /* fill parent */
   background-color: rgba(var(--card-background-rgb), 0.85);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  border-radius: 16px;
+  border-radius: inherit; /* Match parent */
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
 }
@@ -238,19 +235,58 @@
   animation: spin 0.9s linear infinite;
 }
 
-.placeholder-load-icon { /* Fix: Icon mèo loading */
+.preload-indicator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  text-align: center;
+  width: 100%;
+  min-height: 250px; /* Chieu cao khi preloading */
+  box-sizing: border-box;
+}
+.placeholder-load-icon {
   font-family: sans-serif;
   font-size: 3rem;
   color: var(--highlight-color-poetic);
   text-shadow: 0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.5);
   animation: placeholderCatPulse 1.5s infinite ease-in-out;
+  margin-bottom: 0.8rem;
+}
+.preload-message {
+  color: var(--highlight-color-poetic);
+  font-size: 1.1em;
+  font-weight: 300;
+  margin-top: 1rem;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 0 5px rgba(var(--highlight-color-poetic-rgb), 0.2);
+  min-height: 2.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preload-progress-bar-container {
+  width: 80%;
+  max-width: 300px;
+  height: 10px;
+  background-color: rgba(var(--highlight-color-poetic-rgb), 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+.preload-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border-radius: 5px;
+  width: 0%;
 }
 
 @keyframes placeholderCatPulse {
   0%, 100% { opacity: 0.7; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.1); }
 }
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -268,11 +304,9 @@
   letter-spacing: 0.2px;
   margin-bottom: 0.8rem;
 }
-
 .personal-card-about-view .bio-text:last-child {
   margin-bottom: 0;
 }
-
 .personal-card-about-view .bio-text strong,
 .personal-card-about-view .bio-text .bio-name-highlight {
   font-weight: 500;
@@ -281,7 +315,7 @@
   padding: 0.05em 0.2em;
   border-radius: 4px;
   animation: bioHighlightPulse 3.5s infinite ease-in-out;
-  display: inline-block; /* Fix: Để bg và padding hiển thị đúng */
+  display: inline-block;
 }
 
 .social-stats-container {
@@ -296,7 +330,7 @@
 
 .github-stats-image-container,
 .discord-presence-container {
-  display: flex; /* Fix: Đã được thay = grid bên dưới */
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.2rem;
@@ -305,64 +339,59 @@
   box-sizing: border-box;
 }
 
-/* === FIX QUAN TRỌNG CHO LƯỚI 2x2 === */
 .github-stats-image-container.grid-2x2 {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* Fix: luôn 2 cột */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.2rem;
-  align-items: stretch; /* Fix: Căn đều chiều cao các item trong hàng */
+  align-items: stretch;
 }
-
-.github-stats-image-container.grid-2x2 .parallax-image-wrapper { /* Fix: Styling cho wrapper bên trong grid */
+.github-stats-image-container.grid-2x2 .parallax-image-wrapper {
   width: 100%;
-  height: 100%; /* Để wrapper chiếm hết ô grid */
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Các thuộc tính như border-radius, overflow giữ từ parallax-image-wrapper gốc */
+  border-radius: 12px;
+  overflow: hidden;
 }
-
-.github-stats-image-container.grid-2x2 .parallax-image-wrapper .github-stat-image { /* Fix: Styling cho ảnh bên trong wrapper */
+.github-stats-image-container.grid-2x2 .parallax-image-wrapper .github-stat-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Hoặc contain, tùy vào mong muốn hiển thị */
-  border-radius: 0; /* Ảnh không cần border-radius riêng nếu wrapper đã có và overflow: hidden */
+  object-fit: cover;
+  border-radius: 0; /* K can border-radius rieng */
 }
-/* === HẾT PHẦN FIX CHO LƯỚI 2x2 === */
-
-
 .github-stat-image.wide-image,
-.parallax-image-wrapper.wide-image-wrapper .github-stat-image { /* Sửa: Selector .parallax-image-wrapper cho wide */
-  grid-column: 1 / -1; /* Vẫn giữ nếu muốn ảnh wide */
+.parallax-image-wrapper.wide-image-wrapper .github-stat-image {
+  grid-column: 1 / -1;
   width: 100%;
   max-width: 620px;
   margin-left: auto;
   margin-right: auto;
 }
-
 .parallax-image-wrapper {
-  width: 100%; /* Fix: Parallax nên chiếm full width cell */
+  width: 100%;
   border-radius: 12px;
   overflow: hidden;
 }
-
-.parallax-image-wrapper.wide-image-wrapper { /* Sửa: wide-image-wrapper */
-  grid-column: 1 / -1; /* Vẫn giữ */
+.parallax-image-wrapper.wide-image-wrapper {
+  grid-column: 1 / -1;
 }
 
+/* Default cho anh k nam trong parallax-wrapper, or khi parallax-wrapper là child trực tiếp của flex column */
 .github-stat-image,
 .discord-presence-image {
-  max-width: 100%;
-  height: auto; /* Để ảnh tự co theo tỉ lệ khi width là 100% */
-  border-radius: 12px;
+  max-width: 100%; /* Luon fill width */
+  height: auto; /* Duy tri ty le */
+  object-fit: contain; /* K cat xen */
+  max-height: 300px; /* Max H cho anh ko trong grid */
+  border-radius: 12px; /* Neu ko co wrapper ben ngoai */
   background-color: rgba(var(--card-background-rgb), 0.12);
   border: 1.5px solid rgba(var(--highlight-color-poetic-rgb), 0.15);
   box-shadow: 0 6px 18px rgba(var(--background-color-rgb),0.38), inset 0 0 10px rgba(var(--background-color-rgb),0.28);
   transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s ease, filter 0.3s ease;
   filter: saturate(0.9) brightness(0.95);
-  padding: 0; /* Fix: Bỏ padding nếu ảnh chiếm toàn bộ và object-fit xử lý */
   display: block;
-  width: 100%; /* Fix: Để ảnh fill wrapper */
+  width: 100%; /* Dac biet cho parallax image wrapper ben trong grid */
 }
 
 .parallax-image-wrapper:hover .github-stat-image,
@@ -371,6 +400,7 @@
   box-shadow: 0 9px 28px rgba(var(--highlight-color-poetic-rgb),0.28), inset 0 0 12px rgba(var(--highlight-color-poetic-rgb),0.12);
   filter: saturate(1.1) brightness(1.08);
 }
+
 
 .social-user-header {
   display: flex;
@@ -560,7 +590,7 @@
   box-shadow: 0 4.5px 9px rgba(var(--highlight-color-poetic-rgb), 0.18);
   color: var(--primary-color);
 }
-/* Fix: Màu icon hover riêng cho từng MXH */
+
 .social-media-link-github .social-icon-wrapper { color: #c9d1d9; }
 .social-media-link-tiktok .social-icon-wrapper { color: #fe2c55; }
 .social-media-link-discordProfile .social-icon-wrapper,
@@ -667,191 +697,69 @@
 }
 
 @media (max-width: 768px) {
-  .personal-card-container {
-    padding: 2rem;
-    width: 95%;
-  }
-  .personal-card-container .my-avatar {
-    width: 80px;
-    height: 80px;
-  }
-  .personal-card-container .my-name-title h2 {
-    font-size: 1.8em;
-  }
-  .personal-card-container .my-title {
-    font-size: 1em;
-  }
-  .personal-card-container .section-heading {
-    font-size: 1.3em;
-  }
+  .personal-card-container { padding: 2rem; width: 95%; }
+  .personal-card-container .my-avatar { width: 80px; height: 80px; }
+  .personal-card-container .my-name-title h2 { font-size: 1.8em; }
+  .personal-card-container .my-title { font-size: 1em; }
+  .personal-card-container .section-heading { font-size: 1.3em; }
 
-  .about-sub-section-header {
-    padding: 0.4rem 0.1rem;
-  }
-  .about-nav-arrow svg {
-    width: 22px;
-    height: 22px;
-  }
-  .about-navigation-indicator {
-    padding: 0.7rem 0 1.3rem 0;
-    gap: 0.6rem;
-  }
-  .indicator-dot {
-    width: 8px;
-    height: 8px;
-  }
-  .about-sub-section-content-wrapper { /* Fix: Height cho tablet */
-    min-height: 250px;
-    max-height: 68vh;
-  }
-  .sub-section-inner-padding {
-    padding: 1rem 1.2rem;
-  }
-  .social-avatar {
-    width: 65px;
-    height: 65px;
-  }
-  .stat-item {
-    min-height: 85px;
-  }
-  .social-media-links-container {
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  }
-  .social-stats-grid.tiktok-grid,
-  .social-stats-grid.youtube-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  }
+  .about-sub-section-header { padding: 0.4rem 0.1rem; }
+  .about-nav-arrow svg { width: 22px; height: 22px; }
+  .about-navigation-indicator { padding: 0.7rem 0 1.3rem 0; gap: 0.6rem; }
+  .indicator-dot { width: 8px; height: 8px; }
+  .about-sub-section-content-wrapper { min-height: 250px; max-height: 68vh; }
+  .sub-section-inner-padding { padding: 1rem 1.2rem; }
+  .social-avatar { width: 65px; height: 65px; }
+  .stat-item { min-height: 85px; }
+  .social-media-links-container { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .social-stats-grid.tiktok-grid, .social-stats-grid.youtube-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+  
+  .preload-indicator-container { padding: 1.5rem 0.8rem; min-height: 220px; }
+  .placeholder-load-icon { font-size: 2.5rem; }
+  .preload-message { font-size: 1em; }
+  .preload-progress-bar-container { width: 85%; height: 8px; }
 }
 
 @media (max-width: 480px) {
-  .personal-card-container {
-    padding: 1.5rem;
-    border-radius: 15px;
-    width: 90%;
-  }
-  .personal-card-container .card-main-header {
-    flex-direction: column;
-    text-align: center;
-  }
-  .personal-card-container .my-avatar {
-    width: 90px;
-    height: 90px;
-    margin-right: 0;
-    margin-bottom: 1rem;
-  }
-  .personal-card-container .my-name-title h2 {
-    font-size: 1.6em;
-  }
-  .personal-card-container .my-title {
-    font-size: 0.95em;
-  }
-  .personal-card-container .section-heading {
-    font-size: 1.2em;
-  }
-  .personal-card-container .bio-text,
-  .personal-card-container .skill-tag,
-  .personal-card-container .contact-links a {
-    font-size: 0.95em;
-  }
-  .personal-card-container .bio-text { /* Fix: Bio text cho mobile */
-    font-weight: 300;
-  }
+  .personal-card-container { padding: 1.5rem; border-radius: 15px; width: 90%; }
+  .personal-card-container .card-main-header { flex-direction: column; text-align: center; }
+  .personal-card-container .my-avatar { width: 90px; height: 90px; margin-right: 0; margin-bottom: 1rem; }
+  .personal-card-container .my-name-title h2 { font-size: 1.6em; }
+  .personal-card-container .my-title { font-size: 0.95em; }
+  .personal-card-container .section-heading { font-size: 1.2em; }
+  .personal-card-container .bio-text, .personal-card-container .skill-tag, .personal-card-container .contact-links a { font-size: 0.95em; }
+  .personal-card-container .bio-text { font-weight: 300; }
 
-  .personal-card-about-view {
-    padding: 0rem 0.1rem 0.8rem 0.1rem;
-    border-radius: 22px;
-  }
-  .about-sub-section-header {
-    padding: 0.3rem 0;
-  }
-  .about-nav-arrow {
-    padding: 0.5rem;
-  }
-  .about-nav-arrow svg {
-    width: 20px;
-    height: 20px;
-    stroke-width: 2.5;
-  }
-  .about-navigation-indicator {
-    padding: 0.6rem 0 1rem 0;
-    gap: 0.5rem;
-  }
-  .indicator-dot {
-    width: 7px;
-    height: 7px;
-  }
-  .about-sub-section-content-wrapper { /* Fix: Height cho mobile */
-    min-height: 280px;
-    max-height: 65vh;
-    scrollbar-width: auto; /* Hiển thị scrollbar nếu cần trên mobile */
-    border-radius: 14px;
-  }
-  .about-sub-section-content-wrapper::-webkit-scrollbar {
-    width: 7px; /* Scrollbar mảnh hơn */
-  }
-  .sub-section-inner-padding {
-    padding: 0.8rem 1rem;
-  }
-  .personal-card-about-view .bio-text { /* Fix: Bio text cho mobile */
-    line-height: 1.85;
-    font-size: clamp(1em, 2.4vw, 1.1em);
-  }
-  .social-user-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 0.9rem;
-  }
-  .social-avatar {
-    width: 60px;
-    height: 60px;
-  }
-  .social-stats-grid {
-    grid-template-columns: 1fr; /* Fix: 1 cột trên mobile cho dễ nhìn */
-    gap: 0.9rem;
-  }
-  .social-stats-grid.tiktok-grid,
-  .social-stats-grid.youtube-grid { /* Fix: Cũng 1 cột cho nhất quán */
-    grid-template-columns: 1fr;
-  }
-  .stat-item {
-    min-height: 75px;
-  }
-  .social-profile-link {
-    font-size: 0.9em;
-    padding: 0.65rem 1.3rem;
-  }
-  /* Fix: GitHub stats 2x2 trên mobile sẽ thành 1 cột */
-  .github-stats-image-container.grid-2x2 {
-    grid-template-columns: 1fr;
-  }
-  .discord-presence-image {
-    width: 100%; /* Fix: discord image không bị quá to */
-    max-width: 300px;
-  }
+  .personal-card-about-view { padding: 0rem 0.1rem 0.8rem 0.1rem; border-radius: 22px; }
+  .about-sub-section-header { padding: 0.3rem 0; }
+  .about-nav-arrow { padding: 0.5rem; }
+  .about-nav-arrow svg { width: 20px; height: 20px; stroke-width: 2.5; }
+  .about-navigation-indicator { padding: 0.6rem 0 1rem 0; gap: 0.5rem; }
+  .indicator-dot { width: 7px; height: 7px; }
+  .about-sub-section-content-wrapper { min-height: 280px; max-height: 65vh; scrollbar-width: auto; border-radius: 14px; }
+  .about-sub-section-content-wrapper::-webkit-scrollbar { width: 7px; }
+  .sub-section-inner-padding { padding: 0.8rem 1rem; }
+  .personal-card-about-view .bio-text { line-height: 1.85; font-size: clamp(1em, 2.4vw, 1.1em); }
+  .social-user-header { flex-direction: column; align-items: center; text-align: center; gap: 0.9rem; }
+  .social-avatar { width: 60px; height: 60px; }
+  .social-stats-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+  .social-stats-grid.tiktok-grid, .social-stats-grid.youtube-grid { grid-template-columns: 1fr; }
+  .stat-item { min-height: 75px; }
+  .social-profile-link { font-size: 0.9em; padding: 0.65rem 1.3rem; }
+  .github-stats-image-container.grid-2x2 { grid-template-columns: 1fr; }
+  .github-stats-image-container.grid-2x2 .github-stat-image { min-height: 100px; }
+  .discord-presence-image { width: 100%; max-width: 300px; }
+  .social-media-links-container { grid-template-columns: 1fr; gap: 0.9rem; }
+  .social-media-link { font-size: 0.95em; padding: 0.8rem 1.1rem; gap: 0.7rem; }
+  .social-icon-wrapper { width: 20px; height: 20px; }
 
-  .social-media-links-container { /* Fix: Social links 1 cột trên mobile */
-    grid-template-columns: 1fr;
-    gap: 0.9rem;
-  }
-  .social-media-link {
-    font-size: 0.95em;
-    padding: 0.8rem 1.1rem;
-    gap: 0.7rem;
-  }
-  .social-icon-wrapper {
-    width: 20px;
-    height: 20px;
-  }
+  .preload-indicator-container { padding: 1rem 0.5rem; min-height: 200px; }
+  .placeholder-load-icon { font-size: 2.2rem; }
+  .preload-message { font-size: 0.9em; }
+  .preload-progress-bar-container { width: 90%; height: 7px; }
 }
 
 @keyframes bioHighlightPulse {
-  0%, 100% {
-    text-shadow: 0 0 6px rgba(var(--highlight-color-poetic-rgb),0.35), 0 0 2px rgba(var(--highlight-color-poetic-rgb),0.2);
-    filter: brightness(1.0);
-  }
-  50% {
-    text-shadow: 0 0 10px rgba(var(--highlight-color-poetic-rgb),0.5), 0 0 4px rgba(var(--highlight-color-poetic-rgb),0.3), 0 0 16px rgba(var(--highlight-color-poetic-rgb),0.2);
-    filter: brightness(1.08);
-  }
+  0%, 100% { text-shadow: 0 0 6px rgba(var(--highlight-color-poetic-rgb),0.35), 0 0 2px rgba(var(--highlight-color-poetic-rgb),0.2); filter: brightness(1.0); }
+  50% { text-shadow: 0 0 10px rgba(var(--highlight-color-poetic-rgb),0.5), 0 0 4px rgba(var(--highlight-color-poetic-rgb),0.3), 0 0 16px rgba(var(--highlight-color-poetic-rgb),0.2); filter: brightness(1.08); }
 }

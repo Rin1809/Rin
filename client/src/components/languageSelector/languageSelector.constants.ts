@@ -7,10 +7,10 @@ import React from "react";
 const IS_MOBILE_DEVICE = typeof window !== 'undefined' && window.innerWidth < 768;
 
 export const poeticStarsOptionsDefinition: ISourceOptions = {
-    fpsLimit: IS_MOBILE_DEVICE ? 45 : 120, // Giam FPS mobile
+    fpsLimit: IS_MOBILE_DEVICE ? 45 : 120,
     particles: {
         number: {
-            value: IS_MOBILE_DEVICE ? 100 : 500, // Giam so luong mobile
+            value: IS_MOBILE_DEVICE ? 100 : 500,
             density: { enable: true },
         },
         color: { value: ["#FFFFFF", "#F0E68C", "#ADD8E6", "#FFDAB9"] },
@@ -21,12 +21,12 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
         },
         size: {
             value: { min: 0.5, max: IS_MOBILE_DEVICE ? 1.8 : 1.5 },
-            animation: { enable: !IS_MOBILE_DEVICE, speed: 2, sync: false }, // Tat anim size mobile
+            animation: { enable: !IS_MOBILE_DEVICE, speed: 2, sync: false },
         },
         links: { enable: false },
         move: {
             enable: true,
-            speed: IS_MOBILE_DEVICE ? 0.25 : 0.4, // Giam toc do mobile
+            speed: IS_MOBILE_DEVICE ? 0.25 : 0.4,
             direction: "none",
             random: true,
             straight: false,
@@ -40,7 +40,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
             resize: { enable: true }
         },
     },
-    detectRetina: !IS_MOBILE_DEVICE, // Tat retina mobile
+    detectRetina: !IS_MOBILE_DEVICE,
     style: {
         position: 'absolute',
         top: '0',
@@ -49,7 +49,6 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
         height: '100%',
         pointerEvents: 'none',
     },
-    // Tat emitters neu la mobile
     emitters: IS_MOBILE_DEVICE ? [] : [
         {
             name: "leftShootingStars",
@@ -62,7 +61,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
                     speed: { min: 15, max: 35 },
                     straight: true,
                     outModes: { default: "destroy" },
-                    trail: { enable: !IS_MOBILE_DEVICE, length: 40, fill: { color: "#ffffff" } }, // Tat trail mobile
+                    trail: { enable: !IS_MOBILE_DEVICE, length: 40, fill: { color: "#ffffff" } },
                 },
                 opacity: { value: {min: 0.8, max: 1} },
                 size: { value: { min: 1.5, max: 3 } },
@@ -74,7 +73,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
         {
             name: "leftShootingStarsAlternateY",
             direction: "right",
-            rate: { quantity: IS_MOBILE_DEVICE ? 1 : 5, delay: 0.9 }, // Giam ty le mobile
+            rate: { quantity: IS_MOBILE_DEVICE ? 1 : 5, delay: 0.9 },
             position: { x: 0, y: 30 },
             particles: {
                 move: {
@@ -82,7 +81,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
                     speed: { min: 12, max: 30 },
                     straight: true,
                     outModes: { default: "destroy" },
-                    trail: { enable: !IS_MOBILE_DEVICE, length: 35, fill: { color: "#ffffff" } }, // Tat trail mobile
+                    trail: { enable: !IS_MOBILE_DEVICE, length: 35, fill: { color: "#ffffff" } },
                 },
                 opacity: { value: {min: 0.7, max: 1} },
                 size: { value: { min: 1, max: 2.5 } },
@@ -94,7 +93,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
          {
             name: "leftShootingStarsHighY",
             direction: "right",
-            rate: { quantity: IS_MOBILE_DEVICE ? 1 : 5, delay: 1.3 }, // Giam ty le mobile
+            rate: { quantity: IS_MOBILE_DEVICE ? 1 : 5, delay: 1.3 },
             position: { x: 0, y: 75 },
             particles: {
                 move: {
@@ -102,7 +101,7 @@ export const poeticStarsOptionsDefinition: ISourceOptions = {
                     speed: { min: 18, max: 40 },
                     straight: true,
                     outModes: { default: "destroy" },
-                    trail: { enable: !IS_MOBILE_DEVICE, length: 45, fill: { color: "#ffffff" } }, // Tat trail mobile
+                    trail: { enable: !IS_MOBILE_DEVICE, length: 45, fill: { color: "#ffffff" } },
                 },
                 opacity: { value: {min: 0.8, max: 1} },
                 size: { value: { min: 1.5, max: 3.5 } },
@@ -222,9 +221,8 @@ export const fireflyVariants = (
   initialX: string, initialY: string, hoverX: string, hoverY: string,
   floatDuration: number, floatDelay: number = 0, sparkleDelay: number = 0
 ): Variants => {
-  // Ktra mobile trong func nay luon cho gon
   const isMobileInternal = typeof window !== 'undefined' && window.innerWidth < 768;
-  if (isMobileInternal) { // Tat anim phức tap cho mobile
+  if (isMobileInternal) {
       return {
           initial: { x: initialX, y: initialY, scale: 0.7, opacity: 0.3 },
           hover: { x: hoverX, y: hoverY, scale: 1, opacity: 0.6, transition: { duration: 0.25, delay: sparkleDelay } }
@@ -273,7 +271,7 @@ export const titleVariants = (delay: number): Variants => ({
   visible: {
     opacity: 1,
     y: 0,
-    textShadow: IS_MOBILE_DEVICE ? titleInitialTextShadow : [ // Tat anim textShadow mobile
+    textShadow: IS_MOBILE_DEVICE ? titleInitialTextShadow : [
       titleIdleTextShadowStart,
       titleIdleTextShadowMid,
       titleIdleTextShadowStart
@@ -313,7 +311,7 @@ export const flourishVariantsDefinition = (initialRotate: number = 0): Variants 
     },
     hover: (custom: { baseScale: number }) => ({
         y: initialRotate === 0 ? -12 : 12,
-        scale: (custom?.baseScale || 1) * (IS_MOBILE_DEVICE ? 1.02 : 1.05), // Giam scale hover mobile
+        scale: (custom?.baseScale || 1) * (IS_MOBILE_DEVICE ? 1.02 : 1.05),
         filter: IS_MOBILE_DEVICE ? baseFlourishVisibleFilterKeyframes[0] : "drop-shadow(0 0 30px rgba(var(--highlight-color-poetic-rgb), 0.75)) drop-shadow(0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.5))",
         transition: { type: "spring", stiffness: IS_MOBILE_DEVICE ? 320 : 300, damping: IS_MOBILE_DEVICE ? 25 : 22, mass: 0.8 }
     })
@@ -324,10 +322,10 @@ export const SHARED_FLOURISH_SPRING_TRANSITION = {
 };
 
 export const createFlourishLoopAnimation = (initialRotate: number) => {
-    if (IS_MOBILE_DEVICE) { // Tat anim loop cho flourish mobile
+    if (IS_MOBILE_DEVICE) {
         return {
-             y: initialRotate === 0 ? 0 : 0, // Gia tri tinh
-             filter: baseFlourishVisibleFilterKeyframes[0], // Filter tinh
+             y: initialRotate === 0 ? 0 : 0,
+             filter: baseFlourishVisibleFilterKeyframes[0],
              transition: { duration: 0 }
         };
     }
@@ -435,7 +433,7 @@ export const cardNameTextVariants = (delayValue: number = 0.05): Variants => ({
   initial: { y: 20, opacity: 0, scale: 0.85, filter: "blur(4px)" },
   animate: {
     y: 0, opacity: 1, scale: 1,
-    filter: IS_MOBILE_DEVICE ? "blur(0px)" : [ // Tat anim filter text mobile
+    filter: IS_MOBILE_DEVICE ? "blur(0px)" : [
       "blur(0px) drop-shadow(0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.4)) drop-shadow(0 0 18px rgba(var(--highlight-color-poetic-rgb), 0.25))",
       "blur(0px) drop-shadow(0 0 14px rgba(var(--highlight-color-poetic-rgb), 0.6)) drop-shadow(0 0 25px rgba(var(--highlight-color-poetic-rgb), 0.35))",
       "blur(0px) drop-shadow(0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.4)) drop-shadow(0 0 18px rgba(var(--highlight-color-poetic-rgb), 0.25))"
@@ -478,7 +476,7 @@ export const sparkleVariants: Variants = {
   })
 };
 
-export const numSparkles = IS_MOBILE_DEVICE ? 2 : 5; // Giam sparkle mobile
+export const numSparkles = IS_MOBILE_DEVICE ? 2 : 5;
 
 export const overlayEntryExitVariants: Variants = {
     hidden: { opacity: 0 },
@@ -492,7 +490,7 @@ export const cardIntroHeaderVariants: Variants = {
       opacity: 1, y: 0, scale: 1,
       transition: {
         duration: 0.7, delay: 0,
-        staggerChildren: 0
+        staggerChildren: 0 // Adjust stagger for children
       }
     },
     exit: { opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.25, ease: "easeIn" } }
@@ -614,16 +612,34 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
 export const aboutNavIconLeft = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 export const aboutNavIconRight = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
+
+
+// Type cho loading messages
+export interface LoadingMessages {
+  preparing: { vi: string; en: string; ja: string };
+  loadingIntro: { vi: string; en: string; ja: string };
+  loadingGithub: { vi: string; en: string; ja: string };
+  loadingTiktok: { vi: string; en: string; ja: string };
+  loadingYoutube: { vi: string; en: string; ja: string };
+  loadingDiscord: { vi: string; en: string; ja: string };
+  loadingGithubStatsII: { vi: string; en: string; ja: string };
+  loadingGithubStatsIII: { vi: string; en: string; ja: string };
+  loadingSocials: { vi: string; en: string; ja: string };
+  loadingFinalizing: { vi: string; en: string; ja: string };
+  // Them key khac neu can
+}
+
+
 export const personalCardTranslations = {
   sectionTitles: {
     intro: { vi: "Giới Thiệu Bản Thân", en: "Introduction", ja: "自己紹介" },
     github: { vi: "Thống kê GitHub", en: "GitHub Statistics", ja: "GitHub統計" },
-    githubStatsIi: { vi: "Thống kê GitHub II", en: "GitHub Statistics II", ja: "GitHub統計 II" },
-    githubStatsIii: { vi: "Thống kê GitHub III", en: "GitHub Statistics III", ja: "GitHub統計 III" },
-    discordPresence: { vi: "Trạng thái Discord", en: "Discord Presence", ja: "Discordステータス" },
+    'github-stats-ii': { vi: "Thống kê GitHub II", en: "GitHub Statistics II", ja: "GitHub統計 II" },
+    'github-stats-iii': { vi: "Thống kê GitHub III", en: "GitHub Statistics III", ja: "GitHub統計 III" },
+    'discord-presence': { vi: "Trạng thái Discord", en: "Discord Presence", ja: "Discordステータス" },
     socials: { vi: "Mạng xã hội", en: "Social Media", ja: "ソーシャルメディア" },
-    tiktokStats: { vi: "Thống kê TikTok", en: "TikTok Statistics", ja: "TikTok統計" },
-    youtubeStats: { vi: "Thống kê YouTube", en: "YouTube Statistics", ja: "YouTube統計" },
+    tiktok: { vi: "Thống kê TikTok", en: "TikTok Statistics", ja: "TikTok統計" },
+    youtube: { vi: "Thống kê YouTube", en: "YouTube Statistics", ja: "YouTube統計" },
   },
   introBio: {
     namePlaceholder: "{name}",
@@ -652,6 +668,18 @@ export const personalCardTranslations = {
       en: `So what? Judging me? Doesn't everyone have dreams....?`,
       ja: `だから何？評価してるの？誰だって夢くらいあるでしょう。。。？`
     }
+  },
+  loadingMessages: {
+    preparing: { vi: "Đang chuẩn bị không gian...", en: "Preparing the space...", ja: "スペースを準備しています。。。"},
+    loadingIntro: { vi: "Đang tải lời giới thiệu...", en: "Loading introduction...", ja: "自己紹介を読み込み中。。。"},
+    loadingGithub: { vi: "Đang kết nối với GitHub...", en: "Connecting to GitHub...", ja: "GitHubに接続中。。。"},
+    loadingTiktok: { vi: "Lướt nhanh TikTok...", en: "Checking TikTok trends...", ja: "TikTokトレンドを確認中。。。"},
+    loadingYoutube: { vi: "Tìm video hay trên YouTube...", en: "Fetching cool YouTube videos...", ja: "面白い動画を探しています。。。"},
+    loadingDiscord: { vi: "Kiểm tra trạng thái Discord...", en: "Checking Discord status...", ja: "Discordの状況を確認中。。。"},
+    loadingGithubStatsII: { vi: "Vẽ biểu đồ GitHub...", en: "Analyzing GitHub charts...", ja: "GitHubチャートを分析中。。。"},
+    loadingGithubStatsIII: { vi: "Tổng hợp dữ liệu GitHub...", en: "Compiling GitHub data...", ja: "GitHubデータを集計中。。。"},
+    loadingSocials: { vi: "Kết nối mạng xã hội...", en: "Connecting social networks...", ja: "ソーシャルネットワークに接続中。。。"},
+    loadingFinalizing: { vi: "Hoàn tất! Đang vào thế giới của Rin...", en: "Finalizing! Entering Rin's world...", ja: "最終処理中！リンの世界へようこそ。。。"},
   },
   loadingText: {
     vi: "Đang dệt những vì sao từ vũ trụ...",
@@ -730,7 +758,6 @@ export const guestbookViewTranslations = {
   messagePlaceholder: { vi: "Nơi này thật đẹp và bình yên...", en: "This place is beautiful and peaceful...", ja: "この場所は美しくて穏やかですね。。。" },
   submitButton: { vi: "Gửi Cảm Nghĩ", en: "Post Your Thought", ja: "感想を投稿する" },
   submittingText: { vi: "Đang gửi...", en: "Submitting...", ja: "送信中。。。" },
-
   promptWrite: {
     vi: "Bạn muốn chia sẻ đôi dòng tâm tình với Rin hong? ✨ <br/>Cảm ơn vì đã ghé thăm, ghi lại sự hiện diện của bạn tại đây nhé!",
     en: "Want to share some thoughts with Rin? ✨ <br/>Thanks for visiting, feel free to leave your mark!",
@@ -738,7 +765,6 @@ export const guestbookViewTranslations = {
   },
   writeButtonLabel: { vi: "Để lại lời nhắn", en: "Leave a Note", ja: "メッセージを書く" },
   cancelButton: { vi: "Hủy bỏ", en: "Cancel", ja: "キャンセル" },
-
   noEntries: {
     vi: "Chưa có ai để lại cảm nghĩ. Hãy là người đầu tiên chia sẻ nhé!",
     en: "No thoughts have been shared yet. Be the first one!",
@@ -762,8 +788,6 @@ export const guestbookViewTranslations = {
     ja: "おっと！送信中にエラーが発生しました。後でもう一度お試しください。"
   }
 };
-
-
 export const guestbookViewContainerVariants = (delay: number = 0.1): Variants => ({
     hidden: { opacity: 0, scale: 0.85, y: 50, filter: "blur(8px)" },
     visible: {
