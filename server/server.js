@@ -221,19 +221,26 @@ app.post('/api/notify-visit', async (req, res) => {
 
 app.post('/api/log-session-interactions', async (req, res) => {
     const clientIp = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress;
-    console.log(`[SERVER SESSION LOG] Received request for /api/log-session-interactions from IP: ${clientIp}`);
+    console.log(`[SERVER SESSION LOG] Request for /api/log-session-interactions from IP: ${clientIp}`);
     
     const rawBody = [];
-    req.on('data', chunk => rawBody.push(chunk));
+    req.on('data', chunk => {
+        // console.log('[SERVER SESSION LOG] Receiving data chunk...'); // dev
+        rawBody.push(chunk);
+    });
     req.on('end', async () => {
         const bodyString = Buffer.concat(rawBody).toString();
-        // console.log("[SERVER SESSION LOG] Raw request body:", bodyString); // Log raw body
+        console.log("[SERVER SESSION LOG] Raw request body string length:", bodyString.length); 
+        if (bodyString.length < 2000) { // Log body ngan de debug
+             console.log("[SERVER SESSION LOG] Raw request body (shortened):", bodyString.substring(0, 500));
+        }
+
 
         let data;
         try {
             data = JSON.parse(bodyString);
         } catch (parseError) {
-            console.error("[SERVER SESSION LOG] JSON.parse error:", parseError, "Raw body was:", bodyString);
+            console.error("[SERVER SESSION LOG] JSON.parse error:", parseError, ". Raw body was:", bodyString.substring(0,500) + "...");
             return res.status(400).json({ error: "Invalid JSON payload" });
         }
 
@@ -249,7 +256,7 @@ app.post('/api/log-session-interactions', async (req, res) => {
         }
 
         if (!interactions || !Array.isArray(interactions) || interactions.length === 0) {
-            console.log("[SERVER SESSION LOG] Empty session log received from client. Skipping notification to bot.");
+            console.log("[SERVER SESSION LOG] Empty session log. Skipping notification to bot.");
             return res.status(200).json({ message: "Empty session, nothing to log to bot." });
         }
 
@@ -307,7 +314,7 @@ app.post('/api/log-session-interactions', async (req, res) => {
             console.log("✅ Session log da gui toi bot Mizuki.");
             res.status(200).json({ message: "Session interactions logged and notification sent to bot." });
         } catch (botError) {
-            console.error("🔴 Loi gui session log toi bot Mizuki:", botError.response ? botError.response.data : botError.message);
+            console.error("🔴 Loi gui session log toi bot Mizuki:", botError.response ? JSON.stringify(botError.response.data).substring(0,500) : botError.message);
             res.status(500).json({ error: "Failed to notify bot of session interactions." });
         }
     });
