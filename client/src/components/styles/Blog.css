@@ -1,8 +1,8 @@
 /* client/src/components/styles/Blog.css */
 .blog-view-container {
-  width: 100%;
-  max-width: 90vw; /* Allow it to be wider for horizontal scroll */
-  padding: 1.5rem clamp(1rem, 5vw, 2rem);
+  width: 600%;
+  max-width: 110vw; 
+  padding: 1.5rem clamp(1rem, 3vw, 1.5rem);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -23,95 +23,95 @@
   margin-bottom: 1rem;
 }
 
-/* NEW: Wrapper for the horizontally scrolling list to hide overflow */
+/* wrapper list, an overflow */
 .blog-posts-list-wrapper {
   width: 100%;
-  overflow: hidden; /* Crucial for hiding non-visible posts */
+  overflow: hidden; 
   position: relative; 
-  /* min-height can be set if needed, e.g., based on tallest possible post item */
-  /* max-height: 500px; /* Example max-height, adjust as needed */
+  min-height: 460px; /* chieu cao toi thieu */
 }
 
+/* list items, flex ngang */
 .blog-posts-list {
   display: flex;
-  flex-direction: row; /* Horizontal layout */
-  /* No specific width here, it will be set by Framer Motion based on content */
-  /* Animation will be applied via Framer Motion to this element's x property */
+  flex-direction: row; 
 }
 
+/* item blog */
 .blog-post-item {
-  background-color: rgba(var(--card-background-rgb), 0.7);
-  border: 1.5px solid rgba(var(--border-color-rgb), 0.3);
-  border-radius: 16px;
+  background-color: rgba(var(--card-background-rgb), 0.75);
+  border: 1.5px solid rgba(var(--border-color-rgb), 0.35);
+  border-radius: 18px;
   padding: 1.5rem;
-  box-shadow: 0 8px 25px -10px rgba(var(--background-color-rgb), 0.5),
-              inset 0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.05);
+  box-shadow: 0 10px 30px -12px rgba(var(--background-color-rgb), 0.55),
+              inset 0 0 12px rgba(var(--highlight-color-poetic-rgb), 0.08);
   overflow: hidden;
-  width: clamp(300px, 30vw, 380px); /* Define a width for each post item */
-  flex-shrink: 0; /* Prevent items from shrinking */
-  margin-right: 1.5rem; /* Space between items (24px if 1rem = 16px) */
-  max-height: 450px; 
+  width: clamp(300px, 25vw, 360px); /* item width co dinh */
+  flex-shrink: 0; 
+  margin-right: 1.8rem; /* khoang cach items */
+  max-height: 460px; 
   display: flex;
   flex-direction: column;
+  cursor: pointer; /* click de mo lightbox */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
-/* No need for :last-child margin adjustment if duplicating for continuous scroll */
 
+.blog-post-item:hover { 
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 15px 40px -10px rgba(var(--highlight-color-poetic-rgb), 0.35), 
+                0 0 20px rgba(var(--highlight-color-poetic-rgb), 0.18) inset;
+}
 
+/* tieu de post */
 .blog-post-title {
-  font-size: clamp(1.3em, 3vw, 1.6em);
+  font-size: clamp(1.3em, 1.8vw, 1.6em);
   color: var(--primary-color);
   margin: 0 0 0.8rem 0;
   font-weight: 500;
   flex-shrink: 0;
+  line-height: 1.3;
 }
 
+/* anh post */
 .blog-post-image {
   width: 100%;
-  height: 200px; /* Fixed height for consistency in a row */
+  height: 180px; /* chieu cao anh co dinh */
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 1rem;
-  border: 1px solid rgba(var(--border-color-rgb), 0.2);
+  border: 1px solid rgba(var(--border-color-rgb), 0.25);
   flex-shrink: 0;
 }
 
+/* noi dung post, scroll neu dai */
 .blog-post-content {
-  font-size: clamp(0.95em, 2.2vw, 1.05em);
-  line-height: 1.75;
+  font-size: clamp(0.9em, 1.1vw, 1em);
+  line-height: 1.7;
   color: var(--text-color-poetic);
   opacity: 0.9;
   white-space: pre-wrap; 
   margin-bottom: 1rem;
-  overflow-y: auto; /* Allow content to scroll if it exceeds item height */
+  overflow-y: auto; 
   flex-grow: 1; 
   scrollbar-width: thin;
-  scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.4) rgba(var(--card-background-rgb),0.2);
+  scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.45) rgba(var(--card-background-rgb),0.25);
 }
-.blog-post-content::-webkit-scrollbar {
-  width: 6px;
-}
-.blog-post-content::-webkit-scrollbar-track {
-  background: rgba(var(--card-background-rgb),0.1);
-  border-radius: 3px;
-}
-.blog-post-content::-webkit-scrollbar-thumb {
-  background-color: rgba(var(--highlight-color-poetic-rgb),0.3);
-  border-radius: 3px;
-}
-.blog-post-content::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(var(--highlight-color-poetic-rgb),0.5);
-}
+.blog-post-content::-webkit-scrollbar { width: 7px; }
+.blog-post-content::-webkit-scrollbar-track { background: rgba(var(--card-background-rgb),0.15); border-radius: 4px; }
+.blog-post-content::-webkit-scrollbar-thumb { background-color: rgba(var(--highlight-color-poetic-rgb),0.35); border-radius: 4px; }
+.blog-post-content::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--highlight-color-poetic-rgb),0.55); }
 
-
+/* meta post (ngay dang) */
 .blog-post-meta {
-  font-size: clamp(0.8em, 1.8vw, 0.9em);
+  font-size: clamp(0.8em, 1vw, 0.9em);
   color: var(--subtext-color-poetic);
   text-align: right;
-  opacity: 0.7;
+  opacity: 0.75;
   flex-shrink: 0;
   margin-top: auto; 
 }
 
+/* thong bao (loading, error, no posts) */
 .blog-status-message {
   text-align: center;
   font-style: italic;
@@ -125,37 +125,181 @@
   font-weight: 400;
 }
 
+/* nut back */
 .blog-back-button { 
   margin-top: 1.5rem; 
   align-self: center;
 }
 
+/* --- BLOG LIGHTBOX STYLES --- */
+/* overlay cho lightbox */
+.blog-lightbox-overlay {
+  position: fixed;
+  inset: 0; 
+  background-color: rgba(var(--card-background-rgb, 25, 25, 38), 0.95); 
+  backdrop-filter: blur(16px) saturate(120%); 
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000; 
+  padding: 1rem;
+  box-sizing: border-box;
+  font-family: var(--font-family-poetic), var(--font-family-fallback);
+}
+
+/* wrapper noi dung lightbox */
+.blog-lightbox-content-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: clamp(90vw, 800px, 95vw);
+  max-height: 90vh; 
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(var(--background-color-rgb), 0.8); 
+  border: 1.5px solid rgba(var(--border-color-rgb), 0.4);
+  border-radius: 20px; 
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden; 
+}
+
+/* header lightbox (title, close btn) */
+.blog-lightbox-header {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid rgba(var(--border-color-rgb), 0.25);
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* title trong lightbox */
+.blog-lightbox-title {
+  font-size: clamp(1.5em, 2.5vw, 2em);
+  color: var(--highlight-color-poetic);
+  margin: 0;
+  font-weight: 500;
+  text-shadow: 0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.3);
+  text-align: center;
+  padding-right: 50px; 
+}
+
+/* nut dong lightbox */
+.blog-lightbox-close-button {
+  position: absolute;
+  top: 50%;
+  right: 1.2rem;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: rgba(var(--text-color-poetic-rgb), 0.7);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+.blog-lightbox-close-button:hover {
+  color: var(--error-color);
+  background-color: rgba(var(--error-color-rgb), 0.15);
+  transform: translateY(-50%) scale(1.1) rotate(90deg);
+}
+.blog-lightbox-close-button svg { width: 28px; height: 28px; }
+
+/* khu vuc scroll noi dung lightbox */
+.blog-lightbox-scrollable-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.5) rgba(var(--card-background-rgb),0.3);
+}
+.blog-lightbox-scrollable-content::-webkit-scrollbar { width: 8px; }
+.blog-lightbox-scrollable-content::-webkit-scrollbar-track { background: rgba(var(--card-background-rgb),0.2); border-radius: 4px; }
+.blog-lightbox-scrollable-content::-webkit-scrollbar-thumb { background-color: rgba(var(--highlight-color-poetic-rgb),0.4); border-radius: 4px; }
+.blog-lightbox-scrollable-content::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--highlight-color-poetic-rgb),0.6); }
+
+/* anh trong lightbox */
+.blog-lightbox-image {
+  width: 100%;
+  max-height: 45vh; 
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(var(--border-color-rgb), 0.2);
+}
+
+/* full text content trong lightbox */
+.blog-lightbox-full-content {
+  font-size: clamp(1em, 1.2vw, 1.1em);
+  line-height: 1.8;
+  color: var(--text-color-poetic);
+  opacity: 0.95;
+  white-space: pre-wrap;
+  margin-bottom: 1.5rem;
+}
+
+/* meta trong lightbox */
+.blog-lightbox-meta {
+  font-size: clamp(0.85em, 1vw, 0.95em);
+  color: var(--subtext-color-poetic);
+  text-align: right;
+  opacity: 0.8;
+  padding-top: 1rem;
+  border-top: 1px dashed rgba(var(--border-color-rgb), 0.2);
+}
+
+/* nut prev/next trong lightbox */
+.blog-lightbox-nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(var(--card-background-rgb, 30, 30, 46), 0.5); 
+  color: rgba(var(--text-color-poetic-rgb, 230, 230, 230), 0.8); 
+  border: 1.5px solid rgba(var(--border-color-rgb),0.25); 
+  border-radius: 50%;
+  width: 44px; 
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10; 
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.2);
+}
+.blog-lightbox-nav-button.prev { left: 1rem; }
+.blog-lightbox-nav-button.next { right: 1rem; }
+.blog-lightbox-nav-button:hover {
+  background-color: rgba(var(--primary-color-rgb),0.15);
+  color: var(--primary-color);
+  border-color: rgba(var(--primary-color-rgb),0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+.blog-lightbox-nav-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: translateY(-50%) scale(1);
+  background-color: rgba(var(--card-background-rgb, 30, 30, 46), 0.3);
+}
+
+/* responsive */
 @media (max-width: 768px) {
-  .blog-view-container {
-    max-width: 95vw;
-  }
- .blog-post-item {
-   width: clamp(280px, 40vw, 350px);
-   padding: 1.2rem;
- }
- .blog-post-title {
-   font-size: clamp(1.2em, 4vw, 1.5em);
- }
- .blog-post-content {
-   font-size: clamp(0.9em, 2.5vw, 1em);
- }
+  .blog-view-container { max-width: 95vw; }
+  .blog-post-item { width: clamp(280px, 40vw, 350px); margin-right: 1.5rem; }
+  .blog-lightbox-content-wrapper { max-width: 95vw; max-height: 85vh; }
+  .blog-lightbox-title { font-size: clamp(1.3em, 2.2vw, 1.8em); padding-right: 40px;}
+  .blog-lightbox-close-button svg { width: 24px; height: 24px; }
+  .blog-lightbox-nav-button { width: 40px; height: 40px; }
+  .blog-lightbox-nav-button.prev { left: 0.5rem; }
+  .blog-lightbox-nav-button.next { right: 0.5rem; }
 }
 
 @media (max-width: 600px) {
- .blog-view-container {
-   padding: 1rem clamp(0.5rem, 3vw, 1rem);
-   max-width: 100vw; 
- }
- .blog-post-item {
-   width: clamp(250px, 75vw, 300px); /* Wider items on small screens for better readability */
-   max-height: 420px;
- }
- .blog-post-image {
-   height: 160px; /* Adjust image height */
- }
+ .blog-view-container { padding: 1rem clamp(0.5rem, 2vw, 1rem); max-width: 100vw; }
+ .blog-posts-list-wrapper { min-height: 430px; } /* dieu chinh min height wrapper */
+ .blog-post-item { width: clamp(260px, 70vw, 320px); max-height: 430px; margin-right: 1.2rem;}
+ .blog-post-image { height: 160px; }
+ .blog-lightbox-header { padding: 1rem; }
+ .blog-lightbox-title { font-size: clamp(1.2em, 4vw, 1.6em); }
+ .blog-lightbox-scrollable-content { padding: 1rem; }
+ .blog-lightbox-full-content { font-size: clamp(0.95em, 2.5vw, 1.05em); }
 }
