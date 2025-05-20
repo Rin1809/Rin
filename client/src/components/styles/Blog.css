@@ -1,147 +1,222 @@
 /* client/src/components/styles/Blog.css */
 
-/* Define blog-specific font variable for readability, defaulting to fallback */
 :root {
-  --font-family-blog-body: var(--font-family-fallback); /* font de doc cho noi dung */
-  --font-family-blog-card-title: "Helvetica Neue", Helvetica, Arial, sans-serif; /* font sans-serif cho tieu de card */
-  --blog-card-border-radius: 22px; /* bo goc tron, lon hon mot chut */
-  --blog-lightbox-border-radius: 26px; /* bo goc lightbox */
-  --blog-card-hover-glow: rgba(var(--highlight-color-poetic-rgb), 0.4); /* mau glow khi hover */
-  --blog-card-tap-glow: rgba(var(--primary-color-rgb), 0.3); /* mau glow khi tap */
-  --blog-card-bg-gradient-start: rgba(var(--card-background-rgb), 0.88);
-  --blog-card-bg-gradient-end: rgba(var(--card-background-rgb), 0.78);
-  --blog-card-border-color: rgba(var(--border-color-rgb), 0.25);
-  --blog-image-hover-brightness: brightness(1.1) saturate(1.05);
-  --blog-image-initial-brightness: brightness(0.92) saturate(0.88);
+  --font-family-blog-body: var(--font-family-fallback); 
+  --font-family-blog-card-title: "Helvetica Neue", Helvetica, Arial, sans-serif; 
+  --blog-card-border-radius: 28px; 
+  --blog-lightbox-border-radius: 32px; 
+  --blog-card-hover-glow: rgba(var(--highlight-color-poetic-rgb), 0.55); 
+  --blog-card-tap-glow: rgba(var(--primary-color-rgb), 0.4); 
+  --blog-card-bg-gradient-start: rgba(var(--card-background-rgb), 0.93); 
+  --blog-card-bg-gradient-end: rgba(var(--card-background-rgb), 0.83);
+  --blog-card-border-color: rgba(var(--border-color-rgb), 0.38); 
+  --blog-card-border-hover-image: linear-gradient(140deg, rgba(var(--highlight-color-poetic-rgb),0.75), rgba(var(--primary-color-rgb),0.55), rgba(var(--secondary-color-rgb),0.65)); 
+  --blog-image-hover-brightness: brightness(1.18) saturate(1.12); 
+  --blog-image-initial-brightness: brightness(0.88) saturate(0.82); 
+
+  --firefly-base-color: rgba(var(--highlight-color-poetic-rgb), 0.85); 
+  --firefly-shadow-color: rgba(var(--highlight-color-poetic-rgb), 0.6); 
+
+  --ripple-color: rgba(var(--highlight-color-poetic-rgb), 0.3); 
+
+  --aurora-color-1: rgba(var(--primary-color-rgb), 0.1); 
+  --aurora-color-2: rgba(var(--secondary-color-rgb), 0.12);
+  --aurora-color-3: rgba(var(--highlight-color-poetic-rgb), 0.08);
+
+  --thumbnail-sparkle-color: rgba(255, 255, 255, 0.7); 
 }
 
 .blog-view-container {
-    width: 250%; 
-    padding: 1.8rem clamp(1rem, 3.5vw, 1.8rem); /* padding xung quanh */
+    width: 100%; 
+    max-width: 1600px; 
+    margin: 0 auto; 
+    padding: 2.5rem clamp(1.3rem, 4.8vw, 2.5rem); 
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem; /* tang khoang cach */
+    gap: 2.8rem; 
     font-family: var(--font-family-poetic), var(--font-family-fallback);
     color: var(--text-color-poetic);
     position: relative;
-    /* them Hieu ung nen nhe nhang */
     background: 
-      radial-gradient(ellipse at 10% 15%, rgba(var(--highlight-color-poetic-rgb), 0.025), transparent 45%),
-      radial-gradient(ellipse at 90% 85%, rgba(var(--primary-color-rgb), 0.02), transparent 40%);
-    background-attachment: fixed; /* nen co dinh khi scroll */
+      radial-gradient(ellipse at 5% 5%, rgba(var(--highlight-color-poetic-rgb), 0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 95% 95%, rgba(var(--primary-color-rgb), 0.035) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(var(--secondary-color-rgb), 0.03) 0%, transparent 50%);
+    background-attachment: fixed; 
 }
 
-.blog-view-title {
-  font-size: clamp(2.4em, 6vw, 3.2em); /* tieu de to hon, responsive hon */
-  font-weight: 400; /* giu nguyen */
+.blog-view-title.poetic-title-shimmer { 
+  font-size: clamp(3em, 7.5vw, 4em); 
+  font-weight: 400; 
   text-align: center;
-  color: var(--highlight-color-poetic);
   text-shadow: 
-    0 0 35px rgba(var(--highlight-color-poetic-rgb), 0.65), /* tang do sang */
-    0 0 18px rgba(var(--highlight-color-poetic-rgb), 0.45),
-    0 0 8px rgba(var(--primary-color-rgb), 0.25),
-    0 3px 6px rgba(var(--background-color-rgb), 0.3); /* bong do ro hon */
-  letter-spacing: 3px; /* gian chu nhieu hon */
-  margin-bottom: 1.8rem;
-  line-height: 1.35;
+    0 0 50px rgba(var(--highlight-color-poetic-rgb), 0.55), 
+    0 0 25px rgba(var(--highlight-color-poetic-rgb), 0.35),
+    0 0 15px rgba(var(--primary-color-rgb), 0.2),
+    0 4.5px 9px rgba(var(--background-color-rgb), 0.4); 
+  letter-spacing: 0.12em; /* Tang letter-spacing */
+  word-spacing: 0.15em; /* dieu chinh word-spacing */
+  margin-bottom: 2.5rem;
+  line-height: 1.5; 
+  position: relative; 
+  -webkit-text-fill-color: transparent; 
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(
+    115deg, 
+    var(--highlight-color-poetic) 15%, 
+    var(--secondary-color) 35%, 
+    var(--primary-color) 55%, 
+    var(--highlight-color-poetic) 75%
+  );
+  background-size: 350% 100%; 
+  animation: titleShimmerFlowPoetic 12s ease-in-out infinite alternate; 
 }
+@keyframes titleShimmerFlowPoetic { 
+  0% { background-position: 175% center; } 
+  100% { background-position: -175% center; } 
+}
+
 
 .blog-posts-list-wrapper {
   width: 100%;
-  overflow: hidden; /* qtrong de scroll ngang */
+  overflow: hidden; 
   position: relative;
-  min-height: 500px; /* cao hon chut */
-  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent); /* mask mem mai hon */
-  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-  padding: 0.5rem 0; /* padding nho de item khong bi cat qua sat */
+  min-height: 460px; 
+  -webkit-mask-image: linear-gradient(to right, transparent, black 13%, black 87%, transparent); 
+  mask-image: linear-gradient(to right, transparent, black 13%, black 87%, transparent);
+  padding: 1.2rem 0; 
 }
 
 .blog-posts-list {
   display: flex;
-  flex-direction: row; /* qtrong de list nam ngang */
+  flex-direction: row; 
 }
 
-/* Style co ban cho card */
 .blog-post-item {
-  background: linear-gradient(160deg, var(--blog-card-bg-gradient-start) 0%, var(--blog-card-bg-gradient-end) 100%); /* gradient nen */
-  border: 1.8px solid var(--blog-card-border-color); /* border mem mai */
+  background: linear-gradient(175deg, var(--blog-card-bg-gradient-start) 0%, var(--blog-card-bg-gradient-end) 100%); 
+  border: 2.8px solid var(--blog-card-border-color); 
   border-radius: var(--blog-card-border-radius);
-  padding: 1.5rem; /* padding lon hon */
-  box-shadow: 0 8px 25px -10px rgba(var(--background-color-rgb), 0.5),
-              inset 0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.05),
-              0 0 0 1px rgba(var(--border-color-rgb),0.08); /* them inset glow nhe */
-  overflow: hidden;
-  flex-shrink: 0; /* qtrong cho scroll layout */
-  margin-right: 2rem; /* khoang cach lon hon giua card */
+  padding: 2rem; 
+  box-shadow: 0 14px 40px -18px rgba(var(--background-color-rgb), 0.65), 
+              inset 0 0 22px rgba(var(--highlight-color-poetic-rgb), 0.08),
+              0 0 0 2px rgba(var(--border-color-rgb),0.14); 
+  overflow: visible; 
+  flex-shrink: 0; 
+  margin-right: var(--POST_ITEM_MARGIN_RIGHT_REM, 1.8rem); 
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition: transform 0.38s cubic-bezier(0.165, 0.84, 0.44, 1), /* cubic bezier muot ma */
-              box-shadow 0.38s cubic-bezier(0.165, 0.84, 0.44, 1),
-              border-color 0.32s ease;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              border-image 0.4s ease, 
+              border-color 0.4s ease; 
   position: relative; 
-  width: clamp(350px, 30vw, 400px); /* card rong hon */
-  will-change: transform, box-shadow, border-color; /* bao trinh duyet biet de toi uu */
+  width: var(--POST_ITEM_BASE_WIDTH_ESTIMATE_PX, 380px); 
+  will-change: transform, box-shadow, border-color, border-image; 
+  perspective: 1200px; 
 }
+.blog-post-item:hover { 
+    border-image-source: var(--blog-card-border-hover-image);
+    border-image-slice: 1;
+    border-color: transparent; 
+}
+.blog-post-item::before {
+    content: '';
+    position: absolute;
+    inset: -2px; 
+    border-radius: inherit; 
+    background: radial-gradient(ellipse at 70% 20%, var(--aurora-color-1) 0%, transparent 70%),
+                radial-gradient(ellipse at 30% 80%, var(--aurora-color-2) 0%, transparent 70%),
+                radial-gradient(ellipse at 50% 50%, var(--aurora-color-3) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: -1; 
+    background-blend-mode: screen;
+    animation: auroraMovement 15s linear infinite alternate;
+}
+.blog-post-item:hover::before {
+    opacity: 0.8; /* Ro net hon khi hover */
+}
+@keyframes auroraMovement {
+    0% { background-position: 0% 0%, 0% 0%, 0% 0%; transform: rotate(0deg) scale(1); }
+    50% { background-position: 50% 50%, -30% 20%, 20% -30%; transform: rotate(10deg) scale(1.05); }
+    100% { background-position: 100% 100%, 0% 0%, 0% 0%; transform: rotate(0deg) scale(1); }
+}
+
+
+/* CSS cho fireflies */
+.firefly-particle {
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--firefly-base-color);
+  box-shadow: 0 0 4px 1.5px var(--firefly-shadow-color), 0 0 7px 2.5px var(--firefly-shadow-color); 
+  pointer-events: none; 
+  z-index: 5; 
+  opacity: 0; 
+}
+
+/* CSS cho Ripple Effect */
+.ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--ripple-color);
+    transform: translate(-50%, -50%); 
+    pointer-events: none;
+    z-index: 0; 
+}
+
 
 .blog-post-item.no-image {
   width: auto; 
   width: -moz-fit-content; 
   width: fit-content; 
-  min-width: 240px; 
-  max-width: clamp(320px, 28vw, 380px); 
-  background-image: radial-gradient(circle at 5% 10%, rgba(var(--highlight-color-poetic-rgb), 0.04) 0%, transparent 45%),
-                    radial-gradient(circle at 95% 90%, rgba(var(--primary-color-rgb), 0.03) 0%, transparent 45%),
-                    linear-gradient(160deg, var(--blog-card-bg-gradient-start) 0%, var(--blog-card-bg-gradient-end) 100%); /* Them gradient */
+  min-width: 280px; 
+  max-width: clamp(360px, 31vw, 410px); 
+  background-image: radial-gradient(circle at 12% 18%, rgba(var(--highlight-color-poetic-rgb), 0.055) 0%, transparent 60%),
+                    radial-gradient(circle at 88% 82%, rgba(var(--primary-color-rgb), 0.045) 0%, transparent 60%),
+                    linear-gradient(175deg, var(--blog-card-bg-gradient-start) 0%, var(--blog-card-bg-gradient-end) 100%);
   background-blend-mode: screen, screen, normal;
 }
 
-/* CSS Hover (Framer Motion se override neu co) */
-.blog-post-item:hover {
-    transform: translateY(-8px) scale(1.035); /* dich chuyen va scale nhieu hon */
-    border-color: rgba(var(--highlight-color-poetic-rgb), 0.45);
-    box-shadow: 0 20px 50px -18px var(--blog-card-hover-glow), /* bong do khi hover ro net hon */
-                0 0 28px rgba(var(--highlight-color-poetic-rgb), 0.25) inset, /* tang glow inset */
-                0 0 12px rgba(var(--primary-color-rgb),0.12) inset;
-}
 
 .blog-post-header {
   display: flex;
   align-items: center;
-  gap: 1rem; /* khoang cach avatar va ten */
-  margin-bottom: 1.2rem;
+  gap: 1.3rem; 
+  margin-bottom: 1.5rem;
   flex-shrink: 0;
 }
 
 .blog-post-avatar {
-  width: 44px; /* avatar to hon */
-  height: 44px;
+  width: 50px; 
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2.8px solid rgba(var(--highlight-color-poetic-rgb), 0.45); /* vien avatar day hon */
-  box-shadow: 0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.25); /* bong do avatar */
+  border: 3.8px solid rgba(var(--highlight-color-poetic-rgb), 0.6); 
+  box-shadow: 0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.4); 
   flex-shrink: 0;
 }
 
 .blog-post-author-info { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
-.blog-post-author-name { font-weight: 500; color: var(--highlight-color-poetic); font-size: 1.05em; line-height: 1.3; }
-.blog-post-timestamp { font-size: 0.8em; color: var(--subtext-color-poetic); opacity: 0.9; line-height: 1.25; }
+.blog-post-author-name { font-weight: 500; color: var(--highlight-color-poetic); font-size: 1.12em; line-height: 1.45; }
+.blog-post-timestamp { font-size: 0.85em; color: var(--subtext-color-poetic); opacity: 0.94; line-height: 1.4; }
 
-.blog-post-body { display: flex; flex-direction: column; flex-grow: 1; min-height: 0; margin-bottom: 0.9rem; }
+.blog-post-body { display: flex; flex-direction: column; flex-grow: 1; min-height: 0; margin-bottom: 1.2rem; }
 
 .blog-post-title {
   font-family: var(--font-family-blog-card-title);
-  font-size: clamp(1.2em, 1.8vw, 1.45em); /* title to hon */
+  font-size: clamp(1.35em, 2.1vw, 1.6em); 
   color: var(--text-color-poetic);
-  opacity: 0.98;
-  margin: 0 0 0.9rem 0; /* khoang cach voi content */
+  opacity: 1; 
+  margin: 0 0 1.2rem 0; 
   font-weight: 600;
   flex-shrink: 0;
-  line-height: 1.4; /* tang line-height */
-  letter-spacing: 0.35px;
-  text-shadow: 0 1.5px 3px rgba(var(--background-color-rgb), 0.15); /* bong do text ro hon */
+  line-height: 1.55; 
+  letter-spacing: 0.04em; /* Gian letter spacing */ 
+  word-spacing: 0.05em; 
+  text-shadow: 0 2.8px 4.5px rgba(var(--background-color-rgb), 0.22); 
   display: -webkit-box;
   -webkit-line-clamp: 3; 
   -webkit-box-orient: vertical;
@@ -152,84 +227,97 @@
 
 .blog-post-content {
   font-family: var(--font-family-blog-body);
-  font-size: clamp(0.9em, 1.15vw, 1em); /* content to hon */
-  line-height: 1.75; /* line-height cho de doc */
+  font-size: clamp(0.95em, 1.22vw, 1.05em); 
+  line-height: 1.95; 
   color: var(--text-color-poetic);
-  opacity: 0.92;
+  opacity: 0.97; 
   white-space: pre-wrap;
   overflow-y: auto; 
   flex-grow: 1;
-  max-height: 260px; /* cao hon chut */
-  scrollbar-width: thin; /* scrollbar mong */
-  scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.55) rgba(var(--card-background-rgb),0.15); /* mau scrollbar */
+  max-height: 300px; 
+  scrollbar-width: thin; 
+  scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.7) rgba(var(--card-background-rgb),0.3); 
   position: relative;
-  padding-right: 6px; 
+  padding-right: 10px; 
 }
 
 .blog-post-item.no-image .blog-post-content { max-height: none; overflow-y: visible; }
 
-.blog-post-content::-webkit-scrollbar { width: 9px; } /* scrollbar webkit day hon */
-.blog-post-content::-webkit-scrollbar-track { background: rgba(var(--card-background-rgb),0.15); border-radius: 5px; margin: 2px 0; }
+.blog-post-content::-webkit-scrollbar { width: 11px; } 
+.blog-post-content::-webkit-scrollbar-track { background: rgba(var(--card-background-rgb),0.3); border-radius: 7px; margin: 4px 0; }
 .blog-post-content::-webkit-scrollbar-thumb { 
-    background-color: rgba(var(--highlight-color-poetic-rgb),0.45); 
-    border-radius: 5px; 
-    border: 2.5px solid rgba(var(--card-background-rgb),0.75); 
+    background-color: rgba(var(--highlight-color-poetic-rgb),0.6); 
+    border-radius: 7px; 
+    border: 4px solid rgba(var(--card-background-rgb),0.9); 
     background-clip: content-box;
 }
-.blog-post-content::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--highlight-color-poetic-rgb),0.65); }
+.blog-post-content::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--highlight-color-poetic-rgb),0.8); }
 
 .blog-post-content.has-overflow::after {
   content: ''; position: absolute; bottom: 0; left: 0; right: 0; 
-  height: 3.5em; /* tang chieu cao fade */
-  background: linear-gradient(to bottom, transparent, var(--blog-card-bg-gradient-end) 98%); /* fade mem mai hon */
+  height: 4.5em; 
+  background: linear-gradient(to bottom, transparent, var(--blog-card-bg-gradient-end) 97%); 
   pointer-events: none;
 }
 .blog-post-item.no-image .blog-post-content.has-overflow::after { display: none; }
 
 .blog-post-item .read-more-prompt {
-    display: block; text-align: right; font-size: 0.88em; /* to hon chut */
-    color: var(--highlight-color-poetic); opacity: 0.8; margin-top: 0.7rem;
+    display: block; text-align: right; font-size: 0.94em; 
+    color: var(--highlight-color-poetic); opacity: 0.9; margin-top: 1rem;
     font-style: italic; font-family: var(--font-family-blog-body);
-    transition: color 0.28s ease, opacity 0.28s ease, transform 0.22s ease;
-    text-decoration: none; position: relative; padding-right: 1.3em; 
+    transition: color 0.35s ease, opacity 0.35s ease, transform 0.3s ease;
+    text-decoration: none; position: relative; padding-right: 1.5em; 
 }
-.blog-post-item .read-more-prompt::after { /* mui ten dep hon */
+.blog-post-item .read-more-prompt::after { 
     content: '»'; font-weight: bold;
     position: absolute; right: 0; top: 50%;
-    transform: translateY(-50%) translateX(-2.5px);
-    opacity: 0; transition: opacity 0.28s ease, transform 0.28s ease;
+    transform: translateY(-50%) translateX(-4px);
+    opacity: 0; transition: opacity 0.35s ease, transform 0.35s ease;
     color: var(--primary-color);
 }
 .blog-post-item:hover .read-more-prompt {
-    opacity: 1; color: var(--primary-color); transform: translateX(-3.5px); 
+    opacity: 1; color: var(--primary-color); transform: translateX(-5px); 
 }
 .blog-post-item:hover .read-more-prompt::after { opacity: 1; transform: translateY(-50%) translateX(0px); }
 
 
-.blog-post-image-wrapper { /* wrapper cho anh de scale */
-    overflow: hidden; /* an phan thua cua anh khi scale */
-    border-radius: 14px; /* bo goc */
+.blog-post-image-wrapper { 
+    overflow: hidden; 
+    border-radius: 20px; 
     margin-top: auto;
     flex-shrink: 0;
-    border: 1.8px solid rgba(var(--border-color-rgb), 0.3);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    border: 2.8px solid rgba(var(--border-color-rgb), 0.45); 
+    box-shadow: 0 7px 20px rgba(0,0,0,0.2); 
+    position: relative; 
 }
 .blog-post-image {
-  width: 100%; aspect-ratio: 16 / 9.8; /* ti le khung hinh */
-  max-height: 220px; /* tang chieu cao toi da */
+  width: 100%; aspect-ratio: 16 / 10.5; 
+  max-height: 250px; 
   object-fit: cover;
-  transition: transform 0.45s cubic-bezier(0.165, 0.84, 0.44, 1), filter 0.35s ease; /* cubic bezier cho zoom */
-  filter: var(--blog-image-initial-brightness); /* filter ban dau */
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease; 
+  filter: var(--blog-image-initial-brightness); 
 }
 .blog-post-item:hover .blog-post-image {
-    transform: scale(1.12); /* zoom nhieu hon khi hover */
-    filter: var(--blog-image-hover-brightness); /* filter khi hover */
+    transform: scale(1.2); 
+    filter: var(--blog-image-hover-brightness); 
 }
+.thumbnail-sparkle {
+    position: absolute;
+    width: 3px; 
+    height: 3px;
+    background-color: var(--thumbnail-sparkle-color);
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(0.3px); 
+    opacity: 0; 
+    box-shadow: 0 0 2px 0.5px var(--thumbnail-sparkle-color); /* Them shadow cho sparkle */
+}
+
 
 .blog-status-message {
   text-align: center; font-style: italic; color: var(--subtext-color-poetic);
-  padding: 3.5rem 1.2rem; font-size: 1.25em; /* to hon */
-  width: 100%; min-height: 230px; display: flex;
+  padding: 5rem 2rem; font-size: 1.4em; 
+  width: 100%; min-height: 280px; display: flex;
   flex-direction: column; align-items: center; justify-content: center;
 }
 .blog-status-message.error { color: var(--error-color); font-weight: 400; }
@@ -237,173 +325,220 @@
 /* --- BLOG LIGHTBOX STYLES (CAI TIEN) --- */
 .blog-lightbox-overlay {
   position: fixed; inset: 0;
-  background-color: rgba(var(--card-background-rgb, 25, 25, 38), 0.98); /* toi hon */
-  backdrop-filter: blur(25px) saturate(160%) brightness(0.85); /* blur manh hon */
-  -webkit-backdrop-filter: blur(25px) saturate(160%) brightness(0.85);
+  background-color: rgba(var(--card-background-rgb, 25, 25, 38), 0.992); 
   display: flex; align-items: center; justify-content: center;
-  z-index: 2000; padding: clamp(0.5rem, 2.5vw, 1.2rem); 
+  z-index: 2000; padding: clamp(1rem, 3.5vw, 1.8rem); 
   box-sizing: border-box; font-family: var(--font-family-poetic), var(--font-family-fallback);
+  overflow: hidden; 
 }
+.blog-lightbox-overlay::before {
+    content: '';
+    position: absolute;
+    inset: -60%; 
+    background: radial-gradient(ellipse at center, rgba(var(--highlight-color-poetic-rgb), 0.1) 0%, transparent 55%),
+                linear-gradient(65deg, rgba(var(--primary-color-rgb), 0.06) 0%, rgba(var(--secondary-color-rgb), 0.05) 100%);
+    background-blend-mode: screen;
+    opacity: 0.45; 
+    z-index: -1;
+    animation: poeticLightboxBg 30s linear infinite alternate; 
+}
+@keyframes poeticLightboxBg {
+    0% { transform: rotate(0deg) scale(1.4); }
+    100% { transform: rotate(360deg) scale(1.4); }
+}
+
+.shooting-star {
+    position: absolute;
+    width: 1.5px; 
+    height: 60px; 
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), transparent);
+    border-radius: 50%;
+    filter: blur(0.3px) drop-shadow(0 0 2.5px rgba(255, 255, 255, 0.4)); 
+    pointer-events: none;
+    z-index: 0; 
+}
+.shooting-star.long-tail { 
+    height: 100px;
+    width: 1px;
+    opacity: 0.6;
+    background: linear-gradient(to bottom, rgba(220, 220, 255, 0.6), transparent); /* Duoi dai co mau khac chut */
+    filter: blur(0.5px) drop-shadow(0 0 3.5px rgba(220, 220, 255, 0.5));
+}
+
 
 .blog-lightbox-content-wrapper {
   position: relative; width: 100%; height: 100%;
-  max-width: clamp(92vw, 920px, 97vw); /* max-width lon hon */
-  max-height: 95vh; /* max-height lon hon */
+  max-width: clamp(95.5vw, 1000px, 99vw); 
+  max-height: 97vh; 
   display: flex; flex-direction: column;
-  background-color: rgba(var(--background-color-rgb), 0.92); /* bg trong suot hon */
-  border: 2.5px solid rgba(var(--border-color-rgb), 0.55); /* vien day hon */
+  background-color: rgba(var(--background-color-rgb), 0.96); 
+  border: 4px solid rgba(var(--border-color-rgb), 0.7); 
   border-radius: var(--blog-lightbox-border-radius);
-  box-shadow: 0 35px 90px rgba(0,0,0,0.7), 0 0 0 1.5px rgba(var(--highlight-color-poetic-rgb), 0.12), /* tang bong do */
-              inset 0 0 25px rgba(var(--card-background-rgb), 0.3); /* them glow inset */
+  box-shadow: 0 50px 120px rgba(0,0,0,0.85), 0 0 0 3px rgba(var(--highlight-color-poetic-rgb), 0.2), 
+              inset 0 0 40px rgba(var(--card-background-rgb), 0.45); 
   overflow: hidden;
 }
 
 .blog-lightbox-header {
-  padding: 1.8rem 2.2rem; /* padding lon hon */
-  border-bottom: 2px solid rgba(var(--border-color-rgb), 0.4); /* vien day hon */
+  padding: 2.5rem 3rem; 
+  border-bottom: 3.5px solid rgba(var(--border-color-rgb), 0.55); 
   flex-shrink: 0; position: relative;
-  background: linear-gradient(rgba(var(--card-background-rgb),0.35), rgba(var(--card-background-rgb),0.2));
+  background: linear-gradient(rgba(var(--card-background-rgb),0.5), rgba(var(--card-background-rgb),0.35));
 }
 
-.blog-lightbox-title {
+.blog-lightbox-title.poetic-text-glow { 
   font-family: var(--font-family-poetic), var(--font-family-fallback);
-  font-size: clamp(1.9em, 3.2vw, 2.6em); /* title to hon */
+  font-size: clamp(2.2em, 4vw, 3em); 
   font-weight: 400; color: var(--text-color-poetic);
-  opacity: 0.98; margin: 0 auto;
-  max-width: calc(100% - 130px); 
-  line-height: 1.42; letter-spacing: 1.2px; 
+  opacity: 1; margin: 0 auto;
+  max-width: calc(100% - 160px); 
+  line-height: 1.55; 
+  letter-spacing: 0.08em; /* Gian letter spacing */
+  word-spacing: 0.08em; 
   text-align: center;
-  text-shadow:
-    0 1.8px 1.8px rgba(var(--background-color-rgb), 0.35),
-    0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.45), /* tang bong do text */
-    0 0 28px rgba(var(--highlight-color-poetic-rgb), 0.3);
+  text-shadow: 
+    0 0 8px rgba(var(--highlight-color-poetic-rgb), 0.3),
+    0 0 18px rgba(var(--highlight-color-poetic-rgb), 0.4),
+    0 0 30px rgba(var(--highlight-color-poetic-rgb), 0.5),
+    0 0 45px rgba(var(--primary-color-rgb), 0.25),
+    0 3px 3px rgba(var(--background-color-rgb), 0.5);
+  animation: lightboxTextGlow 4s infinite alternate ease-in-out; 
   -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;
+}
+@keyframes lightboxTextGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 8px rgba(var(--highlight-color-poetic-rgb), 0.3),
+      0 0 18px rgba(var(--highlight-color-poetic-rgb), 0.4),
+      0 0 30px rgba(var(--highlight-color-poetic-rgb), 0.5),
+      0 0 45px rgba(var(--primary-color-rgb), 0.25),
+      0 3px 3px rgba(var(--background-color-rgb), 0.5);
+  }
+  50% {
+    text-shadow:
+      0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.4),
+      0 0 22px rgba(var(--highlight-color-poetic-rgb), 0.5),
+      0 0 38px rgba(var(--highlight-color-poetic-rgb), 0.6),
+      0 0 55px rgba(var(--primary-color-rgb), 0.3),
+      0 3px 3px rgba(var(--background-color-rgb), 0.5);
+  }
 }
 
 .blog-lightbox-close-button {
-  position: absolute; top: 50%; right: 2rem; 
+  position: absolute; top: 50%; right: 2.8rem; 
   transform: translateY(-50%); background: transparent; border: none;
-  color: rgba(var(--text-color-poetic-rgb), 0.85); 
-  cursor: pointer; padding: 0.8rem; border-radius: 50%;
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); /* cubic bezier cho muot */
+  color: rgba(var(--text-color-poetic-rgb), 1); 
+  cursor: pointer; padding: 1.1rem; border-radius: 50%;
 }
-.blog-lightbox-close-button:hover { /* hieu ung hover nut close dep hon */
-  color: var(--error-color); background-color: rgba(var(--error-color-rgb), 0.25);
-  transform: translateY(-50%) scale(1.25) rotate(180deg); 
-  box-shadow: 0 0 18px rgba(var(--error-color-rgb),0.4);
-}
-.blog-lightbox-close-button svg { width: 34px; height: 34px; } /* icon close to hon */
+.blog-lightbox-close-button svg { width: 40px; height: 40px; } 
 
 .blog-lightbox-scrollable-content {
   flex-grow: 1; overflow-y: auto;
-  padding: 2.2rem 2.5rem; /* padding lon hon */
-  scrollbar-width: thin; scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.65) rgba(var(--card-background-rgb),0.35);
+  padding: 3rem 3.2rem; 
+  scrollbar-width: thin; scrollbar-color: rgba(var(--highlight-color-poetic-rgb), 0.8) rgba(var(--card-background-rgb),0.5);
 }
-.blog-lightbox-scrollable-content::-webkit-scrollbar { width: 10px; } 
-.blog-lightbox-scrollable-content::-webkit-scrollbar-track { background: rgba(var(--card-background-rgb),0.25); border-radius: 5px; }
-.blog-lightbox-scrollable-content::-webkit-scrollbar-thumb { background-color: rgba(var(--highlight-color-poetic-rgb),0.55); border-radius: 5px; border: 2.5px solid rgba(var(--background-color-rgb),0.9); background-clip: content-box;}
-.blog-lightbox-scrollable-content::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--highlight-color-poetic-rgb),0.75); }
+.blog-lightbox-scrollable-content::-webkit-scrollbar { width: 12px; } 
+.blog-lightbox-scrollable-content::-webkit-scrollbar-track { background: rgba(var(--card-background-rgb),0.4); border-radius: 7.5px; }
+.blog-lightbox-scrollable-content::-webkit-scrollbar-thumb { background-color: rgba(var(--highlight-color-poetic-rgb),0.7); border-radius: 7.5px; border: 4px solid rgba(var(--background-color-rgb),0.95); background-clip: content-box;}
+.blog-lightbox-scrollable-content::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--highlight-color-poetic-rgb),0.9); }
 
 .blog-lightbox-image {
-  width: 100%; max-height: 58vh; /* tang max-height */
-  object-fit: cover; border-radius: 18px; /* bo goc lon hon */
-  margin-bottom: 2.2rem; border: 2.5px solid rgba(var(--border-color-rgb), 0.35); 
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* bong do ro net hon */
+  width: 100%; max-height: 64vh; 
+  object-fit: cover; border-radius: 24px; 
+  margin-bottom: 3rem; border: 4px solid rgba(var(--border-color-rgb), 0.5); 
+  box-shadow: 0 15px 45px rgba(0,0,0,0.45); 
 }
 
 .blog-lightbox-full-content {
   font-family: var(--font-family-blog-body);
-  font-size: clamp(1.15em, 1.35vw, 1.25em); /* font to hon */
-  line-height: 1.95; /* line height cao hon */
+  font-size: clamp(1.22em, 1.5vw, 1.32em); 
+  line-height: 2.2; /* Tang line-height */ 
   color: var(--text-color-poetic); opacity: 1;
-  white-space: pre-wrap; margin-bottom: 2.2rem;
+  white-space: pre-wrap; margin-bottom: 3rem;
+  word-spacing: 0.04em; 
 }
-.blog-lightbox-full-content p { margin-bottom: 1.35em; }
+.blog-lightbox-full-content p { margin-bottom: 1.5em; }
 .blog-lightbox-full-content p:last-child { margin-bottom: 0; }
 
-.blog-lightbox-meta-container { margin-bottom: 2rem; text-align: left; }
-.blog-lightbox-meta-author {
-  font-family: var(--font-family-poetic); font-size: 1.2em; 
-  color: var(--highlight-color-poetic); font-weight: 500; margin-bottom: 0.4rem;
+.blog-lightbox-meta-container { margin-bottom: 2.8rem; text-align: left; }
+.blog-lightbox-meta-author.poetic-text-glow { 
+  font-family: var(--font-family-poetic); font-size: 1.35em; 
+  color: var(--highlight-color-poetic); font-weight: 500; margin-bottom: 0.65rem;
+  animation: lightboxTextGlow 4.5s infinite alternate ease-in-out 0.5s; 
+  letter-spacing: 0.03em; /* Them letter spacing */
 }
 .blog-lightbox-meta-timestamp {
-  font-family: var(--font-family-blog-body); font-size: 0.98em;
-  color: var(--subtext-color-poetic); opacity: 0.9;
+  font-family: var(--font-family-blog-body); font-size: 1.04em;
+  color: var(--subtext-color-poetic); opacity: 0.95;
 }
 .blog-lightbox-meta-divider {
-  height: 1.8px; 
-  background: linear-gradient(to right, transparent, rgba(var(--border-color-rgb), 0.45), transparent);
-  margin: 2rem 0; 
+  height: 2.8px; 
+  background: linear-gradient(to right, transparent 10%, rgba(var(--border-color-rgb), 0.6) 35%, rgba(var(--border-color-rgb), 0.6) 65%, transparent 90%); 
+  margin: 2.8rem 0; 
 }
 
-.blog-lightbox-nav-button { /* Nav button trong lightbox dep hon */
+.blog-lightbox-nav-button { 
   position: absolute; top: 50%; transform: translateY(-50%);
-  background: rgba(var(--card-background-rgb, 30, 30, 46), 0.7); /* bg trong suot hon */
-  color: rgba(var(--text-color-poetic-rgb, 230, 230, 230), 0.95); 
-  border: 2.2px solid rgba(var(--border-color-rgb),0.4); 
-  border-radius: 50%; width: 54px; height: 54px; /* nut to hon */
+  background: rgba(var(--card-background-rgb, 30, 30, 46), 0.85); 
+  color: rgba(var(--text-color-poetic-rgb, 230, 230, 230), 1); 
+  border: 3px solid rgba(var(--border-color-rgb),0.55); 
+  border-radius: 50%; width: 60px; height: 60px; 
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; z-index: 10;
-  transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1); /* cubic bezier */
-  box-shadow: 0 5px 15px rgba(0,0,0,0.35);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.5);
 }
-.blog-lightbox-nav-button.prev { left: 1.8rem; } 
-.blog-lightbox-nav-button.next { right: 1.8rem; }
-.blog-lightbox-nav-button:hover {
-  background-color: rgba(var(--primary-color-rgb),0.3);
-  color: var(--primary-color); border-color: rgba(var(--primary-color-rgb),0.5);
-  transform: translateY(-50%) scale(1.2); /* scale lon hon */
-  box-shadow: 0 0 20px rgba(var(--primary-color-rgb), 0.45);
+.blog-lightbox-nav-button.prev { left: 2.5rem; } 
+.blog-lightbox-nav-button.next { right: 2.5rem; }
+.blog-lightbox-nav-button:hover:not(:disabled) { 
+  background-color: rgba(var(--primary-color-rgb),0.45);
+  color: var(--primary-color); border-color: rgba(var(--primary-color-rgb),0.65);
+  transform: translateY(-50%) scale(1.28); 
+  box-shadow: 0 0 28px rgba(var(--primary-color-rgb), 0.6);
 }
 .blog-lightbox-nav-button:disabled {
-  opacity: 0.3; /* trang thai disable ro hon */
+  opacity: 0.4; 
   cursor: not-allowed; transform: translateY(-50%) scale(1);
-  background-color: rgba(var(--card-background-rgb, 30, 30, 46), 0.3);
-  border-color: rgba(var(--border-color-rgb),0.18); 
+  background-color: rgba(var(--card-background-rgb, 30, 30, 46), 0.45);
+  border-color: rgba(var(--border-color-rgb),0.25); 
   box-shadow: none;
 }
 
 @media (max-width: 768px) {
-  .blog-view-container { max-width: 98vw; padding: 1.5rem clamp(0.8rem, 3vw, 1.2rem);}
-  .blog-post-item.with-image { width: clamp(300px, 43vw, 370px); }
-  .blog-post-item.no-image { min-width: 210px; max-width: clamp(270px, 41vw, 350px); }
-  .blog-post-item { margin-right: 1.6rem; padding: 1.2rem; }
-  .blog-post-header { margin-bottom: 0.8rem;}
-  .blog-post-avatar { width: 38px; height: 38px;}
-  .blog-post-author-name { font-size: 0.9em;}
-  .blog-post-timestamp { font-size: 0.7em;}
-  .blog-post-title { font-size: clamp(1.1em, 1.6vw, 1.3em); margin-bottom: 0.6rem;}
-  .blog-post-content { font-size: clamp(0.85em, 1.05vw, 0.95em); line-height: 1.65; max-height: 240px; }
-  .blog-post-image { max-height: 190px;}
-  .blog-lightbox-content-wrapper { max-width: 95vw; max-height: 90vh; }
-  .blog-lightbox-title { font-size: clamp(1.6em, 2.8vw, 2.2em); max-width: calc(100% - 100px); }
-  .blog-lightbox-close-button svg { width: 28px; height: 28px; }
-  .blog-lightbox-nav-button { width: 48px; height: 48px; } /* chinh sua cho phu hop */
-  .blog-lightbox-nav-button.prev { left: 1.2rem; }
-  .blog-lightbox-nav-button.next { right: 1.2rem; }
-  .blog-lightbox-scrollable-content { padding: 1.8rem; }
-  .blog-lightbox-full-content { font-size: clamp(1.05em, 1.2vw, 1.15em); }
+  .blog-view-container { padding: 2.2rem clamp(1.2rem, 4vw, 1.8rem);}
+  .blog-post-item { padding: 1.5rem; }
+  .blog-post-header { margin-bottom: 1.1rem;}
+  .blog-post-avatar { width: 44px; height: 44px;}
+  .blog-post-author-name { font-size: 1.05em;}
+  .blog-post-timestamp { font-size: 0.8em;}
+  .blog-post-title { font-size: clamp(1.25em, 1.9vw, 1.45em); margin-bottom: 0.9rem;}
+  .blog-post-content { font-size: clamp(0.92em, 1.18vw, 1.02em); line-height: 1.8; max-height: 270px; }
+  .blog-post-image { max-height: 220px;}
+  .blog-lightbox-content-wrapper { max-width: 97vw; max-height: 94vh; }
+  .blog-lightbox-title.poetic-text-glow { font-size: clamp(1.9em, 3.5vw, 2.5em); max-width: calc(100% - 130px); }
+  .blog-lightbox-close-button svg { width: 34px; height: 34px; }
+  .blog-lightbox-nav-button { width: 54px; height: 54px; } 
+  .blog-lightbox-nav-button.prev { left: 2rem; }
+  .blog-lightbox-nav-button.next { right: 2rem; }
+  .blog-lightbox-scrollable-content { padding: 2.5rem; }
+  .blog-lightbox-full-content { font-size: clamp(1.15em, 1.35vw, 1.25em); }
 }
 
 @media (max-width: 600px) {
- .blog-view-container { padding: 1.2rem clamp(0.5rem, 2vw, 1rem); max-width: 100vw; }
- .blog-posts-list-wrapper { min-height: auto; -webkit-mask-image: none; mask-image: none; } 
- .blog-post-item.with-image { width: clamp(280px, 80vw, 340px); }
- .blog-post-item.no-image { min-width: 190px; max-width: clamp(230px, 78vw, 310px); }
- .blog-post-item { margin-right: 1.3rem; padding: 1rem; }
- .blog-post-content { max-height: 220px; }
- .blog-post-image { max-height: 180px; }
- .blog-lightbox-header { padding: 1.3rem; }
- .blog-lightbox-title { font-size: clamp(1.5em, 4.8vw, 2em); max-width: calc(100% - 85px); }
- .blog-lightbox-scrollable-content { padding: 1.5rem 1.6rem; }
- .blog-lightbox-full-content { font-size: clamp(1em, 3vw, 1.1em); }
- .blog-lightbox-nav-button { width: 44px; height: 44px;} /* chinh sua cho phu hop */
+ .blog-view-container { padding: 2rem clamp(1rem, 3vw, 1.5rem); }
+ .blog-posts-list-wrapper { -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); } 
+ .blog-post-item { padding: 1.3rem; }
+ .blog-post-content { max-height: 250px; }
+ .blog-post-image { max-height: 210px; }
+ .blog-lightbox-header { padding: 2rem; }
+ .blog-lightbox-title.poetic-text-glow { font-size: clamp(1.65em, 5.5vw, 2.2em); max-width: calc(100% - 100px); }
+ .blog-lightbox-scrollable-content { padding: 2.2rem 2.3rem; }
+ .blog-lightbox-full-content { font-size: clamp(1.1em, 3.8vw, 1.2em); }
+ .blog-lightbox-nav-button { width: 50px; height: 50px;} 
 }
 
-/* Hieu ung them cho card khi focus (tab) */
 .blog-post-item:focus-visible {
-    outline: 2.5px solid var(--primary-color);
-    outline-offset: 3px;
-    box-shadow: 0 0 0 5px rgba(var(--primary-color-rgb), 0.3), 
-                0 12px 35px -10px var(--blog-card-hover-glow);
+    outline: 4px solid var(--primary-color);
+    outline-offset: 5px;
+    box-shadow: 0 0 0 7px rgba(var(--primary-color-rgb), 0.4), 
+                0 20px 50px -18px var(--blog-card-hover-glow);
 }
