@@ -8,7 +8,7 @@ import PersonalCard from './PersonalCard';
 import Gallery from './Gallery';
 import Guestbook from './Guestbook';
 import SpotifyPlaylists from './SpotifyPlaylists';
-import Blog from './Blog'; // them blog
+import Blog from './Blog'; // THEM BLOG
 import type { GuestbookEntry } from '../data/guestbook.data';
 
 import { initParticlesEngine } from "@tsparticles/react";
@@ -59,16 +59,16 @@ interface LanguageSelectorProps {
   onSpotifyViewChange: (isActive: boolean) => void; 
 }
 
-type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; // them blog
-type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton' | 'blogButton'; // them blogButton
-type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg' | 'blogIconSvg'; // them blogIconSvg
-type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; // them blog
+type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; // THEM BLOG
+type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton' | 'blogButton'; // THEM BLOG
+type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg' | 'blogIconSvg'; // THEM BLOG
+type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; // THEM BLOG
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const getFlourishLayoutPropsForView = (view: SelectorView) => {
     let scale = 1;
-    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) scale = 0.85; // them blog vao list
+    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) scale = 0.85; // THEM BLOG
     return { scale };
 };
 
@@ -196,11 +196,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const handleMouseLeaveLangBtn = () => {};
   const langForTextDisplayInOptionsView = displayTextLanguage;
   const footerText = `ᓚᘏᗢ ${yourNameForIntro} | ${new Date().getFullYear()}`;
-  const showFooter = ['cardIntro', 'about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(currentView); // them blog
+  const showFooter = ['cardIntro', 'about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(currentView); // THEM BLOG
 
   const getFlourishWrapperStyle = (view: SelectorView, isTop: boolean) => {
     let mV = "1rem";
-    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) mV = "0.5rem"; // them blog
+    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) mV = "0.5rem"; // THEM BLOG
     return isTop ? { marginBottom: mV } : { marginTop: mV };
   };
 
@@ -246,9 +246,8 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (currentView === 'spotifyPlaylists' || (currentView === 'cardIntro' && headerPreviewType === 'spotifyPlaylists')) {
         fetchSpotifyPlaylists();
     }
-    // Logic fetch blog posts khi view blog hoac preview blog
     if (currentView === 'blog' || (currentView === 'cardIntro' && headerPreviewType === 'blog')) {
-        // Logic fetch blog posts (se them o component Blog.tsx)
+        // Blog.tsx will handle its own data fetching
     }
   }, [fetchGuestbookEntries, fetchSpotifyPlaylists, currentView, headerPreviewType]);
 
@@ -313,7 +312,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 :headerPreviewType==='gallery'?languageSelectorPreviewTranslations.gallerySneakPeekTitle[currentLanguage]
                                 :headerPreviewType==='guestbook'?languageSelectorPreviewTranslations.guestbookSneakPeekTitle[currentLanguage]
                                 :headerPreviewType==='spotifyPlaylists'?languageSelectorPreviewTranslations.spotifySneakPeekTitle[currentLanguage]
-                                :headerPreviewType==='blog'?languageSelectorPreviewTranslations.blogSneakPeekTitle[currentLanguage] // them blog
+                                :headerPreviewType==='blog'?languageSelectorPreviewTranslations.blogSneakPeekTitle[currentLanguage] // THEM BLOG
                                 : ''}
                             </motion.h4>
                             <motion.div className="header-preview-block-content" variants={contentItemVariants(0.1)} initial="hidden" animate="visible" exit="exit">
@@ -322,7 +321,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                     :headerPreviewType==='gallery'?previewIcons.gallery
                                     :headerPreviewType==='guestbook'?previewIcons.guestbook
                                     :headerPreviewType==='spotifyPlaylists'?previewIcons.spotify
-                                    :headerPreviewType==='blog'?previewIcons.blog // them blog
+                                    :headerPreviewType==='blog'?previewIcons.blog // THEM BLOG
                                     : ''
                                 }} />
                                 <div className="header-preview-actual-content">
@@ -378,11 +377,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           {currentView === 'gallery' && ( <motion.div key="gallery-content" className="content-section card-content-display gallery-view-wrapper" variants={galleryViewVariants(0.05)} initial="hidden" animate="visible" exit="exit">
               <Gallery onBack={()=>setCurrentView('cardIntro')} language={currentLanguage} />
           </motion.div> )}
-          {currentView === 'blog' && ( 
+          {currentView === 'blog' && ( // THEM BLOG VIEW
             <motion.div 
                 key="blog-view-content" 
-                className="content-section card-content-display" // giu class chung cho layout
-                variants={galleryViewVariants(0.05)} // Sd gallery variants hoac tao moi
+                className="content-section card-content-display" 
+                variants={galleryViewVariants(0.05)} 
                 initial="hidden" animate="visible" exit="exit"
             >
                 <Blog language={currentLanguage} onBack={()=>setCurrentView('cardIntro')} />
