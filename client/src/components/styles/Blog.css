@@ -1,0 +1,105 @@
+/* client/src/components/styles/Blog.css */
+.blog-view-container {
+  width: 100%;
+  max-width: 800px;
+  padding: 1.5rem clamp(1rem, 5vw, 2rem);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: var(--font-family-poetic), var(--font-family-fallback);
+  color: var(--text-color-poetic);
+}
+
+.blog-view-title {
+  font-size: clamp(1.8em, 4.5vw, 2.5em);
+  font-weight: 400;
+  text-align: center;
+  color: var(--highlight-color-poetic);
+  text-shadow: 0 0 20px rgba(var(--highlight-color-poetic-rgb), 0.4),
+               0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.25);
+  letter-spacing: 1.5px;
+  margin-bottom: 1rem;
+}
+
+.blog-posts-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.blog-post-item {
+  background-color: rgba(var(--card-background-rgb), 0.7);
+  border: 1.5px solid rgba(var(--border-color-rgb), 0.3);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 25px -10px rgba(var(--background-color-rgb), 0.5),
+              inset 0 0 10px rgba(var(--highlight-color-poetic-rgb), 0.05);
+  overflow: hidden;
+}
+
+.blog-post-title {
+  font-size: clamp(1.3em, 3vw, 1.6em);
+  color: var(--primary-color);
+  margin: 0 0 0.8rem 0;
+  font-weight: 500;
+}
+
+.blog-post-image {
+  width: 100%;
+  max-height: 400px; 
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(var(--border-color-rgb), 0.2);
+}
+
+.blog-post-content {
+  font-size: clamp(0.95em, 2.2vw, 1.05em);
+  line-height: 1.75;
+  color: var(--text-color-poetic);
+  opacity: 0.9;
+  white-space: pre-wrap; 
+  margin-bottom: 1rem;
+}
+
+.blog-post-meta {
+  font-size: clamp(0.8em, 1.8vw, 0.9em);
+  color: var(--subtext-color-poetic);
+  text-align: right;
+  opacity: 0.7;
+}
+
+.blog-status-message {
+  text-align: center;
+  font-style: italic;
+  color: var(--subtext-color-poetic);
+  padding: 2rem 1rem;
+  font-size: 1.1em;
+}
+.blog-status-message.error {
+  color: var(--error-color);
+  font-weight: 400;
+}
+
+.blog-back-button { /* ke thua card-view-back-button */
+  margin-top: 1.5rem; 
+  align-self: center;
+}
+
+@media (max-width: 600px) {
+ .blog-view-container {
+   padding: 1rem clamp(0.5rem, 3vw, 1rem);
+ }
+ .blog-post-item {
+   padding: 1.2rem;
+ }
+ .blog-post-title {
+   font-size: clamp(1.2em, 4vw, 1.5em);
+ }
+ .blog-post-content {
+   font-size: clamp(0.9em, 2.5vw, 1em);
+ }
+}

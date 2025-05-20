@@ -1,7 +1,8 @@
+// rin-personal-card/server/db.js
 import pg from 'pg';
 import dotenv from 'dotenv';
 
-dotenv.config(); // Cho phép sử dụng file .env khi dev local
+dotenv.config(); // dung file .env khi dev local
 
 const { Pool } = pg;
 
@@ -9,7 +10,6 @@ const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
   console.error('🔴 DATABASE_URL không được thiết lập, hãy check/thiết lập lại file .env');
-  // Chỉ thoát nếu không phải môi trường Railway/production
   if (process.env.NODE_ENV !== 'production' && !process.env.RAILWAY_ENVIRONMENT) {
     process.exit(1);
   }
@@ -17,9 +17,6 @@ if (!connectionString) {
 
 const pool = new Pool({
   connectionString,
-  // SSL bắt buộc cho kết nối tới DB trên Railway từ bên ngoài network của Railway
-  // Hoặc nếu app và DB cùng project trên Railway, SSL có thể không cần thiết.
-  // Để an toàn và tương thích nhiều trường hợp, nên bật cho production.
   ssl: process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT ? { rejectUnauthorized: false } : false,
 });
 
@@ -29,7 +26,7 @@ pool.on('connect', () => {
 
 pool.on('error', (err) => {
   console.error('🔴 Unexpected error với idle client', err);
-  process.exit(-1); // Thoát nếu có lỗi nghiêm trọng với pool
+  process.exit(-1); 
 });
 
 const initializeDb = async () => {
@@ -46,11 +43,25 @@ const initializeDb = async () => {
       );
     `);
     console.log('✨ Bảng "guestbook_entries" đã được chuẩn bị !');
+
+    // tao bang blog
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS blog_posts (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        content TEXT, 
+        image_url VARCHAR(2048),
+        discord_message_id VARCHAR(255) UNIQUE NOT NULL,
+        discord_author_id VARCHAR(255) NOT NULL,
+        timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log('✨ Bảng "blog_posts" đã được chuẩn bị !');
+
   } catch (err) {
     console.error('🔴 Error với database table:', err);
-    // Nếu đang trong môi trường Railway/production và không khởi tạo được DB thì là vấn đề lớn
     if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
-        throw err; // Ném lỗi để server không khởi động nếu DB không sẵn sàng
+        throw err; 
     }
   } finally {
     if (client) client.release();

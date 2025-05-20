@@ -8,6 +8,7 @@ import PersonalCard from './PersonalCard';
 import Gallery from './Gallery';
 import Guestbook from './Guestbook';
 import SpotifyPlaylists from './SpotifyPlaylists';
+import Blog from './Blog'; // them blog
 import type { GuestbookEntry } from '../data/guestbook.data';
 
 import { initParticlesEngine } from "@tsparticles/react";
@@ -47,7 +48,7 @@ import {
     SHARED_FLOURISH_SPRING_TRANSITION,
     aboutNavIconLeft,
 } from './languageSelector/languageSelector.constants';
-import { logInteraction } from '../utils/logger'; // IMPORT LOG UTIL
+import { logInteraction } from '../utils/logger';
 
 interface LanguageSelectorProps {
   onLanguageSelected: (language: 'vi' | 'en' | 'ja') => void;
@@ -58,13 +59,16 @@ interface LanguageSelectorProps {
   onSpotifyViewChange: (isActive: boolean) => void; 
 }
 
-type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists';
+type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; // them blog
+type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton' | 'blogButton'; // them blogButton
+type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg' | 'blogIconSvg'; // them blogIconSvg
+type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; // them blog
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const getFlourishLayoutPropsForView = (view: SelectorView) => {
     let scale = 1;
-    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists'].includes(view)) scale = 0.85;
+    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) scale = 0.85; // them blog vao list
     return { scale };
 };
 
@@ -76,10 +80,6 @@ const initialMountButton2Delay = initialMountDivider1Delay + 0.2;
 const initialMountDivider2Delay = initialMountButton2Delay + 0.1;
 const initialMountButton3Delay = initialMountDivider2Delay + 0.2;
 const initialMountFooterNoteDelay = initialMountButton3Delay + 0.4;
-
-type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton';
-type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg';
-type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists';
 
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
@@ -111,7 +111,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const isMountedRef = useRef(true);
   const initInProgressRef = useRef(false);
 
-  const prevViewRef = useRef<SelectorView>(currentView); // Track previous view
+  const prevViewRef = useRef<SelectorView>(currentView);
 
   useEffect(() => {
     if (currentView !== prevViewRef.current) {
@@ -120,7 +120,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         currentView: currentView, 
         language: currentLanguage 
       });
-      prevViewRef.current = currentView; // Update sau khi log
+      prevViewRef.current = currentView;
     }
   }, [currentView, currentLanguage]);
 
@@ -186,7 +186,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   const handleParticlesLoaded = useCallback(async (_container?: Container) => {}, []);
   const handleLanguageButtonClick = (lang: 'vi'|'en'|'ja') => { 
-    logInteraction('language_selected', { language: lang }); // LOG KHI CHON NN
+    logInteraction('language_selected', { language: lang }); 
     onLanguageSelected(lang); 
     setCurrentLanguage(lang); 
     setDisplayTextLanguage(lang); 
@@ -196,11 +196,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const handleMouseLeaveLangBtn = () => {};
   const langForTextDisplayInOptionsView = displayTextLanguage;
   const footerText = `ᓚᘏᗢ ${yourNameForIntro} | ${new Date().getFullYear()}`;
-  const showFooter = ['cardIntro', 'about', 'gallery', 'guestbook', 'spotifyPlaylists'].includes(currentView);
+  const showFooter = ['cardIntro', 'about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(currentView); // them blog
 
   const getFlourishWrapperStyle = (view: SelectorView, isTop: boolean) => {
     let mV = "1rem";
-    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists'].includes(view)) mV = "0.5rem";
+    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) mV = "0.5rem"; // them blog
     return isTop ? { marginBottom: mV } : { marginTop: mV };
   };
 
@@ -246,6 +246,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (currentView === 'spotifyPlaylists' || (currentView === 'cardIntro' && headerPreviewType === 'spotifyPlaylists')) {
         fetchSpotifyPlaylists();
     }
+    // Logic fetch blog posts khi view blog hoac preview blog
+    if (currentView === 'blog' || (currentView === 'cardIntro' && headerPreviewType === 'blog')) {
+        // Logic fetch blog posts (se them o component Blog.tsx)
+    }
   }, [fetchGuestbookEntries, fetchSpotifyPlaylists, currentView, headerPreviewType]);
 
   const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi'|'en'|'ja'): Promise<void> => {
@@ -266,6 +270,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   }[] = [
     { type: 'about', iconKey: 'aboutIconSvg', textKey: 'aboutButton'},
     { type: 'gallery', iconKey: 'galleryIconSvg', textKey: 'galleryButton'},
+    { type: 'blog', iconKey: 'blogIconSvg', textKey: 'blogButton' }, 
     { type: 'guestbook', iconKey: 'guestbookIconSvg', textKey: 'guestbookButton'},
     { type: 'spotifyPlaylists', iconKey: 'spotifyIconSvg', textKey: 'spotifyButton'},
   ];
@@ -308,6 +313,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 :headerPreviewType==='gallery'?languageSelectorPreviewTranslations.gallerySneakPeekTitle[currentLanguage]
                                 :headerPreviewType==='guestbook'?languageSelectorPreviewTranslations.guestbookSneakPeekTitle[currentLanguage]
                                 :headerPreviewType==='spotifyPlaylists'?languageSelectorPreviewTranslations.spotifySneakPeekTitle[currentLanguage]
+                                :headerPreviewType==='blog'?languageSelectorPreviewTranslations.blogSneakPeekTitle[currentLanguage] // them blog
                                 : ''}
                             </motion.h4>
                             <motion.div className="header-preview-block-content" variants={contentItemVariants(0.1)} initial="hidden" animate="visible" exit="exit">
@@ -316,6 +322,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                     :headerPreviewType==='gallery'?previewIcons.gallery
                                     :headerPreviewType==='guestbook'?previewIcons.guestbook
                                     :headerPreviewType==='spotifyPlaylists'?previewIcons.spotify
+                                    :headerPreviewType==='blog'?previewIcons.blog // them blog
                                     : ''
                                 }} />
                                 <div className="header-preview-actual-content">
@@ -323,6 +330,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                   {headerPreviewType==='gallery' && (<div className="header-preview-images-enhanced">{(localImages.length>0?localImages.slice(0,4):[]).map((img,idx)=>(<motion.img key={`preview-${idx}`} variants={contentItemVariants(0.1+idx*0.08)} src={img} alt={languageSelectorPreviewTranslations.galleryPreviewAlt[currentLanguage].replace("{index}",String(idx+1))} />))}</div>)}
                                   {headerPreviewType==='guestbook' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.guestbookSnippetContent[currentLanguage]}</p>)}
                                   {headerPreviewType==='spotifyPlaylists' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.spotifyPreviewContent[currentLanguage]}</p>)}
+                                  {headerPreviewType==='blog' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.blogSnippetContent[currentLanguage]}</p>)} 
                                 </div>
                             </motion.div>
                         </motion.div>):(<motion.div key="header-details" className="header-details-block" variants={contentItemVariants(headerContentBlockDelay)} initial="hidden" animate="visible" exit="exit">
@@ -370,6 +378,16 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           {currentView === 'gallery' && ( <motion.div key="gallery-content" className="content-section card-content-display gallery-view-wrapper" variants={galleryViewVariants(0.05)} initial="hidden" animate="visible" exit="exit">
               <Gallery onBack={()=>setCurrentView('cardIntro')} language={currentLanguage} />
           </motion.div> )}
+          {currentView === 'blog' && ( 
+            <motion.div 
+                key="blog-view-content" 
+                className="content-section card-content-display" // giu class chung cho layout
+                variants={galleryViewVariants(0.05)} // Sd gallery variants hoac tao moi
+                initial="hidden" animate="visible" exit="exit"
+            >
+                <Blog language={currentLanguage} onBack={()=>setCurrentView('cardIntro')} />
+            </motion.div> 
+          )}
           {currentView === 'guestbook' && ( <motion.div key="guestbook-content" className="content-section card-content-display guestbook-view-wrapper" variants={guestbookViewContainerVariants(0.05)} initial="hidden" animate="visible" exit="exit">
                 {guestbookLoading&&!guestbookEntries.length?(<motion.p initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>{currentLanguage==='vi'?'Đang tải...':currentLanguage==='en'?'Loading...':'読み込み中...'}</motion.p>):(<Guestbook language={currentLanguage} onBack={()=>setCurrentView('cardIntro')} entries={guestbookEntries} onAddEntry={handleAddGuestbookEntry} />)}
                 <motion.button className="card-view-back-button" onClick={()=>setCurrentView('cardIntro')} initial={{opacity:0,y:30,scale:0.9}} animate={{opacity:1,y:0,scale:1,transition:{delay:0.3,duration:0.6,ease:[0.23,1,0.32,1]}}} exit={{opacity:0,y:20,scale:0.95,transition:{duration:0.25,ease:"easeIn"}}} whileHover={{scale:1.08,y:-4,boxShadow:"0 8px 20px -5px rgba(var(--primary-color-rgb),0.35)",backgroundColor:"rgba(var(--primary-color-rgb),0.1)"}} whileTap={{scale:0.96,y:-1}} transition={{type:"spring",stiffness:300,damping:15}}>

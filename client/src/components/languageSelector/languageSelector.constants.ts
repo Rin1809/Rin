@@ -370,6 +370,7 @@ export const cardIntroTranslations = {
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
   guestbookButton: { vi: "Sổ Lưu Bút", en: "Guestbook", ja: "感想ノート" },
   spotifyButton: { vi: "Playlist Nhạc", en: "Music Playlists", ja: "音楽プレイリスト" },
+  blogButton: { vi: "Blog Cá Nhân", en: "Personal Blog", ja: "個人ブログ" }, // them blog
   introTagline: {
       vi: "Chào mừng đến với thế giới của tui !",
       en: "Welcome to my world!",
@@ -379,6 +380,7 @@ export const cardIntroTranslations = {
   galleryIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
   guestbookIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`,
   spotifyIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`,
+  blogIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>`, // them icon blog
   backButton: { vi: "Quay Lại", en: "Back", ja: "戻る" },
 };
 
@@ -490,7 +492,7 @@ export const cardIntroHeaderVariants: Variants = {
       opacity: 1, y: 0, scale: 1,
       transition: {
         duration: 0.7, delay: 0,
-        staggerChildren: 0 // Adjust stagger for children
+        staggerChildren: 0 
       }
     },
     exit: { opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.25, ease: "easeIn" } }
@@ -532,25 +534,12 @@ export const previewContainerVariants: Variants = {
   }
 };
 
-export const previewContentItemVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 20 }
-  },
-  exit: {
-    opacity: 0,
-    y: 8,
-    transition: { type: "spring", stiffness: 320, damping: 20 }
-  }
-};
-
 export const previewIcons = {
   about: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   gallery: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
   guestbook: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`,
   spotify: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`,
+  blog: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>`,
 };
 
 export const languageSelectorPreviewTranslations = {
@@ -558,6 +547,7 @@ export const languageSelectorPreviewTranslations = {
   gallerySneakPeekTitle: { vi: "Xem trước bộ sưu tập", en: "Gallery Sneak Peek", ja: "ギャラリー予告編" },
   guestbookSneakPeekTitle: { vi: "Góc Cảm Xúc", en: "Corner of Feelings", ja: "思いのコーナー" },
   spotifySneakPeekTitle: { vi: "Giai Điệu Yêu Thích", en: "Favorite Tunes", ja: "お気に入りメロディー" },
+  blogSneakPeekTitle: { vi: "Bài Viết Mới Nhất", en: "Latest Blog Post", ja: "最新のブログ投稿" }, // them blog
   aboutSnippetContent: {
     vi: "Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?",
     en: "Hi! I'm Rin,... well, just Rin, that's it? What were you expecting?",
@@ -573,6 +563,11 @@ export const languageSelectorPreviewTranslations = {
     vi: "Chìm đắm trong những giai điệu tuyệt vời từ Spotify...",
     en: "Immerse yourself in wonderful melodies from Spotify...",
     ja: "Spotifyの素晴らしいメロディーに浸ってください。。。"
+  },
+  blogSnippetContent: { // them blog
+    vi: "Khám phá những chia sẻ và câu chuyện từ Rin...",
+    en: "Discover thoughts and stories from Rin...",
+    ja: "リンの考えや物語を発見。。。"
   }
 };
 
@@ -612,9 +607,6 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
 export const aboutNavIconLeft = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 export const aboutNavIconRight = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
-
-
-// Type cho loading messages
 export interface LoadingMessages {
   preparing: { vi: string; en: string; ja: string };
   loadingIntro: { vi: string; en: string; ja: string };
@@ -626,9 +618,7 @@ export interface LoadingMessages {
   loadingGithubStatsIII: { vi: string; en: string; ja: string };
   loadingSocials: { vi: string; en: string; ja: string };
   loadingFinalizing: { vi: string; en: string; ja: string };
-  // Them key khac neu can
 }
-
 
 export const personalCardTranslations = {
   sectionTitles: {
