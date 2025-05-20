@@ -250,7 +250,13 @@ app.post('/api/notify-visit', async (req, res) => {
     };
 
     try {
-        await axios.post(`${MIZUKI_BOT_BASE_URL}/notify-visit`, visitData, {
+        // Dam bao MIZUKI_BOT_BASE_URL khong co dau / o cuoi
+        let notifyVisitUrl = MIZUKI_BOT_BASE_URL;
+        if (notifyVisitUrl.endsWith('/')) {
+            notifyVisitUrl = notifyVisitUrl.slice(0, -1);
+        }
+
+        await axios.post(`${notifyVisitUrl}/notify-visit`, visitData, { 
             headers: {
                 'Content-Type': 'application/json',
                 'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
@@ -319,7 +325,12 @@ app.post('/api/log-interaction', async (req, res) => {
     };
 
     try {
-        await axios.post(`${MIZUKI_BOT_BASE_URL}/log-interaction`, interactionPayload, { 
+        // Dam bao MIZUKI_BOT_BASE_URL khong co dau / o cuoi
+        let logInteractionUrl = MIZUKI_BOT_BASE_URL;
+        if (logInteractionUrl.endsWith('/')) {
+            logInteractionUrl = logInteractionUrl.slice(0, -1);
+        }
+        await axios.post(`${logInteractionUrl}/log-interaction`, interactionPayload, { 
             headers: {
                 'Content-Type': 'application/json',
                 'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
