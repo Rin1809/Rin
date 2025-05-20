@@ -1,5 +1,5 @@
 // client/src/components/Blog.tsx
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import './styles/Blog.css'; 
 import { aboutNavIconLeft } from './languageSelector/languageSelector.constants'; // Icon quay lai
