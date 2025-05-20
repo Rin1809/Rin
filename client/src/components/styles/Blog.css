@@ -16,7 +16,7 @@
 }
 
 .blog-view-container {
-    width: 100%; 
+    width: 250%; 
     padding: 1.8rem clamp(1rem, 3.5vw, 1.8rem); /* padding xung quanh */
     box-sizing: border-box;
     display: flex;
