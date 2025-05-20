@@ -8,7 +8,7 @@ import PersonalCard from './PersonalCard';
 import Gallery from './Gallery';
 import Guestbook from './Guestbook';
 import SpotifyPlaylists from './SpotifyPlaylists';
-import Blog from './Blog'; // THEM BLOG
+import Blog from './Blog'; 
 import type { GuestbookEntry } from '../data/guestbook.data';
 
 import { initParticlesEngine } from "@tsparticles/react";
@@ -42,7 +42,8 @@ import {
     previewIcons,
     languageSelectorPreviewTranslations,
     cardDisplayInfo,
-    galleryViewVariants,
+    galleryViewVariants, // Giu nguyen de khong anh huong
+    blogViewContainerVariants, // THEM blogViewContainerVariants
     guestbookViewContainerVariants,
     spotifyViewContainerVariants,
     SHARED_FLOURISH_SPRING_TRANSITION,
@@ -59,16 +60,16 @@ interface LanguageSelectorProps {
   onSpotifyViewChange: (isActive: boolean) => void; 
 }
 
-type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; // THEM BLOG
-type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton' | 'blogButton'; // THEM BLOG
-type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg' | 'blogIconSvg'; // THEM BLOG
-type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; // THEM BLOG
+type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog';
+type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton' | 'blogButton';
+type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg' | 'blogIconSvg';
+type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const getFlourishLayoutPropsForView = (view: SelectorView) => {
     let scale = 1;
-    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) scale = 0.85; // THEM BLOG
+    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) scale = 0.85;
     return { scale };
 };
 
@@ -196,11 +197,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const handleMouseLeaveLangBtn = () => {};
   const langForTextDisplayInOptionsView = displayTextLanguage;
   const footerText = `ᓚᘏᗢ ${yourNameForIntro} | ${new Date().getFullYear()}`;
-  const showFooter = ['cardIntro', 'about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(currentView); // THEM BLOG
+  const showFooter = ['cardIntro', 'about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(currentView);
 
   const getFlourishWrapperStyle = (view: SelectorView, isTop: boolean) => {
     let mV = "1rem";
-    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) mV = "0.5rem"; // THEM BLOG
+    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) mV = "0.5rem"; 
     return isTop ? { marginBottom: mV } : { marginTop: mV };
   };
 
@@ -247,7 +248,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         fetchSpotifyPlaylists();
     }
     if (currentView === 'blog' || (currentView === 'cardIntro' && headerPreviewType === 'blog')) {
-        // Blog.tsx will handle its own data fetching
+        // Blog.tsx tự fetch data
     }
   }, [fetchGuestbookEntries, fetchSpotifyPlaylists, currentView, headerPreviewType]);
 
@@ -312,7 +313,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 :headerPreviewType==='gallery'?languageSelectorPreviewTranslations.gallerySneakPeekTitle[currentLanguage]
                                 :headerPreviewType==='guestbook'?languageSelectorPreviewTranslations.guestbookSneakPeekTitle[currentLanguage]
                                 :headerPreviewType==='spotifyPlaylists'?languageSelectorPreviewTranslations.spotifySneakPeekTitle[currentLanguage]
-                                :headerPreviewType==='blog'?languageSelectorPreviewTranslations.blogSneakPeekTitle[currentLanguage] // THEM BLOG
+                                :headerPreviewType==='blog'?languageSelectorPreviewTranslations.blogSneakPeekTitle[currentLanguage] 
                                 : ''}
                             </motion.h4>
                             <motion.div className="header-preview-block-content" variants={contentItemVariants(0.1)} initial="hidden" animate="visible" exit="exit">
@@ -321,7 +322,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                     :headerPreviewType==='gallery'?previewIcons.gallery
                                     :headerPreviewType==='guestbook'?previewIcons.guestbook
                                     :headerPreviewType==='spotifyPlaylists'?previewIcons.spotify
-                                    :headerPreviewType==='blog'?previewIcons.blog // THEM BLOG
+                                    :headerPreviewType==='blog'?previewIcons.blog 
                                     : ''
                                 }} />
                                 <div className="header-preview-actual-content">
@@ -377,11 +378,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           {currentView === 'gallery' && ( <motion.div key="gallery-content" className="content-section card-content-display gallery-view-wrapper" variants={galleryViewVariants(0.05)} initial="hidden" animate="visible" exit="exit">
               <Gallery onBack={()=>setCurrentView('cardIntro')} language={currentLanguage} />
           </motion.div> )}
-          {currentView === 'blog' && ( // THEM BLOG VIEW
+          {currentView === 'blog' && ( 
             <motion.div 
                 key="blog-view-content" 
                 className="content-section card-content-display" 
-                variants={galleryViewVariants(0.05)} 
+                variants={blogViewContainerVariants(0.05)} // Su dung variant moi
                 initial="hidden" animate="visible" exit="exit"
             >
                 <Blog language={currentLanguage} onBack={()=>setCurrentView('cardIntro')} />

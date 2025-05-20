@@ -370,7 +370,7 @@ export const cardIntroTranslations = {
   galleryButton: { vi: "Bộ sưu tập", en: "Gallery", ja: "ギャラリー" },
   guestbookButton: { vi: "Sổ Lưu Bút", en: "Guestbook", ja: "感想ノート" },
   spotifyButton: { vi: "Playlist Nhạc", en: "Music Playlists", ja: "音楽プレイリスト" },
-  blogButton: { vi: "Blog Cá Nhân", en: "Personal Blog", ja: "個人ブログ" }, // them blog
+  blogButton: { vi: "Blog Cá Nhân", en: "Personal Blog", ja: "個人ブログ" },
   introTagline: {
       vi: "Chào mừng đến với thế giới của tui !",
       en: "Welcome to my world!",
@@ -380,7 +380,7 @@ export const cardIntroTranslations = {
   galleryIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
   guestbookIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><path d="M12 6s1.5-2 5-2 5 2 5 2v14s-1.5-1-5-1-5 1-5 1V6z"></path><line x1="12" y1="22" x2="12" y2="6"></line></svg>`,
   spotifyIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`,
-  blogIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>`, // them icon blog
+  blogIconSvg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>`, 
   backButton: { vi: "Quay Lại", en: "Back", ja: "戻る" },
 };
 
@@ -547,7 +547,7 @@ export const languageSelectorPreviewTranslations = {
   gallerySneakPeekTitle: { vi: "Xem trước bộ sưu tập", en: "Gallery Sneak Peek", ja: "ギャラリー予告編" },
   guestbookSneakPeekTitle: { vi: "Góc Cảm Xúc", en: "Corner of Feelings", ja: "思いのコーナー" },
   spotifySneakPeekTitle: { vi: "Giai Điệu Yêu Thích", en: "Favorite Tunes", ja: "お気に入りメロディー" },
-  blogSneakPeekTitle: { vi: "Bài Viết Mới Nhất", en: "Latest Blog Post", ja: "最新のブログ投稿" }, // them blog
+  blogSneakPeekTitle: { vi: "Bài Viết Mới Nhất", en: "Latest Blog Post", ja: "最新のブログ投稿" }, 
   aboutSnippetContent: {
     vi: "Chào ! Mình là Rin,...ừm, là Rin, hết rồi đó? mong chờ gì?",
     en: "Hi! I'm Rin,... well, just Rin, that's it? What were you expecting?",
@@ -564,7 +564,7 @@ export const languageSelectorPreviewTranslations = {
     en: "Immerse yourself in wonderful melodies from Spotify...",
     ja: "Spotifyの素晴らしいメロディーに浸ってください。。。"
   },
-  blogSnippetContent: { // them blog
+  blogSnippetContent: { 
     vi: "Khám phá những chia sẻ và câu chuyện từ Rin...",
     en: "Discover thoughts and stories from Rin...",
     ja: "リンの考えや物語を発見。。。"
@@ -603,6 +603,44 @@ export const galleryViewVariants = (delay: number = 0.1): Variants => ({
         }
     }
 });
+
+
+export const blogViewContainerVariants = (delay: number = 0.1): Variants => ({
+    hidden: {
+        opacity: 0,
+        scale: 0.85, 
+        y: 45,
+        filter: "blur(12px) saturate(0.4) brightness(0.8)", 
+    },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        filter: "blur(0px) saturate(1) brightness(1)",
+        transition: {
+            type: "spring",
+            stiffness: 145, 
+            damping: 25, 
+            mass: 0.9, 
+            delay,
+            opacity: { duration: 0.6, ease: "circOut", delay },
+            scale: { type: "spring", stiffness: 145, damping: 25, delay },
+            filter: { duration: 0.5, ease: [0.25, 1, 0.5, 1], delay: delay + 0.12 },
+        }
+    },
+    exit: {
+        opacity: 0,
+        scale: 0.88, 
+        y: 30,
+        filter: "blur(10px) saturate(0.6) brightness(0.85)",
+        transition: {
+            duration: 0.38, 
+            ease: "anticipate",
+            opacity: { duration: 0.32, ease: "easeIn"},
+        }
+    }
+});
+
 
 export const aboutNavIconLeft = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 export const aboutNavIconRight = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
