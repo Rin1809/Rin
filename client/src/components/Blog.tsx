@@ -48,21 +48,7 @@ const blogTranslations = {
 };
 
 // --- VARIANTS ---
-const blogRootContainerVariants: Variants = {
-  hidden: { opacity: 0, y: 60, scale: 0.9, filter: "blur(10px) saturate(0.6)" }, 
-  visible: {
-    opacity: 1, y: 0, scale: 1, filter: "blur(0px) saturate(1)",
-    transition: { 
-      type: "spring", stiffness: 120, damping: 24, mass: 1.2, 
-      staggerChildren: 0.15, 
-      delayChildren: 0.3  
-    }
-  },
-  exit: { 
-    opacity: 0, y: 40, scale: 0.92, filter: "blur(8px) saturate(0.7)", 
-    transition: { duration: 0.4, ease: [0.8, 0, 0.2, 1] } 
-  }
-};
+// Bo blogRootContainerVariants vi da dc qly boi LanguageSelector
 
 const blogTitleVariants: Variants = {
   hidden: { opacity: 0, y: -35, filter: "blur(6px) brightness(0.75)" },
@@ -95,49 +81,25 @@ const fireflyParticleVariants = (delayMultiplier: number = 0, size: string = '4p
     rest: { opacity: 0, scale: 0, transition: { duration: 0.35, delay: delayMultiplier * 0.1 } } 
 });
 
-// Hieu ung tho cho card khi scroll
-const breathingCardActiveTarget = { 
-    scale: [1, 0.988, 1.003, 0.992, 1], 
-    opacity: [1, 0.95, 1, 0.97, 1], 
-    filter: ["brightness(1) saturate(1)", "brightness(0.97) saturate(0.95)", "brightness(1.01) saturate(1.02)", "brightness(0.98) saturate(0.97)", "brightness(1) saturate(1)"], 
-    transition: {
-        duration: 4, 
-        repeat: Infinity,
-        ease: "easeInOut"
-    }
-};
-const breathingCardInactiveTarget = { 
-    scale: 1,
-    opacity: 1,
-    filter: "brightness(1) saturate(1)",
-    transition: { duration: 0.4, ease: "easeOut" }
-};
-
-
+// Card post item variants - da tinh chinh
 const blogPostItemVariants: Variants = {
   hidden: { opacity: 0, y: 45, scale: 0.88, filter: "blur(7px) saturate(0.4)" },
-  visible: { // Đây là trạng thái "scrollInactive" mặc định
+  visible: { 
     opacity: 1, y: 0, scale: 1, filter: "blur(0px) saturate(1)",
     transition: { type: "spring", stiffness: 150, damping: 26, mass: 1 }
   },
   hover: { 
-     y: -15, 
-     scale: 1.055, 
-     rotateX: IS_MOBILE_DEVICE ? 0 : 7, 
-     rotateY: IS_MOBILE_DEVICE ? 0 : (Math.random() > 0.5 ? 4 : -4),
-     boxShadow: "0 30px 70px -28px var(--blog-card-hover-glow), 0 0 50px rgba(var(--highlight-color-poetic-rgb), 0.38) inset, 0 0 22px rgba(var(--primary-color-rgb),0.22) inset",
-     transition: { type: "spring", stiffness: 270, damping: 11 } 
+     y: -8, 
+     scale: 1.025, 
+     boxShadow: "0 15px 40px -12px var(--blog-card-hover-glow), 0 0 25px rgba(var(--highlight-color-poetic-rgb), 0.18) inset", 
+     transition: { type: "spring", stiffness: 320, damping: 22 } 
   },
   tap: {
-    scale: 0.93, 
-    rotateX: 0, rotateY: 0,
-    boxShadow: "0 10px 30px -15px var(--blog-card-tap-glow), 0 0 25px rgba(var(--highlight-color-poetic-rgb), 0.25) inset",
-    transition: { type: "spring", stiffness: 360, damping: 18 } 
+    scale: 0.97, 
+    boxShadow: "0 6px 20px -8px var(--blog-card-tap-glow), 0 0 12px rgba(var(--highlight-color-poetic-rgb), 0.12) inset", 
+    transition: { type: "spring", stiffness: 400, damping: 20 } 
   },
   exit: { opacity: 0, y: 30, scale: 0.9, filter: "blur(6px)", transition: { duration: 0.32, ease: "easeIn" } },
-  // Thêm các target cho breathing effect vào variants này
-  scrollActive: breathingCardActiveTarget,
-  scrollInactive: breathingCardInactiveTarget,
 };
 
 const statusMessageItemVariants: Variants = {
@@ -211,22 +173,21 @@ const rippleVariants = {
 const thumbnailSparkleVariants: Variants = { 
     initial: { opacity: 0, scale: 0 },
     animate: (i: number) => ({
-        opacity: [0, 0.5 + Math.random() * 0.4, 0],
-        scale: [0, 0.4 + Math.random() * 0.5, 0], 
+        opacity: [0, 0.35 + Math.random() * 0.25, 0], 
+        scale: [0, 0.25 + Math.random() * 0.35, 0], 
         x: `${Math.random() * 100}%`, 
         y: `${Math.random() * 100}%`,
         rotate: Math.random() * 360,
         transition: {
-            duration: 2 + Math.random() * 2.5,
+            duration: 2.8 + Math.random() * 2.2, 
             repeat: Infinity,
             repeatType: "loop",
-            delay: i * 0.4 + Math.random() * 1.5, 
+            delay: i * 0.6 + Math.random() * 2.0, 
             ease: "linear"
         }
     })
 };
-const NUM_THUMBNAIL_SPARKLES = IS_MOBILE_DEVICE ? 2 : 4; 
-
+const NUM_THUMBNAIL_SPARKLES = IS_MOBILE_DEVICE ? 1 : 2; 
 // --- END VARIANTS ---
 
 
@@ -249,7 +210,6 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
   const [hoveredCardId, setHoveredCardId] = useState<number | null>(null); 
   const [ripplePosition, setRipplePosition] = useState<{ x: number, y: number } | null>(null); 
   const [showRipple, setShowRipple] = useState(false); 
-  const [isScrollingList, setIsScrollingList] = useState(false); 
 
   const listWrapperRef = useRef<HTMLDivElement>(null);
   const animationControls = useAnimation();
@@ -303,11 +263,9 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
     if (isLoading || !canScroll || postItemFullWidth === 0 || posts.length <= 1) {
       animationControls.stop();
       animationControls.set({ x: 0 }); 
-      setIsScrollingList(false); 
       return;
     }
     
-    setIsScrollingList(true); 
     const singleLoopWidth = posts.length * postItemFullWidth;
     const duration = singleLoopWidth / SCROLL_SPEED_PPS;
 
@@ -319,7 +277,6 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
     });
     return () => {
         animationControls.stop();
-        setIsScrollingList(false); 
     }
   }, [isLoading, canScroll, posts, animationControls, postItemFullWidth]);
 
@@ -330,11 +287,12 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
      return new Intl.DateTimeFormat(lang, options).format(date);
   };
 
-  const listStyle = useMemo(() => {
+  const listStyle: React.CSSProperties = useMemo(() => { // Them kieu tra ve
     if (canScroll && postItemFullWidth > 0 && posts.length > 1) {
-      return { width: `${posts.length * 2 * postItemFullWidth}px` };
+      return { width: `${posts.length * 2 * postItemFullWidth}px` }; 
     }
-    return { display: 'flex', justifyContent: 'center', width: '100%' }; 
+    
+    return { display: 'flex', justifyContent: 'center', alignItems: 'flex-start', flexWrap: 'wrap', gap: `${POST_ITEM_MARGIN_RIGHT_REM}rem`, width: '100%' };
   }, [canScroll, posts, postItemFullWidth]);
 
   const openLightbox = (index: number, event?: React.MouseEvent<HTMLElement>) => { 
@@ -394,20 +352,18 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
   };
 
   return (
-    <motion.div 
+    <div 
       className="blog-view-container"
-      variants={blogRootContainerVariants}
-      initial="hidden" animate="visible" exit="exit"
-      layout 
     >
-      <motion.h2 className="blog-view-title poetic-title-shimmer" variants={blogTitleVariants}>
+      <motion.h2 className="blog-view-title poetic-title-shimmer" variants={blogTitleVariants} initial="hidden" animate="visible" exit="exit">
         {t.title[language]}
       </motion.h2>
       
       <motion.div 
         ref={listWrapperRef} 
         className="blog-posts-list-wrapper"
-        variants={blogPostListWrapperVariants}
+        variants={blogPostListWrapperVariants} 
+        initial="hidden" animate="visible" exit="exit"
       >
         <AnimatePresence>
           {isLoading && ( <motion.p key="loading" className="blog-status-message" variants={statusMessageItemVariants} initial="hidden" animate="visible" exit="hidden"> {t.loading[language]} </motion.p> )}
@@ -419,30 +375,28 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
           <motion.div
             className="blog-posts-list"
             animate={animationControls as AnimationControls & {x: number | string}}
-            style={listStyle} 
+            style={listStyle as React.CSSProperties} // Ep kieu tai day
           >
             {(canScroll ? [...posts, ...posts] : posts).map((post, index) => {
                 const originalIndex = index % posts.length;
                 const showReadMore = isContentTruncated(post.content, !!post.image_url);
-
                 const truncatedContent = post.content ? post.content.substring(0, post.image_url ? (IS_MOBILE_DEVICE ? 100 : 160) : (IS_MOBILE_DEVICE ? 240 : 350)) : "";
-                const itemAnimateState = (isScrollingList && canScroll && (!hoveredCardId || hoveredCardId !== post.id))
-                                         ? "scrollActive"
-                                         : "visible";
+                
                 return (
                     <motion.article
                         key={`${post.id}-${index}-${language}`}
-                        className={`blog-post-item ${post.image_url ? 'with-image' : 'no-image'}`}
+                        className={`blog-post-item ${post.image_url ? 'with-image' : 'no-image'} ${!canScroll ? 'not-scrolling-item' : ''}`}
                         variants={blogPostItemVariants}
                         initial="hidden"
-                        animate={itemAnimateState} 
+                        animate="visible" 
                         exit="exit" 
                         onClick={(e) => openLightbox(originalIndex, e)}
-                        whileHover="hover"
-                        whileTap="tap"
+                        whileHover="hover" 
+                        whileTap="tap"     
                         onHoverStart={() => !IS_MOBILE_DEVICE && setHoveredCardId(post.id)}
                         onHoverEnd={() => !IS_MOBILE_DEVICE && setHoveredCardId(null)}
                         layout
+                        style={!canScroll ? { marginRight: 0 } : {}} 
                     >
                         {showRipple && ripplePosition && (
                             <motion.div
@@ -454,7 +408,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
                             />
                         )}
 
-                        {!IS_MOBILE_DEVICE && (
+                        {!IS_MOBILE_DEVICE && ( 
                             <>
                                 <motion.div className="firefly-particle" style={{ width: '5px', height: '5px' }} variants={fireflyParticleVariants(0, '5px')} animate={hoveredCardId === post.id ? "hover" : "rest"} />
                                 <motion.div className="firefly-particle" style={{ width: '3px', height: '3px', left: '20%', top: '70%' }} variants={fireflyParticleVariants(0.3, '3px')} animate={hoveredCardId === post.id ? "hover" : "rest"} />
@@ -492,6 +446,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
                                     initial={{ opacity: 0, scale:0.85, y:25, filter: "blur(8px) brightness(0.75) saturate(0.6)"}}
                                     animate={{ opacity: 1, scale:1, y:0, filter: "blur(0px) brightness(0.92) saturate(0.88)", transition:{duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] } }}
                                 />
+                                
                                 {!IS_MOBILE_DEVICE && Array.from({ length: NUM_THUMBNAIL_SPARKLES }).map((_, i) => (
                                     <motion.div
                                         key={`thumb-sparkle-${post.id}-${i}`}
@@ -499,7 +454,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
                                         custom={i}
                                         variants={thumbnailSparkleVariants}
                                         initial="initial"
-                                        animate={hoveredCardId === post.id || isScrollingList ? "animate" : "initial"}
+                                        animate={hoveredCardId === post.id ? "animate" : "initial"} 
                                     />
                                 ))}
                             </motion.div>
@@ -511,12 +466,12 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
         )}
       </motion.div>
 
-      {onBack && (
+      {onBack && ( 
          <motion.button
-             className="card-view-back-button blog-back-button"
+             className="card-view-back-button blog-back-button" 
              onClick={onBack}
              initial={{ opacity: 0, y: 45, scale: 0.88 }}
-             animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: (posts.length > 0 ? 0.7 : 0.4), duration: 0.75, ease: [0.16, 1, 0.3, 1] } }}
+             animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: (posts.length > 0 ? 0.4 : 0.2), duration: 0.65, ease: [0.16, 1, 0.3, 1] } }} 
              exit={{ opacity: 0, y: 30, scale: 0.9, transition: { duration: 0.35, ease: "easeIn" } }}
              whileHover={{ scale: 1.09, y: -7, boxShadow: "0 14px 35px -10px rgba(var(--primary-color-rgb), 0.5)", backgroundColor: "rgba(var(--primary-color-rgb), 0.18)" }}
              whileTap={{ scale: 0.93, y: -2.5 }}
@@ -586,7 +541,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
                   <motion.button
                     className="blog-lightbox-nav-button prev"
                     onClick={() => changePostInLightbox('prev')}
-                    disabled={selectedPostIndex === 0 && posts.length <=1 }
+                    disabled={selectedPostIndex === 0 && posts.length <=1 } 
                     aria-label={t.prevPost[language]}
                     initial={{opacity:0, x:-30, filter: "blur(3px)"}} animate={{opacity:1, x:0, filter: "blur(0px)", transition:{delay:0.25, duration:0.45, ease: "circOut"}}} exit={{opacity:0, x:-25, filter: "blur(3px)"}}
                     whileHover={{scale:1.15, x:-6, filter: "drop-shadow(0 0 8px rgba(var(--primary-color-rgb),0.4))"}} whileTap={{scale:0.9}}
@@ -594,7 +549,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
                   <motion.button
                     className="blog-lightbox-nav-button next"
                     onClick={() => changePostInLightbox('next')}
-                    disabled={selectedPostIndex === posts.length - 1 && posts.length <=1}
+                    disabled={selectedPostIndex === posts.length - 1 && posts.length <=1} 
                     aria-label={t.nextPost[language]}
                     initial={{opacity:0, x:30, filter: "blur(3px)"}} animate={{opacity:1, x:0, filter: "blur(0px)", transition:{delay:0.25, duration:0.45, ease: "circOut"}}} exit={{opacity:0, x:25, filter: "blur(3px)"}}
                     whileHover={{scale:1.15, x:6, filter: "drop-shadow(0 0 8px rgba(var(--primary-color-rgb),0.4))"}} whileTap={{scale:0.9}}
@@ -633,7 +588,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 };
 
