@@ -150,7 +150,7 @@ function App() {
                 setCurrentIntroStage('yourName');
                 setIsStageFadingOut(false);
             }, catDisplayTime + fadeDuration);
-        } else if (currentIntroStage === 'yourName' && !isStageFadingOut) {
+        } else if (currentIntroStage === 'yourName') { // Removed !isStageFadingOut condition
             stage2TimerId = window.setTimeout(() => {
                 setIsStageFadingOut(true);
             }, yourNameDisplayTime);
@@ -167,7 +167,7 @@ function App() {
             if (stage2TimerId) window.clearTimeout(stage2TimerId);
             if (fade2TimerId) window.clearTimeout(fade2TimerId);
         };
-    }, [currentIntroStage, hasIntroFinishedForMusic, isStageFadingOut]); // them isStageFadingOut vao deps
+    }, [currentIntroStage, hasIntroFinishedForMusic]); // LOAI BO isStageFadingOut khoi deps
 
     useEffect(() => {
         const audioElement = audioRef.current;
