@@ -1,37 +1,41 @@
 {
-  "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "NIXPACKS"
-  },
-  "deploy": {
-    "startCommand": null,
-    "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
-  },
-  "services": [
+  "version": 2,
+  "builds": [
     {
-      "name": "frontend",
-      "rootDir": "./client",
-      "healthcheckPath": "/",
-      "build": {
-         "builder": "NIXPACKS",
-         "buildCommand": "npm install && npm run build"
-      },
-      "deploy":{
-        "startCommand": "npx serve -s dist -p $PORT" 
-      }
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" } 
     },
     {
-      "name": "backend",
-      "rootDir": "./server",
-      "healthcheckPath": "/health",
-      "build": {
-        "builder": "NIXPACKS",
-        "buildCommand": "npm install"
+      "src": "server/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/server.js"
+    },
+    {
+      "src": "/assets/(.*)",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
       },
-      "deploy": {
-        "startCommand": "npm start"
-      }
+      "dest": "client/dist/assets/$1" 
+    },
+    {
+      "src": "/(.*\\.(?:ico|png|jpg|jpeg|gif|svg|webp|js|css|woff2|woff|ttf|otf|mp3))",
+       "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
+      "dest": "client/dist/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "client/dist/index.html" 
     }
   ]
 }
