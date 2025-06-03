@@ -4,7 +4,7 @@
     {
       "src": "client/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" } 
+      "config": { "distDir": "dist" }
     },
     {
       "src": "server/server.js",
@@ -16,22 +16,23 @@
       "src": "/api/(.*)",
       "dest": "server/server.js"
     },
+ 
     {
       "src": "/assets/(.*)",
       "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "dest": "/assets/$1"
+      "dest": "/client/dist/assets/$1"
     },
     {
       "src": "/(.*\\.(?:ico|png|jpg|jpeg|gif|svg|webp|js|css|woff2|woff|ttf|otf|mp3))",
       "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "dest": "/$1"
+      "dest": "/client/dist/$1" 
     },
     {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html" 
+      "dest": "/client/dist/index.html" 
     }
   ]
 }
