@@ -1,14 +1,7 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "client/package.json",
-      "use": "@vercel/vite",
-      "config": {
-        "project": "client/tsconfig.json",
-        "includeFiles": ["dist/**"]
-      }
-    },
+
     {
       "src": "server/server.js",
       "use": "@vercel/node"
@@ -24,22 +17,22 @@
       "headers": {
         "cache-control": "public, max-age=31536000, immutable"
       },
-      "dest": "client/dist/assets/$1"
+      "dest": "/assets/$1"
     },
     {
       "src": "/(.*\\.(?:ico|png|jpg|jpeg|gif|svg|webp|js|css|woff2|woff|ttf|otf|mp3))",
        "headers": {
         "cache-control": "public, max-age=31536000, immutable"
       },
-      "dest": "client/dist/$1"
+      "dest": "/$1"
     },
     {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "client/dist/index.html"
+      "dest": "/index.html" 
     }
   ],
-  "outputDirectory": "client/dist"
+  "outputDirectory": "client/dist" 
 }
