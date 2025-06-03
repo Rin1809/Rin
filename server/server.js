@@ -5,10 +5,9 @@ import bodyParser from 'body-parser';
 import axios from 'axios';
 import { pool, initializeDb } from './db.js';
 import dotenv from 'dotenv';
-dotenv.config(); 
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
 const MIZUKI_BOT_BASE_URL = process.env.MIZUKI_BOT_NOTIFY_URL;
 const MIZUKI_SHARED_SECRET = process.env.MIZUKI_SHARED_SECRET || "default_secret_key_for_mizuki";
@@ -27,8 +26,8 @@ let tokenExpiryTime = 0;
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const MY_SPOTIFY_PLAYLIST_IDS = [
-    '2uZFS0NuNYPSR0neKprFwU', 
-    '0NtIFyq7ZFQtDvKDcDycHS', 
+    '2uZFS0NuNYPSR0neKprFwU',
+    '0NtIFyq7ZFQtDvKDcDycHS',
     '6MlXr1lH5XtSVn7SECc68E',
     '2PynP8hcLDnj7JbLgixwbt',
 ];
@@ -54,7 +53,7 @@ async function getSpotifyToken() {
             }
         );
         spotifyAccessToken = response.data.access_token;
-        tokenExpiryTime = Date.now() + (response.data.expires_in * 1000) - 60000; 
+        tokenExpiryTime = Date.now() + (response.data.expires_in * 1000) - 60000; // Refresh som hon 1p
         return spotifyAccessToken;
     } catch (error) {
         console.error('🔴 Loi lay Spotify token:', error.response ? error.response.data : error.message);
@@ -62,13 +61,10 @@ async function getSpotifyToken() {
     }
 }
 
-initializeDb().then(() => {
-    app.listen(PORT, '0.0.0.0', () => { 
-        console.log(`🚀 Server dang chay port: ${PORT}`);
-    });
-}).catch(err => {
-  console.error("🔴 Khoi tao DB that bai:", err);
-  process.exit(1);
+// DB init se dc goi khi func start
+initializeDb().catch(err => {
+  console.error("🔴 Khoi tao DB that bai (serverless):", err);
+  // Ko exit process trong serverless
 });
 
 
@@ -80,7 +76,7 @@ app.get('/api/guestbook', async (req, res) => {
     );
     const entries = result.rows.map(entry => ({
         ...entry,
-        language: entry.language.toLowerCase() 
+        language: entry.language.toLowerCase()
     }));
     res.status(200).json(entries);
   } catch (error) {
@@ -113,7 +109,7 @@ app.post('/api/guestbook', async (req, res) => {
     );
     const newEntry = {
         ...result.rows[0],
-        language: result.rows[0].language.toLowerCase() 
+        language: result.rows[0].language.toLowerCase()
     };
     res.status(201).json(newEntry);
   } catch (error) {
@@ -192,7 +188,7 @@ app.post('/api/blog/posts', async (req, res) => {
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('🔴 Loi them blog post:', error);
-    if (error.code === '23505') { 
+    if (error.code === '23505') { // Duplicate key err
         return res.status(409).json({ error: 'Bài blog với ID tin nhắn này đã tồn tại.' });
     }
     res.status(500).json({ error: 'Lỗi server khi thêm bài blog. Vui lòng thử lại.' });
@@ -204,8 +200,8 @@ app.post('/api/notify-visit', async (req, res) => {
     const clientIp = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
 
-    if (!MIZUKI_BOT_BASE_URL) { 
-        console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui tbao.");
+    if (!MIZUKI_BOT_BASE_URL) {
+        // console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui tbao."); // log nay hoi nhieu
         return res.status(202).json({ message: "Visit logged, notification to bot disabled." });
     }
 
@@ -215,8 +211,9 @@ app.post('/api/notify-visit', async (req, res) => {
     let region = "N/A";
     let isp = "N/A";
 
-    if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)) { 
+    if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)) {
         try {
+            // Luu y: ip-api.com co rate limit
             const geoResponse = await axios.get(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`);
             if (geoResponse.data && geoResponse.data.status === 'success') {
                 country = geoResponse.data.country || "N/A";
@@ -228,16 +225,16 @@ app.post('/api/notify-visit', async (req, res) => {
                 locationInfo = `Ko lay dc ttin vi tri (ip-api: ${geoResponse.data.message || 'loi ko ro'})`;
             }
         } catch (geoError) {
-            console.error(`[GeoIP VISIT] Loi goi API GeoIP cho IP ${clientIp}:`, geoError.message);
+            // console.error(`[GeoIP VISIT] Loi goi API GeoIP cho IP ${clientIp}:`, geoError.message); // log nay hoi nhieu
             locationInfo = "Loi lay ttin vi tri.";
         }
     } else if (EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)){
-        locationInfo = "IP ngoai le, khong gui DM." 
+        locationInfo = "IP ngoai le, khong gui DM."
     } else {
         locationInfo = "Truy cap tu Localhost.";
         country = "Local";
     }
-    
+
     const visitData = {
         ip: clientIp || "N/A",
         location: locationInfo,
@@ -246,26 +243,24 @@ app.post('/api/notify-visit', async (req, res) => {
         region: region,
         isp: isp,
         userAgent: userAgent || "N/A",
-        timestamp: new Date().toISOString() 
+        timestamp: new Date().toISOString()
     };
 
     try {
-        // Dam bao MIZUKI_BOT_BASE_URL khong co dau / o cuoi
         let notifyVisitUrl = MIZUKI_BOT_BASE_URL;
         if (notifyVisitUrl.endsWith('/')) {
             notifyVisitUrl = notifyVisitUrl.slice(0, -1);
         }
 
-        await axios.post(`${notifyVisitUrl}/notify-visit`, visitData, { 
+        await axios.post(`${notifyVisitUrl}/notify-visit`, visitData, {
             headers: {
                 'Content-Type': 'application/json',
-                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
+                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET
             }
         });
         res.status(200).json({ message: "Notification sent to bot." });
     } catch (botError) {
-        console.error("🔴 Loi gui tbao toi bot Mizuki:", botError.response ? botError.response.data : botError.message);
-        console.error("🔴 Chi tiet loi Mizuki (visit):", botError.config ? { url: botError.config.url, method: botError.config.method, data: botError.config.data } : "Khong co config");
+        // console.error("🔴 Loi gui tbao toi bot Mizuki:", botError.response ? botError.response.data : botError.message); // log nay hoi nhieu
         res.status(500).json({ error: "Failed to notify bot." });
     }
 });
@@ -276,8 +271,8 @@ app.post('/api/log-interaction', async (req, res) => {
     const userAgent = req.headers['user-agent'];
     const { eventType, eventData, timestamp: clientTimestamp } = req.body;
 
-    if (!MIZUKI_BOT_BASE_URL) { 
-        console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui log tuong tac.");
+    if (!MIZUKI_BOT_BASE_URL) {
+        // console.warn("⚠️ MIZUKI_BOT_BASE_URL chua dc cfg. Ko the gui log tuong tac."); // log nay hoi nhieu
         return res.status(202).json({ message: "Interaction logged by server, notification to bot disabled." });
     }
 
@@ -287,7 +282,7 @@ app.post('/api/log-interaction', async (req, res) => {
     let region = "N/A";
     let isp = "N/A";
 
-    if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)) { 
+    if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)) {
         try {
             const geoResponse = await axios.get(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`);
             if (geoResponse.data && geoResponse.data.status === 'success') {
@@ -300,16 +295,16 @@ app.post('/api/log-interaction', async (req, res) => {
                 locationInfo = `Ko lay dc ttin vi tri (ip-api: ${geoResponse.data.message || 'loi ko ro'})`;
             }
         } catch (geoError) {
-            console.error(`[GeoIP INTERACTION] Loi goi API GeoIP cho IP ${clientIp}:`, geoError.message);
+            // console.error(`[GeoIP INTERACTION] Loi goi API GeoIP cho IP ${clientIp}:`, geoError.message); // log nay hoi nhieu
             locationInfo = "Loi lay ttin vi tri.";
         }
     } else if (EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)){
-        locationInfo = "IP ngoai le, khong gui DM log." 
+        locationInfo = "IP ngoai le, khong gui DM log."
     } else {
         locationInfo = "Truy cap tu Localhost.";
         country = "Local";
     }
-    
+
     const interactionPayload = {
         ip: clientIp || "N/A",
         location: locationInfo,
@@ -318,28 +313,26 @@ app.post('/api/log-interaction', async (req, res) => {
         region: region,
         isp: isp,
         userAgent: userAgent || "N/A",
-        clientTimestamp: clientTimestamp, 
-        serverTimestamp: new Date().toISOString(), 
+        clientTimestamp: clientTimestamp,
+        serverTimestamp: new Date().toISOString(),
         eventType,
         eventData
     };
 
     try {
-        // Dam bao MIZUKI_BOT_BASE_URL khong co dau / o cuoi
         let logInteractionUrl = MIZUKI_BOT_BASE_URL;
         if (logInteractionUrl.endsWith('/')) {
             logInteractionUrl = logInteractionUrl.slice(0, -1);
         }
-        await axios.post(`${logInteractionUrl}/log-interaction`, interactionPayload, { 
+        await axios.post(`${logInteractionUrl}/log-interaction`, interactionPayload, {
             headers: {
                 'Content-Type': 'application/json',
-                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET 
+                'X-Mizuki-Secret': MIZUKI_SHARED_SECRET
             }
         });
         res.status(200).json({ message: "Interaction logged and notification sent to bot." });
     } catch (botError) {
-        console.error("🔴 Loi gui log tuong tac toi bot Mizuki:", botError.response ? botError.response.data : botError.message);
-        console.error("🔴 Chi tiet loi Mizuki (interaction):", botError.config ? { url: botError.config.url, method: botError.config.method, data: botError.config.data } : "Khong co config");
+        // console.error("🔴 Loi gui log tuong tac toi bot Mizuki:", botError.response ? botError.response.data : botError.message); // log nay hoi nhieu
         res.status(500).json({ error: "Failed to notify bot of interaction." });
     }
 });
@@ -348,6 +341,6 @@ app.get('/health', (req, res) => {
   res.status(200).send('Server is healthy! Rin cute <3');
 });
 
-app.use((req, res) => {
-    res.status(404).json({ error: 'Not Found. API paths: /api/guestbook, /api/spotify/playlists, /api/notify-visit, /api/log-interaction, /api/blog/posts' });
-});
+
+
+export default app;

@@ -1,10 +1,7 @@
 // client/src/utils/logger.ts
-// tien ich gui log
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 interface InteractionData {
-  [key: string]: any; 
+  [key: string]: any;
 }
 
 export const logInteraction = async (eventType: string, eventData: InteractionData): Promise<void> => {
@@ -15,8 +12,8 @@ export const logInteraction = async (eventType: string, eventData: InteractionDa
   };
 
   try {
-    // Gui async, ko block UI
-    fetch(`${API_BASE_URL}/api/log-interaction`, {
+    // Luon goi API tuong doi /api/*
+    fetch(`/api/log-interaction`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -25,9 +22,9 @@ export const logInteraction = async (eventType: string, eventData: InteractionDa
     })
     .then(response => {
       if (!response.ok) {
-        // console.warn(`[Logger] Loi gui log '${eventType}': ${response.status}`); // comment out khi deploy
+        // console.warn(`[Logger] Loi gui log '${eventType}': ${response.status}`);
       } else {
-        // console.log(`[Logger] Logged: ${eventType}`, eventData); // comment out khi deploy
+        // console.log(`[Logger] Logged: ${eventType}`, eventData);
       }
     })
     .catch(error => {

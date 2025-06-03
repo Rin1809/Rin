@@ -2,23 +2,32 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
 
-dotenv.config(); // dung file .env khi dev local
+dotenv.config();
 
 const { Pool } = pg;
 
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  console.error('🔴 DATABASE_URL không được thiết lập, hãy check/thiết lập lại file .env');
-  if (process.env.NODE_ENV !== 'production' && !process.env.RAILWAY_ENVIRONMENT) {
+  console.error('🔴 DATABASE_URL không được thiết lập, hãy check/thiết lập lại file .env hoặc biến môi trường trên Vercel.');
+  if (process.env.NODE_ENV !== 'production') {
     process.exit(1);
   }
 }
 
-const pool = new Pool({
+const poolConfig = {
   connectionString,
-  ssl: process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT ? { rejectUnauthorized: false } : false,
-});
+};
+
+
+if (process.env.NODE_ENV === 'production' && connectionString && connectionString.includes('neon.tech')) {
+  poolConfig.ssl = { rejectUnauthorized: false };
+} else if (process.env.NODE_ENV === 'production') {
+  poolConfig.ssl = { rejectUnauthorized: false }; 
+}
+
+
+const pool = new Pool(poolConfig);
 
 pool.on('connect', () => {
   console.log('🟢 Đã kết nối tới PostgreSQL database!');
@@ -26,7 +35,6 @@ pool.on('connect', () => {
 
 pool.on('error', (err) => {
   console.error('🔴 Unexpected error với idle client', err);
-  process.exit(-1); 
 });
 
 const initializeDb = async () => {
@@ -44,12 +52,11 @@ const initializeDb = async () => {
     `);
     console.log('✨ Bảng "guestbook_entries" đã được chuẩn bị !');
 
-    // tao bang blog
     await client.query(`
       CREATE TABLE IF NOT EXISTS blog_posts (
         id SERIAL PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
-        content TEXT, 
+        content TEXT,
         image_url VARCHAR(2048),
         discord_message_id VARCHAR(255) UNIQUE NOT NULL,
         discord_author_id VARCHAR(255) NOT NULL,
@@ -60,8 +67,9 @@ const initializeDb = async () => {
 
   } catch (err) {
     console.error('🔴 Error với database table:', err);
-    if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
-        throw err; 
+    if (process.env.NODE_ENV === 'production') {
+
+        throw err;
     }
   } finally {
     if (client) client.release();

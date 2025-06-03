@@ -8,7 +8,7 @@ import PersonalCard from './PersonalCard';
 import Gallery from './Gallery';
 import Guestbook from './Guestbook';
 import SpotifyPlaylists from './SpotifyPlaylists';
-import Blog from './Blog'; 
+import Blog from './Blog';
 import type { GuestbookEntry } from '../data/guestbook.data';
 
 import { initParticlesEngine } from "@tsparticles/react";
@@ -42,8 +42,8 @@ import {
     previewIcons,
     languageSelectorPreviewTranslations,
     cardDisplayInfo,
-    galleryViewVariants, // Giu nguyen de khong anh huong
-    blogViewContainerVariants, // THEM blogViewContainerVariants
+    galleryViewVariants,
+    blogViewContainerVariants,
     guestbookViewContainerVariants,
     spotifyViewContainerVariants,
     SHARED_FLOURISH_SPRING_TRANSITION,
@@ -57,15 +57,16 @@ interface LanguageSelectorProps {
   initialSelectedLanguage: 'vi' | 'en' | 'ja' | null;
   yourNameForIntro: string;
   githubUsername: string;
-  onSpotifyViewChange: (isActive: boolean) => void; 
+  onSpotifyViewChange: (isActive: boolean) => void;
 }
 
 type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog';
 type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton' | 'blogButton';
 type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg' | 'blogIconSvg';
-type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog'; 
+type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+// API calls se dung path tuong doi, Vercel se handle rewrites
+// const API_BASE_URL = import.meta.env.PROD ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001');
 
 const getFlourishLayoutPropsForView = (view: SelectorView) => {
     let scale = 1;
@@ -86,7 +87,7 @@ const initialMountFooterNoteDelay = initialMountButton3Delay + 0.4;
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     onLanguageSelected, cardAvatarUrl, initialSelectedLanguage,
     yourNameForIntro, githubUsername,
-    onSpotifyViewChange 
+    onSpotifyViewChange
 }) => {
   const [engineInitialized, setEngineInitialized] = useState(false);
   const [currentView, setCurrentView] = useState<SelectorView>('languageOptions');
@@ -98,7 +99,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   const [guestbookEntries, setGuestbookEntries] = useState<GuestbookEntry[]>([]);
   const [guestbookLoading, setGuestbookLoading] = useState<boolean>(true);
-  const [_guestbookError, setGuestbookError] = useState<string | null>(null);
+  const [_guestbookError, setGuestbookError] = useState<string | null>(null); // van giu _
 
   const [spotifyPlaylists, setSpotifyPlaylists] = useState<any[]>([]);
   const [spotifyLoading, setSpotifyLoading] = useState<boolean>(false);
@@ -116,10 +117,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   useEffect(() => {
     if (currentView !== prevViewRef.current) {
-      logInteraction('view_changed', { 
+      logInteraction('view_changed', {
         previousView: prevViewRef.current,
-        currentView: currentView, 
-        language: currentLanguage 
+        currentView: currentView,
+        language: currentLanguage
       });
       prevViewRef.current = currentView;
     }
@@ -182,15 +183,15 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (isMountedRef.current) {
       onSpotifyViewChange(currentView === 'spotifyPlaylists');
     }
-  }, [currentView, onSpotifyViewChange]); 
+  }, [currentView, onSpotifyViewChange]);
 
 
   const handleParticlesLoaded = useCallback(async (_container?: Container) => {}, []);
-  const handleLanguageButtonClick = (lang: 'vi'|'en'|'ja') => { 
-    logInteraction('language_selected', { language: lang }); 
-    onLanguageSelected(lang); 
-    setCurrentLanguage(lang); 
-    setDisplayTextLanguage(lang); 
+  const handleLanguageButtonClick = (lang: 'vi'|'en'|'ja') => {
+    logInteraction('language_selected', { language: lang });
+    onLanguageSelected(lang);
+    setCurrentLanguage(lang);
+    setDisplayTextLanguage(lang);
     setCurrentView('cardIntro');
   };
   const handleMouseEnterLangBtn = (lang: 'vi'|'en'|'ja') => setDisplayTextLanguage(lang);
@@ -201,7 +202,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   const getFlourishWrapperStyle = (view: SelectorView, isTop: boolean) => {
     let mV = "1rem";
-    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) mV = "0.5rem"; 
+    if (['about', 'gallery', 'guestbook', 'spotifyPlaylists', 'blog'].includes(view)) mV = "0.5rem";
     return isTop ? { marginBottom: mV } : { marginTop: mV };
   };
 
@@ -214,7 +215,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       if (!isMountedRef.current) return;
       setGuestbookLoading(true); setGuestbookError(null);
       try {
-          const res = await fetch(`${API_BASE_URL}/api/guestbook`);
+          const res = await fetch(`/api/guestbook`); // Goi API tuong doi
           if (!res.ok) { let msg = `HTTP error! status: ${res.status}`; try { const errD = await res.json(); msg = errD.error || msg; } catch (e) {} throw new Error(msg); }
           if (isMountedRef.current) setGuestbookEntries(await res.json());
       } catch (e: any) { console.error("Lỗi fetch GBook:", e); if (isMountedRef.current) setGuestbookError(e.message || 'Lỗi tải GBook.'); }
@@ -225,7 +226,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (!isMountedRef.current) return;
     setSpotifyLoading(true); setSpotifyError(null);
     try {
-        const res = await fetch(`${API_BASE_URL}/api/spotify/playlists`);
+        const res = await fetch(`/api/spotify/playlists`); // Goi API tuong doi
         if (!res.ok) {
             let msg = `HTTP error! status: ${res.status}`;
             try { const errData = await res.json(); msg = errData.error || msg; } catch (e) {}
@@ -247,17 +248,15 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (currentView === 'spotifyPlaylists' || (currentView === 'cardIntro' && headerPreviewType === 'spotifyPlaylists')) {
         fetchSpotifyPlaylists();
     }
-    if (currentView === 'blog' || (currentView === 'cardIntro' && headerPreviewType === 'blog')) {
-        // Blog.tsx tự fetch data
-    }
+    // Blog tu fetch
   }, [fetchGuestbookEntries, fetchSpotifyPlaylists, currentView, headerPreviewType]);
 
   const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi'|'en'|'ja'): Promise<void> => {
       const payload = { name, message, language: lang };
       try {
-          const res = await fetch(`${API_BASE_URL}/api/guestbook`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          const res = await fetch(`/api/guestbook`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); // Goi API tuong doi
           if (!res.ok) { let msg = `Lỗi gửi: ${res.status}`; try { const errD = await res.json(); msg = errD.error || msg; } catch (e) {} throw new Error(msg); }
-          await fetchGuestbookEntries();
+          await fetchGuestbookEntries(); // Refresh
       } catch (e: any) { console.error("Lỗi gửi GBook từ LangSel:", e); throw e; }
   };
 
@@ -270,7 +269,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   }[] = [
     { type: 'about', iconKey: 'aboutIconSvg', textKey: 'aboutButton'},
     { type: 'gallery', iconKey: 'galleryIconSvg', textKey: 'galleryButton'},
-    { type: 'blog', iconKey: 'blogIconSvg', textKey: 'blogButton' }, 
+    { type: 'blog', iconKey: 'blogIconSvg', textKey: 'blogButton' },
     { type: 'guestbook', iconKey: 'guestbookIconSvg', textKey: 'guestbookButton'},
     { type: 'spotifyPlaylists', iconKey: 'spotifyIconSvg', textKey: 'spotifyButton'},
   ];
@@ -280,7 +279,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     <motion.div className="language-selector-poetic-overlay" variants={overlayEntryExitVariants} initial="hidden" animate="visible" exit="exit">
       {particleOptions && <MemoizedParticlesComponent id="tsparticles-lang-selector-stable" options={particleOptions} particlesLoaded={handleParticlesLoaded} />}
       <motion.div layout style={getFlourishWrapperStyle(currentView, true)} transition={SHARED_FLOURISH_SPRING_TRANSITION} className="flourish-wrapper">
-            <motion.img src={flourishImage} alt="Họa tiết" className="flourish-image flourish-image-top" aria-hidden="true" variants={topFlourishVariants} initial="hidden" animate={topFlourishVisualControls} onHoverStart={()=>handleFlourishHoverStart(topFlourishVisualControls, topFlourishVariants)} onHoverEnd={()=>handleFlourishHoverEnd(topFlourishVisualControls, topFlourishVariants, flourishLoopAnimTop)} />
+            <motion.img src={flourishImage} alt="" className="flourish-image flourish-image-top" aria-hidden="true" variants={topFlourishVariants} initial="hidden" animate={topFlourishVisualControls} onHoverStart={()=>handleFlourishHoverStart(topFlourishVisualControls, topFlourishVariants)} onHoverEnd={()=>handleFlourishHoverEnd(topFlourishVisualControls, topFlourishVariants, flourishLoopAnimTop)} />
       </motion.div>
       <div className="language-selector-content-wrapper">
         <AnimatePresence mode="wait">
@@ -313,7 +312,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 :headerPreviewType==='gallery'?languageSelectorPreviewTranslations.gallerySneakPeekTitle[currentLanguage]
                                 :headerPreviewType==='guestbook'?languageSelectorPreviewTranslations.guestbookSneakPeekTitle[currentLanguage]
                                 :headerPreviewType==='spotifyPlaylists'?languageSelectorPreviewTranslations.spotifySneakPeekTitle[currentLanguage]
-                                :headerPreviewType==='blog'?languageSelectorPreviewTranslations.blogSneakPeekTitle[currentLanguage] 
+                                :headerPreviewType==='blog'?languageSelectorPreviewTranslations.blogSneakPeekTitle[currentLanguage]
                                 : ''}
                             </motion.h4>
                             <motion.div className="header-preview-block-content" variants={contentItemVariants(0.1)} initial="hidden" animate="visible" exit="exit">
@@ -322,7 +321,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                     :headerPreviewType==='gallery'?previewIcons.gallery
                                     :headerPreviewType==='guestbook'?previewIcons.guestbook
                                     :headerPreviewType==='spotifyPlaylists'?previewIcons.spotify
-                                    :headerPreviewType==='blog'?previewIcons.blog 
+                                    :headerPreviewType==='blog'?previewIcons.blog
                                     : ''
                                 }} />
                                 <div className="header-preview-actual-content">
@@ -330,7 +329,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                   {headerPreviewType==='gallery' && (<div className="header-preview-images-enhanced">{(localImages.length>0?localImages.slice(0,4):[]).map((img,idx)=>(<motion.img key={`preview-${idx}`} variants={contentItemVariants(0.1+idx*0.08)} src={img} alt={languageSelectorPreviewTranslations.galleryPreviewAlt[currentLanguage].replace("{index}",String(idx+1))} />))}</div>)}
                                   {headerPreviewType==='guestbook' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.guestbookSnippetContent[currentLanguage]}</p>)}
                                   {headerPreviewType==='spotifyPlaylists' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.spotifyPreviewContent[currentLanguage]}</p>)}
-                                  {headerPreviewType==='blog' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.blogSnippetContent[currentLanguage]}</p>)} 
+                                  {headerPreviewType==='blog' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.blogSnippetContent[currentLanguage]}</p>)}
                                 </div>
                             </motion.div>
                         </motion.div>):(<motion.div key="header-details" className="header-details-block" variants={contentItemVariants(headerContentBlockDelay)} initial="hidden" animate="visible" exit="exit">
@@ -378,15 +377,15 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           {currentView === 'gallery' && ( <motion.div key="gallery-content" className="content-section card-content-display gallery-view-wrapper" variants={galleryViewVariants(0.05)} initial="hidden" animate="visible" exit="exit">
               <Gallery onBack={()=>setCurrentView('cardIntro')} language={currentLanguage} />
           </motion.div> )}
-          {currentView === 'blog' && ( 
-            <motion.div 
-                key="blog-view-content" 
-                className="content-section card-content-display" 
-                variants={blogViewContainerVariants(0.05)} // Su dung variant moi
+          {currentView === 'blog' && (
+            <motion.div
+                key="blog-view-content"
+                className="content-section card-content-display"
+                variants={blogViewContainerVariants(0.05)}
                 initial="hidden" animate="visible" exit="exit"
             >
                 <Blog language={currentLanguage} onBack={()=>setCurrentView('cardIntro')} />
-            </motion.div> 
+            </motion.div>
           )}
           {currentView === 'guestbook' && ( <motion.div key="guestbook-content" className="content-section card-content-display guestbook-view-wrapper" variants={guestbookViewContainerVariants(0.05)} initial="hidden" animate="visible" exit="exit">
                 {guestbookLoading&&!guestbookEntries.length?(<motion.p initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>{currentLanguage==='vi'?'Đang tải...':currentLanguage==='en'?'Loading...':'読み込み中...'}</motion.p>):(<Guestbook language={currentLanguage} onBack={()=>setCurrentView('cardIntro')} entries={guestbookEntries} onAddEntry={handleAddGuestbookEntry} />)}
@@ -425,7 +424,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         </AnimatePresence>
       </div>
       <motion.div layout style={getFlourishWrapperStyle(currentView, false)} transition={SHARED_FLOURISH_SPRING_TRANSITION} className="flourish-wrapper">
-            <motion.img src={flourishImage} alt="Họa tiết" className="flourish-image flourish-image-bottom" aria-hidden="true" variants={bottomFlourishVariants} initial="hidden" animate={bottomFlourishVisualControls} onHoverStart={()=>handleFlourishHoverStart(bottomFlourishVisualControls, bottomFlourishVariants)} onHoverEnd={()=>handleFlourishHoverEnd(bottomFlourishVisualControls, bottomFlourishVariants, flourishLoopAnimBottom)} />
+            <motion.img src={flourishImage} alt="" className="flourish-image flourish-image-bottom" aria-hidden="true" variants={bottomFlourishVariants} initial="hidden" animate={bottomFlourishVisualControls} onHoverStart={()=>handleFlourishHoverStart(bottomFlourishVisualControls, bottomFlourishVariants)} onHoverEnd={()=>handleFlourishHoverEnd(bottomFlourishVisualControls, bottomFlourishVariants, flourishLoopAnimBottom)} />
       </motion.div>
       {showFooter && (<motion.footer className="language-selector-footer" initial={{opacity:0}} animate={{opacity:1,transition:{delay:0.5,duration:0.5}}} exit={{opacity:0,transition:{duration:0.2}}}>{footerText}</motion.footer>)}
     </motion.div>

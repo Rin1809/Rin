@@ -7,9 +7,8 @@ import {
     randomPoeticQuotes
 } from './languageSelector/languageSelector.constants';
 import type { GuestbookEntry } from '../data/guestbook.data';
-import { logInteraction } from '../utils/logger'; // LOG UTIL
+import { logInteraction } from '../utils/logger';
 
-// Icon Components 
 const IconFeatherPen = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20.7 3.3a1 1 0 0 0-1.4 0L2.6 20.1a1 1 0 0 0 0 1.4l.4.4"/>
@@ -80,15 +79,15 @@ const TypewriterContainerVariants = (stagger: number): Variants => ({
 
 const TypewriterMessage: React.FC<TypewriterMessageProps> = React.memo(({
   fullMessage,
-  className = "entry-message", 
+  className = "entry-message",
   staggerDuration = 0.045,
 }) => {
   const characters = useMemo(() => fullMessage.split(''), [fullMessage]);
   const animationKey = useMemo(() => fullMessage, [fullMessage]);
 
   return (
-    <div className={className}> 
-      <motion.p 
+    <div className={className}>
+      <motion.p
         key={animationKey}
         variants={TypewriterContainerVariants(staggerDuration)}
         initial="hidden"
@@ -96,10 +95,10 @@ const TypewriterMessage: React.FC<TypewriterMessageProps> = React.memo(({
         style={{
           margin: 0,
           padding: 0,
-          whiteSpace: 'normal',      
-          overflowWrap: 'break-word', 
-          wordWrap: 'break-word',     
-          hyphens: 'none',            
+          whiteSpace: 'normal',
+          overflowWrap: 'break-word',
+          wordWrap: 'break-word',
+          hyphens: 'none',
         }}
       >
         {characters.map((char, index) => (
@@ -200,9 +199,9 @@ const bookPagesWrapperVariants = {
   exit: { opacity: 0 }
 };
 
-const MIN_PANE_HEIGHT_PERCENT = 25; 
-const MAX_PANE_HEIGHT_PERCENT = 75; 
-const DIVIDER_HEIGHT = 10; 
+const MIN_PANE_HEIGHT_PERCENT = 25;
+const MAX_PANE_HEIGHT_PERCENT = 75;
+const DIVIDER_HEIGHT = 10;
 
 const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) => {
   const [name, setName] = useState('');
@@ -214,7 +213,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   const [hoveredEntryId, setHoveredEntryId] = useState<string | number | null>(null);
   const [currentRandomQuote, setCurrentRandomQuote] = useState<string>('');
   const randomQuoteIntervalIdRef = useRef<number | null>(null);
-  const [leftPaneHeight, setLeftPaneHeight] = useState<number | null>(null); 
+  const [leftPaneHeight, setLeftPaneHeight] = useState<number | null>(null);
   const [isDraggingDivider, setIsDraggingDivider] = useState(false);
   const dragStartY = useRef(0);
   const dragStartLeftPaneHeight = useRef(0);
@@ -244,23 +243,23 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
 
    useEffect(() => {
     if (hoveredEntryId !== null && !hasLoggedViewRef.current.has(hoveredEntryId)) {
-      const hoveredEntry = entries.find(entry => entry.id === hoveredEntryId); // tim entry
-      let messageSnippet = "N/A"; 
+      const hoveredEntry = entries.find(entry => entry.id === hoveredEntryId);
+      let messageSnippet = "N/A";
       if (hoveredEntry) {
         const fullMessage = hoveredEntry.message;
-        messageSnippet = fullMessage.substring(0, 30) + (fullMessage.length > 30 ? "..." : ""); // tao snippet
+        messageSnippet = fullMessage.substring(0, 30) + (fullMessage.length > 30 ? "..." : "");
       }
-      logInteraction('guestbook_entry_viewed', { 
-        entryId: hoveredEntryId, 
-        messageSnippet: messageSnippet, // Gui snippet
-        language: language 
+      logInteraction('guestbook_entry_viewed', {
+        entryId: hoveredEntryId,
+        messageSnippet: messageSnippet,
+        language: language
       });
       hasLoggedViewRef.current.add(hoveredEntryId);
     }
-   }, [hoveredEntryId, language, entries]); // Them entries vao deps
+   }, [hoveredEntryId, language, entries]);
 
 
-   const handleSubmit = async (e: React.FormEvent) => { 
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !message.trim()) {
       setSubmitError(t.validationError[language] || 'Tên và cảm nghĩ k dc trống!');
@@ -272,10 +271,10 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
     setSubmitSuccess(null);
     try {
       await onAddEntry(name.trim(), message.trim(), language);
-      logInteraction('guestbook_entry_submitted', { 
-        name: name.trim(), 
+      logInteraction('guestbook_entry_submitted', {
+        name: name.trim(),
         messageSnippet: message.trim().substring(0, 30) + (message.trim().length > 30 ? "..." : ""),
-        language: language 
+        language: language
       });
       setName('');
       setMessage('');
@@ -298,14 +297,14 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       setIsSubmitting(false);
     }
   };
-  const handleCancelWrite = () => { 
+  const handleCancelWrite = () => {
     setViewMode('read');
     setName('');
     setMessage('');
     setSubmitError(null);
     setSubmitSuccess(null);
   }
-  const formatDate = (dateString: string) => { 
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
         return language === 'vi' ? 'K rõ TG' : language === 'en' ? 'Unknown time' : '時刻不明';
@@ -316,7 +315,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   const displayedEntries = [...entries].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   const handleDividerMouseDown = useCallback((event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    event.preventDefault(); 
+    event.preventDefault();
     setIsDraggingDivider(true);
     const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
     dragStartY.current = clientY;
@@ -331,7 +330,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
       const totalHeight = bookPagesWrapperRef.current.offsetHeight - DIVIDER_HEIGHT;
       const minHeightPx = (MIN_PANE_HEIGHT_PERCENT / 100) * totalHeight;
       const maxHeightPx = (MAX_PANE_HEIGHT_PERCENT / 100) * totalHeight;
-      
+
       let newLeftPaneHeight = dragStartLeftPaneHeight.current + deltaY;
       newLeftPaneHeight = Math.max(minHeightPx, Math.min(newLeftPaneHeight, maxHeightPx));
       setLeftPaneHeight(newLeftPaneHeight);
@@ -359,7 +358,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   useEffect(() => {
     if (bookPagesWrapperRef.current && leftPaneHeight === null) {
         const wrapperHeight = bookPagesWrapperRef.current.offsetHeight;
-        if (wrapperHeight > 0) { 
+        if (wrapperHeight > 0) {
             setLeftPaneHeight(wrapperHeight / 2 - DIVIDER_HEIGHT / 2);
         }
     }
@@ -374,8 +373,8 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
 
-  }, [leftPaneHeight]); 
-  
+  }, [leftPaneHeight]);
+
   const leftPageStyle = leftPaneHeight !== null && window.innerWidth <= 640
     ? { height: `${leftPaneHeight}px`, flexShrink:0, flexBasis: `${leftPaneHeight}px` }
     : {};
@@ -387,11 +386,11 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
   return (
     <motion.div className="book-core" variants={bookCoreVariants} initial="hidden" animate="visible" exit="exit" >
         <motion.h2 className="guestbook-title" variants={guestbookItemVariants} initial="hidden" animate="visible" exit="hidden" > {t.title[language]} </motion.h2>
-        <motion.div 
+        <motion.div
             ref={bookPagesWrapperRef}
-            className="book-pages-wrapper" 
-            variants={bookPagesWrapperVariants} 
-            initial="hidden" animate="visible" exit="exit" 
+            className="book-pages-wrapper"
+            variants={bookPagesWrapperVariants}
+            initial="hidden" animate="visible" exit="exit"
         >
             <div className="book-page page-left" style={leftPageStyle}>
                 <div className="page-content-scrollable left-page-scroll">
@@ -465,7 +464,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ language, entries, onAddEntry}) =
             </div>
 
             { window.innerWidth <= 640 && (
-                <motion.div 
+                <motion.div
                     className="guestbook-page-divider"
                     onMouseDown={handleDividerMouseDown}
                     onTouchStart={handleDividerMouseDown}

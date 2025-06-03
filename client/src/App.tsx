@@ -7,32 +7,29 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { ISourceOptions, Engine } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 
-// Nhạc nền
 import backgroundMusicMP3 from './assets/audio/background_music.mp3';
 
-// Ktra mobile
 const IS_MOBILE_DEVICE = typeof window !== 'undefined' && window.innerWidth < 768;
 
-// --  PARTICLESC_CONFIG --
 const particlesOptions: ISourceOptions = {
-    fpsLimit: IS_MOBILE_DEVICE ? 30 : 60, // Giam FPS mobile
+    fpsLimit: IS_MOBILE_DEVICE ? 30 : 60,
     interactivity: { events: { onClick: { enable: false }, onHover: { enable: false }, resize: { enable: true } }, modes: {} },
     particles: {
         color: { value: ["#ffffff", "#b4befe", "#a6adc8"] },
         links: { enable: false },
         move: {
             enable: true,
-            speed: { min: IS_MOBILE_DEVICE ? 0.1 : 0.1, max: IS_MOBILE_DEVICE ? 0.3 : 0.5 }, // Giam speed mobile
+            speed: { min: IS_MOBILE_DEVICE ? 0.1 : 0.1, max: IS_MOBILE_DEVICE ? 0.3 : 0.5 },
             direction: "none", random: true, straight: false, outModes: { default: "out" }
         },
         number: {
             density: { enable: true },
-            value: IS_MOBILE_DEVICE ? 30 : 60, // Giam so luong mobile
+            value: IS_MOBILE_DEVICE ? 30 : 60,
         },
         opacity: {
             value: { min: 0.1, max: IS_MOBILE_DEVICE ? 0.7 : 0.5 },
             animation: {
-                enable: !IS_MOBILE_DEVICE, // Tat anim opacity mobile
+                enable: !IS_MOBILE_DEVICE,
                 speed: 1,
                 sync: false,
             }
@@ -41,13 +38,13 @@ const particlesOptions: ISourceOptions = {
         size: {
             value: { min: IS_MOBILE_DEVICE ? 0.7 : 0.4, max: IS_MOBILE_DEVICE ? 1.8 : 2 },
             animation: {
-                enable: !IS_MOBILE_DEVICE, // Tat anim size mobile
+                enable: !IS_MOBILE_DEVICE,
                 speed: 8,
                 sync: false,
             }
         },
     },
-    detectRetina: !IS_MOBILE_DEVICE, // Tat retina mobile
+    detectRetina: !IS_MOBILE_DEVICE,
 };
 
 const YOUR_AVATAR_URL_FOR_INTRO = "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128";
@@ -134,7 +131,7 @@ function App() {
         if (currentIntroStage !== 'cat' && currentIntroStage !== 'yourName') {
             return;
         }
-        
+
         let stage1TimerId: number | null = null;
         let fade1TimerId: number | null = null;
         let stage2TimerId: number | null = null;
@@ -170,7 +167,7 @@ function App() {
             if (stage2TimerId) window.clearTimeout(stage2TimerId);
             if (fade2TimerId) window.clearTimeout(fade2TimerId);
         };
-    }, [currentIntroStage, hasIntroFinishedForMusic]);
+    }, [currentIntroStage, hasIntroFinishedForMusic, isStageFadingOut]); // them isStageFadingOut vao deps
 
     useEffect(() => {
         const audioElement = audioRef.current;
@@ -187,11 +184,12 @@ function App() {
             }
         } else if (shouldPlayMusic) {
             audioElement.play().then(() => {
+                // playback started
             }).catch(error => {
-                console.warn("Autoplay prevented or error during playback:", error.name, error.message);
+                console.warn("Autoplay bi chan hoac loi khi phat nhac:", error.name, error.message);
             });
         }
-    }, [isSpotifyViewActive, hasIntroFinishedForMusic, selectedLanguage, currentIntroStage]);
+    }, [isSpotifyViewActive, hasIntroFinishedForMusic, selectedLanguage]); // bo currentIntroStage
 
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
         setSelectedLanguage(language);
@@ -199,13 +197,7 @@ function App() {
 
     useEffect(() => {
         const notifyBackendOfVisit = async () => {
-            const VITE_API_BASE_URL_FROM_ENV = import.meta.env.VITE_API_BASE_URL;
-            if (!VITE_API_BASE_URL_FROM_ENV) {
-                console.error("LỖI: VITE_API_BASE_URL chưa được cấu hình trong .env của client!");
-                return;
-            }
-            
-            const apiUrl = `${VITE_API_BASE_URL_FROM_ENV}/api/notify-visit`;
+            const apiUrl = `/api/notify-visit`; // Goi API tuong doi
             try {
                 await fetch(apiUrl, {
                     method: 'POST',
@@ -214,11 +206,11 @@ function App() {
                     },
                 });
             } catch (error) {
-                console.error(`[NOTIFY VISIT] Lỗi gửi tbáo visit tới ${apiUrl}:`, error);
+                console.error(`[NOTIFY VISIT] Loi gui tbáo visit tới ${apiUrl}:`, error);
             }
         };
 
-        if (import.meta.env.PROD) {
+        if (import.meta.env.PROD) { // Chi gui khi la production
             notifyBackendOfVisit();
         }
     }, []);
@@ -231,7 +223,7 @@ function App() {
             <Particles
                 key="tsparticles-background-stable"
                 id="tsparticles-background-stable"
-                options={particlesOptions} // Su dung options da toi uu
+                options={particlesOptions}
             />
         );
     }, [particlesInitialized]);
@@ -239,7 +231,7 @@ function App() {
     return (
         <div className="AppWrapper">
             <audio ref={audioRef} src={backgroundMusicMP3} loop />
-            
+
             {memoizedParticles}
             {currentIntroStage === 'languageSelection' ? (
                 <LanguageSelector
@@ -255,7 +247,7 @@ function App() {
                     currentStage={currentIntroStage}
                     isFadingOutProp={isStageFadingOut}
                     userName={YOUR_NAME_FOR_INTRO}
-                    selectedLanguage={selectedLanguage || 'vi'}
+                    selectedLanguage={selectedLanguage || 'vi'} // fallback
                 />
             )}
         </div>
