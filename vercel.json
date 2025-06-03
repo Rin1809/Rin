@@ -19,19 +19,16 @@
     {
       "src": "/assets/(.*)",
       "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "dest": "/assets/$1" 
+      "dest": "/assets/$1"
     },
     {
       "src": "/(.*\\.(?:ico|png|jpg|jpeg|gif|svg|webp|js|css|woff2|woff|ttf|otf|mp3))",
       "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "dest": "/$1" 
-    },
-    {
-      "handle": "filesystem"
+      "dest": "/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html" 
+      "dest": "/index.html"
     }
   ]
 }
