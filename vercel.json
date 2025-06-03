@@ -31,8 +31,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/index.html" 
     }
-  ],
-  "outputDirectory": "client/dist"
+  ]
 }
