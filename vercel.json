@@ -1,5 +1,18 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "server/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "client/package.json",
+      "use": "@vercel/vite",
+      "config": {
+        "outputDirectory": "dist" 
+      }
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
