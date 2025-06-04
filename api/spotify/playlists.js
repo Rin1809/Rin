@@ -1,8 +1,6 @@
 // api/spotify/playlists.js
 import axiosPkg from 'axios';
 const { default: axios } = axiosPkg;
-// import dotenv from 'dotenv'; // KO CAN dotenv neu bien MT da set tren Vercel
-// dotenv.config();
 
 let spotifyAccessToken = null;
 let tokenExpiryTime = 0;
