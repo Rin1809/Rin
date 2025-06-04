@@ -1,7 +1,7 @@
 // api/spotify/playlists.js
 import axios from 'axios';
-import dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from 'dotenv'; // KO CAN dotenv neu bien MT da set tren Vercel
+// dotenv.config();
 
 let spotifyAccessToken = null;
 let tokenExpiryTime = 0;
@@ -20,9 +20,13 @@ async function getSpotifyTokenInternal() {
         return spotifyAccessToken;
     }
 
-    if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) {
-        console.error('Srvls: Spotify ID/Secret chua set.');
-        throw new Error('Spotify API creds missing.');
+    if (!SPOTIFY_CLIENT_ID) {
+        console.error('SRVLS_SPOTIFY_FATAL: SPOTIFY_CLIENT_ID env var is not set on Vercel.'); // log
+        throw new Error('Spotify API creds missing (ID).');
+    }
+    if (!SPOTIFY_CLIENT_SECRET) {
+        console.error('SRVLS_SPOTIFY_FATAL: SPOTIFY_CLIENT_SECRET env var is not set on Vercel.'); // log
+        throw new Error('Spotify API creds missing (Secret).');
     }
 
     try {
@@ -37,9 +41,11 @@ async function getSpotifyTokenInternal() {
         );
         spotifyAccessToken = response.data.access_token;
         tokenExpiryTime = Date.now() + (response.data.expires_in * 1000) - 60000; // Refresh som hon 1p
+        // console.log('SRVLS_SPOTIFY_INFO: Token obtained.'); // log
         return spotifyAccessToken;
     } catch (error) {
-        console.error('Srvls: Loi lay Spotify token:', error.response ? error.response.data : error.message);
+        const errorDetails = error.response ? JSON.stringify(error.response.data) : error.message;
+        console.error(`SRVLS_SPOTIFY_TOKEN_ERROR: Error getting Spotify token: ${errorDetails}`, error.stack); // log
         throw new Error('Loi lay Spotify access token.');
     }
 }
@@ -47,7 +53,9 @@ async function getSpotifyTokenInternal() {
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
+        // console.log('SRVLS_SPOTIFY_INFO: Handler called, attempting to get token and playlists...'); // log
         const token = await getSpotifyTokenInternal();
+        // console.log('SRVLS_SPOTIFY_INFO: Token ready, fetching playlists...'); // log
         const playlistPromises = MY_SPOTIFY_PLAYLIST_IDS.map(id =>
             axios.get(`https://api.spotify.com/v1/playlists/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -64,12 +72,15 @@ export default async function handler(req, res) {
             owner: response.data.owner.display_name
         }));
 
+        // console.log('SRVLS_SPOTIFY_INFO: Playlists fetched successfully.'); // log
         res.status(200).json(playlistsData);
     } catch (error) {
-        console.error('Srvls: Loi lay Spotify playlists:', error.message);
-        if (error.message.includes('Spotify API creds missing')) {
+        const errorMessage = error.message || 'Unknown error';
+        console.error(`SRVLS_SPOTIFY_HANDLER_ERROR: Error fetching Spotify playlists: ${errorMessage}`, error.stack); // log
+
+        if (errorMessage.includes('Spotify API creds missing')) {
              res.status(503).json({ error: 'Spotify service loi (config).' });
-        } else if (error.message.includes('Loi lay Spotify access token')) {
+        } else if (errorMessage.includes('Loi lay Spotify access token')) {
              res.status(503).json({ error: 'Spotify service loi (auth).' });
         } else {
              res.status(500).json({ error: 'Loi lay Spotify playlists.' });
