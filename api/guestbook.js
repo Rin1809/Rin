@@ -1,5 +1,5 @@
 // api/guestbook.js
-import { pool, initializeDb } from '../_lib/db.js'; // Path nay van giu nguyen
+import { pool, initializeDb } from './_lib/db.js'; 
 import dotenv from 'dotenv';
 dotenv.config();
 
