@@ -1,6 +1,6 @@
 // api/spotify/playlists.js
-import axiosPkg from 'axios';
-const { default: axios } = axiosPkg;
+import * as axiosStar from 'axios';
+const axios = axiosStar.default || axiosStar;
 
 let spotifyAccessToken = null;
 let tokenExpiryTime = 0;
