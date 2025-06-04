@@ -1,10 +1,10 @@
 // api/guestbook.js
-import { pool, initializeDb } from '../server/db.js'; // Duong dan toi db.js
+import { pool, initializeDb } from '../_lib/db.js'; // sua path db
 import dotenv from 'dotenv';
-dotenv.config(); // Load bien moi truong cho local dev voi vercel dev
+dotenv.config();
 
 export default async function handler(req, res) {
-  await initializeDb(); // Dam bao table da dc tao
+  await initializeDb(); // goi db init
 
   if (req.method === 'GET') {
     try {

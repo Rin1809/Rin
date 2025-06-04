@@ -1,12 +1,12 @@
 // api/blog/posts.js
-import { pool, initializeDb } from '../../server/db.js'; // Luu y duong dan thay doi
+import { pool, initializeDb } from '../_lib/db.js'; // sua path db
 import dotenv from 'dotenv';
 dotenv.config();
 
 const MIZUKI_SHARED_SECRET = process.env.MIZUKI_SHARED_SECRET || "default_secret_key_for_mizuki";
 
 export default async function handler(req, res) {
-  await initializeDb();
+  await initializeDb(); // goi db init
 
   if (req.method === 'GET') {
     try {
