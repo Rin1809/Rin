@@ -1,14 +1,13 @@
 {
-  "name": "rin-personal-card-monorepo-root", 
+  "name": "rin-personal-card-monorepo",
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "dev": "echo \"Run client dev script from client/ folder\"",
-    "build": "echo \"Vercel will build client and API functions separately\""
   },
   "dependencies": {
-    "axios": "^1.7.2",
+    "axios": "^1.7.2", 
     "dotenv": "^16.4.5",
     "pg": "^8.12.0"
+
   }
 }
