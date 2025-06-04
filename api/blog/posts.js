@@ -1,5 +1,5 @@
 // api/blog/posts.js
-import { pool, initializeDb } from './_lib/db.js';
+import { pool, initializeDb } from '../_lib/db.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
