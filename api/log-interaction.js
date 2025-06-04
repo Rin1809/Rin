@@ -1,5 +1,5 @@
 // api/log-interaction.js
-import axios from 'axios';
+// Bỏ: import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -15,7 +15,6 @@ export default async function handler(req, res) {
     const { eventType, eventData, timestamp: clientTimestamp } = req.body;
 
     if (!MIZUKI_BOT_BASE_URL) {
-        // console.warn("Srvls: MIZUKI_BOT_BASE_URL chua cfg. Ko gui log tuong tac.");
         return res.status(202).json({ message: "Interaction logged, notification to bot disabled." });
     }
 
@@ -27,18 +26,18 @@ export default async function handler(req, res) {
 
     if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)) {
         try {
-            const geoResponse = await axios.get(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`);
-            if (geoResponse.data && geoResponse.data.status === 'success') {
-                country = geoResponse.data.country || "N/A";
-                city = geoResponse.data.city || "N/A";
-                region = geoResponse.data.regionName || "N/A";
-                isp = geoResponse.data.isp || "N/A";
+            const geoApiResponse = await fetch(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`); // THAY THẾ AXIOS
+            const geoData = await geoApiResponse.json();
+            if (geoApiResponse.ok && geoData && geoData.status === 'success') {
+                country = geoData.country || "N/A";
+                city = geoData.city || "N/A";
+                region = geoData.regionName || "N/A";
+                isp = geoData.isp || "N/A";
                 locationInfo = `${city}, ${region}, ${country} (ISP: ${isp})`;
             } else {
-                locationInfo = `Ko lay dc ttin vi tri (ip-api: ${geoResponse.data.message || 'loi ko ro'})`;
+                locationInfo = `Ko lay dc ttin vi tri (ip-api: ${geoData.message || 'loi ko ro'})`;
             }
         } catch (geoError) {
-            // console.error(`Srvls: [GeoIP INTERACTION] Loi goi API GeoIP cho IP ${clientIp}:`, geoError.message);
             locationInfo = "Loi lay ttin vi tri.";
         }
     } else if (EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)){
@@ -67,15 +66,22 @@ export default async function handler(req, res) {
         if (logInteractionUrl.endsWith('/')) {
             logInteractionUrl = logInteractionUrl.slice(0, -1);
         }
-        await axios.post(`${logInteractionUrl}/log-interaction`, interactionPayload, {
+        const botResponse = await fetch(`${logInteractionUrl}/log-interaction`, { // THAY THẾ AXIOS
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Mizuki-Secret': MIZUKI_SHARED_SECRET
-            }
+            },
+            body: JSON.stringify(interactionPayload)
         });
+
+        if (!botResponse.ok) {
+            const errorText = await botResponse.text();
+            console.error("Srvls: Loi gui log tuong tac toi bot Mizuki:", botResponse.status, errorText);
+            throw new Error(`Failed to notify bot: ${botResponse.status}`);
+        }
         res.status(200).json({ message: "Interaction logged and notification sent to bot." });
     } catch (botError) {
-        // console.error("Srvls: Loi gui log tuong tac toi bot Mizuki:", botError.response ? botError.response.data : botError.message);
         res.status(500).json({ error: "Failed to notify bot of interaction." });
     }
   } else {

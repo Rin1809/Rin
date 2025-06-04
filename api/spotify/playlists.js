@@ -1,6 +1,6 @@
 // api/spotify/playlists.js
-import * as axiosStar from 'axios';
-const axios = axiosStar.default || axiosStar;
+// Bỏ: import * as axiosStar from 'axios';
+// Bỏ: const axios = axiosStar.default || axiosStar;
 
 let spotifyAccessToken = null;
 let tokenExpiryTime = 0;
@@ -20,31 +20,36 @@ async function getSpotifyTokenInternal() {
     }
 
     if (!SPOTIFY_CLIENT_ID) {
-        console.error('SRVLS_SPOTIFY_FATAL: SPOTIFY_CLIENT_ID env var is not set on Vercel.'); // log
+        console.error('SRVLS_SPOTIFY_FATAL: SPOTIFY_CLIENT_ID env var is not set on Vercel.');
         throw new Error('Spotify API creds missing (ID).');
     }
     if (!SPOTIFY_CLIENT_SECRET) {
-        console.error('SRVLS_SPOTIFY_FATAL: SPOTIFY_CLIENT_SECRET env var is not set on Vercel.'); // log
+        console.error('SRVLS_SPOTIFY_FATAL: SPOTIFY_CLIENT_SECRET env var is not set on Vercel.');
         throw new Error('Spotify API creds missing (Secret).');
     }
 
     try {
-        const response = await axios.post('https://accounts.spotify.com/api/token',
-            'grant_type=client_credentials',
-            {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': 'Basic ' + (Buffer.from(SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET).toString('base64'))
-                }
-            }
-        );
-        spotifyAccessToken = response.data.access_token;
-        tokenExpiryTime = Date.now() + (response.data.expires_in * 1000) - 60000; // Refresh som hon 1p
-        // console.log('SRVLS_SPOTIFY_INFO: Token obtained.'); // log
+        const response = await fetch('https://accounts.spotify.com/api/token', { // THAY THẾ AXIOS
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + (Buffer.from(SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET).toString('base64'))
+            },
+            body: 'grant_type=client_credentials'
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `Spotify token API responded with status ${response.status}` }));
+            console.error(`SRVLS_SPOTIFY_TOKEN_ERROR: Spotify token API error: ${response.status}`, errorData);
+            throw new Error('Loi lay Spotify access token.');
+        }
+
+        const data = await response.json();
+        spotifyAccessToken = data.access_token;
+        tokenExpiryTime = Date.now() + (data.expires_in * 1000) - 60000; // Refresh som hon 1p
         return spotifyAccessToken;
     } catch (error) {
-        const errorDetails = error.response ? JSON.stringify(error.response.data) : error.message;
-        console.error(`SRVLS_SPOTIFY_TOKEN_ERROR: Error getting Spotify token: ${errorDetails}`, error.stack); // log
+        console.error(`SRVLS_SPOTIFY_TOKEN_ERROR: Error getting Spotify token: ${error.message}`, error.stack);
         throw new Error('Loi lay Spotify access token.');
     }
 }
@@ -52,30 +57,43 @@ async function getSpotifyTokenInternal() {
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
-        // console.log('SRVLS_SPOTIFY_INFO: Handler called, attempting to get token and playlists...'); // log
         const token = await getSpotifyTokenInternal();
-        // console.log('SRVLS_SPOTIFY_INFO: Token ready, fetching playlists...'); // log
-        const playlistPromises = MY_SPOTIFY_PLAYLIST_IDS.map(id =>
-            axios.get(`https://api.spotify.com/v1/playlists/${id}`, {
+        const playlistPromises = MY_SPOTIFY_PLAYLIST_IDS.map(async (id) => { // THAY THẾ AXIOS
+            const playlistResponse = await fetch(`https://api.spotify.com/v1/playlists/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
-            })
-        );
+            });
+            if (!playlistResponse.ok) {
+                const errorData = await playlistResponse.json().catch(() => ({ message: `Spotify playlist API for ${id} responded with status ${playlistResponse.status}` }));
+                console.error(`SRVLS_SPOTIFY_PLAYLIST_ERROR: Error fetching playlist ${id}: ${playlistResponse.status}`, errorData);
+                // Thay vì throw, có thể trả về null hoặc một object lỗi để Promise.all không bị reject ngay
+                return { error: true, id, status: playlistResponse.status, data: errorData };
+            }
+            return playlistResponse.json();
+        });
 
-        const playlistResponses = await Promise.all(playlistPromises);
-        const playlistsData = playlistResponses.map(response => ({
-            id: response.data.id,
-            name: response.data.name,
-            description: response.data.description,
-            imageUrl: response.data.images.length > 0 ? response.data.images[0].url : null,
-            externalUrl: response.data.external_urls.spotify,
-            owner: response.data.owner.display_name
-        }));
+        const playlistResponsesData = await Promise.all(playlistPromises);
 
-        // console.log('SRVLS_SPOTIFY_INFO: Playlists fetched successfully.'); // log
+        const playlistsData = playlistResponsesData
+            .filter(data => data && !data.error) // Lọc các playlist bị lỗi
+            .map(data => ({
+                id: data.id,
+                name: data.name,
+                description: data.description,
+                imageUrl: data.images && data.images.length > 0 ? data.images[0].url : null,
+                externalUrl: data.external_urls.spotify,
+                owner: data.owner.display_name
+            }));
+
+        // Nếu có lỗi ở một số playlist, bạn có thể muốn log hoặc xử lý riêng
+        const erroredPlaylists = playlistResponsesData.filter(data => data && data.error);
+        if (erroredPlaylists.length > 0) {
+            console.warn(`SRVLS_SPOTIFY_PARTIAL_ERROR: Failed to fetch some playlists:`, erroredPlaylists);
+        }
+
         res.status(200).json(playlistsData);
     } catch (error) {
         const errorMessage = error.message || 'Unknown error';
-        console.error(`SRVLS_SPOTIFY_HANDLER_ERROR: Error fetching Spotify playlists: ${errorMessage}`, error.stack); // log
+        console.error(`SRVLS_SPOTIFY_HANDLER_ERROR: Error fetching Spotify playlists: ${errorMessage}`, error.stack);
 
         if (errorMessage.includes('Spotify API creds missing')) {
              res.status(503).json({ error: 'Spotify service loi (config).' });
