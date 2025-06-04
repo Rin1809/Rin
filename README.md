@@ -1,1 +1,1 @@
-https://rinn.work.gd/
+https://rins.space
