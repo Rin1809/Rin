@@ -7,11 +7,13 @@ import { useDock } from '../Dock/DockContext'
 interface DockCardProps {
   children: React.ReactNode;
   onClick: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 const INITIAL_WIDTH = 64;
 
-export const DockCard = ({ children, onClick }: DockCardProps) => {
+export const DockCard = ({ children, onClick, onMouseEnter, onMouseLeave }: DockCardProps) => {
   const cardRef = React.useRef<HTMLButtonElement>(null!)
   const [elCenterX, setElCenterX] = React.useState<number>(0)
 
@@ -23,6 +25,20 @@ export const DockCard = ({ children, onClick }: DockCardProps) => {
   })
 
   const dock = useDock()
+
+  const recalculateCenterX = React.useCallback(() => {
+    if (cardRef.current) {
+      const { x, width } = cardRef.current.getBoundingClientRect()
+      setElCenterX(x + width / 2)
+    }
+  }, []);
+
+  useWindowResize(recalculateCenterX);
+
+  useIsomorphicLayoutEffect(() => {
+    recalculateCenterX();
+  }, [recalculateCenterX, dock.width]);
+
 
   useMousePosition(
     {
@@ -38,7 +54,7 @@ export const DockCard = ({ children, onClick }: DockCardProps) => {
         }
       },
     },
-    [elCenterX, dock.width, dock.hovered]
+    [elCenterX, dock.width, dock.hovered, size]
   )
 
   useIsomorphicLayoutEffect(() => {
@@ -46,13 +62,6 @@ export const DockCard = ({ children, onClick }: DockCardProps) => {
       size.start(INITIAL_WIDTH)
     }
   }, [dock.hovered, size])
-
-  useWindowResize(() => {
-    if (cardRef.current) {
-      const { x, width } = cardRef.current.getBoundingClientRect()
-      setElCenterX(x + width / 2)
-    }
-  })
 
   const handleClick = () => {
     onClick();
@@ -62,7 +71,7 @@ export const DockCard = ({ children, onClick }: DockCardProps) => {
   };
 
   return (
-    <div className="dock-item-container">
+    <div className="dock-item-container" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <animated.button
         ref={cardRef}
         className="dock-item"

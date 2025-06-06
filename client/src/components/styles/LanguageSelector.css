@@ -504,72 +504,11 @@
 .card-intro-actions { 
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
-  margin-top: 0; 
+  align-items: flex-end; /* can giu */
+  min-height: 84px; /* giu chieu cao ổn định */
   width: 100%;
   max-width: 500px; 
   position: relative; 
-}
-
-.card-intro-button { 
-  background: rgba(var(--card-background-rgb), 0.2);
-  border: 1.5px solid rgba(var(--text-color-poetic-rgb), 0.3);
-  color: var(--text-color-poetic);
-  font-family: inherit;
-  font-size: 1.1em;
-  font-weight: 500;
-  padding: 0.9rem 1.8rem;
-  border-radius: 16px;
-  cursor: pointer;
-  min-width: 200px;
-  flex: 1 1 auto; 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.7em;
-  position: relative; 
-  overflow: hidden; 
-  will-change: transform, background-color, border-color, box-shadow;
-  transition: color 0.25s ease-out, background-color 0.25s ease-out, border-color 0.25s ease-out;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-.card-intro-button:hover {
-  color: var(--highlight-color-poetic); 
-}
-.button-icon-svg { 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px; height: 20px;
-}
-.button-icon-svg svg {
-  width: 100%; height: 100%;
-  stroke-width: 2.2; 
-  transition: stroke 0.25s ease-out;
-}
-.card-intro-button:hover .button-icon-svg svg {
-  stroke: var(--highlight-color-poetic); 
-}
-.button-shine-effect {
-  position: absolute;
-  top: -50%; left: -150%;
-  width: 60px; 
-  height: 200%; 
-  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
-  transform: skewX(-25deg); 
-  opacity: 0;
-  transition: left 0.6s ease-in-out, opacity 0.4s;
-  pointer-events: none;
-  z-index: 1;
-}
-.card-intro-button:hover .button-shine-effect {
-  left: 150%; 
-  opacity: 0.6;
-  transition: left 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) 0.1s, opacity 0.3s;
-}
-.card-intro-button .button-text,
-.card-intro-button .button-icon-svg {
-  position: relative; z-index: 2; 
 }
 
 
@@ -597,15 +536,10 @@
   .language-options-poetic { margin-bottom: 1.5rem; }
   .card-intro-actions { margin-top: 0.8rem; }
 
-  .language-options-poetic, .card-intro-actions {
+  .language-options-poetic {
     flex-direction: column;
     gap: 1rem;
     align-items: center;
-  }
-  .card-intro-button, .lang-choice-poetic {
-    width: 100%;
-    max-width: 280px; 
-    min-width: auto; 
   }
 
   .poetic-divider-vertical { display: none; }
@@ -615,7 +549,7 @@
     background-color: rgba(var(--text-color-poetic-rgb), 0.2);
   }
 
-  .lang-choice-poetic { padding: 1.2rem 1rem; }
+  .lang-choice-poetic { padding: 1.2rem 1rem; width: 100%; max-width: 280px; min-width: auto; }
   .lang-icon-poetic { font-size: 2.5rem; }
   .lang-name-poetic { font-size: 1.2em; }
   .poetic-footer-note { margin-top: 1rem; font-size: 0.9em; }
@@ -651,9 +585,6 @@
   .card-intro-avatar { width: 100px; height: 100px; }
   .card-intro-avatar-wrapper::before { width: calc(100% + 16px); height: calc(100% + 16px); }
 
-  .card-intro-button {
-    padding: 0.85rem 1.5rem; font-size: 1em;
-  }
 }
 @media (max-width: 420px) { 
   .card-intro-header-swappable-content {
@@ -680,15 +611,12 @@
 
   .card-intro-avatar { width: 90px; height: 90px; border-width: 3px; }
   .sparkle-element { width: 4px; height: 4px;}
-  .card-intro-button { padding: 0.8rem 1.2rem; gap: 0.5em; font-size: 0.95em; }
-  .button-icon-svg { width: 18px; height: 18px; }
 }
 
 
 /* Container cho view con */
 .card-content-display {
   width: 100%;
-  /* max-width: 95%; Bỏ max-width ở đây, để view con tự quyết */
   padding: 0rem 0;
   display: flex;
   flex-direction: column;
@@ -703,8 +631,7 @@
   flex-direction: column;
   align-items: center; 
   gap: 1rem; 
-  flex-grow: 1; /* Cho phép mở rộng theo chiều cao */
-  /* Bỏ height và overflow ở đây để nội dung không bị cắt */
+  flex-grow: 1;
 }
 
 .gallery-view-wrapper > .gallery-main-container {
@@ -720,7 +647,6 @@
 .spotify-playlists-view-wrapper > .spotify-playlists-container { 
     width: 100%;
     box-sizing: border-box;
-    /* height được quản lý bởi flex-grow của cha và nội dung con */
 }
 
 
@@ -745,7 +671,7 @@
   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
   transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
   will-change: transform, background-color, box-shadow;
-  flex-shrink: 0; /* Nút Back không co lại */
+  flex-shrink: 0;
 }
 
 .card-view-back-button .button-icon-svg {
@@ -813,7 +739,7 @@
   }
 }
 
-/* --- NEW DOCK STYLES --- */
+/* --- DOCK STYLES --- */
 .dock-container {
   display: flex;
   gap: 12px;
@@ -822,8 +748,8 @@
   height: 84px;
   padding: 12px;
   border-radius: 24px;
-  background: rgba(30, 30, 46, 0.6);
-  border: 1px solid rgba(var(--border-color-rgb), 0.2);
+  background: rgba(var(--card-background-rgb), 0.6);
+  border: 1px solid rgba(var(--border-color-rgb), 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -844,7 +770,7 @@
   height: 64px;
   will-change: transform, width, height;
   cursor: pointer;
-  background-color: transparent;
+  background-color: rgba(var(--highlight-color-poetic-rgb), 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -852,11 +778,15 @@
   gap: 4px;
   padding: 4px;
   color: var(--text-color-poetic);
-  transition: color 0.3s ease, background-color 0.3s ease;
+  transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
 .dock-item:hover {
-  background-color: rgba(var(--highlight-color-poetic-rgb), 0.1);
+  background-color: rgba(var(--highlight-color-poetic-rgb), 0.12);
+}
+
+.dock-item:active {
+    transform: translateY(2px);
 }
 
 .dock-item .button-icon-svg {
@@ -880,9 +810,11 @@
   transition: opacity 0.25s ease-in-out 0.1s;
   line-height: 1;
   transform: translateY(4px);
+  pointer-events: none; /* khong bat su kien chuot */
 }
 
-.dock-item:hover .button-text {
+.dock-item:hover .button-text,
+.dock-item-container:hover .dock-item .button-text {
   opacity: 1;
   transform: translateY(0);
 }

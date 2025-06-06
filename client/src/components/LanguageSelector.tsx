@@ -29,7 +29,6 @@ import {
     createFlourishLoopAnimation,
     dividerVerticalVariants,
     dividerHorizontalVariants,
-    cardIntroButtonIconVariants,
     cardIntroButtonVariants,
     cardNameTextVariants,
     sparkleVariants,
@@ -346,7 +345,12 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 >
                     <Dock>
                         {cardIntroActionButtons.map((btn) => (
-                            <DockCard key={btn.type} onClick={() => setCurrentView(btn.type)}>
+                            <DockCard
+                                key={btn.type}
+                                onClick={() => setCurrentView(btn.type)}
+                                onMouseEnter={() => setHeaderPreviewType(btn.type)}
+                                onMouseLeave={() => setHeaderPreviewType(null)}
+                            >
                                 <span className="button-icon-svg" dangerouslySetInnerHTML={{ __html: cardIntroTranslations[btn.iconKey] as string }} />
                                 <span className="button-text">{cardIntroTranslations[btn.textKey][currentLanguage]}</span>
                             </DockCard>
