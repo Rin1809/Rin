@@ -1,4 +1,3 @@
-// client/src/components/LanguageSelector.tsx
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import './styles/LanguageSelector.css';
@@ -51,6 +50,9 @@ import {
 } from './languageSelector/languageSelector.constants';
 import { logInteraction } from '../utils/logger';
 
+import { Dock } from './Dock';
+import { DockCard } from './DockCard';
+
 interface LanguageSelectorProps {
   onLanguageSelected: (language: 'vi' | 'en' | 'ja') => void;
   cardAvatarUrl: string;
@@ -64,9 +66,6 @@ type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'gue
 type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton' | 'blogButton';
 type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg' | 'blogIconSvg';
 type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog';
-
-// API calls se dung path tuong doi, Vercel se handle rewrites
-// const API_BASE_URL = import.meta.env.PROD ? '' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001');
 
 const getFlourishLayoutPropsForView = (view: SelectorView) => {
     let scale = 1;
@@ -94,12 +93,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const [currentLanguage, setCurrentLanguage] = useState<'vi' | 'en' | 'ja'>(initialSelectedLanguage || 'vi');
   const [displayTextLanguage, setDisplayTextLanguage] = useState<'vi' | 'en' | 'ja'>(initialSelectedLanguage || 'vi');
   const [isInitialMount, setIsInitialMount] = useState(true);
-  const [isButtonHovered, setIsButtonHovered] = useState<string | null>(null);
   const [headerPreviewType, setHeaderPreviewType] = useState<HeaderPreviewType | null>(null);
 
   const [guestbookEntries, setGuestbookEntries] = useState<GuestbookEntry[]>([]);
   const [guestbookLoading, setGuestbookLoading] = useState<boolean>(true);
-  const [_guestbookError, setGuestbookError] = useState<string | null>(null); // van giu _
+  const [_guestbookError, setGuestbookError] = useState<string | null>(null);
 
   const [spotifyPlaylists, setSpotifyPlaylists] = useState<any[]>([]);
   const [spotifyLoading, setSpotifyLoading] = useState<boolean>(false);
@@ -209,13 +207,13 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const cardIntroAvatarDelay=0, cardIntroDivider1Delay=cardIntroAvatarDelay+0.4, cardIntroNameDisplayDelay=0.05;
   const cardIntroTitleDisplayDelay=cardIntroNameDisplayDelay+0.15, cardIntroTaglineDisplayDelay=cardIntroTitleDisplayDelay+0.15;
   const cardIntroDivider2Delay=cardIntroTaglineDisplayDelay+0.4, cardIntroActionsDelay=cardIntroDivider2Delay+0.1;
-  const cardIntroButtonBaseDelay=0.1, headerContentBlockDelay=0.05;
+  const headerContentBlockDelay=0.05;
 
   const fetchGuestbookEntries = useCallback(async () => {
       if (!isMountedRef.current) return;
       setGuestbookLoading(true); setGuestbookError(null);
       try {
-          const res = await fetch(`/api/guestbook`); // Goi API tuong doi
+          const res = await fetch(`/api/guestbook`);
           if (!res.ok) { let msg = `HTTP error! status: ${res.status}`; try { const errD = await res.json(); msg = errD.error || msg; } catch (e) {} throw new Error(msg); }
           if (isMountedRef.current) setGuestbookEntries(await res.json());
       } catch (e: any) { console.error("Lỗi fetch GBook:", e); if (isMountedRef.current) setGuestbookError(e.message || 'Lỗi tải GBook.'); }
@@ -226,7 +224,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (!isMountedRef.current) return;
     setSpotifyLoading(true); setSpotifyError(null);
     try {
-        const res = await fetch(`/api/spotify/playlists`); // Goi API tuong doi
+        const res = await fetch(`/api/spotify/playlists`);
         if (!res.ok) {
             let msg = `HTTP error! status: ${res.status}`;
             try { const errData = await res.json(); msg = errData.error || msg; } catch (e) {}
@@ -248,15 +246,14 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     if (currentView === 'spotifyPlaylists' || (currentView === 'cardIntro' && headerPreviewType === 'spotifyPlaylists')) {
         fetchSpotifyPlaylists();
     }
-    // Blog tu fetch
   }, [fetchGuestbookEntries, fetchSpotifyPlaylists, currentView, headerPreviewType]);
 
   const handleAddGuestbookEntry = async (name: string, message: string, lang: 'vi'|'en'|'ja'): Promise<void> => {
       const payload = { name, message, language: lang };
       try {
-          const res = await fetch(`/api/guestbook`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); // Goi API tuong doi
+          const res = await fetch(`/api/guestbook`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
           if (!res.ok) { let msg = `Lỗi gửi: ${res.status}`; try { const errD = await res.json(); msg = errD.error || msg; } catch (e) {} throw new Error(msg); }
-          await fetchGuestbookEntries(); // Refresh
+          await fetchGuestbookEntries();
       } catch (e: any) { console.error("Lỗi gửi GBook từ LangSel:", e); throw e; }
   };
 
@@ -341,31 +338,20 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                     </motion.div>
                 </motion.div>
                 <motion.div className="poetic-divider poetic-divider-horizontal card-intro-second-divider" variants={dividerHorizontalVariants(cardIntroDivider2Delay)} initial="hidden" animate="visible" exit="exit" layout transition={layoutTransition}><div className="divider-line"></div></motion.div>
-                <motion.div className="card-intro-actions" variants={contentItemVariants(cardIntroActionsDelay)} initial="hidden" animate="visible" exit="exit" layout transition={layoutTransition}>
-                    {cardIntroActionButtons.map((btn, idx) => (
-                        <motion.button
-                            key={btn.type}
-                            className="card-intro-button"
-                            onClick={() => setCurrentView(btn.type)}
-                            variants={cardIntroButtonVariants}
-                            initial="initial" animate="animate" exit="exit"
-                            custom={cardIntroButtonBaseDelay + idx * 0.1}
-                            whileHover="hover" whileTap="tap"
-                            onMouseEnter={() => { setIsButtonHovered(btn.type); setHeaderPreviewType(btn.type); }}
-                            onMouseLeave={() => { setIsButtonHovered(null); setHeaderPreviewType(null); }}
-                        >
-                            <motion.span
-                                className="button-icon-svg"
-                                variants={cardIntroButtonIconVariants}
-                                animate={isButtonHovered === btn.type ? "hover" : "rest"}
-                                dangerouslySetInnerHTML={{ __html: cardIntroTranslations[btn.iconKey] as string }}
-                            />
-                            <span className="button-text">
-                                {cardIntroTranslations[btn.textKey][currentLanguage]}
-                            </span>
-                            <span className="button-shine-effect"></span>
-                        </motion.button>
-                    ))}
+                <motion.div
+                    className="card-intro-actions"
+                    variants={contentItemVariants(cardIntroActionsDelay)}
+                    initial="hidden" animate="visible" exit="exit"
+                    layout transition={layoutTransition}
+                >
+                    <Dock>
+                        {cardIntroActionButtons.map((btn) => (
+                            <DockCard key={btn.type} onClick={() => setCurrentView(btn.type)}>
+                                <span className="button-icon-svg" dangerouslySetInnerHTML={{ __html: cardIntroTranslations[btn.iconKey] as string }} />
+                                <span className="button-text">{cardIntroTranslations[btn.textKey][currentLanguage]}</span>
+                            </DockCard>
+                        ))}
+                    </Dock>
                 </motion.div>
           </motion.div> )}
           {currentView === 'about' && ( <motion.div key={`about-view-${currentLanguage}`} className="content-section card-content-display" variants={galleryViewVariants(0.05)} initial="hidden" animate="visible" exit="exit">

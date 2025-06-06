@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-spring/web": "^9.7.3",
     "@tsparticles/engine": "^3.8.1",
     "@tsparticles/interaction-external-trail": "^3.8.1",
     "@tsparticles/plugin-emitters": "^3.8.1",
@@ -17,6 +18,7 @@
     "@tsparticles/shape-circle": "^3.8.1",
     "@tsparticles/shape-star": "^3.8.1",
     "@tsparticles/slim": "^3.8.1",
+    "@use-gesture/react": "^10.3.1",
     "framer-motion": "^11.2.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
