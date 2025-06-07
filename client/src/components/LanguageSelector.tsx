@@ -352,7 +352,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 onMouseLeave={() => setHeaderPreviewType(null)}
                             >
                                 <span className="button-icon-svg" dangerouslySetInnerHTML={{ __html: cardIntroTranslations[btn.iconKey] as string }} />
-                                <span className="button-text">{cardIntroTranslations[btn.textKey][currentLanguage]}</span>
                             </DockCard>
                         ))}
                     </Dock>
