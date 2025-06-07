@@ -1,5 +1,7 @@
+// client/src/components/LanguageSelector.tsx
+
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { motion, AnimatePresence, useAnimation } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation, useMotionValue, useIsomorphicLayoutEffect, animate } from 'framer-motion';
 import './styles/LanguageSelector.css';
 import flourishImage from '../assets/flourish.png';
 
@@ -49,8 +51,18 @@ import {
 } from './languageSelector/languageSelector.constants';
 import { logInteraction } from '../utils/logger';
 
-import { Dock } from './Dock';
-import { DockCard } from './DockCard';
+// --- Import lai cac hook va component can thiet cho Dock ---
+import { useMousePosition } from './hooks/useMousePosition';
+import { useWindowResize } from './hooks/useWindowResize';
+
+// --- Chuyen dinh nghia localImages len dau file ---
+const localImages = Object.values(import.meta.glob('/src/assets/gallery_images/*.{png,jpg,jpeg,gif,svg,webp}',{eager:true,import:'default'})) as string[];
+
+
+// Context cho Dock
+type DockApi = { hovered: boolean; width: number };
+export const DockContext = React.createContext<DockApi>({ width: 0, hovered: false });
+export const useDock = () => React.useContext(DockContext);
 
 interface LanguageSelectorProps {
   onLanguageSelected: (language: 'vi' | 'en' | 'ja') => void;
@@ -65,6 +77,106 @@ type SelectorView = 'languageOptions' | 'cardIntro' | 'about' | 'gallery' | 'gue
 type MainCardIntroButtonTextKey = 'aboutButton' | 'galleryButton' | 'guestbookButton' | 'spotifyButton' | 'blogButton';
 type CardIntroIconKey = 'aboutIconSvg' | 'galleryIconSvg' | 'guestbookIconSvg' | 'spotifyIconSvg' | 'blogIconSvg';
 type HeaderPreviewType = 'about' | 'gallery' | 'guestbook' | 'spotifyPlaylists' | 'blog';
+
+// --- Component Dock va DockCard duoc dinh nghia lai ngay tai day cho don gian ---
+
+// Dock component
+export const Dock = ({ children }: { children: React.ReactNode }) => {
+  const [hovered, setHovered] = React.useState(false);
+  const [width, setWidth] = React.useState(0);
+  const dockRef = React.useRef<HTMLDivElement>(null!);
+
+  useWindowResize(() => {
+    if (dockRef.current) {
+        setWidth(dockRef.current.clientWidth);
+    }
+  });
+
+  return (
+    <DockContext.Provider value={{ hovered, width }}>
+      <motion.div
+        ref={dockRef}
+        className="dock-container"
+        onMouseOver={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        {children}
+      </motion.div>
+    </DockContext.Provider>
+  );
+};
+
+// DockCard component
+const INITIAL_WIDTH = 48;
+export const DockCard = ({ children, onClick, onMouseEnter, onMouseLeave }: { children: React.ReactNode; onClick: () => void; onMouseEnter?: () => void; onMouseLeave?: () => void; }) => {
+  const cardRef = useRef<HTMLButtonElement>(null!);
+  const [elCenterX, setElCenterX] = useState(0);
+  const dock = useDock();
+
+  const size = useMotionValue(INITIAL_WIDTH);
+
+  const recalculateCenterX = useCallback(() => {
+    if (cardRef.current) {
+      const { x, width } = cardRef.current.getBoundingClientRect();
+      setElCenterX(x + width / 2);
+    }
+  }, []);
+
+  useWindowResize(recalculateCenterX);
+  useIsomorphicLayoutEffect(() => {
+    recalculateCenterX();
+  }, [recalculateCenterX, dock.width]);
+
+  const mousePosition = useMousePosition();
+  
+  useIsomorphicLayoutEffect(() => {
+      const mouseX = mousePosition.x;
+      if (dock.width > 0 && dock.hovered && mouseX !== null) {
+        const DOCK_CARD_GROW_MULTIPLIER = 32;
+        const newSize =
+          INITIAL_WIDTH +
+          DOCK_CARD_GROW_MULTIPLIER * Math.cos((((mouseX - elCenterX) / dock.width) * Math.PI) / 2) ** 12;
+        
+        animate(size, newSize, {
+            type: "spring",
+            mass: 0.1,
+            stiffness: 320,
+            damping: 20,
+        });
+      } else {
+        animate(size, INITIAL_WIDTH, {
+            type: "spring",
+            mass: 0.1,
+            stiffness: 320,
+            damping: 20,
+        });
+      }
+  }, [dock.hovered, dock.width, elCenterX, size, mousePosition.x]);
+  
+  return (
+    <motion.div
+        className="dock-item-container"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+    >
+      <motion.button
+        ref={cardRef}
+        className="dock-item"
+        onClick={onClick}
+        style={{
+          width: size,
+          height: size,
+        }}>
+        {children}
+      </motion.button>
+    </motion.div>
+  );
+};
+
+
+// --- Main Component ---
 
 const getFlourishLayoutPropsForView = (view: SelectorView) => {
     let scale = 1;
@@ -131,8 +243,9 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         await loadEmittersPlugin(engine); await loadExternalTrailInteraction(engine);
         await loadCircleShape(engine); await loadStarShape(engine);
         if (isMountedRef.current) setEngineInitialized(true);
-      }).catch(e => isMountedRef.current && console.error("LangSel: Lỗi init particles:", e))
-        .finally(() => { if (isMountedRef.current) initInProgressRef.current = false; });
+      }).catch(e => {
+        // an loi
+      }).finally(() => { if (isMountedRef.current) initInProgressRef.current = false; });
     }
     return () => { isMountedRef.current = false; };
   }, [engineInitialized]);
@@ -182,7 +295,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     }
   }, [currentView, onSpotifyViewChange]);
 
-
   const handleParticlesLoaded = useCallback(async (_container?: Container) => {}, []);
   const handleLanguageButtonClick = (lang: 'vi'|'en'|'ja') => {
     logInteraction('language_selected', { language: lang });
@@ -215,7 +327,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           const res = await fetch(`/api/guestbook`);
           if (!res.ok) { let msg = `HTTP error! status: ${res.status}`; try { const errD = await res.json(); msg = errD.error || msg; } catch (e) {} throw new Error(msg); }
           if (isMountedRef.current) setGuestbookEntries(await res.json());
-      } catch (e: any) { console.error("Lỗi fetch GBook:", e); if (isMountedRef.current) setGuestbookError(e.message || 'Lỗi tải GBook.'); }
+      } catch (e: any) { if (isMountedRef.current) setGuestbookError(e.message || 'Lỗi tải GBook.'); }
       finally { if (isMountedRef.current) setGuestbookLoading(false); }
   }, []);
 
@@ -231,7 +343,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         }
         if (isMountedRef.current) setSpotifyPlaylists(await res.json());
     } catch (e: any) {
-        console.error("Lỗi fetch Spotify Playlists:", e);
         if (isMountedRef.current) setSpotifyError(e.message || 'Lỗi tải Spotify playlists.');
     } finally {
         if (isMountedRef.current) setSpotifyLoading(false);
@@ -253,7 +364,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           const res = await fetch(`/api/guestbook`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
           if (!res.ok) { let msg = `Lỗi gửi: ${res.status}`; try { const errD = await res.json(); msg = errD.error || msg; } catch (e) {} throw new Error(msg); }
           await fetchGuestbookEntries();
-      } catch (e: any) { console.error("Lỗi gửi GBook từ LangSel:", e); throw e; }
+      } catch (e: any) { throw e; }
   };
 
   const personalCardRenderKey = `pc-${currentView}-${currentLanguage}`;
@@ -275,7 +386,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     <motion.div className="language-selector-poetic-overlay" variants={overlayEntryExitVariants} initial="hidden" animate="visible" exit="exit">
       {particleOptions && <MemoizedParticlesComponent id="tsparticles-lang-selector-stable" options={particleOptions} particlesLoaded={handleParticlesLoaded} />}
       <motion.div layout style={getFlourishWrapperStyle(currentView, true)} transition={SHARED_FLOURISH_SPRING_TRANSITION} className="flourish-wrapper">
-            <motion.img src={flourishImage} alt="" className="flourish-image flourish-image-top" aria-hidden="true" variants={topFlourishVariants} initial="hidden" animate={topFlourishVisualControls} onHoverStart={()=>handleFlourishHoverStart(topFlourishVisualControls, topFlourishVariants)} onHoverEnd={()=>handleFlourishHoverEnd(topFlourishVisualControls, topFlourishVariants, flourishLoopAnimTop)} />
+            <motion.img src={flourishImage} alt="" className="flourish-image flourish-image-top" aria-hidden="true" variants={topFlourishVariants} initial="hidden" animate={topFlourishVisualControls} onHoverStart={()=>handleFlourishHoverStart(topFlourishVisualControls, topFlourishVariants)} onHoverEnd={()=>handleFlourishHoverEnd(bottomFlourishVisualControls, bottomFlourishVariants, flourishLoopAnimBottom)} />
       </motion.div>
       <div className="language-selector-content-wrapper">
         <AnimatePresence mode="wait">
@@ -322,7 +433,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                                 }} />
                                 <div className="header-preview-actual-content">
                                   {headerPreviewType==='about' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.aboutSnippetContent[currentLanguage]}</p>)}
-                                  {headerPreviewType==='gallery' && (<div className="header-preview-images-enhanced">{(localImages.length>0?localImages.slice(0,4):[]).map((img,idx)=>(<motion.img key={`preview-${idx}`} variants={contentItemVariants(0.1+idx*0.08)} src={img} alt={languageSelectorPreviewTranslations.galleryPreviewAlt[currentLanguage].replace("{index}",String(idx+1))} />))}</div>)}
+                                  {headerPreviewType==='gallery' && (<div className="header-preview-images-enhanced">{(localImages.length>0?localImages.slice(0,4):[]).map((img,idx)=>(<motion.img key={`preview-img-${idx}`} variants={contentItemVariants(0.1+idx*0.08)} src={img} alt={languageSelectorPreviewTranslations.galleryPreviewAlt[currentLanguage].replace("{index}",String(idx+1))} />))}</div>)}
                                   {headerPreviewType==='guestbook' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.guestbookSnippetContent[currentLanguage]}</p>)}
                                   {headerPreviewType==='spotifyPlaylists' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.spotifyPreviewContent[currentLanguage]}</p>)}
                                   {headerPreviewType==='blog' && (<p className="header-preview-text-enhanced">{languageSelectorPreviewTranslations.blogSnippetContent[currentLanguage]}</p>)}
@@ -419,5 +530,5 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     </motion.div>
   );
 };
-const localImages = Object.values(import.meta.glob('/src/assets/gallery_images/*.{png,jpg,jpeg,gif,svg,webp}',{eager:true,import:'default'})) as string[];
+
 export default React.memo(LanguageSelector);

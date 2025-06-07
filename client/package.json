@@ -6,11 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings-0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@react-spring/web": "^9.7.3",
+    "@react-three/drei": "^9.108.3",
+    "@react-three/fiber": "^8.16.8",
     "@tsparticles/engine": "^3.8.1",
     "@tsparticles/interaction-external-trail": "^3.8.1",
     "@tsparticles/plugin-emitters": "^3.8.1",
@@ -20,14 +22,17 @@
     "@tsparticles/slim": "^3.8.1",
     "@use-gesture/react": "^10.3.1",
     "framer-motion": "^11.2.13",
+    "maath": "^0.10.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rin-personal-card-monorepo": "file:..",
+    "three": "^0.166.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/three": "^0.166.0",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",

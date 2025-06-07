@@ -1,26 +1,23 @@
-import { useSpring, UseSpringProps } from '@react-spring/web'
-import { useEffect, useMemo } from 'react'
+// client/src/components/hooks/useMousePosition.ts
+import { useState, useEffect } from 'react';
 
-export const useMousePosition = (springProps?: UseSpringProps, springDeps?: readonly any[]) => {
-  const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0, ...springProps }), springDeps)
+export const useMousePosition = () => {
+  const [position, setPosition] = useState<{ x: number | null; y: number | null }>({
+    x: null,
+    y: null,
+  });
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
-      api.start({ x: event.clientX, y: event.clientY })
-    }
+      setPosition({ x: event.clientX, y: event.clientY });
+    };
 
-    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [api])
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
-  return useMemo(
-    () => ({
-      x,
-      y,
-    }),
-    [x, y]
-  )
-}
+  return position;
+};
