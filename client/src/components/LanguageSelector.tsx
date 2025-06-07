@@ -10,17 +10,9 @@ import SpotifyPlaylists from './SpotifyPlaylists';
 import Blog from './Blog';
 import type { GuestbookEntry } from '../data/guestbook.data';
 
-import { initParticlesEngine } from "@tsparticles/react";
-import type { Engine, Container } from "@tsparticles/engine";
-import { loadEmittersPlugin } from "@tsparticles/plugin-emitters";
-import { loadExternalTrailInteraction } from "@tsparticles/interaction-external-trail";
-import { loadCircleShape } from "@tsparticles/shape-circle";
-import { loadStarShape } from "@tsparticles/shape-star";
-
 import MemoizedParticlesComponent from './common/MemoizedParticlesComponent';
 import LangButton from './languageSelector/LangButton';
 import {
-    poeticStarsOptionsDefinition,
     translations,
     cardIntroTranslations,
     contentItemVariants,
@@ -81,13 +73,11 @@ const initialMountDivider2Delay = initialMountButton2Delay + 0.1;
 const initialMountButton3Delay = initialMountDivider2Delay + 0.2;
 const initialMountFooterNoteDelay = initialMountButton3Delay + 0.4;
 
-
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     onLanguageSelected, cardAvatarUrl, initialSelectedLanguage,
     yourNameForIntro, githubUsername,
     onSpotifyViewChange
 }) => {
-  const [engineInitialized, setEngineInitialized] = useState(false);
   const [currentView, setCurrentView] = useState<SelectorView>('languageOptions');
   const [currentLanguage, setCurrentLanguage] = useState<'vi' | 'en' | 'ja'>(initialSelectedLanguage || 'vi');
   const [displayTextLanguage, setDisplayTextLanguage] = useState<'vi' | 'en' | 'ja'>(initialSelectedLanguage || 'vi');
@@ -106,9 +96,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const bottomFlourishVisualControls = useAnimation();
   const topFlourishVariants = useMemo(() => flourishVariantsDefinition(0), []);
   const bottomFlourishVariants = useMemo(() => flourishVariantsDefinition(180), []);
-  const particleOptions = useMemo(() => engineInitialized ? poeticStarsOptionsDefinition : undefined, [engineInitialized]);
   const isMountedRef = useRef(true);
-  const initInProgressRef = useRef(false);
 
   const prevViewRef = useRef<SelectorView>(currentView);
 
@@ -125,17 +113,8 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   useEffect(() => {
     isMountedRef.current = true;
-    if (!engineInitialized && !initInProgressRef.current) {
-      initInProgressRef.current = true;
-      initParticlesEngine(async (engine: Engine) => {
-        await loadEmittersPlugin(engine); await loadExternalTrailInteraction(engine);
-        await loadCircleShape(engine); await loadStarShape(engine);
-        if (isMountedRef.current) setEngineInitialized(true);
-      }).catch(e => isMountedRef.current && console.error("LangSel: Lỗi init particles:", e))
-        .finally(() => { if (isMountedRef.current) initInProgressRef.current = false; });
-    }
     return () => { isMountedRef.current = false; };
-  }, [engineInitialized]);
+  }, []);
 
   const flourishLoopAnimTop = useMemo(() => createFlourishLoopAnimation(0), []);
   const flourishLoopAnimBottom = useMemo(() => createFlourishLoopAnimation(180), []);
@@ -183,7 +162,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   }, [currentView, onSpotifyViewChange]);
 
 
-  const handleParticlesLoaded = useCallback(async (_container?: Container) => {}, []);
   const handleLanguageButtonClick = (lang: 'vi'|'en'|'ja') => {
     logInteraction('language_selected', { language: lang });
     onLanguageSelected(lang);
@@ -273,7 +251,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   return (
     <motion.div className="language-selector-poetic-overlay" variants={overlayEntryExitVariants} initial="hidden" animate="visible" exit="exit">
-      {particleOptions && <MemoizedParticlesComponent id="tsparticles-lang-selector-stable" options={particleOptions} particlesLoaded={handleParticlesLoaded} />}
       <motion.div layout style={getFlourishWrapperStyle(currentView, true)} transition={SHARED_FLOURISH_SPRING_TRANSITION} className="flourish-wrapper">
             <motion.img src={flourishImage} alt="" className="flourish-image flourish-image-top" aria-hidden="true" variants={topFlourishVariants} initial="hidden" animate={topFlourishVisualControls} onHoverStart={()=>handleFlourishHoverStart(topFlourishVisualControls, topFlourishVariants)} onHoverEnd={()=>handleFlourishHoverEnd(topFlourishVisualControls, topFlourishVariants, flourishLoopAnimTop)} />
       </motion.div>

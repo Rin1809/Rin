@@ -1,51 +1,8 @@
-// rin-personal-card/client/src/App.tsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import LanguageSelector from './components/LanguageSelector';
 import './components/styles/App.css';
-
-import Particles, { initParticlesEngine } from "@tsparticles/react";
-import type { ISourceOptions, Engine } from "@tsparticles/engine";
-import { loadSlim } from "@tsparticles/slim";
-
+import { PoeticBackground } from './components/PoeticBackground';
 import backgroundMusicMP3 from './assets/audio/background_music.mp3';
-
-const IS_MOBILE_DEVICE = typeof window !== 'undefined' && window.innerWidth < 768;
-
-const particlesOptions: ISourceOptions = {
-    fpsLimit: IS_MOBILE_DEVICE ? 30 : 60,
-    interactivity: { events: { onClick: { enable: false }, onHover: { enable: false }, resize: { enable: true } }, modes: {} },
-    particles: {
-        color: { value: ["#ffffff", "#b4befe", "#a6adc8"] },
-        links: { enable: false },
-        move: {
-            enable: true,
-            speed: { min: IS_MOBILE_DEVICE ? 0.1 : 0.1, max: IS_MOBILE_DEVICE ? 0.3 : 0.5 },
-            direction: "none", random: true, straight: false, outModes: { default: "out" }
-        },
-        number: {
-            density: { enable: true },
-            value: IS_MOBILE_DEVICE ? 30 : 60,
-        },
-        opacity: {
-            value: { min: 0.1, max: IS_MOBILE_DEVICE ? 0.7 : 0.5 },
-            animation: {
-                enable: !IS_MOBILE_DEVICE,
-                speed: 1,
-                sync: false,
-            }
-        },
-        shape: { type: "circle" },
-        size: {
-            value: { min: IS_MOBILE_DEVICE ? 0.7 : 0.4, max: IS_MOBILE_DEVICE ? 1.8 : 2 },
-            animation: {
-                enable: !IS_MOBILE_DEVICE,
-                speed: 8,
-                sync: false,
-            }
-        },
-    },
-    detectRetina: !IS_MOBILE_DEVICE,
-};
 
 const YOUR_AVATAR_URL_FOR_INTRO = "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128";
 const YOUR_NAME_FOR_INTRO = "よこそう！！";
@@ -104,7 +61,6 @@ const ContentArea: React.FC<ContentAreaProps> = React.memo(({ currentStage, isFa
 ContentArea.displayName = 'ContentArea';
 
 function App() {
-    const [particlesInitialized, setParticlesInitialized] = useState(false);
     const [currentIntroStage, setCurrentIntroStage] = useState<IntroStage>('cat');
     const [isStageFadingOut, setIsStageFadingOut] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState<'vi' | 'en' | 'ja' | null>(null);
@@ -112,16 +68,6 @@ function App() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isSpotifyViewActive, setIsSpotifyViewActive] = useState(false);
     const [hasIntroFinishedForMusic, setHasIntroFinishedForMusic] = useState(false);
-
-    useEffect(() => {
-        initParticlesEngine(async (engine: Engine) => {
-            await loadSlim(engine);
-        }).then(() => {
-            setParticlesInitialized(true);
-        }).catch(error => {
-            console.error("Lỗi init particles:", error);
-        });
-    }, []);
 
     useEffect(() => {
         if (currentIntroStage === 'languageSelection' && !hasIntroFinishedForMusic) {
@@ -150,7 +96,7 @@ function App() {
                 setCurrentIntroStage('yourName');
                 setIsStageFadingOut(false);
             }, catDisplayTime + fadeDuration);
-        } else if (currentIntroStage === 'yourName') { // Removed !isStageFadingOut condition
+        } else if (currentIntroStage === 'yourName') {
             stage2TimerId = window.setTimeout(() => {
                 setIsStageFadingOut(true);
             }, yourNameDisplayTime);
@@ -167,7 +113,7 @@ function App() {
             if (stage2TimerId) window.clearTimeout(stage2TimerId);
             if (fade2TimerId) window.clearTimeout(fade2TimerId);
         };
-    }, [currentIntroStage, hasIntroFinishedForMusic]); // LOAI BO isStageFadingOut khoi deps
+    }, [currentIntroStage, hasIntroFinishedForMusic]);
 
     useEffect(() => {
         const audioElement = audioRef.current;
@@ -183,13 +129,11 @@ function App() {
                 audioElement.pause();
             }
         } else if (shouldPlayMusic) {
-            audioElement.play().then(() => {
-                // playback started
-            }).catch(error => {
+            audioElement.play().catch(error => {
                 console.warn("Autoplay bi chan hoac loi khi phat nhac:", error.name, error.message);
             });
         }
-    }, [isSpotifyViewActive, hasIntroFinishedForMusic, selectedLanguage]); // bo currentIntroStage
+    }, [isSpotifyViewActive, hasIntroFinishedForMusic, selectedLanguage]);
 
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
         setSelectedLanguage(language);
@@ -197,42 +141,28 @@ function App() {
 
     useEffect(() => {
         const notifyBackendOfVisit = async () => {
-            const apiUrl = `/api/notify-visit`; // Goi API tuong doi
+            const apiUrl = `/api/notify-visit`;
             try {
                 await fetch(apiUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                 });
             } catch (error) {
                 console.error(`[NOTIFY VISIT] Loi gui tbáo visit tới ${apiUrl}:`, error);
             }
         };
 
-        if (import.meta.env.PROD) { // Chi gui khi la production
+        if (import.meta.env.PROD) {
             notifyBackendOfVisit();
         }
     }, []);
-
-    const memoizedParticles = useMemo(() => {
-        if (!particlesInitialized) {
-            return null;
-        }
-        return (
-            <Particles
-                key="tsparticles-background-stable"
-                id="tsparticles-background-stable"
-                options={particlesOptions}
-            />
-        );
-    }, [particlesInitialized]);
 
     return (
         <div className="AppWrapper">
             <audio ref={audioRef} src={backgroundMusicMP3} loop />
 
-            {memoizedParticles}
+            <PoeticBackground />
+
             {currentIntroStage === 'languageSelection' ? (
                 <LanguageSelector
                     onLanguageSelected={handleLanguageSelectedInSelector}
@@ -247,7 +177,7 @@ function App() {
                     currentStage={currentIntroStage}
                     isFadingOutProp={isStageFadingOut}
                     userName={YOUR_NAME_FOR_INTRO}
-                    selectedLanguage={selectedLanguage || 'vi'} // fallback
+                    selectedLanguage={selectedLanguage || 'vi'}
                 />
             )}
         </div>

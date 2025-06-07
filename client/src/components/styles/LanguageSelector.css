@@ -1,6 +1,3 @@
-/* client/src/components/styles/LanguageSelector.css */
-
-/* --- BASE STYLES & OVERLAY --- */
 .language-selector-poetic-overlay {
   position: fixed;
   inset: 0;
@@ -8,12 +5,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgba(var(--card-background-rgb, 25, 25, 38), 0.94);
-  backdrop-filter: blur(18px) saturate(130%);
-  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  background-color: rgba(var(--card-background-rgb, 25, 25, 38), 0.65);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
   z-index: 1000;
   padding: 0.5rem;
-  overflow: hidden;   
+  overflow: hidden;
   font-family: var(--font-family-poetic), var(--font-family-fallback);
 }
 
@@ -45,7 +42,7 @@
   max-width: 550px;
   display: flex;
   justify-content: center;
-  flex-shrink: 0; 
+  flex-shrink: 0;
 }
 
 .flourish-image {
@@ -60,20 +57,19 @@
     margin-top: 1rem;
 }
 
-/* Content Wrapper and Section */
 .language-selector-content-wrapper {
   text-align: center;
   color: var(--text-color-poetic);
-  max-width: 600px; /* Giữ max-width cho nội dung chính */
-  min-height: 380px; 
+  max-width: 600px;
+  min-height: 380px;
   width: 100%;
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Căn giữa nội dung khi nó ngắn hơn min-height */
+  justify-content: center;
   align-items: center;
-  padding-top: 1rem; /* Thêm padding để nội dung không dính sát flourish */
+  padding-top: 1rem;
   padding-bottom: 1rem;
 }
 
@@ -86,7 +82,6 @@
   padding: 0.2rem 0;
 }
 
-/* --- LANGUAGE OPTIONS STYLES --- */
 .poetic-title {
   font-size: 3em;
   font-weight: 400;
@@ -106,7 +101,7 @@
 
 .language-options-poetic {
   display: flex;
-  align-items: stretch; 
+  align-items: stretch;
   justify-content: center;
   gap: 0.75rem;
   margin-bottom: 2rem;
@@ -114,8 +109,8 @@
 }
 
 .lang-choice-poetic {
-  flex: 1 1 0; 
-  min-width: 0; 
+  flex: 1 1 0;
+  min-width: 0;
   border-radius: 15px;
   border: 1px solid rgba(var(--text-color-poetic-rgb), 0.1);
   padding: 1.8rem 1.2rem;
@@ -127,28 +122,27 @@
   text-align: center;
   font-family: inherit;
   position: relative;
-  overflow: visible; 
+  overflow: visible;
   background-color: transparent;
 }
 
 .lang-icon-poetic {
-  color: #FFE0E0; 
+  color: #FFE0E0;
   font-size: 3rem;
   display: block;
   margin-bottom: 0.8rem;
-  line-height: 1; 
-  font-family: sans-serif; 
+  line-height: 1;
+  font-family: sans-serif;
 }
 
 .lang-name-poetic {
   font-family: inherit;
   font-size: 1.3em;
   font-weight: 400;
-  word-break: keep-all; 
+  word-break: keep-all;
   color: var(--text-color-poetic);
 }
 
-/* --- DIVIDER STYLES --- */
 .poetic-divider {
   flex-shrink: 0;
   transform-origin: center;
@@ -182,11 +176,10 @@
   font-size: 0.95em;
   font-weight: 300;
   color: var(--subtext-color-poetic);
-  margin-top: 0; 
+  margin-top: 0;
   font-style: normal;
 }
 
-/* --- ROOT VARIABLES FOR CARD INTRO --- */
 :root {
   --card-name-gradient-start: var(--secondary-color, #f5c2e7);
   --card-name-gradient-mid: var(--highlight-color-poetic, #D8BFD8);
@@ -196,9 +189,8 @@
   --sparkle-color: rgba(var(--highlight-color-poetic-rgb), 0.8);
 }
 
-/* --- STYLES FOR CARD INTRO SECTION --- */
 .card-intro-section-modifier {
-  padding: 5rem 0; 
+  padding: 5rem 0;
 }
 
 .card-intro-header {
@@ -206,14 +198,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative; 
+  position: relative;
   width: 100%;
 }
 
 .card-intro-avatar-wrapper {
-  margin-bottom: 0rem; 
+  margin-bottom: 0rem;
   position: relative;
-  display: inline-block; 
+  display: inline-block;
 }
 .card-intro-avatar-wrapper::before,
 .card-intro-avatar-wrapper::after {
@@ -227,13 +219,13 @@
   opacity: 0;
   pointer-events: none;
 }
-.card-intro-avatar-wrapper::before { 
+.card-intro-avatar-wrapper::before {
   width: calc(100% + 20px);
   height: calc(100% + 20px);
   border: 2px solid transparent;
   box-shadow: 0 0 0 0px var(--aura-color-1);
 }
-.card-intro-avatar-wrapper::after { 
+.card-intro-avatar-wrapper::after {
   width: 100%;
   height: 100%;
   background-color: transparent;
@@ -268,7 +260,7 @@
   cursor: pointer;
   position: relative;
   z-index: 1;
-  animation: avatarIdlePulse 4s infinite ease-in-out; 
+  animation: avatarIdlePulse 4s infinite ease-in-out;
 }
 @keyframes avatarIdlePulse {
   0%, 100% { transform: scale(1); filter: brightness(1); }
@@ -284,13 +276,13 @@
   pointer-events: none;
   filter: blur(0.5px);
 }
-.avatar-sparkle { 
+.avatar-sparkle {
   top: 50%; left: 50%;
-  z-index: 2; 
+  z-index: 2;
 }
 
 .card-intro-first-divider {
-  width: 60%; 
+  width: 60%;
   margin: 0.6rem auto;
 }
 
@@ -298,14 +290,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; 
-  min-height: 200px; 
+  justify-content: flex-start;
+  min-height: 200px;
   width: 100%;
   padding: 0.2rem 0;
   position: relative;
 }
 
-.header-details-block { 
+.header-details-block {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -319,14 +311,14 @@
   margin: 0;
   letter-spacing: 1.8px;
   line-height: 1.25;
-  position: relative; 
+  position: relative;
   cursor: default;
   will-change: transform, text-shadow, background-position;
   background: linear-gradient( 125deg, var(--card-name-gradient-start) 15%, var(--card-name-gradient-mid) 45%, var(--card-name-gradient-end) 75% );
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-size: 200% 100%; 
-  animation: idleNameGradientFlow 8s ease-in-out infinite alternate; 
+  background-size: 200% 100%;
+  animation: idleNameGradientFlow 8s ease-in-out infinite alternate;
 }
 @keyframes idleNameGradientFlow {
     0% { background-position: 0% center; }
@@ -334,20 +326,20 @@
 }
 .text-shine-effect {
   position: absolute;
-  top: 0; left: -150%; 
+  top: 0; left: -150%;
   width: 100%; height: 100%;
   background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
   opacity: 0;
-  transform: skewX(-25deg); 
+  transform: skewX(-25deg);
   transition: left 0.7s ease-in-out, opacity 0.5s;
   pointer-events: none;
 }
 .card-intro-name:hover .text-shine-effect {
-  left: 150%; 
+  left: 150%;
   opacity: 0.3;
   transition: left 0.9s cubic-bezier(0.23, 1, 0.32, 1) 0.1s, opacity 0.3s;
 }
-.card-intro-title { 
+.card-intro-title {
   font-size: 1.3em;
   font-weight: 300;
   color: var(--subtext-color-poetic);
@@ -355,7 +347,7 @@
   opacity: 0.9;
   letter-spacing: 0.2px;
 }
-.card-intro-tagline { 
+.card-intro-tagline {
   font-size: 1.15em;
   font-weight: 300;
   color: rgba(var(--subtext-color-poetic-rgb), 0.9);
@@ -367,11 +359,11 @@
 }
 
 .header-preview-container {
-  background-color: rgba(var(--card-background-rgb), 0.55); 
+  background-color: rgba(var(--card-background-rgb), 0.55);
   backdrop-filter: blur(12px) saturate(110%);
   -webkit-backdrop-filter: blur(12px) saturate(110%);
 
-  border: 2px solid transparent; 
+  border: 2px solid transparent;
   border-image-slice: 1;
   border-image-source: linear-gradient(160deg,
     rgba(var(--highlight-color-poetic-rgb), 0.4),
@@ -381,13 +373,13 @@
   border-radius: 16px;
   padding: 1.1rem 1.3rem;
   width: 90%;
-  max-width: 430px; 
+  max-width: 430px;
   box-shadow: 0 6px 25px -7px rgba(var(--background-color-rgb), 0.35);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative; 
+  position: relative;
 }
 .header-preview-container::before {
   content: '';
@@ -402,14 +394,14 @@
 }
 
 
-.header-preview-title { 
+.header-preview-title {
   font-size: 1em;
   font-weight: 500;
   color: var(--highlight-color-poetic);
   margin: 0 0 0.9rem 0;
   letter-spacing: 0.3px;
 
-  border-bottom: 1px solid; 
+  border-bottom: 1px solid;
   border-image-source: linear-gradient(to right,
     transparent 0%,
     rgba(var(--highlight-color-poetic-rgb), 0.35) 30%,
@@ -422,18 +414,18 @@
   text-align: center;
 }
 
-.header-preview-block-content { 
+.header-preview-block-content {
   display: flex;
-  align-items: flex-start; 
+  align-items: flex-start;
   gap: 0.7rem;
   width: 100%;
 }
 
-.header-preview-icon { 
+.header-preview-icon {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
-  margin-top: 0.1em; 
+  margin-top: 0.1em;
   color: rgba(var(--highlight-color-poetic-rgb), 0.85);
 }
 .header-preview-icon svg {
@@ -442,21 +434,21 @@
   height: 100%;
 }
 
-.header-preview-actual-content { 
-  flex: 1; 
-  min-width: 0; 
+.header-preview-actual-content {
+  flex: 1;
+  min-width: 0;
 }
 
 
-.header-preview-text-enhanced { 
+.header-preview-text-enhanced {
   font-size: 0.9em;
   font-weight: 300;
   line-height: 1.65;
   color: var(--subtext-color-poetic);
   text-align: left;
-  max-height: 70px; 
+  max-height: 70px;
   overflow: hidden;
-  position: relative; 
+  position: relative;
 }
 .header-preview-text-enhanced.has-overflow::after {
     content: "";
@@ -464,18 +456,18 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 1.5em; 
+    height: 1.5em;
     background: linear-gradient(to bottom, transparent, rgba(var(--card-background-rgb), 0.8));
     pointer-events: none;
 }
 
 
-.header-preview-images-enhanced { 
+.header-preview-images-enhanced {
   display: flex;
   gap: 0.7rem;
-  margin-top: 0; 
-  flex-wrap: wrap; 
-  justify-content: flex-start; 
+  margin-top: 0;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .header-preview-images-enhanced img {
@@ -495,40 +487,38 @@
 }
 
 
-.card-intro-second-divider { 
+.card-intro-second-divider {
   width: 60%;
   margin: 0.8rem auto 1.2rem auto;
 }
 
 
-.card-intro-actions { 
+.card-intro-actions {
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* can giu */
-  min-height: 84px; /* giu chieu cao ổn định */
+  align-items: flex-end;
+  min-height: 84px;
   width: 100%;
-  max-width: 500px; 
-  position: relative; 
+  max-width: 500px;
+  position: relative;
 }
 
-
-/* --- RESPONSIVE DESIGN --- */
 @media (max-width: 600px) {
   .language-selector-poetic-overlay {
       padding: 0.5rem;
   }
   .flourish-image {
-      max-width: clamp(180px, 70%, 220px); 
+      max-width: clamp(180px, 70%, 220px);
   }
   .flourish-image-top { margin-bottom: 0.5rem; }
   .flourish-image-bottom { margin-top: 0.5rem; }
 
   .language-selector-content-wrapper {
     max-width: 90%;
-    min-height: 380px; 
+    min-height: 380px;
   }
   .content-section {
-      padding: 0.15rem 0; 
+      padding: 0.15rem 0;
   }
 
   .poetic-title { font-size: 2.2em; }
@@ -571,7 +561,7 @@
   }
   .header-preview-text-enhanced {
     font-size: 0.85em;
-    max-height: 65px; 
+    max-height: 65px;
   }
   .header-preview-images-enhanced img {
     width: 60px;
@@ -586,7 +576,7 @@
   .card-intro-avatar-wrapper::before { width: calc(100% + 16px); height: calc(100% + 16px); }
 
 }
-@media (max-width: 420px) { 
+@media (max-width: 420px) {
   .card-intro-header-swappable-content {
     min-height: 150px;
   }
@@ -614,43 +604,40 @@
 }
 
 
-/* Container cho view con */
 .card-content-display {
   width: 100%;
   padding: 0rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem; 
+  gap: 1.5rem;
 }
 
-/* Wrapper cho từng view cụ thể (Gallery, Guestbook, Spotify) */
 .gallery-view-wrapper, .guestbook-view-wrapper, .spotify-playlists-view-wrapper {
-  width: 100%; 
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  gap: 1rem; 
+  align-items: center;
+  gap: 1rem;
   flex-grow: 1;
 }
 
 .gallery-view-wrapper > .gallery-main-container {
     width: 100%;
-    max-width: 1000px; 
+    max-width: 1000px;
     box-sizing: border-box;
 }
-.guestbook-view-wrapper > .book-core { 
+.guestbook-view-wrapper > .book-core {
     width: 100%;
-    max-width: 1050px; 
+    max-width: 1050px;
     box-sizing: border-box;
 }
-.spotify-playlists-view-wrapper > .spotify-playlists-container { 
+.spotify-playlists-view-wrapper > .spotify-playlists-container {
     width: 100%;
     box-sizing: border-box;
 }
 
 
-/* Nút Back */
 .card-view-back-button {
   display: flex;
   align-items: center;
@@ -665,9 +652,9 @@
   padding: 0.7rem 1.6rem;
   border-radius: 30px;
   cursor: pointer;
-  margin-top: 0.5rem; 
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-  align-self: center; 
+  align-self: center;
   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
   transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
   will-change: transform, background-color, box-shadow;
@@ -692,9 +679,9 @@
   box-shadow: 0 6px 15px -3px rgba(var(--primary-color-rgb), 0.35);
 }
 .card-view-back-button:hover .button-icon-svg svg {
-    transform: translateX(-2px); 
+    transform: translateX(-2px);
 }
-.card-view-back-button:active { 
+.card-view-back-button:active {
   transform: translateY(-1px) scale(0.97);
   box-shadow: 0 3px 10px -2px rgba(var(--primary-color-rgb), 0.3);
 }
@@ -729,17 +716,16 @@
 
 @media (max-width: 600px) {
   .card-content-display {
-    gap: 1rem; 
+    gap: 1rem;
   }
 
   .language-selector-footer {
     font-size: 0.8em;
-    bottom: 0.25rem; 
+    bottom: 0.25rem;
     padding: 0.3rem 0.6rem;
   }
 }
 
-/* --- DOCK STYLES --- */
 .dock-container {
   display: flex;
   gap: 12px;
@@ -761,9 +747,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 18px; /* ap dung border radius cho container */
-  border: 1.5px solid transparent; /* them border trong suot */
-  box-shadow: none; /* xoa shadow o day */
+  border-radius: 18px;
+  border: 1.5px solid transparent;
+  box-shadow: none;
   transition: border-color 0.25s ease-out, box-shadow 0.25s ease-out;
 }
 
@@ -781,11 +767,11 @@
   height: 64px;
   will-change: transform, width, height;
   cursor: pointer;
-  background-color: transparent; /* bo bg mac dinh */
+  background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0; /* bo padding */
+  padding: 0;
   color: var(--text-color-poetic);
   transition: background-color 0.2s ease, transform 0.15s ease;
 }
@@ -803,7 +789,7 @@
 }
 
 .dock-item .button-icon-svg {
-  width: 25px; /* giu kich thuoc icon */
+  width: 25px;
   height: 44px;
   color: var(--text-color-poetic);
   transition: color 0.2s ease, transform 0.2s ease;
@@ -819,5 +805,5 @@
 }
 
 .dock-item .button-text {
-  display: none; /* an hoan toan text */
+  display: none;
 }

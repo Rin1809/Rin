@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@react-spring/web": "^9.7.3",
+    "@react-three/drei": "9.77.3",
+    "@react-three/fiber": "8.13.3",
+    "@react-three/postprocessing": "2.14.11",
     "@tsparticles/engine": "^3.8.1",
     "@tsparticles/interaction-external-trail": "^3.8.1",
     "@tsparticles/plugin-emitters": "^3.8.1",
@@ -20,14 +23,17 @@
     "@tsparticles/slim": "^3.8.1",
     "@use-gesture/react": "^10.3.1",
     "framer-motion": "^11.2.13",
+    "maath": "^0.10.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rin-personal-card-monorepo": "file:..",
+    "three": "0.154.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/three": "^0.152.1",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
