@@ -1,6 +1,3 @@
-/* client/src/components/styles/LanguageSelector.css */
-
-/* --- BASE STYLES & OVERLAY --- */
 .language-selector-poetic-overlay {
   position: fixed;
   inset: 0;
@@ -60,20 +57,19 @@
     margin-top: 1rem;
 }
 
-/* Content Wrapper and Section */
 .language-selector-content-wrapper {
   text-align: center;
   color: var(--text-color-poetic);
-  max-width: 600px; /* Giữ max-width cho nội dung chính */
+  max-width: 600px; 
   min-height: 380px; 
   width: 100%;
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Căn giữa nội dung khi nó ngắn hơn min-height */
+  justify-content: center; 
   align-items: center;
-  padding-top: 1rem; /* Thêm padding để nội dung không dính sát flourish */
+  padding-top: 1rem; 
   padding-bottom: 1rem;
 }
 
@@ -86,7 +82,6 @@
   padding: 0.2rem 0;
 }
 
-/* --- LANGUAGE OPTIONS STYLES --- */
 .poetic-title {
   font-size: 3em;
   font-weight: 400;
@@ -148,7 +143,6 @@
   color: var(--text-color-poetic);
 }
 
-/* --- DIVIDER STYLES --- */
 .poetic-divider {
   flex-shrink: 0;
   transform-origin: center;
@@ -186,7 +180,6 @@
   font-style: normal;
 }
 
-/* --- ROOT VARIABLES FOR CARD INTRO --- */
 :root {
   --card-name-gradient-start: var(--secondary-color, #f5c2e7);
   --card-name-gradient-mid: var(--highlight-color-poetic, #D8BFD8);
@@ -196,7 +189,6 @@
   --sparkle-color: rgba(var(--highlight-color-poetic-rgb), 0.8);
 }
 
-/* --- STYLES FOR CARD INTRO SECTION --- */
 .card-intro-section-modifier {
   padding: 5rem 0; 
 }
@@ -504,15 +496,14 @@
 .card-intro-actions { 
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* can giu */
-  min-height: 84px; /* giu chieu cao ổn định */
+  align-items: flex-end; 
+  min-height: 84px; 
   width: 100%;
   max-width: 500px; 
   position: relative; 
 }
 
 
-/* --- RESPONSIVE DESIGN --- */
 @media (max-width: 600px) {
   .language-selector-poetic-overlay {
       padding: 0.5rem;
@@ -614,7 +605,6 @@
 }
 
 
-/* Container cho view con */
 .card-content-display {
   width: 100%;
   padding: 0rem 0;
@@ -624,9 +614,19 @@
   gap: 1.5rem; 
 }
 
-/* Wrapper cho từng view cụ thể (Gallery, Guestbook, Spotify) */
-.gallery-view-wrapper, .guestbook-view-wrapper, .spotify-playlists-view-wrapper {
+.guestbook-view-wrapper, .spotify-playlists-view-wrapper {
   width: 100%; 
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  gap: 1rem; 
+  flex-grow: 1;
+}
+
+.gallery-view-wrapper {
+  width: 95vw;
+  height: 90vh;
+  max-width: 1600px;
   display: flex;
   flex-direction: column;
   align-items: center; 
@@ -636,8 +636,10 @@
 
 .gallery-view-wrapper > .gallery-main-container {
     width: 100%;
-    max-width: 1000px; 
+    height: 100%;
+    max-width: 100%;
     box-sizing: border-box;
+    flex-grow: 1;
 }
 .guestbook-view-wrapper > .book-core { 
     width: 100%;
@@ -650,7 +652,6 @@
 }
 
 
-/* Nút Back */
 .card-view-back-button {
   display: flex;
   align-items: center;
@@ -739,7 +740,6 @@
   }
 }
 
-/* --- DOCK STYLES --- */
 .dock-container {
   display: flex;
   gap: 12px;
@@ -761,9 +761,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 18px; /* ap dung border radius cho container */
-  border: 1.5px solid transparent; /* them border trong suot */
-  box-shadow: none; /* xoa shadow o day */
+  border-radius: 18px; 
+  border: 1.5px solid transparent; 
+  box-shadow: none; 
   transition: border-color 0.25s ease-out, box-shadow 0.25s ease-out;
 }
 
@@ -781,11 +781,11 @@
   height: 64px;
   will-change: transform, width, height;
   cursor: pointer;
-  background-color: transparent; /* bo bg mac dinh */
+  background-color: transparent; 
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0; /* bo padding */
+  padding: 0; 
   color: var(--text-color-poetic);
   transition: background-color 0.2s ease, transform 0.15s ease;
 }
@@ -803,7 +803,7 @@
 }
 
 .dock-item .button-icon-svg {
-  width: 25px; /* giu kich thuoc icon */
+  width: 25px; 
   height: 44px;
   color: var(--text-color-poetic);
   transition: color 0.2s ease, transform 0.2s ease;
@@ -819,5 +819,5 @@
 }
 
 .dock-item .button-text {
-  display: none; /* an hoan toan text */
+  display: none; 
 }

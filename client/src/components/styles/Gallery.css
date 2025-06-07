@@ -1,5 +1,3 @@
-/* client/src/components/styles/Gallery.css */
-
 .gallery-main-container.gallery-3d-mode {
   position: relative;
   overflow: hidden;
@@ -47,7 +45,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: clamp(1rem, 3vh, 2rem) clamp(1rem, 5vw, 2rem);
+  padding: clamp(0.0000001rem, 0.0000001vh, 0.00000001rem) clamp(1rem, 5vw, 2rem); /* dieu chinh kcach top */
   pointer-events: none;
   box-sizing: border-box;
 }
@@ -69,6 +67,7 @@
   background-size: 250% auto;
   animation: galleryTitleFlow 10s linear infinite alternate;
   text-shadow: 0 2px 3px rgba(0,0,0,0.1), 0 0 18px rgba(var(--primary-color-rgb), 0.35), 0 0 35px rgba(var(--secondary-color-rgb), 0.25);
+  margin-bottom: 0.5rem; /* them chut margin */
 }
 
 .gallery-placeholder {
@@ -96,7 +95,6 @@
 }
 
 
-/* --- LIGHTBOX STYLES --- */
 .lightbox-overlay {
   position: fixed;
   inset: 0; 
