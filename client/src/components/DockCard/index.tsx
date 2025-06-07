@@ -1,10 +1,9 @@
-import * as React from 'react'
-import { animated, useIsomorphicLayoutEffect, useSpringValue } from '@react-spring/web'
-import { motion, Variants } from 'framer-motion' // them motion
-import { useMousePosition } from '../hooks/useMousePosition'
-import { useWindowResize } from '../hooks/useWindowResize'
-import { useDock } from '../Dock/DockContext'
-import { cardIntroButtonIconVariants } from '../languageSelector/languageSelector.constants'; // them import
+import * as React from 'react';
+import { motion, useMotionValue, animate, Variants } from 'framer-motion';
+import { useMousePosition } from '../hooks/useMousePosition';
+import { useWindowResize } from '../hooks/useWindowResize';
+import { useDock } from '../Dock/DockContext';
+import { cardIntroButtonIconVariants } from '../languageSelector/languageSelector.constants';
 
 interface DockCardProps {
   children: React.ReactNode;
@@ -36,60 +35,60 @@ const dockCardVariants: Variants = {
 };
 
 export const DockCard = ({ children, onClick, onMouseEnter, onMouseLeave }: DockCardProps) => {
-  const cardRef = React.useRef<HTMLButtonElement>(null!)
-  const [elCenterX, setElCenterX] = React.useState<number>(0)
+  const cardRef = React.useRef<HTMLButtonElement>(null!);
+  const [elCenterX, setElCenterX] = React.useState<number>(0);
   const [isHovered, setIsHovered] = React.useState(false);
 
-  const size = useSpringValue(INITIAL_WIDTH, {
-    config: { mass: 0.1, tension: 320 },
-  })
-  const y = useSpringValue(0, {
-    config: { friction: 29, tension: 238 },
-  })
+  // su dung motion value tu framer-motion
+  const size = useMotionValue(INITIAL_WIDTH);
+  const y = useMotionValue(0);
 
-  const dock = useDock()
+  const dock = useDock();
+  const mousePosition = useMousePosition(); // lay vi tri chuot
 
   const recalculateCenterX = React.useCallback(() => {
     if (cardRef.current) {
-      const { x, width } = cardRef.current.getBoundingClientRect()
-      setElCenterX(x + width / 2)
+      const { x, width } = cardRef.current.getBoundingClientRect();
+      setElCenterX(x + width / 2);
     }
   }, []);
 
   useWindowResize(recalculateCenterX);
+  React.useEffect(recalculateCenterX, [recalculateCenterX, dock.width]);
 
-  useIsomorphicLayoutEffect(() => {
-    recalculateCenterX();
-  }, [recalculateCenterX, dock.width]);
+  // tinh toan lai kich thuoc khi chuot di chuyen
+  React.useEffect(() => {
+    const mouseX = mousePosition.x;
+    if (dock.width > 0 && dock.hovered && mouseX !== null) {
+      const DOCK_CARD_GROW_MULTIPLIER = 32;
+      const transformedValue =
+        INITIAL_WIDTH +
+        DOCK_CARD_GROW_MULTIPLIER * Math.cos((((mouseX - elCenterX) / dock.width) * Math.PI) / 2) ** 12;
 
-
-  useMousePosition(
-    {
-      onChange: ({ value }) => {
-        const mouseX = value.x
-        if (dock.width > 0 && dock.hovered) {
-          const DOCK_CARD_GROW_MULTIPLIER = 32;
-          const transformedValue =
-            INITIAL_WIDTH +
-            DOCK_CARD_GROW_MULTIPLIER * Math.cos((((mouseX - elCenterX) / dock.width) * Math.PI) / 2) ** 12;
-
-          size.start(transformedValue)
-        }
-      },
-    },
-    [elCenterX, dock.width, dock.hovered, size]
-  )
-
-  useIsomorphicLayoutEffect(() => {
-    if (!dock.hovered) {
-      size.start(INITIAL_WIDTH)
+      animate(size, transformedValue, {
+        type: "spring",
+        mass: 0.1,
+        stiffness: 320,
+        damping: 20,
+      });
+    } else {
+      animate(size, INITIAL_WIDTH, {
+        type: "spring",
+        mass: 0.1,
+        stiffness: 320,
+        damping: 20,
+      });
     }
-  }, [dock.hovered, size])
+  }, [mousePosition.x, elCenterX, dock.width, dock.hovered, size]);
 
   const handleClick = () => {
     onClick();
-    y.start(-INITIAL_WIDTH / 4, {
-        onRest: () => y.start(0),
+    // anim nhay len khi click
+    animate(y, -INITIAL_WIDTH / 4, {
+      type: 'spring',
+      stiffness: 400,
+      damping: 20,
+      onComplete: () => animate(y, 0, { type: 'spring', stiffness: 300, damping: 25 }),
     });
   };
 
@@ -112,7 +111,7 @@ export const DockCard = ({ children, onClick, onMouseEnter, onMouseLeave }: Dock
         whileHover="hover"
         whileTap="tap"
     >
-      <animated.button
+      <motion.button
         ref={cardRef}
         className="dock-item"
         onClick={handleClick}
@@ -128,7 +127,7 @@ export const DockCard = ({ children, onClick, onMouseEnter, onMouseLeave }: Dock
          >
             {children}
          </motion.div>
-      </animated.button>
+      </motion.button>
     </motion.div>
   )
 }
