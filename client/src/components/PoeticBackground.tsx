@@ -111,17 +111,30 @@ function ScreenAndEffects() {
     <>
       <BorderlessScreen ref={setEmitterMesh as ForwardedRef<THREE.Mesh>} />
       
-      <EffectComposer disableNormalPass multisampling={0}>
-        {emitterMesh ? <GodRays sun={emitterMesh} exposure={0.28} decay={0.82} blur /> : null}
-        <Bloom
-          mipmapBlur
-          luminanceThreshold={0.1}
-          luminanceSmoothing={0}
-          intensity={0.75}
-          kernelSize={5}
-        />
-        <Vignette eskil={false} offset={0.1} darkness={0.7} />
-      </EffectComposer>
+      {emitterMesh ? (
+        <EffectComposer disableNormalPass multisampling={0}>
+          <GodRays sun={emitterMesh} exposure={0.28} decay={0.82} blur />
+          <Bloom
+            mipmapBlur
+            luminanceThreshold={0.1}
+            luminanceSmoothing={0}
+            intensity={0.75}
+            kernelSize={5}
+          />
+          <Vignette eskil={false} offset={0.1} darkness={0.7} />
+        </EffectComposer>
+      ) : (
+        <EffectComposer disableNormalPass multisampling={0}>
+          <Bloom
+            mipmapBlur
+            luminanceThreshold={0.1}
+            luminanceSmoothing={0}
+            intensity={0.75}
+            kernelSize={5}
+          />
+          <Vignette eskil={false} offset={0.1} darkness={0.7} />
+        </EffectComposer>
+      )}
     </>
   );
 }
