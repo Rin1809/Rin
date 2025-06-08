@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { forwardRef, useState, useEffect, useMemo, ForwardedRef } from 'react';
+import { forwardRef, useState, ForwardedRef } from 'react';
 import { Canvas, useFrame, extend } from '@react-three/fiber';
 import { Stars, Float, Icosahedron, shaderMaterial } from '@react-three/drei';
 import { EffectComposer, GodRays, Bloom, Vignette } from '@react-three/postprocessing';
@@ -112,7 +112,7 @@ function ScreenAndEffects() {
       <BorderlessScreen ref={setEmitterMesh as ForwardedRef<THREE.Mesh>} />
       
       <EffectComposer disableNormalPass multisampling={0}>
-        {emitterMesh && <GodRays sun={emitterMesh} exposure={0.28} decay={0.82} blur />}
+        {emitterMesh ? <GodRays sun={emitterMesh} exposure={0.28} decay={0.82} blur /> : null}
         <Bloom
           mipmapBlur
           luminanceThreshold={0.1}
