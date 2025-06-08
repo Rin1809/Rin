@@ -19,7 +19,6 @@
 /* Thêm container để đảm bảo hoạt động đúng trong React */
 .fish-experience-container {
     font-family: 'Playwrite DK Loopet', cursive;
-	background-color: var(--background-color);
 	max-width: 100vw;
 	min-height: 100vh;
 	overflow-x: hidden;
@@ -289,3 +288,12 @@ section:nth-child(4n), section:nth-child(4n - 1) { --col: 3; }
 .indicator span:nth-child(2) { animation: arrowMove 600ms infinite alternate; }
 
 @keyframes arrowMove { to { transform: translate3d(0, 0.5rem, 0); } }
+
+/* --- Style cho các section đệm --- */
+.spacer-section {
+    pointer-events: none; 
+}
+
+.spacer-section .section__content {
+    display: none;
+}

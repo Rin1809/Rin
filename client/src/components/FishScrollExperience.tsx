@@ -1,26 +1,66 @@
-import React, { useEffect, useRef } from 'react';
+// client/src/components/FishScrollExperience.tsx
+
+import React, { useEffect, useRef, useState } from 'react';
 import './styles/FishScrollExperience.css';
+import { Canvas } from '@react-three/fiber';
+import { ScrollVideoScreen } from './ScrollVideoScreen';
 
 declare const gsap: any;
 declare const ScrollTrigger: any;
 declare const MotionPathPlugin: any;
 
+type ScrollTriggerInstance = {
+  direction: number;
+  [key: string]: any;
+};
+
 interface FishScrollExperienceProps {
   onScrollEnd: () => void;
 }
 
+interface StorySection {
+  type: 'text' | 'spacer';
+  text?: string; 
+  videoSrc?: string;
+  spacerHeight?: string; 
+}
+
+const storyContent: StorySection[] = [
+    { type: 'text', text: "Hey there" },
+    { type: 'text', text: "Welcome to my Card" },
+    { type: 'text', text: "Actually i dont have too much information to introduce" },
+    { type: 'text', text: "Lets read a story..." },
+    { type: 'text', text: "13.8 billion years ago, a silent bang echoed into existence...", videoSrc: "/videos/cosmos_intro.mp4" },
+    { type: 'spacer', spacerHeight: '50vh' },
+    { type: 'text', text: "13.6 billion years ago, the first stardust began to swirl and dream...", videoSrc: "/videos/stars_forming.mp4" },
+    { type: 'spacer', spacerHeight: '50vh' },
+    { type: 'text', text: "10 billion years ago, our Milky Way started its slow, majestic waltz...", videoSrc: "/videos/milkyway.mp4" },
+    { type: 'spacer', spacerHeight: '50vh' },
+    { type: 'text', text: "4.6 billion years ago, a young star claimed its court, our Solar System...", videoSrc: "/videos/solar_system.mp4" },
+    { type: 'spacer', spacerHeight: '50vh' },
+    { type: 'text', text: "4.5 billion years ago, a blue marble, our Earth, took its first breath...", videoSrc: "/videos/earth.mp4" },
+    { type: 'spacer', spacerHeight: '50vh' },
+    { type: 'text', text: "300,000 years ago, Homo Sapiens first looked up and wondered at the stars...", videoSrc: "/videos/humans.mp4" },
+    { type: 'spacer', spacerHeight: '50vh' },
+    { type: 'text', text: "And now, on this very day, you, a traveler of time, have arrived.", videoSrc: "/videos/arrival.mp4" },
+    { type: 'spacer', spacerHeight: '50vh' },
+    { type: 'text', text: `(${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })})` },
+    { type: 'text', text: "A fleeting, beautiful moment in the grand cosmic tapestry." },
+    { type: 'text', text: "Welcome." }
+];
+
 const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
+    const [activeVideoSrc, setActiveVideoSrc] = useState<string | null>(null);
+    const [isVideoActive, setIsVideoActive] = useState(false);
 
     useEffect(() => {
-        // Kiểm tra xem GSAP đã được tải từ CDN chưa
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || typeof MotionPathPlugin === 'undefined') {
-            console.error("GSAP is not loaded! Please add GSAP scripts to your index.html.");
+            console.error("GSAP is not loaded!");
             return;
         }
 
-        gsap.registerPlugin(ScrollTrigger);
-        gsap.registerPlugin(MotionPathPlugin);
+        gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
         const rx = window.innerWidth < 1000 ? window.innerWidth / 1200 : 1;
         const ry = window.innerHeight < 700 ? window.innerHeight / 1200 : 1;
@@ -32,7 +72,6 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
             { x: 1100, y: 300 }, { x: 400, y: 400 }, { x: 200, y: 250 },
             { x: 100, y: 300 }, { x: 500, y: 450 }, { x: 1100, y: 500 }
         ];
-
         const scaledPath = path.map(({ x, y }) => ({ x: x * rx, y: y * ry }));
 
         const sections = [...document.querySelectorAll('.fish-experience-container section')] as HTMLElement[];
@@ -66,53 +105,63 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
         stardustTl.play();
         tl.pause();
 
-        const createStardust = (p: HTMLElement, i: number) => {
-            if (!butterfly) return;
-            const { top, left } = butterfly.getBoundingClientRect();
+        const createStardust = (p: HTMLElement | null, i: number) => {
+            if (!butterfly || !p) return;
             gsap.to(p, { opacity: 1, duration: 1 });
+            const { top, left } = butterfly.getBoundingClientRect();
             gsap.set('.fish-experience-container .stardust', { x: left, y: top });
-            if (stardustTl.paused()) {
-                stardustTl.restart();
-            }
-            if (i > 6) {
-                gsap.to('.fish-experience-container .stardust', { opacity: 0 });
-            }
+            if (stardustTl.paused()) stardustTl.restart();
+            if (i > 6) gsap.to('.fish-experience-container .stardust', { opacity: 0 });
         };
 
-        const rotateButterfly = (self: any) => {
-            if (self.direction === -1) {
-                gsap.to(butterfly, { rotationY: 180, duration: 0.4 });
-            } else {
-                gsap.to(butterfly, { rotationY: 0, duration: 0.4 });
-            }
+        const rotateButterfly = (self: ScrollTriggerInstance) => {
+            gsap.to(butterfly, { rotationY: self.direction === -1 ? 180 : 0, duration: 0.4 });
         };
 
-        const hideText = (p: HTMLElement) => {
-            gsap.to(p, { opacity: 0, duration: 1 });
+        const hideText = (p: HTMLElement | null) => {
+            if (p) gsap.to(p, { opacity: 0, duration: 1 });
         };
 
         sections.forEach((section, i) => {
             const p = section.querySelector('p');
-            if (!p) return;
-            gsap.set(p, { opacity: 0 });
+            const sectionData = storyContent[i];
+            
+            if (sectionData.type === 'text' && p) {
+                gsap.set(p, { opacity: 0 });
+            }
 
             ScrollTrigger.create({
                 trigger: section,
                 start: "top top",
-                onEnter: () => createStardust(p, i),
-                onEnterBack: () => {
-                    if (i <= 6) {
-                        gsap.to('.fish-experience-container .stardust', { opacity: 1 });
+                onEnter: (self: ScrollTriggerInstance) => {
+                    if(sectionData.type === 'text') createStardust(p, i);
+                    if (sectionData.videoSrc) {
+                        setActiveVideoSrc(sectionData.videoSrc);
+                        setIsVideoActive(true);
                     }
+                    rotateButterfly(self);
+                },
+                onEnterBack: (self: ScrollTriggerInstance) => {
+                    if (i <= 6 && sectionData.type === 'text') gsap.to('.fish-experience-container .stardust', { opacity: 1 });
+                     if (sectionData.videoSrc) {
+                        setActiveVideoSrc(sectionData.videoSrc);
+                        setIsVideoActive(true);
+                    }
+                    rotateButterfly(self);
                 },
                 onLeave: () => {
-                    hideText(p);
-                    if (i === 0 && nebulaGlow) {
-                        gsap.to(nebulaGlow, { opacity: 0, y: -500, duration: 8, ease: 'power4.in' });
+                    if(sectionData.type === 'text') hideText(p);
+                    if (sectionData.videoSrc) {
+                        setIsVideoActive(false);
                     }
+                    if (i === 0 && nebulaGlow) gsap.to(nebulaGlow, { opacity: 0, y: -500, duration: 8, ease: 'power4.in' });
                 },
-                onLeaveBack: () => hideText(p),
-                onUpdate: (self: any) => rotateButterfly(self) 
+                onLeaveBack: () => {
+                     if(sectionData.type === 'text') hideText(p);
+                     if (sectionData.videoSrc) {
+                        setIsVideoActive(false);
+                    }
+                }
             });
         });
 
@@ -124,8 +173,7 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
                 onEnter: () => {
                     if (wrapperRef.current) {
                         gsap.to(wrapperRef.current, {
-                            opacity: 0,
-                            duration: 1.5,
+                            opacity: 0, duration: 1.5,
                             onComplete: () => {
                                 onScrollEnd();
                                 ScrollTrigger.getAll().forEach((trigger: any) => trigger.kill());
@@ -144,18 +192,20 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
 
     return (
         <div ref={wrapperRef} className="fish-experience-container">
-            <div className="starfield"></div>
-            
-            <div className="shooting-stars">
-                {[...Array(5)].map((_, i) => <div key={i} className="star"></div>)}
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1, pointerEvents: 'none' }}>
+              <Canvas>
+                  <color attach="background" args={['#0c0e1a']} />
+                  <ScrollVideoScreen videoSrc={activeVideoSrc} isActive={isVideoActive} />
+              </Canvas>
             </div>
 
-            <p className="indicator">
+            <div className="starfield" style={{ zIndex: 2 }}></div>
+            <div className="shooting-stars" style={{ zIndex: 2 }}></div>
+            <p className="indicator" style={{ zIndex: 3 }}>
                 <span>scroll down the fish</span>
                 <span>↓</span>
             </p>
-
-            <div className="butterfly-wrapper">
+            <div className="butterfly-wrapper" style={{ zIndex: 3 }}>
                 <div className="butterfly">
                     <div className="butterfly__soul"></div>
                     <div className="butterfly__inner">
@@ -174,29 +224,26 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
                     </div>
                 </div>
             </div>
-
-            <div className="stardust">
+            <div className="stardust" style={{ zIndex: 3 }}>
                 <div className="stardust__inner">
                     {[...Array(5)].map((_, i) => <div key={i} className="stardust__particle"></div>)}
                 </div>
             </div>
-
-            <div className="nebula-glow"><div data-rays></div></div>
+            <div className="nebula-glow" style={{ zIndex: 2 }}><div data-rays></div></div>
             
-            <div className="content">
-                {[
-                    "13.8 billion years ago, a silent bang echoed into existence...",
-                    "13.6 billion years ago, the first stardust began to swirl and dream...",
-                    "10 billion years ago, our Milky Way started its slow, majestic waltz...",
-                    "4.6 billion years ago, a young star claimed its court, our Solar System...",
-                    "4.5 billion years ago, a blue marble, our Earth, took its first breath...",
-                    "300,000 years ago, Homo Sapiens first looked up and wondered at the stars...",
-                    "And now, on this very day, you, a traveler of time, have arrived.",
-                    `(${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })})`,
-                    "A fleeting, beautiful moment in the grand cosmic tapestry.",
-                    "Welcome."
-                ].map((text, i) => (
-                    <section key={i}><div className="section__content"><p>{text}</p></div></section>
+            <div className="content" style={{ zIndex: 3 }}>
+                {storyContent.map((item, i) => (
+                    <section 
+                        key={i} 
+                        className={item.type === 'spacer' ? 'spacer-section' : ''}
+                        style={item.type === 'spacer' ? { height: item.spacerHeight || '50vh' } : {}}
+                    >
+                        {item.type === 'text' && (
+                            <div className="section__content">
+                                <p>{item.text}</p>
+                            </div>
+                        )}
+                    </section>
                 ))}
             </div>
         </div>
