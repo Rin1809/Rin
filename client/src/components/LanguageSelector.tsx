@@ -10,7 +10,6 @@ import SpotifyPlaylists from './SpotifyPlaylists';
 import Blog from './Blog';
 import type { GuestbookEntry } from '../data/guestbook.data';
 
-import MemoizedParticlesComponent from './common/MemoizedParticlesComponent';
 import LangButton from './languageSelector/LangButton';
 import {
     translations,
