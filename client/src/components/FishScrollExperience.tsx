@@ -151,7 +151,7 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
             </div>
 
             <p className="indicator">
-                <span>Khám Phá</span>
+                <span>scroll down the fish</span>
                 <span>↓</span>
             </p>
 
