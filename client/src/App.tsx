@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion'; // Import motion và AnimatePresence
 import LanguageSelector from './components/LanguageSelector';
-import './components/styles/App.css';
 import { PoeticBackground } from './components/PoeticBackground';
+import FishScrollExperience from './components/FishScrollExperience';
 import backgroundMusicMP3 from './assets/audio/background_music.mp3';
+import './components/styles/App.css';
 
+// --- CONSTANTS ---
 const YOUR_AVATAR_URL_FOR_INTRO = "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128";
 const YOUR_NAME_FOR_INTRO = "よこそう！！";
 
@@ -12,26 +15,21 @@ const PERSONAL_CARD_DATA = {
     githubUsername: "Rin1809"
 };
 
-type IntroStage = 'cat' | 'yourName' | 'languageSelection';
+// --- STAGE DEFINITIONS ---
+type AppStage = 'fishExperience' | 'cardIntroCat' | 'cardIntroWelcome' | 'mainCardApp';
+type CardIntroStage = 'cat' | 'yourName';
 
+// --- COMPONENT PHỤ ĐỂ HIỂN THỊ INTRO ---
 interface ContentAreaProps {
-    currentStage: IntroStage;
+    currentStage: CardIntroStage;
     isFadingOutProp: boolean;
-    userName: string | null;
-    selectedLanguage: 'vi' | 'en' | 'ja';
+    userName: string;
 }
 
 const ContentArea: React.FC<ContentAreaProps> = React.memo(({ currentStage, isFadingOutProp, userName }) => {
     const yourNameIntroStageClass = `intro-stage server-stage-wow ${isFadingOutProp && currentStage === 'yourName' ? 'hiding' : currentStage === 'yourName' ? 'visible' : ''}`;
     const catStageClass = `intro-stage cat-stage ${isFadingOutProp && currentStage === 'cat' ? 'hiding' : currentStage === 'cat' ? 'visible' : ''}`;
-
-    const appContainerClass = useMemo(() => {
-        if (currentStage === 'cat' || currentStage === 'yourName') return "AppContainer intro-active";
-        return "AppContainer";
-    }, [currentStage]);
-
-
-    if (currentStage !== 'cat' && currentStage !== 'yourName') return null;
+    const appContainerClass = "AppContainer intro-active";
 
     return (
         <div className={`App ${appContainerClass}`}>
@@ -44,11 +42,7 @@ const ContentArea: React.FC<ContentAreaProps> = React.memo(({ currentStage, isFa
             {currentStage === 'yourName' && (
                 <div className={yourNameIntroStageClass}>
                     <div className="avatar-container-wow">
-                        <img
-                            src={YOUR_AVATAR_URL_FOR_INTRO}
-                            alt="Your Avatar"
-                            className="server-avatar-wow"
-                        />
+                        <img src={YOUR_AVATAR_URL_FOR_INTRO} alt="Your Avatar" className="server-avatar-wow" />
                     </div>
                     <div className="text-container-wow">
                         <h2 className="server-name-wow">{userName}</h2>
@@ -60,127 +54,132 @@ const ContentArea: React.FC<ContentAreaProps> = React.memo(({ currentStage, isFa
 });
 ContentArea.displayName = 'ContentArea';
 
+// --- MAIN APP COMPONENT ---
 function App() {
-    const [currentIntroStage, setCurrentIntroStage] = useState<IntroStage>('cat');
-    const [isStageFadingOut, setIsStageFadingOut] = useState(false);
+    const [currentAppStage, setCurrentAppStage] = useState<AppStage>('fishExperience');
+    const [isIntroStageFadingOut, setIsIntroStageFadingOut] = useState(false);
+    
     const [selectedLanguage, setSelectedLanguage] = useState<'vi' | 'en' | 'ja' | null>(null);
-
-    const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isSpotifyViewActive, setIsSpotifyViewActive] = useState(false);
-    const [hasIntroFinishedForMusic, setHasIntroFinishedForMusic] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
+    // Quản lý việc cuộn trang
     useEffect(() => {
-        if (currentIntroStage === 'languageSelection' && !hasIntroFinishedForMusic) {
-            setHasIntroFinishedForMusic(true);
+        if (currentAppStage === 'fishExperience') {
+            document.body.classList.remove('no-scroll');
+        } else {
+            document.body.classList.add('no-scroll');
         }
+    }, [currentAppStage]);
 
-        if (currentIntroStage !== 'cat' && currentIntroStage !== 'yourName') {
-            return;
-        }
-
-        let stage1TimerId: number | null = null;
-        let fade1TimerId: number | null = null;
-        let stage2TimerId: number | null = null;
-        let fade2TimerId: number | null = null;
-
-        const catDisplayTime = 1800;
-        const yourNameDisplayTime = 2000;
+    // Xử lý chuyển tiếp giữa các bước intro của card
+    useEffect(() => {
+        let stageTimer: number | null = null;
+        let fadeTimer: number | null = null;
         const fadeDuration = 600;
 
-        if (currentIntroStage === 'cat') {
-            stage1TimerId = window.setTimeout(() => {
-                setIsStageFadingOut(true);
-            }, catDisplayTime);
-
-            fade1TimerId = window.setTimeout(() => {
-                setCurrentIntroStage('yourName');
-                setIsStageFadingOut(false);
+        if (currentAppStage === 'cardIntroCat') {
+            const catDisplayTime = 1800;
+            stageTimer = window.setTimeout(() => setIsIntroStageFadingOut(true), catDisplayTime);
+            fadeTimer = window.setTimeout(() => {
+                setCurrentAppStage('cardIntroWelcome');
+                setIsIntroStageFadingOut(false);
             }, catDisplayTime + fadeDuration);
-        } else if (currentIntroStage === 'yourName') {
-            stage2TimerId = window.setTimeout(() => {
-                setIsStageFadingOut(true);
-            }, yourNameDisplayTime);
-
-            fade2TimerId = window.setTimeout(() => {
-                setCurrentIntroStage('languageSelection');
-                setIsStageFadingOut(false);
-            }, yourNameDisplayTime + fadeDuration);
+        } else if (currentAppStage === 'cardIntroWelcome') {
+            const welcomeDisplayTime = 2000;
+            stageTimer = window.setTimeout(() => setIsIntroStageFadingOut(true), welcomeDisplayTime);
+            fadeTimer = window.setTimeout(() => {
+                setCurrentAppStage('mainCardApp');
+                setIsIntroStageFadingOut(false);
+            }, welcomeDisplayTime + fadeDuration);
         }
 
         return () => {
-            if (stage1TimerId) window.clearTimeout(stage1TimerId);
-            if (fade1TimerId) window.clearTimeout(fade1TimerId);
-            if (stage2TimerId) window.clearTimeout(stage2TimerId);
-            if (fade2TimerId) window.clearTimeout(fade2TimerId);
+            if (stageTimer) window.clearTimeout(stageTimer);
+            if (fadeTimer) window.clearTimeout(fadeTimer);
         };
-    }, [currentIntroStage, hasIntroFinishedForMusic]);
+    }, [currentAppStage]);
 
+    // Quản lý nhạc nền
     useEffect(() => {
         const audioElement = audioRef.current;
         if (!audioElement) return;
-
-        const shouldPlayMusic = hasIntroFinishedForMusic &&
-                                !isSpotifyViewActive &&
-                                audioElement.paused &&
-                                selectedLanguage !== null;
-
-        if (isSpotifyViewActive) {
-            if (!audioElement.paused) {
-                audioElement.pause();
-            }
-        } else if (shouldPlayMusic) {
-            audioElement.play().catch(error => {
-                console.warn("Autoplay bi chan hoac loi khi phat nhac:", error.name, error.message);
-            });
+        if (currentAppStage === 'mainCardApp' && !isSpotifyViewActive && selectedLanguage !== null) {
+            audioElement.play().catch(error => console.warn("Autoplay was prevented:", error.name, error.message));
+        } else {
+            if (!audioElement.paused) audioElement.pause();
         }
-    }, [isSpotifyViewActive, hasIntroFinishedForMusic, selectedLanguage]);
+    }, [currentAppStage, isSpotifyViewActive, selectedLanguage]);
+
+    useEffect(() => {
+        const notifyBackendOfVisit = async () => {
+            try {
+                await fetch(`/api/notify-visit`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+            } catch (error) {
+                console.error(`[NOTIFY VISIT] Error sending visit notification:`, error);
+            }
+        };
+        if (import.meta.env.PROD) notifyBackendOfVisit();
+    }, []);
+
+    const handleFishScrollEnd = () => {
+        setCurrentAppStage('cardIntroCat');
+    };
 
     const handleLanguageSelectedInSelector = (language: 'vi' | 'en' | 'ja') => {
         setSelectedLanguage(language);
     };
 
-    useEffect(() => {
-        const notifyBackendOfVisit = async () => {
-            const apiUrl = `/api/notify-visit`;
-            try {
-                await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                });
-            } catch (error) {
-                console.error(`[NOTIFY VISIT] Loi gui tbáo visit tới ${apiUrl}:`, error);
-            }
-        };
-
-        if (import.meta.env.PROD) {
-            notifyBackendOfVisit();
-        }
-    }, []);
+    const stageVariants = {
+        initial: { opacity: 0 },
+        animate: { opacity: 1, transition: { duration: 1.5, ease: "easeInOut" } },
+        exit: { opacity: 0, transition: { duration: 1.5, ease: "easeInOut" } }
+    };
 
     return (
-        <div className="AppWrapper">
+        <>
             <audio ref={audioRef} src={backgroundMusicMP3} loop />
+            
+            <AnimatePresence mode="wait">
+                {currentAppStage === 'fishExperience' ? (
+                    <motion.div
+                        key="fish-experience-stage"
 
-            <PoeticBackground />
+                    >
+                        <FishScrollExperience onScrollEnd={handleFishScrollEnd} />
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="card-experience-stage"
+                        variants={stageVariants}
+                        initial="initial"
+                        animate="animate"
+                        className="AppWrapper" 
+                    >
+                        <PoeticBackground />
+                        
+                        {currentAppStage === 'cardIntroCat' && (
+                            <ContentArea currentStage="cat" isFadingOutProp={isIntroStageFadingOut} userName={YOUR_NAME_FOR_INTRO} />
+                        )}
+                        
+                        {currentAppStage === 'cardIntroWelcome' && (
+                            <ContentArea currentStage="yourName" isFadingOutProp={isIntroStageFadingOut} userName={YOUR_NAME_FOR_INTRO} />
+                        )}
 
-            {currentIntroStage === 'languageSelection' ? (
-                <LanguageSelector
-                    onLanguageSelected={handleLanguageSelectedInSelector}
-                    cardAvatarUrl={PERSONAL_CARD_DATA.avatarUrl}
-                    githubUsername={PERSONAL_CARD_DATA.githubUsername}
-                    initialSelectedLanguage={selectedLanguage}
-                    yourNameForIntro={YOUR_NAME_FOR_INTRO}
-                    onSpotifyViewChange={setIsSpotifyViewActive}
-                />
-            ) : (
-                <ContentArea
-                    currentStage={currentIntroStage}
-                    isFadingOutProp={isStageFadingOut}
-                    userName={YOUR_NAME_FOR_INTRO}
-                    selectedLanguage={selectedLanguage || 'vi'}
-                />
-            )}
-        </div>
+                        {currentAppStage === 'mainCardApp' && (
+                            <LanguageSelector
+                                onLanguageSelected={handleLanguageSelectedInSelector}
+                                cardAvatarUrl={PERSONAL_CARD_DATA.avatarUrl}
+                                githubUsername={PERSONAL_CARD_DATA.githubUsername}
+                                initialSelectedLanguage={selectedLanguage}
+                                yourNameForIntro={YOUR_NAME_FOR_INTRO}
+                                onSpotifyViewChange={setIsSpotifyViewActive}
+                            />
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     );
 }
 

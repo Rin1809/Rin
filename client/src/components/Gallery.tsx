@@ -3,7 +3,7 @@ import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import './styles/Gallery.css';
 import { galleryTranslations } from './languageSelector/languageSelector.constants'; 
-import { logInteraction } from '../utils/logger'; // IMPORT LOG UTIL
+import { logInteraction } from '../utils/logger';
 
 const IconClose = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -103,7 +103,6 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack, language }) => {
     setSelectedImageIndex(index);
     setSlideDirection(0);
     setLightboxOpen(true);
-    // Log khi mo lightbox, cung tinh la xem anh
     logInteraction('gallery_image_viewed', {
         imageIndex: index, 
         totalImages: totalImages,
@@ -135,7 +134,6 @@ const Gallery: React.FC<GalleryProps> = ({ images, onBack, language }) => {
       newIndex = (selectedImageIndex - 1 + totalImages) % totalImages;
     }
     setSelectedImageIndex(newIndex);
-    // Log khi chuyen anh trong lightbox/carousel
     logInteraction('gallery_image_viewed', {
         imageIndex: newIndex, 
         totalImages: totalImages,
