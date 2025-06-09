@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import LanguageSelector from './components/LanguageSelector';
 import { PoeticBackground } from './components/PoeticBackground';
@@ -155,8 +155,7 @@ function App() {
         animate: { opacity: 1, transition: { duration: 1.5, ease: "easeInOut" } },
         exit: { opacity: 0, transition: { duration: 1.5, ease: "easeInOut" } }
     };
-
-    // dinh nghia anim cho fish experience
+    
     const fishExperienceVariants = {
         initial: { opacity: 0 },
         animate: { opacity: 1, transition: { duration: 2.0, ease: "easeInOut" } },
@@ -176,7 +175,7 @@ function App() {
                 flexDirection: 'column', background: '#0c0e1a', color: '#e6e6e6'
             }}
         >
-            <p style={{fontFamily: 'var(--font-family-poetic)', fontSize: '1.2em', marginBottom: '1.5rem'}}>
+            <p style={{fontFamily: 'var(--font-family-poetic)', fontSize: '1.2em', marginBottom: '1.5rem', minHeight: '1.4em', textAlign: 'center'}}>
                 Loading...
             </p>
             <div style={{width: '60%', maxWidth: '400px', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden'}}>
