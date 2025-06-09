@@ -1,5 +1,5 @@
 // client/src/components/Blog.tsx
-import React, { useState, useEffect, useCallback }  from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSprings, animated, to as interpolate } from '@react-spring/web';
 import { useDrag } from 'react-use-gesture';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
@@ -34,6 +34,7 @@ const blogTranslations = {
   closeLightbox: { vi: "Đóng (Esc)", en: "Close (Esc)", ja: "閉じる (Esc)" },
 };
 
+
 // --- Lightbox Components & Variants ---
 const IconClose = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
@@ -44,29 +45,27 @@ const IconClose = () => (
 
 const lightboxOverlayVariants: Variants = {
     hidden: { opacity: 0, backdropFilter: "blur(0px)" },
-    visible: { opacity: 1, backdropFilter: "blur(20px)", transition: { duration: 0.6, ease: [0.2, 0.8, 0.2, 1] } },
-    exit: { opacity: 0, backdropFilter: "blur(0px)", transition: { duration: 0.4, ease: "easeIn" } }
+    visible: { opacity: 1, backdropFilter: "blur(16px)", transition: { duration: 0.5, ease: [0.2, 0.8, 0.2, 1] } },
+    exit: { opacity: 0, backdropFilter: "blur(0px)", transition: { duration: 0.3, ease: "easeIn" } }
 };
 
 const lightboxContentVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.85, y: 50 },
-    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 220, damping: 24, mass: 1, delay: 0.15 } },
-    exit: { opacity: 0, scale: 0.85, y: 30, transition: { duration: 0.3, ease: "easeIn" } }
+    hidden: { opacity: 0, scale: 0.9, y: 40 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 240, damping: 25, delay: 0.1 } },
+    exit: { opacity: 0, scale: 0.9, y: 20, transition: { duration: 0.25, ease: "easeIn" } }
 };
 
 // --- Deck Animation Helpers ---
 const to = (i: number) => ({
   x: 0,
-  y: i * -5, // Tăng khoảng cách Y để các thẻ xếp chồng trông rõ hơn
+  y: i * -4,
   scale: 1,
-  rot: -5 + Math.random() * 10,
-  delay: i * 80,
+  rot: -10 + Math.random() * 20,
+  delay: i * 100,
 });
-
 const from = (_i: number) => ({ x: 0, rot: 0, scale: 1.5, y: -1000 });
-
 const trans = (r: number, s: number) =>
-  `perspective(1500px) rotateX(15deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`;
+  `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`;
 
 
 // --- Main Blog Component ---
@@ -79,17 +78,15 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
   const t = blogTranslations;
-  const SNIPPET_LENGTH = 150;
 
-  // --- Data Fetching ---
   useEffect(() => {
     const fetchPosts = async () => {
-      setIsLoading(true);
-      setError(null);
+      setIsLoading(true); setError(null);
       try {
         const response = await fetch(`/api/blog/posts`);
         if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
         const data = await response.json();
+        // sap xep
         setPosts(data.sort((a: BlogPost, b: BlogPost) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
       } catch (e: any) {
         setError(e.message || "Lỗi không xác định khi tải bài viết.");
@@ -101,13 +98,14 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
   }, []);
 
 
-  // --- Deck Animation Logic ---
   const [gone] = useState(() => new Set());
-  const [springProps, api] = useSprings(posts.length, i => ({ ...to(i), from: from(i) }));
+  // spring cho mang dao nguoc
+  const reversedPosts = [...posts].reverse();
+  const [springProps, api] = useSprings(reversedPosts.length, i => ({ ...to(i), from: from(i) }));
 
   const bind = useDrag(({ args: [index], down, movement: [mx], direction: [xDir], velocity, tap }) => {
     if (tap) {
-      openLightbox(index);
+      openLightbox(reversedPosts.length - 1 - index);
       return;
     }
 
@@ -120,25 +118,17 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
       const isGone = gone.has(index);
       const x = isGone ? (200 + window.innerWidth) * dir : down ? mx : 0;
       const rot = mx / 100 + (isGone ? dir * 10 * velocity : 0);
-      const scale = down ? 1.05 : 1; // Giảm nhẹ hiệu ứng phóng to
-      return {
-        x, rot, scale,
-        delay: undefined,
-        config: { friction: 50, tension: down ? 800 : isGone ? 200 : 500 },
-      };
+      const scale = down ? 1.1 : 1;
+      return { x, rot, scale, delay: undefined, config: { friction: 50, tension: down ? 800 : isGone ? 200 : 500 } };
     });
 
-    if (!down && gone.size === posts.length)
-      setTimeout(() => {
-        gone.clear();
-        api.start(i => to(i));
-      }, 600);
+    if (!down && gone.size === reversedPosts.length)
+      setTimeout(() => { gone.clear(); api.start(i => to(i)); }, 600);
   });
 
 
-  // --- Lightbox Functions ---
-  const openLightbox = (index: number) => {
-    const post = posts[index];
+  const openLightbox = (postIndex: number) => {
+    const post = posts[postIndex];
     if (post) {
       logInteraction('blog_post_opened', { postId: post.id, postTitle: post.title, language });
       setSelectedPost(post);
@@ -146,10 +136,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
     }
   };
   
-  const closeLightbox = useCallback(() => {
-      setSelectedPost(null);
-      setLightboxOpen(false);
-  }, []);
+  const closeLightbox = useCallback(() => { setSelectedPost(null); setLightboxOpen(false); }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -160,15 +147,11 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
   }, [lightboxOpen, closeLightbox]);
 
 
-  // --- Helper Functions ---
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '';
-    return new Intl.DateTimeFormat(language, {
-        year: 'numeric', month: 'long', day: 'numeric',
-    }).format(date);
+    return new Intl.DateTimeFormat(language, { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
   };
-
 
   return (
     <div className="blog-deck-container">
@@ -187,24 +170,36 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
             {!isLoading && !error && posts.length === 0 && ( <p className="blog-status-message">{t.noPosts[language]}</p> )}
           </AnimatePresence>
           {
-            springProps.map(({ x, y, rot, scale }, i) => (
-                <animated.div className="blog-card-deck" key={posts[i]?.id || i} style={{ x, y }}>
-                    <animated.div
-                        {...bind(i)}
-                        style={{ transform: interpolate([rot, scale], trans) }}
-                    >
-                        {posts[i] && (
-                            <div className="blog-card-content">
-                                {posts[i].image_url && <img src={posts[i].image_url} alt={posts[i].title} className="blog-card-image" />}
-                                <div className={`blog-card-text-content ${posts[i].content && posts[i].content!.length > SNIPPET_LENGTH ? 'has-overflow' : ''}`}>
-                                    <h3 className="blog-card-title">{posts[i].title}</h3>
-                                    {posts[i].content && <p className="blog-card-snippet">{posts[i].content!.substring(0, SNIPPET_LENGTH)}{posts[i].content!.length > SNIPPET_LENGTH ? "..." : ""}</p>}
+            // card stack
+            springProps.map(({ x, y, rot, scale }, i) => {
+                const post = reversedPosts[i];
+                if (!post) return null;
+                return (
+                    <animated.div className="blog-card-deck" key={post.id} style={{ x, y }}>
+                        <animated.div
+                            {...bind(i)}
+                            style={{
+                                transform: interpolate([rot, scale], trans),
+                            }}
+                        >
+                            <div className="blog-card-inner-content">
+                                <div
+                                    className="blog-card-image-part"
+                                    style={{
+                                        backgroundImage: post.image_url
+                                            ? `url(${post.image_url})`
+                                            : 'linear-gradient(45deg, rgba(var(--primary-color-rgb), 0.5), rgba(var(--secondary-color-rgb), 0.5))'
+                                    }}
+                                ></div>
+                                <div className="blog-card-text-part">
+                                    <h4 className="blog-card-title">{post.title}</h4>
+                                    {post.content && <p className="blog-card-snippet">{post.content}</p>}
                                 </div>
                             </div>
-                        )}
+                        </animated.div>
                     </animated.div>
-                </animated.div>
-            ))
+                )
+            })
           }
       </div>
 
@@ -232,7 +227,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
             onClick={closeLightbox}
           >
             <motion.div
-                className="blog-lightbox-content-wrapper" // You'll need to style this class
+                className="blog-lightbox-content-wrapper"
                 variants={lightboxContentVariants}
                 onClick={(e) => e.stopPropagation()}
             >
@@ -252,10 +247,10 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
                        <img src={selectedPost.image_url} alt={selectedPost.title} className="blog-lightbox-image"/>
                     )}
                     <div className="blog-lightbox-meta-container">
-                      <div><strong>{t.authorName[language]}</strong></div>
-                      <div className='blog-lightbox-meta-timestamp'>
+                      <p><strong>{t.authorName[language]}</strong></p>
+                      <p className='blog-lightbox-meta-timestamp'>
                         {t.postedOn[language]} {formatDate(selectedPost.timestamp)}
-                      </div>
+                      </p>
                     </div>
                     <hr className="blog-lightbox-meta-divider" />
                     {selectedPost.content && (

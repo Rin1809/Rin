@@ -9,7 +9,7 @@
   justify-content: center;
   overflow: hidden;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 1rem 0;
   box-sizing: border-box;
   font-family: var(--font-family-poetic), var(--font-family-fallback);
@@ -17,45 +17,46 @@
 }
 
 .blog-deck-title {
-  font-size: clamp(2.2em, 5vw, 3.2em);
+  font-size: clamp(2.2em, 5vw, 3em);
   font-weight: 400;
   text-align: center;
   text-shadow:
-    0 0 35px rgba(var(--highlight-color-poetic-rgb), 0.45),
-    0 0 18px rgba(var(--highlight-color-poetic-rgb), 0.25),
-    0 0 10px rgba(var(--primary-color-rgb), 0.15),
-    0 3px 6px rgba(var(--background-color-rgb), 0.3);
+    0 0 30px rgba(var(--highlight-color-poetic-rgb), 0.4),
+    0 0 15px rgba(var(--highlight-color-poetic-rgb), 0.25),
+    0 2px 4px rgba(var(--background-color-rgb), 0.3);
   letter-spacing: 0.08em;
-  line-height: 1.4;
-  margin: 0;
+  line-height: 1.3;
   padding: 0 1rem;
+  margin: 0;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   -webkit-background-clip: text;
   background-image: linear-gradient(
     115deg,
     var(--highlight-color-poetic) 15%,
-    var(--secondary-color) 35%,
-    var(--primary-color) 55%,
-    var(--highlight-color-poetic) 75%
+    var(--secondary-color) 45%,
+    var(--primary-color) 75%
   );
-  background-size: 350% 100%;
-  animation: titleShimmerFlowPoetic 12s ease-in-out infinite alternate;
+  background-size: 300% 100%;
+  animation: titleShimmerFlowPoetic 10s ease-in-out infinite alternate;
+  flex-shrink: 0;
 }
 
 @keyframes titleShimmerFlowPoetic {
-  0% { background-position: 175% center; }
-  100% { background-position: -175% center; }
+  from { background-position: 150% center; }
+  to { background-position: -150% center; }
 }
 
 .blog-deck-stage {
     flex-grow: 1;
     width: 100%;
+    height: 100%;
+    min-height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: grab;
-    position: relative; /* Cho phép deck định vị absolute */
+    position: relative;
 }
 
 .blog-deck-stage:active {
@@ -66,10 +67,10 @@
 /* --- Card Stack Styling --- */
 .blog-card-deck {
   position: absolute;
-  width: 90vw;
-  height: 70vh;
-  max-width: 360px;
-  max-height: 540px;
+  width: 45vh;
+  max-width: 180px;
+  height: 85vh;
+  max-height: 280px;
   will-change: transform;
   display: flex;
   align-items: center;
@@ -77,99 +78,155 @@
   touch-action: none;
 }
 
+/* the bai */
 .blog-card-deck > div {
-  background-color: rgba(var(--card-background-rgb), 0.7);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid rgba(var(--border-color-rgb), 0.3);
-  box-shadow: 0 10px 35px -12px rgba(var(--background-color-rgb), 0.6),
-              0 0 20px -5px rgba(var(--glow-color-rgb), 0.2);
-
+  padding: 5px;
+  border-radius: 18px;
   width: 100%;
   height: 100%;
-  will-change: transform;
-  border-radius: 24px;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-  overflow: hidden; /* Che nội dung tràn */
-
-  /* Bố trí nội dung trong thẻ */
-  display: flex;
-  flex-direction: column;
+  will-change: transform, box-shadow;
+  transition: box-shadow 0.4s ease;
+  background-image: linear-gradient(145deg, #2a273a 0%, #1c1a2e 100%);
+  box-shadow: 0 10px 35px -10px rgba(0, 0, 0, 0.4),
+              inset 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
-/* --- Card Inner Content --- */
-.blog-card-content {
-    display: flex;
-    flex-direction: column;
-    padding: 1.2rem 1.4rem;
-    color: var(--text-color-poetic);
+.blog-card-deck > div:hover {
+  box-shadow: 0 15px 45px -10px rgba(var(--highlight-color-poetic-rgb), 0.3),
+              inset 0 0 2px rgba(255, 255, 255, 0.1),
+              0 0 20px rgba(var(--highlight-color-poetic-rgb), 0.2);
+}
+
+/* noi dung ben trong */
+.blog-card-inner-content {
     width: 100%;
     height: 100%;
-    box-sizing: border-box;
-}
-
-.blog-card-image {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    border-radius: 12px;
-    flex-shrink: 0;
-    margin-bottom: 1rem;
-    border: 1px solid rgba(var(--border-color-rgb), 0.1);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.blog-card-text-content {
-    flex-grow: 1;
+    background-color: var(--card-background);
+    border-radius: 14px;
     overflow: hidden;
-    position: relative;
     display: flex;
     flex-direction: column;
+}
+
+
+/* 70% */
+.blog-card-image-part {
+  flex: 0 0 70%;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.blog-card-deck > div:hover .blog-card-image-part {
+    transform: scale(1.05);
+}
+
+
+/* 30% */
+.blog-card-text-part {
+  flex: 0 0 30%;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--text-color-poetic);
+  background-color: var(--card-background);
+  position: relative;
+}
+
+/* giai phan cach pha le */
+.blog-card-text-part::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1.5px;
+    background-image: linear-gradient(to right,
+        transparent,
+        rgba(var(--highlight-color-poetic-rgb), 0.5),
+        transparent
+    );
+    filter: drop-shadow(0 0 3px rgba(var(--highlight-color-poetic-rgb), 0.4));
+    transition: all 0.4s ease;
+}
+.blog-card-deck > div:hover .blog-card-text-part::before {
+    width: 95%;
+    filter: drop-shadow(0 0 5px rgba(var(--highlight-color-poetic-rgb), 0.7));
+    background-image: linear-gradient(to right,
+        transparent,
+        rgba(var(--primary-color-rgb), 0.7),
+        transparent
+    );
 }
 
 .blog-card-title {
-    font-size: 1.3em;
-    font-weight: 500;
-    color: var(--highlight-color-poetic);
-    line-height: 1.4;
-    margin: 0 0 0.5rem 0;
-    text-shadow: 0 1px 2px rgba(var(--background-color-rgb),0.5);
-    /* Giới hạn 2 dòng */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  display: block;
+  font-size: 1.05em;
+  font-weight: 500;
+  margin: 0 0 0.25rem 0;
+  color: var(--highlight-color-poetic);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .blog-card-snippet {
-    font-size: 0.9em;
-    font-weight: 300;
-    line-height: 1.7;
-    color: var(--subtext-color-poetic);
-    margin: 0;
-    flex-grow: 1;
+  display: -webkit-box;
+  font-size: 0.9em;
+  color: var(--subtext-color-poetic);
+  line-height: 1.4;
+  margin: 0;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: calc(1.4em * 2);
 }
 
-/* Hiệu ứng mờ dần cho snippet nếu quá dài */
-.blog-card-text-content.has-overflow::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2em;
-    background: linear-gradient(to bottom, transparent, rgba(var(--card-background-rgb), 1) 90%);
-    pointer-events: none;
+.blog-card-content, .blog-card-image, .blog-card-text-content {
+    display: none;
 }
 
-/* --- Lightbox Styles (Giữ nguyên phần lớn) --- */
-/* (Các style của lightbox có thể được giữ lại và điều chỉnh nếu cần.
-Để đơn giản hóa, ta giả định lightbox đã có style tốt và chỉ tập trung vào deck) */
-/* Ví dụ: đảm bảo z-index cao cho lightbox */
+
+/* --- Lightbox Styles --- */
 .blog-lightbox-overlay {
   z-index: 2000;
+  position: fixed; inset: 0;
+  background-color: rgba(var(--background-color-rgb), 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
 }
+.blog-lightbox-content-wrapper {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+}
+.blog-lightbox-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.blog-lightbox-header h3 { margin: 0; font-size: 1.4rem; color: var(--highlight-color-poetic); }
+.blog-lightbox-close-button { background: none; border: none; cursor: pointer; color: var(--text-color-poetic); padding: 0.5rem; }
+.blog-lightbox-scrollable-content { overflow-y: auto; padding: 1.5rem; }
+.blog-lightbox-image { width: 100%; border-radius: 12px; margin-bottom: 1.5rem; }
+.blog-lightbox-meta-container { margin-bottom: 1rem; color: var(--subtext-color-poetic); }
+.blog-lightbox-meta-divider { border-color: rgba(var(--border-color-rgb), 0.5); margin: 1rem 0;}
+.blog-lightbox-full-content { line-height: 1.8; }
 
 
 /* --- Status & Back Button --- */
@@ -182,10 +239,7 @@
 .blog-status-message.error { color: var(--error-color); font-weight: 400; }
 
 .blog-back-button-deck {
-  /* Dùng lại style từ .card-view-back-button nếu có hoặc định nghĩa mới */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   gap: 0.6rem;
   background-color: rgba(var(--card-background-rgb), 0.45);
   border: 1.5px solid rgba(var(--border-color-rgb), 0.25);
@@ -198,6 +252,7 @@
   cursor: pointer;
   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
   transition: all 0.25s ease;
+  flex-shrink: 0;
 }
 .blog-back-button-deck svg {
   stroke-width: 2.5;
