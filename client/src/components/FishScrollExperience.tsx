@@ -23,30 +23,31 @@ interface StorySection {
   text?: string; 
   videoSrc?: string;
   spacerHeight?: string; 
+  slowdownFactor?: number; 
 }
 
 const storyContent: StorySection[] = [
-    { type: 'text', text: "Hey there" },
-    { type: 'text', text: "Welcome to my Card" },
-    { type: 'text', text: "Actually i dont have too much information to introduce" },
-    { type: 'text', text: "Lets read a story..." },
-    { type: 'text', text: "13.8 billion years ago, a silent bang echoed into existence...", videoSrc: "/videos/cosmos_intro.mp4" },
+    { type: 'text', text: "Hey there", slowdownFactor: 3.5 },
+    { type: 'text', text: "Welcome to my Card", slowdownFactor: 3.5 },
+    { type: 'text', text: "Actually i dont have too much information to introduce", slowdownFactor: 3.5 },
+    { type: 'text', text: "Lets read a story...", slowdownFactor: 3.5 },
+    { type: 'text', text: "13.8 billion years ago, a silent bang echoed into existence...", videoSrc: "/videos/cosmos_intro.mp4", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "13.6 billion years ago, the first stardust began to swirl and dream...", videoSrc: "/videos/stars_forming.mp4" },
+    { type: 'text', text: "13.6 billion years ago, the first stardust began to swirl and dream...", videoSrc: "/videos/stars_forming.mp4", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "10 billion years ago, our Milky Way started its slow, majestic waltz...", videoSrc: "/videos/milkyway.mp4" },
+    { type: 'text', text: "10 billion years ago, our Milky Way started its slow, majestic waltz...", videoSrc: "/videos/milkyway.mp4", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "4.6 billion years ago, a young star claimed its court, our Solar System...", videoSrc: "/videos/solar_system.mp4" },
+    { type: 'text', text: "4.6 billion years ago, a young star claimed its court, our Solar System...", videoSrc: "/videos/solar_system.mp4", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "4.5 billion years ago, a blue marble, our Earth, took its first breath...", videoSrc: "/videos/earth.mp4" },
+    { type: 'text', text: "4.5 billion years ago, a blue marble, our Earth, took its first breath...", videoSrc: "/videos/earth.mp4", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "300,000 years ago, Homo Sapiens first looked up and wondered at the stars...", videoSrc: "/videos/humans.mp4" },
+    { type: 'text', text: "300,000 years ago, Homo Sapiens first looked up and wondered at the stars...", videoSrc: "/videos/humans.mp4", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "And now, on this very day, you, a traveler of time, have arrived.", videoSrc: "/videos/arrival.mp4" },
+    { type: 'text', text: "And now, on this very day, you, a traveler of time, have arrived.", videoSrc: "/videos/arrival.mp4", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: `(${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })})` },
-    { type: 'text', text: "A fleeting, beautiful moment in the grand cosmic tapestry." },
-    { type: 'text', text: "Welcome." }
+    { type: 'text', text: `(${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })})`, slowdownFactor: 3.5  },
+    { type: 'text', text: "A fleeting, beautiful moment in the grand cosmic tapestry.", slowdownFactor: 3.5  },
+    { type: 'text', text: "Welcome.", slowdownFactor: 3.5  }
 ];
 
 const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd }) => {
@@ -232,11 +233,16 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
             <div className="nebula-glow" style={{ zIndex: 2 }}><div data-rays></div></div>
             
             <div className="content" style={{ zIndex: 3 }}>
+                {/* --- BƯỚC 3: CẬP NHẬT LOGIC RENDER --- */}
                 {storyContent.map((item, i) => (
                     <section 
                         key={i} 
                         className={item.type === 'spacer' ? 'spacer-section' : ''}
-                        style={item.type === 'spacer' ? { height: item.spacerHeight || '50vh' } : {}}
+                        style={{
+                            height: item.type === 'spacer' 
+                                ? item.spacerHeight || '50vh' 
+                                : `${(item.slowdownFactor || 1) * 100}vh`
+                        }}
                     >
                         {item.type === 'text' && (
                             <div className="section__content">
