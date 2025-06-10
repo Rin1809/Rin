@@ -1,5 +1,4 @@
 // api/log-interaction.js
-// Bỏ: import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -26,7 +25,7 @@ export default async function handler(req, res) {
 
     if (clientIp && clientIp !== "::1" && !clientIp.startsWith("127.0.0.1") && !EXCLUDED_IPS_FOR_LOGGING.includes(clientIp)) {
         try {
-            const geoApiResponse = await fetch(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`); // THAY THẾ AXIOS
+            const geoApiResponse = await fetch(`http://ip-api.com/json/${clientIp}?fields=status,message,country,countryCode,regionName,city,isp,query`);
             const geoData = await geoApiResponse.json();
             if (geoApiResponse.ok && geoData && geoData.status === 'success') {
                 country = geoData.country || "N/A";
@@ -66,7 +65,7 @@ export default async function handler(req, res) {
         if (logInteractionUrl.endsWith('/')) {
             logInteractionUrl = logInteractionUrl.slice(0, -1);
         }
-        const botResponse = await fetch(`${logInteractionUrl}/log-interaction`, { // THAY THẾ AXIOS
+        const botResponse = await fetch(`${logInteractionUrl}/log-interaction`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -77,7 +76,8 @@ export default async function handler(req, res) {
 
         if (!botResponse.ok) {
             const errorText = await botResponse.text();
-            console.error("Srvls: Loi gui log tuong tac toi bot Mizuki:", botResponse.status, errorText);
+            // log chi tiet hon de debug loi 404
+            console.error(`Srvls: Loi gui log den bot Mizuki (${botResponse.status}). URL: ${logInteractionUrl}/log-interaction. Resp: ${errorText}`);
             throw new Error(`Failed to notify bot: ${botResponse.status}`);
         }
         res.status(200).json({ message: "Interaction logged and notification sent to bot." });

@@ -1,9 +1,9 @@
 // client/src/components/FishScrollExperience.tsx
-
 import React, { useEffect, useRef, useState } from 'react';
 import './styles/FishScrollExperience.css';
 import { Canvas } from '@react-three/fiber';
 import { ScrollVideoScreen } from './ScrollVideoScreen';
+import { isMobileOrTablet } from '../utils/deviceCheck'; // import ham moi
 
 declare const gsap: any;
 declare const ScrollTrigger: any;
@@ -54,10 +54,12 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [activeVideoSrc, setActiveVideoSrc] = useState<string | null>(null);
     const [isVideoActive, setIsVideoActive] = useState(false);
+    
+    // check device
+    const isMobile = isMobileOrTablet();
 
     useEffect(() => {
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || typeof MotionPathPlugin === 'undefined') {
-            console.error("GSAP is not loaded!");
             return;
         }
 
@@ -136,7 +138,7 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
                 start: "top top",
                 onEnter: (self: ScrollTriggerInstance) => {
                     if(sectionData.type === 'text') createStardust(p, i);
-                    if (sectionData.videoSrc) {
+                    if (sectionData.videoSrc && !isMobile) {
                         setActiveVideoSrc(sectionData.videoSrc);
                         setIsVideoActive(true);
                     }
@@ -144,7 +146,7 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
                 },
                 onEnterBack: (self: ScrollTriggerInstance) => {
                     if (i <= 6 && sectionData.type === 'text') gsap.to('.fish-experience-container .stardust', { opacity: 1 });
-                     if (sectionData.videoSrc) {
+                     if (sectionData.videoSrc && !isMobile) {
                         setActiveVideoSrc(sectionData.videoSrc);
                         setIsVideoActive(true);
                     }
@@ -152,14 +154,14 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
                 },
                 onLeave: () => {
                     if(sectionData.type === 'text') hideText(p);
-                    if (sectionData.videoSrc) {
+                    if (sectionData.videoSrc && !isMobile) {
                         setIsVideoActive(false);
                     }
-                    if (i === 0 && nebulaGlow) gsap.to(nebulaGlow, { opacity: 0, y: -500, duration: 8, ease: 'power4.in' });
+                    if (i === 0 && nebulaGlow && !isMobile) gsap.to(nebulaGlow, { opacity: 0, y: -500, duration: 8, ease: 'power4.in' });
                 },
                 onLeaveBack: () => {
                      if(sectionData.type === 'text') hideText(p);
-                     if (sectionData.videoSrc) {
+                     if (sectionData.videoSrc && !isMobile) {
                         setIsVideoActive(false);
                     }
                 }
@@ -185,25 +187,33 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
                 once: true,
             });
         }
-
+        
+        const allTriggers = ScrollTrigger.getAll();
         return () => {
-            ScrollTrigger.getAll().forEach((t: any) => t.kill());
+            allTriggers.forEach((trigger: any) => trigger.kill());
         };
-    }, [onScrollEnd]);
+    }, [onScrollEnd, isMobile]);
 
     return (
         <div ref={wrapperRef} className="fish-experience-container">
-            <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1, pointerEvents: 'none' }}>
-              <Canvas>
-                  <color attach="background" args={['#0c0e1a']} />
-                  <ScrollVideoScreen videoSrc={activeVideoSrc} isActive={isVideoActive} />
-              </Canvas>
-            </div>
-
-            <div className="starfield" style={{ zIndex: 2 }}></div>
-            <div className="shooting-stars" style={{ zIndex: 2 }}></div>
+            {!isMobile ? (
+                 <>
+                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1, pointerEvents: 'none' }}>
+                      <Canvas dpr={[1, 1.5]}>
+                          <color attach="background" args={['#0c0e1a']} />
+                          <ScrollVideoScreen videoSrc={activeVideoSrc} isActive={isVideoActive} />
+                      </Canvas>
+                    </div>
+                    <div className="starfield" style={{ zIndex: 2 }}></div>
+                    <div className="shooting-stars" style={{ zIndex: 2 }}></div>
+                    <div className="nebula-glow" style={{ zIndex: 2 }}><div data-rays></div></div>
+                 </>
+            ) : (
+                <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: '#0c0e1a', zIndex: -1 }}></div>
+            )}
+           
             <p className="indicator" style={{ zIndex: 3 }}>
-                <span>scroll down the fish</span>
+                <span>scroll down</span>
                 <span>↓</span>
             </p>
             <div className="butterfly-wrapper" style={{ zIndex: 3 }}>
@@ -230,10 +240,8 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
                     {[...Array(5)].map((_, i) => <div key={i} className="stardust__particle"></div>)}
                 </div>
             </div>
-            <div className="nebula-glow" style={{ zIndex: 2 }}><div data-rays></div></div>
             
             <div className="content" style={{ zIndex: 3 }}>
-                {/* --- BƯỚC 3: CẬP NHẬT LOGIC RENDER --- */}
                 {storyContent.map((item, i) => (
                     <section 
                         key={i} 
