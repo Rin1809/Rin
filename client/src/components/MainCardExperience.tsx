@@ -1,15 +1,37 @@
-import { useState, useEffect, useRef, memo, FC } from 'react';
+import { useState, useEffect, useRef, memo, FC, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import LanguageSelector from './LanguageSelector';
 import { PoeticBackground } from './PoeticBackground';
 import backgroundMusicMP3 from '../assets/audio/background_music.mp3';
 import './styles/App.css'; 
+import Ribbons from './Ribbons/Ribbons'; 
+import { isMobileOrTablet } from '../utils/deviceCheck';
 
 const YOUR_AVATAR_URL_FOR_INTRO = "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128";
 const YOUR_NAME_FOR_INTRO = "よこそう！！";
 const PERSONAL_CARD_DATA = {
     avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
     githubUsername: "Rin1809"
+};
+
+// Bảng màu Rinbbons
+
+const POETIC_COLOR_PALETTE = [
+  '#D8BFD8',
+  '#ffaaaa',
+  '#f5c2e7',
+  '#89b4fa',
+  '#e6e6e6',
+  '#a6e3a1',
+];
+
+// Hàm tạo màu dựa trên số lượng
+const generateColors = (count: number) => {
+  const colors = [];
+  for (let i = 0; i < count; i++) {
+    colors.push(POETIC_COLOR_PALETTE[i % POETIC_COLOR_PALETTE.length]);
+  }
+  return colors;
 };
 
 type IntroStage = 'none' | 'cat' | 'welcome' | 'main';
@@ -54,6 +76,10 @@ const MainCardExperience: FC = () => {
     const [selectedLanguage, setSelectedLanguage] = useState<'vi' | 'en' | 'ja' | null>(null);
     const [isSpotifyViewActive, setIsSpotifyViewActive] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    // Kiểm tra thiết bị và tạo màu một lần
+    const isDesktop = useMemo(() => !isMobileOrTablet(), []);
+    const ribbonColors = useMemo(() => generateColors(5), []);
 
     useEffect(() => {
         let stageTimer: ReturnType<typeof setTimeout> | null = null;
@@ -100,6 +126,17 @@ const MainCardExperience: FC = () => {
          <div className="AppWrapper">
             <audio ref={audioRef} src={backgroundMusicMP3} loop />
             <PoeticBackground />
+
+            {isDesktop && (
+                <Ribbons
+                    colors={ribbonColors}
+                    baseThickness={3}
+                    speedMultiplier={0.3}
+                    maxAge={550}
+                    enableShaderEffect={false}
+                />
+            )}
+
             <AnimatePresence mode="wait">
                 {stage !== 'main' && (
                     <motion.div
