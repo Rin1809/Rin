@@ -57,32 +57,27 @@ function App() {
     type AppPhase = 'preloading' | 'fishExperience' | 'cardExperience';
     const [appPhase, setAppPhase] = useState<AppPhase>('preloading');
     
-    // Su dung ham check thiet bi moi, chinh xac hon
+    // van kiem tra thiet bi, nhung de truyen xuong cho useVideoPreloader
     const isTrueMobileDevice = isMobileOrTablet();
     
     const { progress: videoPreloadProgress, isLoaded: areVideosLoaded } = useVideoPreloader(
-        isTrueMobileDevice ? [] : fishExperienceVideos // ko preload video tren mobile
+        isTrueMobileDevice ? [] : fishExperienceVideos
     );
 
     useEffect(() => {
-        if (isTrueMobileDevice) {
-            setAppPhase('cardExperience'); 
-            return;
-        }
-
         if (areVideosLoaded && appPhase === 'preloading') {
             setTimeout(() => {
                 setAppPhase('fishExperience');
             }, 500); 
         }
-    }, [areVideosLoaded, appPhase, isTrueMobileDevice]);
+    }, [areVideosLoaded, appPhase]);
     
     useEffect(() => {
         const notifyBackendOfVisit = async () => {
             try {
                 await fetch(`/api/notify-visit`, { method: 'POST' });
             } catch (error) {
-                // Loi thong bao, bo qua
+                // Loi thong bao
             }
         };
         if (import.meta.env.PROD) {
@@ -94,20 +89,6 @@ function App() {
         setAppPhase('cardExperience');
     };
 
-    // Luon luon chay fish experience tren desktop
-    if (isTrueMobileDevice) {
-         return (
-            <AnimatePresence mode="wait">
-                 <motion.div key="card-experience-mobile" variants={transitionVariants} initial="initial" animate="animate" exit="exit">
-                     <Suspense fallback={<div className='AppWrapper' style={{background:'#0c0e1a'}} />}>
-                        <MainCardExperience />
-                    </Suspense>
-                </motion.div>
-            </AnimatePresence>
-         );
-    }
-    
-    // Luong cho desktop
     return (
         <AnimatePresence mode="wait">
             {appPhase === 'preloading' && (
