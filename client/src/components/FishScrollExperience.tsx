@@ -1,4 +1,3 @@
-// client/src/components/FishScrollExperience.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import './styles/FishScrollExperience.css';
 import { Canvas } from '@react-three/fiber';
@@ -31,19 +30,19 @@ const storyContent: StorySection[] = [
     { type: 'text', text: "Welcome to my Card", slowdownFactor: 3.5 },
     { type: 'text', text: "Actually i dont have too much information to introduce", slowdownFactor: 3.5 },
     { type: 'text', text: "But, lets read a story...", slowdownFactor: 3.5 },
-    { type: 'text', text: "13.8 billion years ago, a silent bang echoed into existence...", videoSrc: "/videos/cosmos_intro.mp4", slowdownFactor: 5.5 },
+    { type: 'text', text: "13.8 billion years ago, a silent bang echoed into existence...", videoSrc: "/videos/cosmos_intro.webm", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "13.6 billion years ago, the first stardust began to swirl and dream...", videoSrc: "/videos/stars_forming.mp4", slowdownFactor: 5.5 },
+    { type: 'text', text: "13.6 billion years ago, the first stardust began to swirl and dream...", videoSrc: "/videos/stars_forming.webm", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "10 billion years ago, our Milky Way started its slow, majestic waltz...", videoSrc: "/videos/milkyway.mp4", slowdownFactor: 5.5 },
+    { type: 'text', text: "10 billion years ago, our Milky Way started its slow, majestic waltz...", videoSrc: "/videos/milkyway.webm", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "4.6 billion years ago, a young star claimed its court, our Solar System...", videoSrc: "/videos/solar_system.mp4", slowdownFactor: 5.5 },
+    { type: 'text', text: "4.6 billion years ago, a young star claimed its court, our Solar System...", videoSrc: "/videos/solar_system.webm", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "4.5 billion years ago, a blue marble, our Earth, took its first breath...", videoSrc: "/videos/earth.mp4", slowdownFactor: 5.5 },
+    { type: 'text', text: "4.5 billion years ago, a blue marble, our Earth, took its first breath...", videoSrc: "/videos/earth.webm", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "300,000 years ago, Homo Sapiens first looked up and wondered at the stars...", videoSrc: "/videos/humans.mp4", slowdownFactor: 5.5 },
+    { type: 'text', text: "300,000 years ago, Homo Sapiens first looked up and wondered at the stars...", videoSrc: "/videos/humans.webm", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
-    { type: 'text', text: "And now, on this very day, you, a traveler of time, have arrived.", videoSrc: "/videos/arrival.mp4", slowdownFactor: 5.5 },
+    { type: 'text', text: "And now, on this very day, you, a traveler of time, have arrived.", videoSrc: "/videos/arrival.webm", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
     { type: 'text', text: `(${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })})`, slowdownFactor: 3.5  },
     { type: 'text', text: "A fleeting, beautiful moment in the grand cosmic tapestry.", slowdownFactor: 3.5  },
@@ -55,7 +54,7 @@ const FishScrollExperience: React.FC<FishScrollExperienceProps> = ({ onScrollEnd
     const [activeVideoSrc, setActiveVideoSrc] = useState<string | null>(null);
     const [isVideoActive, setIsVideoActive] = useState(false);
     
-    // check device
+    // ktr thiet bi
     const isMobile = isMobileOrTablet();
 
     useEffect(() => {

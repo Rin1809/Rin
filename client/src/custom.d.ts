@@ -1,4 +1,3 @@
-// client/src/vite-env.d.ts
 /// <reference types="vite/client" />
 
 declare module '*.png' {
@@ -22,6 +21,11 @@ declare module '*.jpg' {
 }
 
 declare module '*.mp3' {
+  const src: string;
+  export default src;
+}
+
+declare module '*.webm' {
   const src: string;
   export default src;
 }

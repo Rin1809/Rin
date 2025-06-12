@@ -9,14 +9,14 @@ const MainCardExperience = lazy(() => import('./components/MainCardExperience'))
 
 // ds video can tai truoc
 const videosToPreload = [
-    "/videos/cosmos_intro.mp4",
-    "/videos/stars_forming.mp4",
-    "/videos/milkyway.mp4",
-    "/videos/solar_system.mp4",
-    "/videos/earth.mp4",
-    "/videos/humans.mp4",
-    "/videos/arrival.mp4",
-    "/videos/10.mp4" 
+    "/videos/cosmos_intro.webm",
+    "/videos/stars_forming.webm",
+    "/videos/milkyway.webm",
+    "/videos/solar_system.webm",
+    "/videos/earth.webm",
+    "/videos/humans.webm",
+    "/videos/arrival.webm",
+    "/videos/10.webm" 
 ];
 
 const transitionVariants = {

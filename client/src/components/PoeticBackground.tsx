@@ -60,7 +60,7 @@ const BorderlessScreen = forwardRef<THREE.Mesh>((_props, forwardRef) => {
 
   useEffect(() => {
     const video = document.createElement('video');
-    video.src = '/10.mp4';
+    video.src = '/10.webm';
     video.crossOrigin = 'Anonymous';
     video.loop = true;
     video.muted = true;
@@ -68,7 +68,10 @@ const BorderlessScreen = forwardRef<THREE.Mesh>((_props, forwardRef) => {
     videoRef.current = video;
 
     const onCanPlay = () => {
-      video.play().catch(e => console.error("Loi phat video:", e));
+      video.play().catch(e => {
+        // ghi lai loi autoplay neu co, thay vi de catch rong
+        console.warn('Video autoplay bi chan:', e);
+      });
       const texture = new THREE.VideoTexture(video);
       setVideoTexture(texture);
     };
