@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { forwardRef, useState, ForwardedRef } from 'react';
+import { forwardRef, useState, useEffect, useRef, ForwardedRef } from 'react';
 import { Canvas, useFrame, extend } from '@react-three/fiber';
 import { Stars, Float, Icosahedron, shaderMaterial } from '@react-three/drei';
 import { EffectComposer, GodRays, Bloom, Vignette } from '@react-three/postprocessing';
@@ -24,21 +24,15 @@ const fragmentShader = `
 
   void main() {
     vec4 videoColor = texture2D(u_videoTexture, vUv);
-
-    // tinh alpha theo chieu x
     float alphaX = smoothstep(0.0, u_fadeWidth, vUv.x) * (1.0 - smoothstep(1.0 - u_fadeWidth, 1.0, vUv.x));
-    // tinh alpha theo chieu y
     float alphaY = smoothstep(0.0, u_fadeWidth, vUv.y) * (1.0 - smoothstep(1.0 - u_fadeWidth, 1.0, vUv.y));
-    
-    // ket hop alpha
     float finalAlpha = alphaX * alphaY;
-
     gl_FragColor = vec4(videoColor.rgb, videoColor.a * finalAlpha);
   }
 `;
 
 const BorderlessVideoMaterial = shaderMaterial(
-  { u_videoTexture: new THREE.Texture(), u_fadeWidth: 0.3 },
+  { u_videoTexture: null, u_fadeWidth: 0.35 },
   vertexShader,
   fragmentShader
 );
@@ -61,15 +55,37 @@ function Rig() {
 
 // man hinh video ko vien
 const BorderlessScreen = forwardRef<THREE.Mesh>((_props, forwardRef) => {
-  const [videoTexture] = useState(() => {
+  const [videoTexture, setVideoTexture] = useState<THREE.VideoTexture | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
     const video = document.createElement('video');
     video.src = '/10.mp4';
     video.crossOrigin = 'Anonymous';
     video.loop = true;
     video.muted = true;
-    video.play();
-    return new THREE.VideoTexture(video);
-  });
+    video.playsInline = true;
+    videoRef.current = video;
+
+    const onCanPlay = () => {
+      video.play().catch(e => console.error("Loi phat video:", e));
+      const texture = new THREE.VideoTexture(video);
+      setVideoTexture(texture);
+    };
+
+    video.addEventListener('canplaythrough', onCanPlay);
+    video.load();
+
+    return () => {
+      video.removeEventListener('canplaythrough', onCanPlay);
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      videoTexture?.dispose();
+    };
+  }, []);
+
+  if (!videoTexture) return null;
 
   return (
     <mesh ref={forwardRef} position={[0, 0, -4]}>

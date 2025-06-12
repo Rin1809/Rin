@@ -8,7 +8,7 @@ const FishScrollExperience = lazy(() => import('./components/FishScrollExperienc
 const MainCardExperience = lazy(() => import('./components/MainCardExperience'));
 
 // ds video can tai truoc
-const fishExperienceVideos = [
+const videosToPreload = [
     "/videos/cosmos_intro.mp4",
     "/videos/stars_forming.mp4",
     "/videos/milkyway.mp4",
@@ -16,7 +16,7 @@ const fishExperienceVideos = [
     "/videos/earth.mp4",
     "/videos/humans.mp4",
     "/videos/arrival.mp4",
-    "/videos/10.mp4"
+    "/videos/10.mp4" 
 ];
 
 const transitionVariants = {
@@ -63,7 +63,7 @@ function App() {
     const isTrueMobileDevice = isMobileOrTablet();
     
     const { progress: videoPreloadProgress, isLoaded: areVideosLoaded } = useVideoPreloader(
-        isTrueMobileDevice ? [] : fishExperienceVideos
+        isTrueMobileDevice ? [] : videosToPreload
     );
 
     useEffect(() => {
