@@ -7,6 +7,7 @@ import { isMobileOrTablet } from './utils/deviceCheck';
 const FishScrollExperience = lazy(() => import('./components/FishScrollExperience'));
 const MainCardExperience = lazy(() => import('./components/MainCardExperience'));
 
+// ds video can tai truoc
 const fishExperienceVideos = [
     "/videos/cosmos_intro.mp4",
     "/videos/stars_forming.mp4",
@@ -14,7 +15,8 @@ const fishExperienceVideos = [
     "/videos/solar_system.mp4",
     "/videos/earth.mp4",
     "/videos/humans.mp4",
-    "/videos/arrival.mp4"
+    "/videos/arrival.mp4",
+    "/videos/10.mp4"
 ];
 
 const transitionVariants = {
@@ -57,7 +59,7 @@ function App() {
     type AppPhase = 'preloading' | 'fishExperience' | 'cardExperience';
     const [appPhase, setAppPhase] = useState<AppPhase>('preloading');
     
-    // van kiem tra thiet bi, nhung de truyen xuong cho useVideoPreloader
+    // ktr thiet bi
     const isTrueMobileDevice = isMobileOrTablet();
     
     const { progress: videoPreloadProgress, isLoaded: areVideosLoaded } = useVideoPreloader(
@@ -73,11 +75,12 @@ function App() {
     }, [areVideosLoaded, appPhase]);
     
     useEffect(() => {
+        // gui tbao truy cap
         const notifyBackendOfVisit = async () => {
             try {
                 await fetch(`/api/notify-visit`, { method: 'POST' });
             } catch (error) {
-                // Loi thong bao
+                // bo qua loi
             }
         };
         if (import.meta.env.PROD) {
@@ -85,6 +88,7 @@ function App() {
         }
     }, []);
 
+    // xu ly chuyen man hinh chinh
     const handleFishScrollEnd = () => {
         setAppPhase('cardExperience');
     };

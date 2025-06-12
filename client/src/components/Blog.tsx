@@ -1,4 +1,3 @@
-// client/src/components/Blog.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSprings, animated, to as interpolate } from '@react-spring/web';
 import { useDrag } from 'react-use-gesture';
@@ -9,7 +8,6 @@ import { useBlogStore } from '../stores/blog.store';
 import { aboutNavIconLeft } from './languageSelector/languageSelector.constants';
 import { logInteraction } from '../utils/logger';
 
-// --- Interfaces & Translations ---
 interface BlogPost {
   id: number;
   title: string;
@@ -30,7 +28,7 @@ const blogTranslations = {
   error: { vi: "Không thể tìm thấy mực để viết tiếp. Vui lòng thử lại sau.", en: "Couldn't find ink to write. Please try again later.", ja: "書くためのインクが見つかりませんでした。" },
   noPosts: { vi: "Những trang giấy còn đang chờ đợi câu chuyện đầu tiên...", en: "The pages await their first story...", ja: "最初の物語を待っているページ。。。" },
   postedOn: { vi: "Khắc vào ngày", en: "Inscribed on", ja: "記された日："},
-  authorName: { vi: "Người Kể Chuyện", en: "The Storyteller", ja: "語り部" },
+  authorName: { vi: "Rin", en: "Rin", ja: "リン" },
   backButton: { vi: "Trở Về", en: "Back", ja: "戻る" },
   closeLightbox: { vi: "Đóng (Esc)", en: "Close (Esc)", ja: "閉じる (Esc)" },
 };
@@ -55,7 +53,7 @@ const lightboxContentVariants: Variants = {
     exit: { opacity: 0, scale: 0.9, y: 20, transition: { duration: 0.25, ease: "easeIn" } }
 };
 
-// --- Deck Animation Helpers ---
+// anim helpers
 const to = (i: number) => ({
   x: 0,
   y: i * -4,
@@ -68,7 +66,6 @@ const trans = (r: number, s: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`;
 
 
-// --- Main Blog Component ---
 const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
   const { posts, isLoading, error, fetchPosts } = useBlogStore();
 
@@ -86,7 +83,6 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
   const [springProps, api] = useSprings(reversedPosts.length, i => ({ ...to(i), from: from(i) }));
 
   useEffect(() => {
-      // Khi posts thay doi, cap nhat lai springs
       api.start(i => ({ ...to(i), from: from(i) }));
   }, [posts, api]);
 
@@ -137,6 +133,27 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
     if (isNaN(date.getTime())) return '';
     return new Intl.DateTimeFormat(language, { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
   };
+  
+  // format time cho card
+  const formatCardTimestamp = (dateString: string) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    const now = new Date();
+    const diffSeconds = Math.round((now.getTime() - date.getTime()) / 1000);
+
+    if (diffSeconds < 60) return `${diffSeconds}s ago`;
+    const diffMinutes = Math.round(diffSeconds / 60);
+    if (diffMinutes < 60) return `${diffMinutes}m ago`;
+    const diffHours = Math.round(diffMinutes / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    
+    return new Intl.DateTimeFormat(language, { day: 'numeric', month: 'short' }).format(date);
+  };
+
+  // lay avatar 
+  const getAvatarUrl = (): string => {
+      return `https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128`;
+  };
 
   return (
     <div className="blog-deck-container">
@@ -174,8 +191,22 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
                                     }}
                                 ></div>
                                 <div className="blog-card-text-part">
-                                    <h4 className="blog-card-title">{post.title}</h4>
-                                    {post.content && <p className="blog-card-snippet">{post.content}</p>}
+                                    <div className="blog-card-header">
+                                        <img 
+                                            src={getAvatarUrl()} 
+                                            alt="Author Avatar" 
+                                            className="blog-card-author-avatar"
+                                            onError={(e) => { e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png' }}
+                                        />
+                                        <div className="blog-card-author-details">
+                                            <span className="blog-card-author-name">{t.authorName[language]}</span>
+                                            <span className="blog-card-timestamp">{formatCardTimestamp(post.timestamp)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="blog-card-main-content">
+                                      <h4 className="blog-card-title">{post.title}</h4>
+                                      {post.content && <p className="blog-card-snippet">{post.content}</p>}
+                                    </div>
                                 </div>
                             </div>
                         </animated.div>
@@ -246,5 +277,4 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
     </div>
   );
 };
-
 export default Blog;

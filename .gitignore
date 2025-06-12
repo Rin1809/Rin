@@ -88,3 +88,4 @@ yarn-error.log*
 .vercel
 .env.development.local
 .env.local
+package-lock.json

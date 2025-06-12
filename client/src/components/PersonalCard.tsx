@@ -8,7 +8,7 @@ import {
     personalCardTranslations,
     LoadingMessages
 } from './languageSelector/languageSelector.constants';
-import { logInteraction } from '../utils/logger'; // IMPORT LOG UTIL
+import { logInteraction } from '../utils/logger'; 
 
 interface PersonalCardProps {
   style?: React.CSSProperties;
@@ -236,7 +236,7 @@ const PersonalCard: React.FC<PersonalCardProps> = ({ style, name, section, githu
 
   const discordUserId = "873576591693873252"; 
   const tiktokData = {
-    avatarUrl: "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/e6ba1da948f191e11a87ab576c7cecad~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=2cdcc406&x-expires=1747814400&x-signature=XA%2Btvki9KUi9SbVUnm1uKznqFZo%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my", 
+    avatarUrl: "https://i.ibb.co/4R87Kyqy/uploadphone.jpg", 
     name: "Harumi", 
     following: 9,
     followers: "19.2K",

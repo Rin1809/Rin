@@ -6,8 +6,7 @@ import './styles/Flourish.css';
 const simpleFlourishPathData = "M 10 20 Q 125 0, 250 20 T 490 20";
 
 
-// Chọn path data muốn sử dụng
-const currentFlourishPathData = simpleFlourishPathData; // <-- Thay đổi ở đây nếu muốn
+const currentFlourishPathData = simpleFlourishPathData; 
 
 interface FlourishProps {
   position?: 'top' | 'bottom'; 
