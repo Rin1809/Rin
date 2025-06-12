@@ -1,6 +1,7 @@
+// client/src/components/MainCardExperience.tsx
 import { useState, useEffect, useRef, memo, FC, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import LanguageSelector from './LanguageSelector';
+import MainHub from './MainHub'; 
 import { PoeticBackground } from './PoeticBackground';
 import backgroundMusicMP3 from '../assets/audio/background_music.mp3';
 import './styles/App.css'; 
@@ -13,29 +14,10 @@ const PERSONAL_CARD_DATA = {
     avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
     githubUsername: "Rin1809"
 };
-
-// Bảng màu Rinbbons
-
-const POETIC_COLOR_PALETTE = [
-  '#D8BFD8',
-  '#ffaaaa',
-  '#f5c2e7',
-  '#89b4fa',
-  '#e6e6e6',
-  '#a6e3a1',
-];
-
-// Hàm tạo màu dựa trên số lượng
-const generateColors = (count: number) => {
-  const colors = [];
-  for (let i = 0; i < count; i++) {
-    colors.push(POETIC_COLOR_PALETTE[i % POETIC_COLOR_PALETTE.length]);
-  }
-  return colors;
-};
+const POETIC_COLOR_PALETTE=['#D8BFD8','#ffaaaa','#f5c2e7','#89b4fa','#e6e6e6','#a6e3a1'];
+const generateColors=(count:number)=>{const c=[];for(let i=0;i<count;i++){c.push(POETIC_COLOR_PALETTE[i%POETIC_COLOR_PALETTE.length]);}return c;};
 
 type IntroStage = 'none' | 'cat' | 'welcome' | 'main';
-
 interface IntroContentProps {
     currentStage: IntroStage;
     isFadingOut: boolean;
@@ -57,12 +39,8 @@ const IntroContent: FC<IntroContentProps> = memo(({ currentStage, isFadingOut, u
             )}
             {currentStage === 'welcome' && (
                 <div className={welcomeStageClass}>
-                    <div className="avatar-container-wow">
-                        <img src={YOUR_AVATAR_URL_FOR_INTRO} alt="Your Avatar" className="server-avatar-wow" />
-                    </div>
-                    <div className="text-container-wow">
-                        <h2 className="server-name-wow">{userName}</h2>
-                    </div>
+                    <div className="avatar-container-wow"><img src={YOUR_AVATAR_URL_FOR_INTRO} alt="Your Avatar" className="server-avatar-wow" /></div>
+                    <div className="text-container-wow"><h2 className="server-name-wow">{userName}</h2></div>
                 </div>
             )}
         </div>
@@ -77,7 +55,6 @@ const MainCardExperience: FC = () => {
     const [isSpotifyViewActive, setIsSpotifyViewActive] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    // Kiểm tra thiết bị và tạo màu một lần
     const isDesktop = useMemo(() => !isMobileOrTablet(), []);
     const ribbonColors = useMemo(() => generateColors(5), []);
 
@@ -87,25 +64,13 @@ const MainCardExperience: FC = () => {
         const fadeDuration = 600;
 
         if (stage === 'cat') {
-            const catDisplayTime = 1800;
-            stageTimer = setTimeout(() => setIsFadingOut(true), catDisplayTime);
-            fadeTimer = setTimeout(() => {
-                setStage('welcome');
-                setIsFadingOut(false);
-            }, catDisplayTime + fadeDuration);
+            stageTimer = setTimeout(() => setIsFadingOut(true), 1800);
+            fadeTimer = setTimeout(() => { setStage('welcome'); setIsFadingOut(false); }, 1800 + fadeDuration);
         } else if (stage === 'welcome') {
-            const welcomeDisplayTime = 2000;
-            stageTimer = setTimeout(() => setIsFadingOut(true), welcomeDisplayTime);
-            fadeTimer = setTimeout(() => {
-                setStage('main');
-                setIsFadingOut(false);
-            }, welcomeDisplayTime + fadeDuration);
+            stageTimer = setTimeout(() => setIsFadingOut(true), 2000);
+            fadeTimer = setTimeout(() => { setStage('main'); setIsFadingOut(false); }, 2000 + fadeDuration);
         }
-
-        return () => {
-            if (stageTimer) clearTimeout(stageTimer);
-            if (fadeTimer) clearTimeout(fadeTimer);
-        };
+        return () => { if (stageTimer) clearTimeout(stageTimer); if (fadeTimer) clearTimeout(fadeTimer); };
     }, [stage]);
     
     useEffect(() => {
@@ -113,11 +78,9 @@ const MainCardExperience: FC = () => {
         if (!audioElement) return;
         
         if (stage === 'main' && !isSpotifyViewActive && selectedLanguage !== null) {
-            audioElement.play().catch(_ => { /* autoplay was prevented */ });
+            audioElement.play().catch(()=>{});
         } else {
-            if (!audioElement.paused) {
-                audioElement.pause();
-            }
+            if (!audioElement.paused) audioElement.pause();
         }
     }, [stage, isSpotifyViewActive, selectedLanguage]);
 
@@ -127,34 +90,16 @@ const MainCardExperience: FC = () => {
             <audio ref={audioRef} src={backgroundMusicMP3} loop />
             <PoeticBackground />
 
-            {isDesktop && (
-                <Ribbons
-                    colors={ribbonColors}
-                    baseThickness={3}
-                    speedMultiplier={0.3}
-                    maxAge={550}
-                    enableShaderEffect={false}
-                />
-            )}
+            {isDesktop && <Ribbons colors={ribbonColors} baseThickness={3} speedMultiplier={0.3} maxAge={550} enableShaderEffect={false}/>}
 
             <AnimatePresence mode="wait">
-                {stage !== 'main' && (
-                    <motion.div
-                        key="intro-stages"
-                        initial={{ opacity: 1 }}
-                        exit={{ opacity: 0, transition: { duration: 0.5 } }}
-                    >
+                {stage !== 'main' ? (
+                    <motion.div key="intro" initial={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.5 } }}>
                        <IntroContent currentStage={stage} isFadingOut={isFadingOut} userName={YOUR_NAME_FOR_INTRO} />
                     </motion.div>
-                )}
-
-                {stage === 'main' && (
-                     <motion.div
-                        key="main-card-app"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { duration: 0.8, delay: 0.2 } }}
-                    >
-                        <LanguageSelector
+                ) : (
+                     <motion.div key="main" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.8, delay: 0.2 } }}>
+                        <MainHub
                             onLanguageSelected={setSelectedLanguage}
                             cardAvatarUrl={PERSONAL_CARD_DATA.avatarUrl}
                             githubUsername={PERSONAL_CARD_DATA.githubUsername}
@@ -168,5 +113,4 @@ const MainCardExperience: FC = () => {
         </div>
     );
 };
-
 export default MainCardExperience;

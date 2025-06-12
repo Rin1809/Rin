@@ -5,6 +5,7 @@ import { useDrag } from 'react-use-gesture';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 import './styles/Blog.css'; 
+import { useBlogStore } from '../stores/blog.store';
 import { aboutNavIconLeft } from './languageSelector/languageSelector.constants';
 import { logInteraction } from '../utils/logger';
 
@@ -35,7 +36,6 @@ const blogTranslations = {
 };
 
 
-// --- Lightbox Components & Variants ---
 const IconClose = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
       <motion.line x1="18" y1="6" x2="6" y2="18" variants={{ hover: { rotate: 90 }, tap: { rotate: 180 } }} />
@@ -70,9 +70,7 @@ const trans = (r: number, s: number) =>
 
 // --- Main Blog Component ---
 const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { posts, isLoading, error, fetchPosts } = useBlogStore();
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
@@ -80,28 +78,17 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
   const t = blogTranslations;
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      setIsLoading(true); setError(null);
-      try {
-        const response = await fetch(`/api/blog/posts`);
-        if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
-        const data = await response.json();
-        // sap xep
-        setPosts(data.sort((a: BlogPost, b: BlogPost) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
-      } catch (e: any) {
-        setError(e.message || "Lỗi không xác định khi tải bài viết.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchPosts();
-  }, []);
-
+  }, [fetchPosts]);
 
   const [gone] = useState(() => new Set());
-  // spring cho mang dao nguoc
   const reversedPosts = [...posts].reverse();
   const [springProps, api] = useSprings(reversedPosts.length, i => ({ ...to(i), from: from(i) }));
+
+  useEffect(() => {
+      // Khi posts thay doi, cap nhat lai springs
+      api.start(i => ({ ...to(i), from: from(i) }));
+  }, [posts, api]);
 
   const bind = useDrag(({ args: [index], down, movement: [mx], direction: [xDir], velocity, tap }) => {
     if (tap) {
@@ -126,7 +113,6 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
       setTimeout(() => { gone.clear(); api.start(i => to(i)); }, 600);
   });
 
-
   const openLightbox = (postIndex: number) => {
     const post = posts[postIndex];
     if (post) {
@@ -145,7 +131,6 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxOpen, closeLightbox]);
-
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -170,7 +155,6 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
             {!isLoading && !error && posts.length === 0 && ( <p className="blog-status-message">{t.noPosts[language]}</p> )}
           </AnimatePresence>
           {
-            // card stack
             springProps.map(({ x, y, rot, scale }, i) => {
                 const post = reversedPosts[i];
                 if (!post) return null;
@@ -178,9 +162,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
                     <animated.div className="blog-card-deck" key={post.id} style={{ x, y }}>
                         <animated.div
                             {...bind(i)}
-                            style={{
-                                transform: interpolate([rot, scale], trans),
-                            }}
+                            style={{ transform: interpolate([rot, scale], trans) }}
                         >
                             <div className="blog-card-inner-content">
                                 <div
@@ -241,7 +223,6 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
                       whileTap={{ scale: 0.9 }}
                     ><IconClose/></motion.button>
                 </div>
-
                 <div className="blog-lightbox-scrollable-content">
                     {selectedPost.image_url && (
                        <img src={selectedPost.image_url} alt={selectedPost.title} className="blog-lightbox-image"/>
