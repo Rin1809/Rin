@@ -29,7 +29,7 @@ const storyContent: StorySection[] = [
     { type: 'text', text: "Hey there", slowdownFactor: 3.5 },
     { type: 'text', text: "Welcome to my Card", slowdownFactor: 3.5 },
     { type: 'text', text: "Actually i dont have too much information to introduce", slowdownFactor: 3.5 },
-    { type: 'text', text: "But, lets read a story...", slowdownFactor: 3.5 },
+    { type: 'text', text: "My card will be appear after this story...", slowdownFactor: 3.5 },
     { type: 'text', text: "13.8 billion years ago, a silent bang echoed into existence...", videoSrc: "/videos/cosmos_intro.webm", slowdownFactor: 5.5 },
     { type: 'spacer', spacerHeight: '50vh' },
     { type: 'text', text: "13.6 billion years ago, the first stardust began to swirl and dream...", videoSrc: "/videos/stars_forming.webm", slowdownFactor: 5.5 },
