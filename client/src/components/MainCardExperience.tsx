@@ -8,10 +8,10 @@ import './styles/App.css';
 import Ribbons from './Ribbons/Ribbons'; 
 import { isMobileOrTablet } from '../utils/deviceCheck';
 
-const YOUR_AVATAR_URL_FOR_INTRO = "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128";
+const YOUR_AVATAR_URL_FOR_INTRO = "https://pbs.twimg.com/media/FOcT7MiVQAgYZjn?format=jpg&name=large";
 const YOUR_NAME_FOR_INTRO = "よこそう！！";
 const PERSONAL_CARD_DATA = {
-    avatarUrl: "https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128",
+    avatarUrl: "https://pbs.twimg.com/profile_images/1930682678757703680/fGLJABlw_400x400.jpg",
     githubUsername: "Rin1809"
 };
 const POETIC_COLOR_PALETTE=['#D8BFD8','#ffaaaa','#f5c2e7','#89b4fa','#e6e6e6','#a6e3a1'];
