@@ -152,7 +152,7 @@ const Blog: React.FC<BlogProps> = ({ language, onBack }) => {
 
   // lay avatar 
   const getAvatarUrl = (): string => {
-      return `https://cdn.discordapp.com/avatars/873576591693873252/09da82dde1f9b5b144dd478e6e6dd106.webp?size=128`;
+      return `https://i.ibb.co/xSMDyyWW/z6832766349124-12e8f1247de5e10b2e9a86db5a402218.jpg`;
   };
 
   return (

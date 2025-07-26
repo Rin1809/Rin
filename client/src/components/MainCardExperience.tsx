@@ -11,7 +11,7 @@ import { isMobileOrTablet } from '../utils/deviceCheck';
 const YOUR_AVATAR_URL_FOR_INTRO = "https://pbs.twimg.com/media/FOcT7MiVQAgYZjn?format=jpg&name=large";
 const YOUR_NAME_FOR_INTRO = "よこそう！！";
 const PERSONAL_CARD_DATA = {
-    avatarUrl: "https://pbs.twimg.com/profile_images/1930682678757703680/fGLJABlw_400x400.jpg",
+    avatarUrl: "https://i.ibb.co/xSMDyyWW/z6832766349124-12e8f1247de5e10b2e9a86db5a402218.jpg",
     githubUsername: "Rin1809"
 };
 const POETIC_COLOR_PALETTE=['#D8BFD8','#ffaaaa','#f5c2e7','#89b4fa','#e6e6e6','#a6e3a1'];
